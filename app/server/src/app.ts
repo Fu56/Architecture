@@ -1,0 +1,39 @@
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import path from "path";
+import { env } from "./config/env";
+
+import authRoutes from "./routes/auth.route";
+import resourceRoutes from "./routes/resource.route";
+import adminRoutes from "./routes/admin.routes";
+import analyticsRoutes from "./routes/analytics.routes";
+import commonRoutes from "./routes/common.routes";
+import notificationRoutes from "./routes/notification.routes";
+
+export const app = express();
+
+// Add this before your other routes in src/app.ts
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to the Digital Library API" });
+});
+
+app.use(helmet({ crossOriginResourcePolicy: false }));
+app.use(cors({ origin: true, credentials: true }));
+app.use(morgan("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/uploads", express.static(path.resolve(env.uploadDir)));
+app.use("/api/auth", authRoutes);
+app.use("/api/resources", resourceRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/common", commonRoutes);
+app.use("/api/notifications", notificationRoutes);
+
+// Simple ping
+app.get("/api/health", (_req, res) => {
+  res.json({ ok: true });
+});

@@ -1,0 +1,124 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+model User {
+    id         Int      @id @default(autoincrement())
+    first_name String
+    last_name  String
+    email      String   @unique
+    password   String
+    role       Role?    @relation(fields: [roleId], references: [id])
+    roleId     Int?
+    status     String?
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    // Relations
+    resources     Resource[]
+    comments      Comment[]
+    ratings       Rating[]
+    flags         Flag[]         @relation("FlagResolvedBy")
+    notifications Notification[]
+}
+
+model Role {
+    id         Int      @id @default(autoincrement())
+    name       String   @unique
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    users User[]
+}
+
+model Design_stage {
+    id         Int      @id @default(autoincrement())
+    name       String
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    resources Resource[]
+}
+
+model Resource {
+    id              Int           @id @default(autoincrement())
+    title           String
+    author          String?
+    // keyword         String?
+    keywords        String[]
+    forYearStudents           Int
+    batch Int?
+    file_path       String
+    file_type       String?
+    file_size       Float?
+    uploader        User?         @relation(fields: [uploader_id], references: [id])
+    uploader_id     Int?
+    design_stage    Design_stage? @relation(fields: [design_stage_id], references: [id])
+    design_stage_id Int?
+    status          String?
+    download_count  Int?          @default(0)
+    flag            Boolean?      @default(false)
+    uploaded_at     DateTime?     @default(now())
+    approved_at     DateTime?
+    rejected_at     DateTime?
+    updated_at      DateTime?     @updatedAt
+    archived_at     DateTime?
+    priority_tag    String?
+
+    comments      Comment[]
+    ratings       Rating[]
+    flags         Flag[]
+    notifications Notification[]
+}
+
+model Comment {
+    id          Int      @id @default(autoincrement())
+    text        String
+    created_at  DateTime @default(now())
+    updated_at  DateTime @updatedAt
+    resource    Resource @relation(fields: [resource_id], references: [id])
+    resource_id Int
+    user        User     @relation(fields: [user_id], references: [id])
+    user_id     Int
+}
+
+model Rating {
+    id          Int      @id @default(autoincrement())
+    rate        Int
+    user        User     @relation(fields: [user_id], references: [id])
+    user_id     Int
+    resource    Resource @relation(fields: [resource_id], references: [id])
+    resource_id Int
+    created_at  DateTime @default(now())
+    updated_at  DateTime @updatedAt
+}
+
+model Flag {
+    id             Int       @id @default(autoincrement())
+    resource       Resource  @relation(fields: [resource_id], references: [id])
+    resource_id    Int
+    reason         String?
+    status         String?
+    created_at     DateTime  @default(now())
+    resolved_at    DateTime?
+    resolved_by    User?     @relation("FlagResolvedBy", fields: [resolved_by_id], references: [id])
+    resolved_by_id Int?
+}
+
+model Notification {
+    id      Int      @id @default(autoincrement())
+    title   String
+    message String
+    is_read Boolean? @default(false)
+
+    created_at  DateTime  @default(now())
+    resource    Resource? @relation(fields: [resource_id], references: [id])
+    resource_id Int?
+    user        User?     @relation(fields: [user_id], references: [id])
+    user_id     Int?
+    commentId   Int?
+}
