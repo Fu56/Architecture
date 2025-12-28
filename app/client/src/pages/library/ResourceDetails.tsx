@@ -17,12 +17,9 @@ const ResourceDetails = () => {
       setLoading(true);
       setError(null);
       try {
-        const [resResource, resComments] = await Promise.all([
-          api.get(`/resources/${id}`),
-          api.get(`/resources/${id}/comments`),
-        ]);
-        setResource(resResource.data);
-        setComments(resComments.data.comments || []);
+        const { data } = await api.get(`/resources/${id}`);
+        setResource(data);
+        setComments(data.comments || []);
       } catch (err) {
         console.error("Failed to fetch resource details:", err);
         setError(

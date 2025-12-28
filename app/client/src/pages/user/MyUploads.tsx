@@ -15,8 +15,8 @@ const MyUploads = () => {
       try {
         // This endpoint should be protected and return resources for the logged-in user
         const { data } = await api.get("/user/resources");
-        if (Array.isArray(data.resources)) {
-          setResources(data.resources);
+        if (Array.isArray(data)) {
+          setResources(data);
         }
       } catch (err) {
         console.error("Failed to fetch user uploads:", err);

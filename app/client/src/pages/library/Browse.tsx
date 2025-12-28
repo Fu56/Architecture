@@ -22,8 +22,8 @@ const Browse = () => {
 
       const { data } = await api.get(`/resources?${params.toString()}`);
 
-      if (Array.isArray(data.resources)) {
-        setResources(data.resources);
+      if (Array.isArray(data)) {
+        setResources(data);
       } else {
         setResources([]);
       }

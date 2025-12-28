@@ -64,7 +64,17 @@ export const createResource = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(201).json(resource);
+    res.status(201).json({
+      id: resource.id,
+      title: resource.title,
+      author: resource.author,
+      keywords: resource.keywords,
+      batchYear: resource.batch,
+      fileType: resource.file_type,
+      fileSize: resource.file_size,
+      status: resource.status,
+      uploadedAt: resource.uploaded_at,
+    });
   } catch (error) {
     console.error("Create Resource Error:", error);
     res.status(500).json({ message: "Failed to upload resource" });
@@ -107,13 +117,32 @@ export const listResources = async (req: Request, res: Response) => {
         uploader: { select: { first_name: true, last_name: true, role: true } },
         design_stage: true,
       },
-      orderBy: [
-        { priority_tag: "desc" }, // Simple way to push non-null/tagged to top
-        { uploaded_at: "desc" },
-      ],
+      orderBy: [{ priority_tag: "desc" }, { uploaded_at: "desc" }],
     });
 
-    res.json(resources);
+    const formattedResources = resources.map((r) => ({
+      id: r.id,
+      title: r.title,
+      author: r.author,
+      keywords: r.keywords,
+      batchYear: r.batch,
+      fileType: r.file_type,
+      fileSize: r.file_size,
+      downloadCount: r.download_count,
+      status: r.status,
+      priority: !!r.priority_tag,
+      uploadedAt: r.uploaded_at,
+      uploader: r.uploader
+        ? {
+            firstName: r.uploader.first_name,
+            lastName: r.uploader.last_name,
+            role: r.uploader.role,
+          }
+        : null,
+      designStage: r.design_stage,
+    }));
+
+    res.json(formattedResources);
   } catch (error) {
     console.error("List Resources Error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -123,21 +152,57 @@ export const listResources = async (req: Request, res: Response) => {
 export const getResource = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const resource = await prisma.resource.findUnique({
+    const r = await prisma.resource.findUnique({
       where: { id: Number(id) },
       include: {
-        uploader: { select: { first_name: true, last_name: true } },
+        uploader: { select: { first_name: true, last_name: true, role: true } },
         design_stage: true,
         comments: {
-          include: { user: { select: { first_name: true, last_name: true } } },
+          include: {
+            user: { select: { first_name: true, last_name: true, role: true } },
+          },
+          orderBy: { created_at: "desc" },
         },
         ratings: true,
       },
     });
 
-    if (!resource)
-      return res.status(404).json({ message: "Resource not found" });
-    res.json(resource);
+    if (!r) return res.status(404).json({ message: "Resource not found" });
+
+    const formattedResource = {
+      id: r.id,
+      title: r.title,
+      author: r.author,
+      keywords: r.keywords,
+      batchYear: r.batch,
+      fileType: r.file_type,
+      fileSize: r.file_size,
+      downloadCount: r.download_count,
+      status: r.status,
+      priority: !!r.priority_tag,
+      uploadedAt: r.uploaded_at,
+      uploader: r.uploader
+        ? {
+            firstName: r.uploader.first_name,
+            lastName: r.uploader.last_name,
+            role: r.uploader.role,
+          }
+        : null,
+      designStage: r.design_stage,
+      comments: r.comments.map((c) => ({
+        id: c.id,
+        text: c.text,
+        createdAt: c.created_at,
+        user: {
+          firstName: c.user.first_name,
+          lastName: c.user.last_name,
+          role: c.user.role,
+        },
+      })),
+      ratings: r.ratings,
+    };
+
+    res.json(formattedResource);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }

@@ -13,8 +13,8 @@ const Approvals = () => {
       setLoading(true);
       try {
         const { data } = await api.get("/admin/resources?status=pending");
-        if (Array.isArray(data.resources)) {
-          setResources(data.resources);
+        if (Array.isArray(data)) {
+          setResources(data);
         }
       } catch (err) {
         console.error("Failed to fetch pending resources:", err);
