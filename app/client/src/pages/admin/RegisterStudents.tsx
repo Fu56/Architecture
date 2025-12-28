@@ -34,6 +34,7 @@ const RegisterStudents = () => {
   const [uploadResult, setUploadResult] = useState<{
     success: number;
     failed: number;
+    results?: any[];
   } | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,6 +131,7 @@ const RegisterStudents = () => {
       setUploadResult({
         success: response.data.success || 0,
         failed: response.data.failed || 0,
+        results: response.data.results, // Store the credentials results
       });
 
       // Clear form after successful upload
@@ -145,6 +147,26 @@ const RegisterStudents = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const downloadCredentials = () => {
+    if (!uploadResult?.results) return;
+
+    const headers = "Email,Password,Status,Error\n";
+    const csvContent = uploadResult.results
+      .map(
+        (r: any) =>
+          `${r.email},${r.password || "N/A"},${r.status},${r.error || ""}`
+      )
+      .join("\n");
+
+    const blob = new Blob([headers + csvContent], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "student_credentials.csv";
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
 
   const downloadTemplate = () => {
@@ -349,18 +371,40 @@ const RegisterStudents = () => {
 
       {/* Upload Result */}
       {uploadResult && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <div className="flex items-center">
-            <CheckCircle className="h-5 w-5 text-green-600" />
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-green-800">
-                Registration Complete
-              </h3>
-              <p className="mt-1 text-sm text-green-700">
-                Successfully registered {uploadResult.success} student(s).
-                {uploadResult.failed > 0 && ` ${uploadResult.failed} failed.`}
-              </p>
+        <div
+          className={`rounded-lg p-4 border ${
+            uploadResult.success > 0
+              ? "bg-green-50 border-green-200"
+              : "bg-red-50 border-red-200"
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <CheckCircle
+                className={`h-5 w-5 ${
+                  uploadResult.success > 0 ? "text-green-600" : "text-gray-400"
+                }`}
+              />
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-gray-900">
+                  Registration Complete
+                </h3>
+                <p className="mt-1 text-sm text-gray-600">
+                  Successfully registered {uploadResult.success} student(s).
+                  {uploadResult.failed > 0 && ` ${uploadResult.failed} failed.`}
+                </p>
+              </div>
             </div>
+
+            {uploadResult.success > 0 && (
+              <button
+                onClick={downloadCredentials}
+                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-md hover:bg-indigo-700 transition-colors shadow-sm"
+              >
+                <Download className="h-4 w-4" />
+                Download Credentials
+              </button>
+            )}
           </div>
         </div>
       )}

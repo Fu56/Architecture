@@ -219,6 +219,12 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
     let successCount = 0;
     let failedCount = 0;
     const errors: string[] = [];
+    const results: {
+      email: string;
+      password: string;
+      status: "success" | "failed";
+      error?: string;
+    }[] = [];
 
     // Process each student
     for (const student of students) {
@@ -241,6 +247,12 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
         if (existingUser) {
           failedCount++;
           errors.push(`${email}: Already registered`);
+          results.push({
+            email,
+            password: "",
+            status: "failed",
+            error: "Already registered",
+          });
           continue;
         }
 
@@ -267,6 +279,8 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
         });
 
         successCount++;
+        results.push({ email, password: finalPassword, status: "success" });
+
         console.log(
           `Student registered: ${email}, Password: ${
             password ? "[PROVIDED]" : finalPassword
@@ -275,6 +289,12 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
       } catch (err) {
         failedCount++;
         errors.push(`${student.email}: Registration failed`);
+        results.push({
+          email: student.email,
+          password: "",
+          status: "failed",
+          error: "Registration failed",
+        });
       }
     }
 
@@ -283,6 +303,7 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
       success: successCount,
       failed: failedCount,
       errors: errors.length > 0 ? errors : undefined,
+      results, // Return the credentials
     });
   } catch (error) {
     console.error("Bulk registration error:", error);
