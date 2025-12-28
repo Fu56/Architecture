@@ -24,14 +24,6 @@ const ManageUsers = () => {
     fetchUsers();
   }, []);
 
-  const handleRoleChange = (userId: number, newRole: string) => {
-    // API call to update role
-  };
-
-  const handleStatusChange = (userId: number, newStatus: string) => {
-    // API call to update status
-  };
-
   if (loading) {
     return (
       <div className="flex justify-center py-20">

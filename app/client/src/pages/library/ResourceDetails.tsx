@@ -1,16 +1,8 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { api } from "../../lib/api";
 import type { Resource, Comment } from "../../models";
-import {
-  Loader2,
-  ServerCrash,
-  Download,
-  User,
-  Calendar,
-  Tag,
-  Flag,
-} from "lucide-react";
+import { Loader2, ServerCrash, Download, User, Flag } from "lucide-react";
 
 const ResourceDetails = () => {
   const { id } = useParams<{ id: string }>();
