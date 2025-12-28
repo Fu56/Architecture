@@ -23,7 +23,7 @@ const UserDashboard = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 min-h-[calc(100vh-80px)]">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 min-h-[calc(100vh-80px)] bg-gray-50/50 rounded-3xl">
       <div className="md:grid md:grid-cols-12 md:gap-8 items-start">
         {/* Sidebar Navigation */}
         <aside className="md:col-span-3 lg:col-span-2 mb-8 md:mb-0 sticky top-24">
@@ -63,11 +63,11 @@ const UserDashboard = () => {
           <div className="bg-white/80 backdrop-blur-xl p-6 sm:p-10 rounded-2xl shadow-xl border border-white/50">
             <h1 className="text-3xl font-black text-gray-900 mb-8 pb-4 border-b border-gray-100 flex items-center gap-3">
               <span className="bg-indigo-100 p-2 rounded-lg text-indigo-600">
-                {currentLink?.icon({ className: "h-6 w-6" })}
+                {currentLink && <currentLink.icon className="h-6 w-6" />}
               </span>
               {getTitle()}
             </h1>
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="">
               <Outlet />
             </div>
           </div>

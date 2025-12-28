@@ -4,14 +4,17 @@ import { Link } from "react-router-dom";
 
 const Overview = () => {
   const user = getUser();
+  console.log("Rendering Overview for user:", user);
+  const name = user?.first_name || "User";
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 bg-white/50 p-4 rounded-xl">
+      <h2 className="text-xl font-bold bg-indigo-500 text-white p-2">
+        DASHBOARD CONTENT IS HERE
+      </h2>
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-8 text-white shadow-xl">
-        <h2 className="text-3xl font-bold mb-2">
-          Welcome back, {user?.first_name}!
-        </h2>
+        <h2 className="text-3xl font-bold mb-2">Welcome back, {name}!</h2>
         <p className="text-indigo-100 max-w-xl">
           Track your resource contributions, manage your profile, and stay
           updated with the latest notifications.
