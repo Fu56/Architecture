@@ -19,7 +19,12 @@ import {
   LayoutDashboard,
   ChevronDown,
 } from "lucide-react";
-import { isAuthenticated, clearToken, getUser } from "../../lib/auth";
+import {
+  isAuthenticated,
+  clearToken,
+  getUser,
+  currentRole,
+} from "../../lib/auth";
 import Footer from "./Footer";
 
 const Layout = () => {
@@ -65,10 +70,9 @@ const Layout = () => {
   ];
 
   const isHomePage = location.pathname === "/";
-  const dashboardPath =
-    user?.role === "Admin" || user?.role === "SuperAdmin"
-      ? "/admin"
-      : "/dashboard";
+  const role = currentRole();
+  const isAdmin = role === "Admin" || role === "SuperAdmin" || role === "admin";
+  const dashboardPath = isAdmin ? "/admin" : "/dashboard";
 
   return (
     <div className="min-h-screen flex flex-col font-sans selection:bg-indigo-100 selection:text-indigo-900">

@@ -9,6 +9,7 @@ import Register from "./pages/auth/Register";
 import UserDashboard from "./pages/user/Dashboard";
 import MyUploads from "./pages/user/MyUploads";
 import Notifications from "./pages/user/Notifications";
+import Overview from "./pages/user/Overview";
 import Profile from "./pages/user/Profile";
 import AdminDashboard from "./pages/admin/Dashboard";
 import Analytics from "./pages/admin/Analytics";
@@ -41,7 +42,8 @@ const App = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="/upload" element={<Upload />} />
           <Route path="/dashboard" element={<UserDashboard />}>
-            <Route index element={<Navigate to="profile" replace />} />
+            {/* Default redirect when visiting /dashboard */}
+            <Route index element={<Overview />} />
             <Route path="uploads" element={<MyUploads />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="profile" element={<Profile />} />
@@ -51,6 +53,7 @@ const App = () => {
         {/* Protected Admin Routes */}
         <Route path="/admin" element={<AdminRoute />}>
           <Route element={<AdminDashboard />}>
+            {/* Default redirect when visiting /admin */}
             <Route index element={<Navigate to="analytics" replace />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="users" element={<ManageUsers />} />

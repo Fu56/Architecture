@@ -24,7 +24,7 @@ const Login = () => {
       if (role === "Admin" || role === "SuperAdmin") {
         navigate("/admin");
       } else {
-        navigate("/dashboard");
+        navigate("/");
       }
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };

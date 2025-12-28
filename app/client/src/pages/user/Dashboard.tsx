@@ -1,7 +1,8 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { Upload, Bell, User } from "lucide-react";
+import { Upload, Bell, User, LayoutDashboard } from "lucide-react";
 
 const dashboardNavLinks = [
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
   { name: "My Uploads", href: "/dashboard/uploads", icon: Upload }, // Shows user's uploaded resources
   { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
   { name: "Profile", href: "/dashboard/profile", icon: User },
@@ -9,11 +10,16 @@ const dashboardNavLinks = [
 
 const UserDashboard = () => {
   const location = useLocation();
-  const getTitle = () => {
-    return (
-      dashboardNavLinks.find((l) => location.pathname.includes(l.href))?.name ||
-      "Dashboard"
+  const currentLink = [...dashboardNavLinks]
+    .reverse()
+    .find((l) =>
+      l.exact
+        ? location.pathname === l.href
+        : location.pathname.startsWith(l.href)
     );
+
+  const getTitle = () => {
+    return currentLink?.name || "Dashboard";
   };
 
   return (
@@ -26,6 +32,7 @@ const UserDashboard = () => {
               <NavLink
                 key={link.name}
                 to={link.href}
+                end={link.exact}
                 className={({ isActive }) =>
                   `group flex items-center px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${
                     isActive
@@ -36,7 +43,11 @@ const UserDashboard = () => {
               >
                 <link.icon
                   className={`mr-3 h-5 w-5 transition-colors ${
-                    location.pathname.includes(link.href)
+                    (
+                      link.exact
+                        ? location.pathname === link.href
+                        : location.pathname.startsWith(link.href)
+                    )
                       ? "text-indigo-100"
                       : "text-gray-400 group-hover:text-indigo-500"
                   }`}
@@ -52,9 +63,7 @@ const UserDashboard = () => {
           <div className="bg-white/80 backdrop-blur-xl p-6 sm:p-10 rounded-2xl shadow-xl border border-white/50">
             <h1 className="text-3xl font-black text-gray-900 mb-8 pb-4 border-b border-gray-100 flex items-center gap-3">
               <span className="bg-indigo-100 p-2 rounded-lg text-indigo-600">
-                {dashboardNavLinks
-                  .find((l) => location.pathname.includes(l.href))
-                  ?.icon({ className: "h-6 w-6" })}
+                {currentLink?.icon({ className: "h-6 w-6" })}
               </span>
               {getTitle()}
             </h1>

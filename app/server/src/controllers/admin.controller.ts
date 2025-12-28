@@ -310,7 +310,11 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
             batch: batch ? Number(batch) : null,
             year: year ? Number(year) : null,
             semester: semester ? Number(semester) : null,
-            university_id: university_id || email.split("@")[0].toUpperCase(),
+            university_id:
+              university_id ||
+              `${email.split("@")[0].toUpperCase()}${Math.floor(
+                1000 + Math.random() * 9000
+              )}`,
             college_id: null,
           } as any,
         });
@@ -323,14 +327,16 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
             password ? "[PROVIDED]" : finalPassword
           }`
         );
-      } catch (err) {
+      } catch (err: any) {
+        console.error(`Failed to register ${student.email}:`, err);
         failedCount++;
-        errors.push(`${student.email}: Registration failed`);
+        const errorMessage = err.message || "Registration failed";
+        errors.push(`${student.email}: ${errorMessage}`);
         results.push({
           email: student.email,
           password: "",
           status: "failed",
-          error: "Registration failed",
+          error: errorMessage,
         });
       }
     }
