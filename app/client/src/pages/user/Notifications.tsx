@@ -46,7 +46,6 @@ const Notifications = () => {
       setNotifications(
         notifications.map((n) => (n.id === id ? { ...n, isRead: false } : n))
       );
-      console.error("Failed to mark notification as read");
     }
   };
 
@@ -59,45 +58,57 @@ const Notifications = () => {
   }
 
   return (
-    <div className="flow-root">
+    <div className="space-y-4">
       {notifications.length > 0 ? (
-        <ul className="-my-4 divide-y divide-gray-200">
+        <div className="space-y-3">
           {notifications.map((notification) => (
-            <li
+            <div
               key={notification.id}
-              className="flex items-center py-4 space-x-4"
+              className={`group flex items-start p-4 rounded-xl border transition-all duration-300 ${
+                !notification.isRead
+                  ? "bg-indigo-50/50 border-indigo-100 shadow-sm"
+                  : "bg-white border-gray-100 hover:border-indigo-100 hover:shadow-sm"
+              }`}
             >
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0 mt-1">
                 <NotificationIcon title={notification.title} />
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="ml-4 flex-1 min-w-0">
                 <p
-                  className={`text-sm font-medium text-gray-900 truncate ${
-                    !notification.isRead && "font-bold"
+                  className={`text-sm font-bold text-gray-900 ${
+                    !notification.isRead ? "text-indigo-900" : ""
                   }`}
                 >
                   {notification.title}
                 </p>
-                <p className="text-sm text-gray-500">{notification.message}</p>
+                <p className="text-sm text-gray-600 mt-1 leading-relaxed">
+                  {notification.message}
+                </p>
+                <div className="mt-2 flex items-center text-xs text-gray-400 font-medium">
+                  <span>Today at 2:30 PM</span>{" "}
+                  {/* Placeholder for timestamp */}
+                </div>
               </div>
               {!notification.isRead && (
                 <button
                   onClick={() => handleMarkAsRead(notification.id)}
-                  className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
+                  className="ml-4 flex-shrink-0 p-1.5 text-indigo-600 bg-white border border-indigo-100 rounded-lg hover:bg-indigo-600 hover:text-white transition-colors text-xs font-bold shadow-sm"
                 >
-                  Mark as Read
+                  Mark Read
                 </button>
               )}
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       ) : (
-        <div className="text-center py-16 border-2 border-dashed rounded-lg">
-          <Bell className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-4 text-lg font-medium text-gray-800">
-            No Notifications
-          </h3>
-          <p className="mt-1 text-sm text-gray-500">You're all caught up!</p>
+        <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+          <div className="h-16 w-16 bg-indigo-50 rounded-full flex items-center justify-center mb-4">
+            <Bell className="h-8 w-8 text-indigo-300" />
+          </div>
+          <h3 className="text-lg font-bold text-gray-900">No Notifications</h3>
+          <p className="mt-1 text-sm text-gray-500 font-medium">
+            You're all caught up!
+          </p>
         </div>
       )}
     </div>

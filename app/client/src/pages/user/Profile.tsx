@@ -1,5 +1,6 @@
 import { getUser, clearToken } from "../../lib/auth";
 import { useNavigate } from "react-router-dom";
+import { User, Shield, Key, LogOut } from "lucide-react";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -13,11 +14,14 @@ const Profile = () => {
 
   if (!user) {
     return (
-      <div className="text-center py-10">
-        <p className="text-gray-500 mb-4">No active session found.</p>
+      <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-2xl border border-dashed border-gray-300">
+        <User className="h-16 w-16 text-gray-300 mb-4" />
+        <p className="text-gray-500 mb-6 font-medium">
+          No active session found.
+        </p>
         <button
           onClick={() => navigate("/login")}
-          className="text-indigo-600 font-medium hover:underline"
+          className="bg-indigo-600 text-white px-6 py-2 rounded-full font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
         >
           Log in
         </button>
@@ -26,73 +30,93 @@ const Profile = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-1">
-          <h3 className="text-lg font-medium leading-6 text-gray-900">
-            Personal Information
-          </h3>
-          <p className="mt-1 text-sm text-gray-600">
-            This information is private and will not be shared publicly.
-          </p>
-        </div>
-        <div className="md:col-span-2">
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              <p className="mt-1 text-lg text-gray-900">
-                {user.firstName} {user.lastName}
-              </p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Email Address
-              </label>
-              <p className="mt-1 text-lg text-gray-900">{user.email}</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                College ID
-              </label>
-              <p className="mt-1 text-lg text-gray-900">{user.collegeId}</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Role
-              </label>
-              <p className="mt-1 text-lg text-gray-900 capitalize">
-                {user.role.name}
-              </p>
+    <div className="space-y-8">
+      {/* Header Card */}
+      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 h-64 w-64 bg-white/10 rounded-full blur-3xl"></div>
+        <div className="relative flex items-center gap-6">
+          <div className="h-24 w-24 bg-white rounded-full flex items-center justify-center shadow-2xl ring-4 ring-white/30">
+            <span className="text-3xl font-black text-indigo-600 uppercase">
+              {user.first_name?.[0]}
+              {user.last_name?.[0]}
+            </span>
+          </div>
+          <div>
+            <h2 className="text-3xl font-black tracking-tight">
+              {user.first_name} {user.last_name}
+            </h2>
+            <div className="flex items-center gap-2 mt-2 opacity-90">
+              <Shield className="h-4 w-4" />
+              <span className="capitalize font-medium">
+                {user.role?.name || user.role}
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="border-t pt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-1">
-          <h3 className="text-lg font-medium leading-6 text-gray-900">
-            Password
-          </h3>
-          <p className="mt-1 text-sm text-gray-600">
-            Update your password here.
-          </p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Info Card */}
+        <div className="md:col-span-2 space-y-6">
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+            <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <User className="h-5 w-5 text-indigo-500" />
+              Personal Information
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  Full Name
+                </label>
+                <p className="font-medium text-gray-900 border-b border-gray-100 pb-2">
+                  {user.first_name} {user.last_name}
+                </p>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  Email Address
+                </label>
+                <p className="font-medium text-gray-900 border-b border-gray-100 pb-2">
+                  {user.email}
+                </p>
+              </div>
+              {user.collegeId && (
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    College ID
+                  </label>
+                  <p className="font-medium text-gray-900 border-b border-gray-100 pb-2">
+                    {user.collegeId}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-        <div className="md:col-span-2">
-          <button
-            type="button"
-            className="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 mr-3"
-          >
-            Change Password
-          </button>
-          <button
-            onClick={handleLogout}
-            type="button"
-            className="px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-          >
-            Sign Out
-          </button>
+
+        {/* Actions Card */}
+        <div className="space-y-6">
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm h-full">
+            <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <Key className="h-5 w-5 text-indigo-500" />
+              Account Actions
+            </h3>
+            <div className="space-y-3">
+              <button className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-xl text-sm font-bold text-gray-700 transition-colors group">
+                Change Password
+                <span className="text-gray-400 group-hover:text-gray-600">
+                  →
+                </span>
+              </button>
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center justify-between px-4 py-3 bg-red-50 hover:bg-red-100 rounded-xl text-sm font-bold text-red-600 transition-colors group"
+              >
+                Sign Out
+                <LogOut className="h-4 w-4 opacity-70 group-hover:opacity-100" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
