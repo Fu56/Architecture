@@ -12,6 +12,8 @@ import {
   getStats,
   getFlags,
   resolveFlag,
+  bulkRegisterStudents,
+  registerFaculty,
 } from "../controllers/admin.controller";
 
 const router = Router();
@@ -28,6 +30,8 @@ router.patch("/flags/:id/resolve", resolveFlag);
 
 router.get("/users", getAllUsers);
 router.patch("/users/:id/role", manageUserRole);
+router.post("/users/bulk-register", bulkRegisterStudents);
+router.post("/users/register-faculty", registerFaculty);
 
 router.get("/stats", getStats);
 

@@ -69,16 +69,17 @@ const Approvals = () => {
                 </p>
               </div>
               <div className="flex-shrink-0 flex gap-2">
-                <a
-                  href={`${import.meta.env.VITE_API_URL}/resources/${
-                    resource.id
-                  }/download`}
-                  target="_blank"
-                  rel="noreferrer"
+                <button
+                  onClick={() => {
+                    const downloadUrl = `${
+                      import.meta.env.VITE_API_URL
+                    }/resources/${resource.id}/download`;
+                    window.location.href = downloadUrl;
+                  }}
                   className="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                 >
                   <Download className="h-4 w-4" /> Review
-                </a>
+                </button>
                 <button
                   onClick={() => handleDecision(resource.id, "approved")}
                   className="inline-flex items-center gap-2 px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"

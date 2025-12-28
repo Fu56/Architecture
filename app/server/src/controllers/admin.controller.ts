@@ -181,3 +181,151 @@ export const resolveFlag = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error resolving flag" });
   }
 };
+
+// Bulk register students from Excel/CSV
+export const bulkRegisterStudents = async (req: Request, res: Response) => {
+  try {
+    const { students } = req.body;
+
+    if (!Array.isArray(students) || students.length === 0) {
+      return res.status(400).json({ message: "No students provided" });
+    }
+
+    // Get Student role
+    const studentRole = await prisma.role.findUnique({
+      where: { name: "Student" },
+    });
+
+    if (!studentRole) {
+      return res.status(500).json({ message: "Student role not found" });
+    }
+
+    let successCount = 0;
+    let failedCount = 0;
+    const errors: string[] = [];
+
+    // Process each student
+    for (const student of students) {
+      try {
+        const { first_name, last_name, email, batch, year } = student;
+
+        // Check if user already exists
+        const existingUser = await prisma.user.findUnique({
+          where: { email },
+        });
+
+        if (existingUser) {
+          failedCount++;
+          errors.push(`${email}: Already registered`);
+          continue;
+        }
+
+        // Generate default password (you might want to send this via email)
+        const bcrypt = require("bcryptjs");
+        const defaultPassword = `Student${Math.floor(Math.random() * 10000)}`;
+        const hashedPassword = await bcrypt.hash(defaultPassword, 10);
+
+        // Create user
+        await prisma.user.create({
+          data: {
+            first_name,
+            last_name,
+            email,
+            password: hashedPassword,
+            roleId: studentRole.id,
+            status: "active",
+          },
+        });
+
+        successCount++;
+
+        // TODO: Send email with credentials to student
+        console.log(
+          `Student registered: ${email}, Password: ${defaultPassword}`
+        );
+      } catch (err) {
+        failedCount++;
+        errors.push(`${student.email}: Registration failed`);
+      }
+    }
+
+    res.json({
+      message: "Bulk registration completed",
+      success: successCount,
+      failed: failedCount,
+      errors: errors.length > 0 ? errors : undefined,
+    });
+  } catch (error) {
+    console.error("Bulk registration error:", error);
+    res.status(500).json({ message: "Error during bulk registration" });
+  }
+};
+
+// Register individual faculty member
+export const registerFaculty = async (req: Request, res: Response) => {
+  try {
+    const {
+      first_name,
+      last_name,
+      email,
+      password,
+      department,
+      specialization,
+    } = req.body;
+
+    if (!first_name || !last_name || !email || !password) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return res.status(409).json({ message: "Email already registered" });
+    }
+
+    // Get Faculty role
+    const facultyRole = await prisma.role.findUnique({
+      where: { name: "Faculty" },
+    });
+
+    if (!facultyRole) {
+      return res.status(500).json({ message: "Faculty role not found" });
+    }
+
+    const bcrypt = require("bcryptjs");
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await prisma.user.create({
+      data: {
+        first_name,
+        last_name,
+        email,
+        password: hashedPassword,
+        roleId: facultyRole.id,
+        status: "active",
+      },
+      include: {
+        role: true,
+      },
+    });
+
+    // TODO: Store department and specialization if you have a faculty profile table
+
+    res.status(201).json({
+      message: "Faculty member registered successfully",
+      user: {
+        id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        role: user.role?.name,
+      },
+    });
+  } catch (error) {
+    console.error("Faculty registration error:", error);
+    res.status(500).json({ message: "Error registering faculty member" });
+  }
+};
