@@ -55,7 +55,7 @@ const RegisterStudents = () => {
         if (typeof data === "string") {
           // Parse CSV (simplified version)
           const lines = data.split("\n");
-          const headers = lines[0].split(",").map((h) => h.trim());
+          // Skip header row (first line)
 
           const students: StudentRow[] = [];
           for (let i = 1; i < lines.length; i++) {
@@ -134,7 +134,8 @@ const RegisterStudents = () => {
         setPreview([]);
         setValidationResult(null);
       }
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string } } };
       console.error("Upload error:", error);
       alert(error.response?.data?.message || "Failed to register students");
     } finally {

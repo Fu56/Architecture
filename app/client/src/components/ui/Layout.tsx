@@ -6,13 +6,27 @@ import {
   useNavigate,
   useLocation,
 } from "react-router-dom";
-import { Menu, X, BookOpen, User, LogOut, ShieldCheck } from "lucide-react";
+import {
+  Menu,
+  X,
+  BookOpen,
+  User,
+  LogOut,
+  ShieldCheck,
+  Upload,
+  Bell,
+  Settings,
+  LayoutDashboard,
+  ChevronDown,
+} from "lucide-react";
 import { isAuthenticated, clearToken, getUser } from "../../lib/auth";
 import Footer from "./Footer";
 
 const Layout = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isUserMenuOpen, setUserMenuOpen] = useState(false);
+  const notificationCount = 3; // TODO: Fetch from API and convert to state
   const navigate = useNavigate();
   const location = useLocation();
   const user = getUser();
@@ -25,9 +39,22 @@ const Layout = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest(".user-menu-container")) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
   const handleLogout = () => {
     clearToken();
     localStorage.removeItem("user");
+    setUserMenuOpen(false);
     navigate("/login");
   };
 
@@ -117,79 +144,141 @@ const Layout = () => {
             </div>
 
             {/* Actions Section */}
-            <div className="flex items-center gap-3 lg:gap-6 ml-auto">
-              {/* Search Bar Placeholder (Premium touch) */}
-              <div className="hidden md:flex items-center relative group">
-                <div
-                  className={`absolute left-3 transition-colors duration-300 ${
+            <div className="flex items-center gap-3 lg:gap-4 ml-auto">
+              {/* Upload Button (Authenticated Users) */}
+              {isAuthenticated() && (
+                <Link
+                  to="/upload"
+                  className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-105 ${
                     isScrolled || !isHomePage
-                      ? "text-gray-400 group-focus-within:text-indigo-500"
-                      : "text-white/40 group-focus-within:text-white"
+                      ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-600/30"
+                      : "bg-white text-indigo-600 hover:bg-gray-50 shadow-lg"
                   }`}
                 >
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search architecture..."
-                  className={`pl-10 pr-4 py-2 rounded-full text-sm font-medium transition-all duration-500 outline-none w-48 lg:w-64 border ${
+                  <Upload className="h-4 w-4" />
+                  <span className="hidden xl:inline">Upload</span>
+                </Link>
+              )}
+
+              {/* Notifications (Authenticated Users) */}
+              {isAuthenticated() && (
+                <Link
+                  to="/dashboard/notifications"
+                  className={`relative p-2.5 rounded-full transition-all hover:scale-110 ${
                     isScrolled || !isHomePage
-                      ? "bg-gray-50 border-gray-100 focus:bg-white focus:ring-4 focus:ring-indigo-50/50 focus:border-indigo-200"
-                      : "bg-white/10 border-white/10 text-white placeholder-white/40 focus:bg-white/20 focus:border-white/30"
+                      ? "text-gray-600 hover:bg-gray-100"
+                      : "text-white hover:bg-white/10"
                   }`}
-                />
-              </div>
+                >
+                  <Bell className="h-5 w-5" />
+                  {notificationCount > 0 && (
+                    <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
+                      {notificationCount}
+                    </span>
+                  )}
+                </Link>
+              )}
 
               {/* User Section */}
               <div className="flex items-center gap-2">
                 {isAuthenticated() ? (
-                  <div className="flex items-center gap-1.5 p-1 rounded-full border border-gray-100/50 transition-all">
-                    {user?.role === "admin" && (
-                      <Link
-                        to="/admin"
-                        className={`p-2 rounded-full transition-all hover:bg-indigo-50 group shrink-0 ${
-                          isScrolled || !isHomePage
-                            ? "text-gray-500"
-                            : "text-white/80"
-                        }`}
-                      >
-                        <ShieldCheck className="h-5 w-5 group-hover:text-indigo-600" />
-                      </Link>
-                    )}
-                    <Link
-                      to="/dashboard"
-                      className={`relative group shrink-0 h-10 w-10 rounded-full overflow-hidden border-2 transition-all ${
-                        isScrolled || !isHomePage
-                          ? "border-indigo-50 group-hover:border-indigo-200"
-                          : "border-white/20 group-hover:border-white/50"
-                      }`}
-                    >
-                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-500">
-                        <User className="h-5 w-5 text-white" />
-                      </div>
-                    </Link>
+                  <div className="relative user-menu-container">
                     <button
-                      onClick={handleLogout}
-                      className={`hidden sm:flex p-2.5 rounded-full transition-all hover:bg-red-50 group shrink-0 ${
+                      onClick={() => setUserMenuOpen(!isUserMenuOpen)}
+                      className={`flex items-center gap-2 p-1.5 pr-3 rounded-full border transition-all ${
                         isScrolled || !isHomePage
-                          ? "text-gray-400"
-                          : "text-white/60"
+                          ? "border-gray-200 hover:border-indigo-300 hover:bg-indigo-50"
+                          : "border-white/20 hover:border-white/40 hover:bg-white/10"
                       }`}
                     >
-                      <LogOut className="h-4.5 w-4.5 group-hover:text-red-500" />
+                      <div className="relative h-9 w-9 rounded-full overflow-hidden border-2 border-indigo-500">
+                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-500">
+                          <User className="h-5 w-5 text-white" />
+                        </div>
+                      </div>
+                      <div className="hidden md:block text-left">
+                        <p
+                          className={`text-sm font-bold leading-none ${
+                            isScrolled || !isHomePage
+                              ? "text-gray-900"
+                              : "text-white"
+                          }`}
+                        >
+                          {user?.first_name || "User"}
+                        </p>
+                        <p
+                          className={`text-xs ${
+                            isScrolled || !isHomePage
+                              ? "text-gray-500"
+                              : "text-white/60"
+                          }`}
+                        >
+                          {user?.role || "Member"}
+                        </p>
+                      </div>
+                      <ChevronDown
+                        className={`h-4 w-4 transition-transform ${
+                          isUserMenuOpen ? "rotate-180" : ""
+                        } ${
+                          isScrolled || !isHomePage
+                            ? "text-gray-400"
+                            : "text-white/60"
+                        }`}
+                      />
                     </button>
+
+                    {/* User Dropdown Menu */}
+                    {isUserMenuOpen && (
+                      <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                        <div className="px-4 py-3 border-b border-gray-100">
+                          <p className="text-sm font-bold text-gray-900">
+                            {user?.first_name} {user?.last_name}
+                          </p>
+                          <p className="text-xs text-gray-500">{user?.email}</p>
+                        </div>
+
+                        <div className="py-2">
+                          <Link
+                            to="/dashboard"
+                            onClick={() => setUserMenuOpen(false)}
+                            className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+                          >
+                            <LayoutDashboard className="h-4 w-4" />
+                            Dashboard
+                          </Link>
+
+                          {user?.role === "Admin" && (
+                            <Link
+                              to="/admin"
+                              onClick={() => setUserMenuOpen(false)}
+                              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+                            >
+                              <ShieldCheck className="h-4 w-4" />
+                              Admin Panel
+                            </Link>
+                          )}
+
+                          <Link
+                            to="/dashboard/profile"
+                            onClick={() => setUserMenuOpen(false)}
+                            className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+                          >
+                            <Settings className="h-4 w-4" />
+                            Settings
+                          </Link>
+                        </div>
+
+                        <div className="border-t border-gray-100 pt-2">
+                          <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                          >
+                            <LogOut className="h-4 w-4" />
+                            Sign Out
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="flex items-center gap-3">
@@ -264,6 +353,27 @@ const Layout = () => {
                     {link.name}
                   </NavLink>
                 ))}
+
+                {isAuthenticated() && (
+                  <>
+                    <Link
+                      to="/upload"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="px-4 py-4 rounded-2xl text-2xl font-black tracking-tight text-gray-900 flex items-center gap-3"
+                    >
+                      <Upload className="h-6 w-6" />
+                      Upload
+                    </Link>
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="px-4 py-4 rounded-2xl text-2xl font-black tracking-tight text-gray-900 flex items-center gap-3"
+                    >
+                      <LayoutDashboard className="h-6 w-6" />
+                      Dashboard
+                    </Link>
+                  </>
+                )}
               </div>
 
               <div className="pt-8 border-t border-gray-100">

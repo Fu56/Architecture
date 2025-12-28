@@ -80,9 +80,10 @@ const RegisterFaculty = () => {
 
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(false), 3000);
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string } } };
       setError(
-        err.response?.data?.message || "Failed to register faculty member"
+        error.response?.data?.message || "Failed to register faculty member"
       );
     } finally {
       setLoading(false);
