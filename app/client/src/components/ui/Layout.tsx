@@ -401,7 +401,7 @@ const Layout = () => {
         </nav>
       </header>
 
-      <main className="flex-grow pt-0">
+      <main className={`flex-grow ${isHomePage ? "pt-0" : "pt-24"}`}>
         <Outlet />
       </main>
 

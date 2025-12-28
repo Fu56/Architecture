@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../lib/api";
 import { UploadCloud, Loader2 } from "lucide-react";
@@ -19,7 +19,7 @@ const Upload = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  useState(() => {
+  useEffect(() => {
     const fetchStages = async () => {
       try {
         const { data } = await api.get("/common/design-stages");
@@ -29,7 +29,7 @@ const Upload = () => {
       }
     };
     fetchStages();
-  });
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
