@@ -2,15 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../lib/api";
 import { UploadCloud, Loader2 } from "lucide-react";
-
-const designStages = [
-  "Architectural Design I",
-  "Architectural Design II",
-  "Integrated Design I",
-  "Integrated Design II",
-  "Integrated Design III",
-  "Thesis Project",
-];
+import type { DesignStage } from "../../models";
 
 const Upload = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -22,7 +14,7 @@ const Upload = () => {
     forYearStudents: "",
     batch: "",
   });
-  const [designStages, setDesignStages] = useState<any[]>([]);
+  const [designStages, setDesignStages] = useState<DesignStage[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -32,7 +24,7 @@ const Upload = () => {
       try {
         const { data } = await api.get("/common/design-stages");
         setDesignStages(data);
-      } catch (err) {
+      } catch {
         console.error("Failed to fetch design stages");
       }
     };
@@ -74,10 +66,12 @@ const Upload = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       navigate(`/resources/${data.id}`);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = (
+        err as { response?: { data?: { message?: string } } }
+      ).response?.data?.message;
       setError(
-        err.response?.data?.message ||
-          "Upload failed. Please check your data and try again."
+        errorMessage || "Upload failed. Please check your data and try again."
       );
       setLoading(false);
     }

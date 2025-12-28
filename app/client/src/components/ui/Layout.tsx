@@ -1,136 +1,308 @@
-import { useState } from 'react';
-import { Outlet, Link, NavLink, useNavigate } from 'react-router-dom';
-import { Menu, X, BookOpen, User, LogOut, ShieldCheck } from 'lucide-react';
-import { isAuthenticated, clearToken, getUser } from '../../lib/auth';
-import Footer from './Footer';
+import { useState, useEffect } from "react";
+import {
+  Outlet,
+  Link,
+  NavLink,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
+import {
+  Menu,
+  X,
+  BookOpen,
+  User,
+  LogOut,
+  ShieldCheck,
+  ChevronDown,
+} from "lucide-react";
+import { isAuthenticated, clearToken, getUser } from "../../lib/auth";
+import Footer from "./Footer";
 
 const Layout = () => {
-    const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const navigate = useNavigate();
-    const user = getUser();
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const user = getUser();
 
-    const handleLogout = () => {
-        clearToken();
-        navigate('/login');
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
     };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-    const navLinks = [
-        { name: 'Home', href: '/' },
-        { name: 'Browse', href: '/browse' },
-        { name: 'About', href: '/about' },
-        { name: 'Blog', href: '/blog' },
-    ];
+  const handleLogout = () => {
+    clearToken();
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
 
-    return (
-        <div className="min-h-screen bg-gray-50 font-sans">
-            <header className="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-20">
-                <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-16">
-                        <div className="flex items-center">
-                            <Link to="/" className="flex items-center gap-2 text-xl font-bold text-gray-900">
-                                <BookOpen className="h-6 w-6 text-indigo-600" />
-                                <span>Digital Library</span>
-                            </Link>
-                        </div>
-                        <div className="hidden md:flex md:items-center md:space-x-8">
-                            {navLinks.map((link) => (
-                                <NavLink
-                                    key={link.name}
-                                    to={link.href}
-                                    className={({ isActive }) =>
-                                        `text-sm font-medium transition-colors ${
-                                            isActive ? 'text-indigo-600' : 'text-gray-500 hover:text-gray-900'
-                                        }`
-                                    }
-                                >
-                                    {link.name}
-                                </NavLink>
-                            ))}
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <div className="hidden md:flex items-center gap-2">
-                                {isAuthenticated() ? (
-                                    <>
-                                        {user?.role === 'admin' && (
-                                            <Link to="/admin" className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-900">
-                                                <ShieldCheck className="h-5 w-5" />
-                                            </Link>
-                                        )}
-                                        <Link to="/dashboard" className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-900">
-                                            <User className="h-5 w-5" />
-                                        </Link>
-                                        <button onClick={handleLogout} className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-red-600">
-                                            <LogOut className="h-5 w-5" />
-                                        </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Link to="/login" className="text-sm font-medium text-gray-500 hover:text-gray-900">
-                                            Sign In
-                                        </Link>
-                                        <Link
-                                            to="/register"
-                                            className="ml-4 px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700"
-                                        >
-                                            Sign Up
-                                        </Link>
-                                    </>
-                                )}
-                            </div>
-                            <div className="md:hidden">
-                                <button
-                                    onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-                                    className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
-                                >
-                                    {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    {isMobileMenuOpen && (
-                        <div className="md:hidden pb-4 space-y-1">
-                            {navLinks.map((link) => (
-                                <NavLink
-                                    key={link.name}
-                                    to={link.href}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className={({ isActive }) =>
-                                        `block px-3 py-2 rounded-md text-base font-medium ${
-                                            isActive ? 'bg-indigo-50 text-indigo-700' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
-                                        }`
-                                    }
-                                >
-                                    {link.name}
-                                </NavLink>
-                            ))}
-                            <div className="pt-4 mt-4 border-t border-gray-200">
-                                {isAuthenticated() ? (
-                                    <div className="flex items-center justify-around">
-                                         {user?.role === 'admin' && (
-                                            <Link to="/admin" onClick={() => setMobileMenuOpen(false)} className="p-2 rounded-full text-gray-500 hover:bg-gray-100"><ShieldCheck className="h-6 w-6" /></Link>
-                                        )}
-                                        <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="p-2 rounded-full text-gray-500 hover:bg-gray-100"><User className="h-6 w-6" /></Link>
-                                        <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-red-600"><LogOut className="h-6 w-6" /></button>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-2">
-                                        <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="block w-full px-4 py-2 text-center text-base font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200">Sign In</Link>
-                                        <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="block w-full px-4 py-2 text-center text-base font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Sign Up</Link>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+  const navLinks = [
+    { name: "Home", href: "/" },
+    { name: "Browse", href: "/browse" },
+    { name: "Insights", href: "/blog" },
+    { name: "About", href: "/about" },
+  ];
+
+  const isHomePage = location.pathname === "/";
+
+  return (
+    <div className="min-h-screen flex flex-col font-sans">
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          isScrolled
+            ? "bg-white/80 backdrop-blur-xl shadow-[0_2px_20px_rgb(0,0,0,0.05)] py-3"
+            : `${
+                isHomePage
+                  ? "bg-transparent py-5"
+                  : "bg-white/80 backdrop-blur-xl py-4"
+              }`
+        }`}
+      >
+        <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <Link to="/" className="flex items-center gap-2 group">
+                <div
+                  className={`p-1.5 rounded-xl transition-colors ${
+                    isScrolled || !isHomePage
+                      ? "bg-indigo-600 shadow-lg shadow-indigo-100"
+                      : "bg-white/10 backdrop-blur"
+                  }`}
+                >
+                  <BookOpen
+                    className={`h-6 w-6 ${
+                      isScrolled || !isHomePage ? "text-white" : "text-white"
+                    }`}
+                  />
+                </div>
+                <span
+                  className={`text-xl font-bold tracking-tight transition-colors font-display ${
+                    isScrolled || !isHomePage ? "text-gray-900" : "text-white"
+                  }`}
+                >
+                  Digital<span className="text-indigo-500">Library</span>
+                </span>
+              </Link>
+            </div>
+
+            <div className="hidden md:flex md:items-center md:space-x-10">
+              {navLinks.map((link) => (
+                <NavLink
+                  key={link.name}
+                  to={link.href}
+                  className={({ isActive }) =>
+                    `text-[15px] font-semibold transition-all hover:translate-y-[-1px] ${
+                      isScrolled || !isHomePage
+                        ? isActive
+                          ? "text-indigo-600"
+                          : "text-gray-600 hover:text-indigo-600"
+                        : isActive
+                        ? "text-white border-b-2 border-indigo-400 pb-1"
+                        : "text-gray-200 hover:text-white"
+                    }`
+                  }
+                >
+                  {link.name}
+                </NavLink>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="hidden md:flex items-center gap-2">
+                {isAuthenticated() ? (
+                  <div className="flex items-center gap-3 pl-6 border-l border-gray-200/20">
+                    {user?.role === "admin" && (
+                      <Link
+                        to="/admin"
+                        title="Admin Panel"
+                        className={`p-2.5 rounded-xl transition-all hover:bg-indigo-50 group ${
+                          isScrolled || !isHomePage
+                            ? "text-gray-500"
+                            : "text-white/80"
+                        }`}
+                      >
+                        <ShieldCheck className="h-5 w-5 group-hover:text-indigo-600" />
+                      </Link>
                     )}
-                </nav>
-            </header>
+                    <Link
+                      to="/dashboard"
+                      title="User Dashboard"
+                      className={`p-2.5 rounded-xl transition-all hover:bg-indigo-50 group ${
+                        isScrolled || !isHomePage
+                          ? "text-gray-500"
+                          : "text-white/80"
+                      }`}
+                    >
+                      <User className="h-5 w-5 group-hover:text-indigo-600" />
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      title="Sign Out"
+                      className={`p-2.5 rounded-xl transition-all hover:bg-red-50 group ${
+                        isScrolled || !isHomePage
+                          ? "text-gray-500"
+                          : "text-white/80"
+                      }`}
+                    >
+                      <LogOut className="h-5 w-5 group-hover:text-red-500" />
+                    </button>
+                    {user && (
+                      <div
+                        className={`flex flex-col ml-1 ${
+                          isScrolled || !isHomePage
+                            ? "text-gray-900"
+                            : "text-white"
+                        }`}
+                      >
+                        <span className="text-xs font-bold leading-none">
+                          {user.firstName}
+                        </span>
+                        <span className="text-[10px] opacity-60 leading-tight uppercase font-bold tracking-tighter">
+                          {user.role}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      className={`text-[15px] font-semibold transition-colors ${
+                        isScrolled || !isHomePage
+                          ? "text-gray-600 hover:text-indigo-600"
+                          : "text-white hover:text-indigo-200"
+                      }`}
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      to="/register"
+                      className={`ml-4 px-6 py-2.5 text-sm font-bold rounded-xl shadow-lg transition-all active:scale-95 ${
+                        isScrolled || !isHomePage
+                          ? "bg-indigo-600 text-white shadow-indigo-100 hover:bg-indigo-700"
+                          : "bg-white text-indigo-600 hover:bg-gray-100"
+                      }`}
+                    >
+                      Get Started
+                    </Link>
+                  </>
+                )}
+              </div>
 
-            <main className="flex-grow">
-                <Outlet />
-            </main>
+              <div className="md:hidden">
+                <button
+                  onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
+                  className={`p-2 rounded-xl transition-colors ${
+                    isScrolled || !isHomePage
+                      ? "text-gray-600 hover:bg-gray-100"
+                      : "text-white hover:bg-white/10"
+                  }`}
+                >
+                  {isMobileMenuOpen ? (
+                    <X className="h-6 w-6" />
+                  ) : (
+                    <Menu className="h-6 w-6" />
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
 
-            <Footer />
-        </div>
-    );
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden mt-4 pb-6 space-y-2 animate-in fade-in slide-in-from-top-4 duration-300">
+              {navLinks.map((link) => (
+                <NavLink
+                  key={link.name}
+                  to={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `block px-4 py-3 rounded-xl text-base font-semibold transition-all ${
+                      isActive
+                        ? "bg-indigo-50 text-indigo-700"
+                        : `${
+                            isScrolled || !isHomePage
+                              ? "text-gray-600 hover:bg-gray-100"
+                              : "text-white hover:bg-white/10"
+                          }`
+                    }`
+                  }
+                >
+                  {link.name}
+                </NavLink>
+              ))}
+              <div className="pt-4 mt-4 border-t border-gray-100/10">
+                {isAuthenticated() ? (
+                  <div className="grid grid-cols-3 gap-2">
+                    {user?.role === "admin" && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex flex-col items-center gap-1 p-3 rounded-xl hover:bg-indigo-50 text-gray-500"
+                      >
+                        <ShieldCheck className="h-6 w-6" />
+                        <span className="text-[10px] font-bold uppercase">
+                          Admin
+                        </span>
+                      </Link>
+                    )}
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex flex-col items-center gap-1 p-3 rounded-xl hover:bg-indigo-50 text-gray-500"
+                    >
+                      <User className="h-6 w-6" />
+                      <span className="text-[10px] font-bold uppercase">
+                        Profile
+                      </span>
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="flex flex-col items-center gap-1 p-3 rounded-xl hover:bg-red-50 text-gray-500"
+                    >
+                      <LogOut className="h-6 w-6" />
+                      <span className="text-[10px] font-bold uppercase">
+                        Logout
+                      </span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <Link
+                      to="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block w-full px-4 py-3 text-center font-bold text-gray-600 bg-gray-100 rounded-xl"
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      to="/register"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block w-full px-4 py-3 text-center font-bold text-white bg-indigo-600 rounded-xl"
+                    >
+                      Get Started
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </nav>
+      </header>
+
+      <main className="flex-grow pt-0">
+        <Outlet />
+      </main>
+
+      <Footer />
+    </div>
+  );
 };
 
 export default Layout;
