@@ -1,6 +1,6 @@
-first_name,last_name,email,batch,year
-John,Doe,john.doe@example.com,2024,1
-Jane,Smith,jane.smith@example.com,2024,1
-Michael,Brown,michael.brown@example.com,2023,2
-Emily,Davis,emily.davis@example.com,2023,2
-David,Wilson,david.wilson@example.com,2022,3
+first_name,last_name,email,batch,year,semester,password
+John,Doe,john.doe@example.com,2024,1,1,pass123
+Jane,Smith,jane.smith@example.com,2024,1,1,securepass
+Michael,Brown,michael.brown@example.com,2023,2,3,mysecret
+Emily,Davis,emily.davis@example.com,2023,2,3,
+David,Wilson,david.wilson@example.com,2022,3,5,davidw

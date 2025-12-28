@@ -15,6 +15,8 @@ interface StudentRow {
   email: string;
   batch?: number;
   year?: number;
+  semester?: number;
+  password?: string;
 }
 
 interface ValidationResult {
@@ -67,6 +69,8 @@ const RegisterStudents = () => {
                 email: values[2] || "",
                 batch: values[3] ? parseInt(values[3]) : undefined,
                 year: values[4] ? parseInt(values[4]) : undefined,
+                semester: values[5] ? parseInt(values[5]) : undefined,
+                password: values[6] || undefined,
               });
             }
           }
@@ -145,7 +149,7 @@ const RegisterStudents = () => {
 
   const downloadTemplate = () => {
     const template =
-      "first_name,last_name,email,batch,year\nJohn,Doe,john.doe@example.com,2024,1\nJane,Smith,jane.smith@example.com,2024,1";
+      "first_name,last_name,email,batch,year,semester,password\nJohn,Doe,john.doe@example.com,2024,1,1,pass123\nJane,Smith,jane.smith@example.com,2024,1,1,securepass";
     const blob = new Blob([template], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -280,6 +284,12 @@ const RegisterStudents = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Year
                   </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Semester
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Password
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -299,6 +309,12 @@ const RegisterStudents = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {student.year || "-"}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {student.semester || "-"}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {student.password ? "******" : "Auto-generated"}
                     </td>
                   </tr>
                 ))}

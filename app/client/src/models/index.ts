@@ -14,6 +14,8 @@ export interface User {
   collegeId: string;
   role: Role;
   status: string;
+  batch?: number;
+  year?: number;
   createdAt: string; // Dates are strings over the API
 }
 
@@ -33,7 +35,7 @@ export interface Resource {
   fileSize: number;
   uploader: User;
   designStage: DesignStage;
-  status: 'pending' | 'approved' | 'rejected';
+  status: "pending" | "approved" | "rejected";
   downloadCount: number;
   isArchived: boolean;
   priority: boolean;
@@ -53,7 +55,7 @@ export interface Flag {
   resource: Resource;
   reporter: User;
   reason: string;
-  status: 'open' | 'resolved';
+  status: "open" | "resolved";
 }
 
 export interface Notification {

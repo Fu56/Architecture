@@ -46,33 +46,39 @@ const ManageUsers = () => {
             <tr>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
               >
                 Name
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
               >
                 College ID
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
+              >
+                Batch
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
+              >
+                Year
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
               >
                 Role
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
               >
                 Status
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Joined
               </th>
               <th scope="col" className="relative px-6 py-3">
                 <span className="sr-only">Actions</span>
@@ -81,18 +87,41 @@ const ManageUsers = () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {users.map((user) => (
-              <tr key={user.id}>
+              <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
-                    {user.firstName} {user.lastName}
+                  <div className="flex items-center">
+                    <div className="h-10 w-10 flex-shrink-0 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700 font-bold">
+                      {user.firstName[0]}
+                    </div>
+                    <div className="ml-4">
+                      <div className="text-sm font-medium text-gray-900">
+                        {user.firstName} {user.lastName}
+                      </div>
+                      <div className="text-sm text-gray-500">{user.email}</div>
+                    </div>
                   </div>
-                  <div className="text-sm text-gray-500">{user.email}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">
+                  {user.collegeId || "-"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {user.collegeId}
+                  {user.batch || "-"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {user.role.name}
+                  {user.year ? `Year ${user.year}` : "-"}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-bold ${
+                      user.role.name === "Admin"
+                        ? "bg-purple-100 text-purple-700"
+                        : user.role.name === "Faculty"
+                        ? "bg-blue-100 text-blue-700"
+                        : "bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    {user.role.name}
+                  </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
@@ -105,11 +134,8 @@ const ManageUsers = () => {
                     {user.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {new Date(user.createdAt).toLocaleDateString()}
-                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button className="text-gray-500 hover:text-gray-800">
+                  <button className="text-gray-400 hover:text-indigo-600 transition-colors">
                     <MoreVertical className="h-5 w-5" />
                   </button>
                 </td>

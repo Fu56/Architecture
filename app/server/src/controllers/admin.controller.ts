@@ -91,7 +91,23 @@ export const getAllUsers = async (req: Request, res: Response) => {
       include: { role: true },
       orderBy: { created_at: "desc" },
     });
-    res.json(users);
+
+    // Map to camelCase for frontend consistency
+    const formattedUsers = users.map((user) => ({
+      id: user.id,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      email: user.email,
+      role: user.role,
+      status: user.status,
+      collegeId: user.college_id || "N/A", // Add fallback
+      batch: user.batch,
+      year: user.year,
+      semester: user.semester,
+      createdAt: user.created_at,
+    }));
+
+    res.json({ users: formattedUsers }); // Sending inside 'users' object as expected by frontend
   } catch (error) {
     res.status(500).json({ message: "Error fetching users" });
   }
@@ -207,7 +223,15 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
     // Process each student
     for (const student of students) {
       try {
-        const { first_name, last_name, email, batch, year } = student;
+        const {
+          first_name,
+          last_name,
+          email,
+          batch,
+          year,
+          semester,
+          password,
+        } = student;
 
         // Check if user already exists
         const existingUser = await prisma.user.findUnique({
@@ -220,10 +244,11 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
           continue;
         }
 
-        // Generate default password (you might want to send this via email)
+        // Use provided password or generate default
         const bcrypt = require("bcryptjs");
-        const defaultPassword = `Student${Math.floor(Math.random() * 10000)}`;
-        const hashedPassword = await bcrypt.hash(defaultPassword, 10);
+        const finalPassword =
+          password || `Student${Math.floor(Math.random() * 10000)}`;
+        const hashedPassword = await bcrypt.hash(finalPassword, 10);
 
         // Create user
         await prisma.user.create({
@@ -234,14 +259,18 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
             password: hashedPassword,
             roleId: studentRole.id,
             status: "active",
+            batch: batch ? Number(batch) : null,
+            year: year ? Number(year) : null,
+            semester: semester ? Number(semester) : null,
+            college_id: email.split("@")[0].toUpperCase(), // Simple generation of ID from email prefix
           },
         });
 
         successCount++;
-
-        // TODO: Send email with credentials to student
         console.log(
-          `Student registered: ${email}, Password: ${defaultPassword}`
+          `Student registered: ${email}, Password: ${
+            password ? "[PROVIDED]" : finalPassword
+          }`
         );
       } catch (err) {
         failedCount++;
