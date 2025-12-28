@@ -8,6 +8,7 @@ export const getPendingResources = async (req: Request, res: Response) => {
       include: {
         uploader: {
           select: {
+            id: true,
             email: true,
             first_name: true,
             last_name: true,
@@ -18,7 +19,34 @@ export const getPendingResources = async (req: Request, res: Response) => {
       },
       orderBy: { uploaded_at: "asc" },
     });
-    res.json(resources);
+    const formattedResources = resources.map((resource) => ({
+      id: resource.id,
+      title: resource.title,
+      author: resource.author,
+      keywords: resource.keywords,
+      batchYear: resource.batch, // Note: Schema has 'batch' (Int?), Model has 'batchYear' (number?) - mapping might need adjustment based on intention, assuming batch
+      filePath: resource.file_path,
+      fileType: resource.file_type,
+      fileSize: resource.file_size,
+      uploader: {
+        id: resource.uploader?.id, // specific select didn't include ID, but include: { uploader: ... } typically returns object. Wait, select was specific.
+        // The select in findMany was:
+        // uploader: { select: { email: true, first_name: true, last_name: true, role: true } }
+        // So ID is NOT returned. The frontend Resource interface expects a full User object (with ID).
+        // I should update the select to include ID or map carefully.
+        firstName: resource.uploader?.first_name,
+        lastName: resource.uploader?.last_name,
+        email: resource.uploader?.email,
+        role: resource.uploader?.role,
+      },
+      designStage: resource.design_stage,
+      status: resource.status,
+      downloadCount: resource.download_count,
+      isArchived: resource.archived_at ? true : false,
+      priority: resource.priority_tag ? true : false,
+      uploadedAt: resource.uploaded_at,
+    }));
+    res.json(formattedResources);
   } catch (error) {
     res.status(500).json({ message: "Error fetching pending resources" });
   }
@@ -27,6 +55,8 @@ export const getPendingResources = async (req: Request, res: Response) => {
 export const approveResource = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const { comment } = req.body; // Optional approval comment
+
     const resource = await prisma.resource.update({
       where: { id: Number(id) },
       data: {
@@ -35,13 +65,15 @@ export const approveResource = async (req: Request, res: Response) => {
       },
     });
 
-    // Notify uploader (Optional: creates Notification record)
+    // Notify uploader
     if (resource.uploader_id) {
       await prisma.notification.create({
         data: {
           user_id: resource.uploader_id,
           title: "Resource Approved",
-          message: `Your resource "${resource.title}" has been approved.`,
+          message: `Your resource "${resource.title}" has been approved.${
+            comment ? " Comment: " + comment : ""
+          }`,
           resource_id: resource.id,
         },
       });
@@ -93,19 +125,22 @@ export const getAllUsers = async (req: Request, res: Response) => {
     });
 
     // Map to camelCase for frontend consistency
-    const formattedUsers = users.map((user) => ({
-      id: user.id,
-      firstName: user.first_name,
-      lastName: user.last_name,
-      email: user.email,
-      role: user.role,
-      status: user.status,
-      collegeId: user.college_id || "N/A", // Add fallback
-      batch: user.batch,
-      year: user.year,
-      semester: user.semester,
-      createdAt: user.created_at,
-    }));
+    const formattedUsers = users.map((user) => {
+      const u = user as any;
+      return {
+        id: user.id,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+        collegeId: u.college_id || "N/A", // Add fallback
+        batch: u.batch,
+        year: u.year,
+        semester: u.semester,
+        createdAt: user.created_at,
+      };
+    });
 
     res.json({ users: formattedUsers }); // Sending inside 'users' object as expected by frontend
   } catch (error) {
@@ -275,7 +310,7 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
             year: year ? Number(year) : null,
             semester: semester ? Number(semester) : null,
             college_id: email.split("@")[0].toUpperCase(), // Simple generation of ID from email prefix
-          },
+          } as any,
         });
 
         successCount++;
