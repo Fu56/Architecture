@@ -134,7 +134,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
         email: user.email,
         role: user.role,
         status: user.status,
-        collegeId: u.college_id || "N/A", // Add fallback
+        universityId: u.university_id || u.college_id || "N/A",
         batch: u.batch,
         year: u.year,
         semester: u.semester,
@@ -272,6 +272,7 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
           year,
           semester,
           password,
+          university_id,
         } = student;
 
         // Check if user already exists
@@ -309,7 +310,8 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
             batch: batch ? Number(batch) : null,
             year: year ? Number(year) : null,
             semester: semester ? Number(semester) : null,
-            college_id: email.split("@")[0].toUpperCase(), // Simple generation of ID from email prefix
+            university_id: university_id || email.split("@")[0].toUpperCase(),
+            college_id: null,
           } as any,
         });
 

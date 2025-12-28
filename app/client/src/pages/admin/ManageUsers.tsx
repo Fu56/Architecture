@@ -54,8 +54,9 @@ const ManageUsers = () => {
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
               >
-                College ID
+                University ID
               </th>
+
               <th
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
@@ -102,7 +103,7 @@ const ManageUsers = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">
-                  {user.collegeId || "-"}
+                  {user.universityId || "-"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {user.batch || "-"}

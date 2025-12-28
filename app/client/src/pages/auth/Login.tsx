@@ -26,9 +26,10 @@ const Login = () => {
       } else {
         navigate("/dashboard");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
       setError(
-        err.response?.data?.message ||
+        error.response?.data?.message ||
           "Login failed. Please check your credentials."
       );
     } finally {

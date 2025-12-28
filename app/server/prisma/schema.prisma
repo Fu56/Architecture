@@ -19,6 +19,7 @@ model User {
     year       Int?
     semester   Int?
     status     String?
+    university_id String? @unique
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 

@@ -65,6 +65,10 @@ const Layout = () => {
   ];
 
   const isHomePage = location.pathname === "/";
+  const dashboardPath =
+    user?.role === "Admin" || user?.role === "SuperAdmin"
+      ? "/admin"
+      : "/dashboard";
 
   return (
     <div className="min-h-screen flex flex-col font-sans selection:bg-indigo-100 selection:text-indigo-900">
@@ -239,7 +243,7 @@ const Layout = () => {
 
                         <div className="py-2">
                           <Link
-                            to="/dashboard"
+                            to={dashboardPath}
                             onClick={() => setUserMenuOpen(false)}
                             className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
                           >
@@ -365,7 +369,7 @@ const Layout = () => {
                       Upload
                     </Link>
                     <Link
-                      to="/dashboard"
+                      to={dashboardPath}
                       onClick={() => setMobileMenuOpen(false)}
                       className="px-4 py-4 rounded-2xl text-2xl font-black tracking-tight text-gray-900 flex items-center gap-3"
                     >

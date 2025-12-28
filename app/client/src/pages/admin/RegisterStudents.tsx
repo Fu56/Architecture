@@ -13,6 +13,7 @@ interface StudentRow {
   first_name: string;
   last_name: string;
   email: string;
+  university_id?: string;
   batch?: number;
   year?: number;
   semester?: number;
@@ -25,6 +26,13 @@ interface ValidationResult {
   students: StudentRow[];
 }
 
+interface RegistrationResult {
+  email: string;
+  password?: string;
+  status: string;
+  error?: string;
+}
+
 const RegisterStudents = () => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<StudentRow[]>([]);
@@ -34,7 +42,7 @@ const RegisterStudents = () => {
   const [uploadResult, setUploadResult] = useState<{
     success: number;
     failed: number;
-    results?: any[];
+    results?: RegistrationResult[];
   } | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,10 +76,11 @@ const RegisterStudents = () => {
                 first_name: values[0] || "",
                 last_name: values[1] || "",
                 email: values[2] || "",
-                batch: values[3] ? parseInt(values[3]) : undefined,
-                year: values[4] ? parseInt(values[4]) : undefined,
-                semester: values[5] ? parseInt(values[5]) : undefined,
-                password: values[6] || undefined,
+                university_id: values[3] || undefined,
+                batch: values[4] ? parseInt(values[4]) : undefined,
+                year: values[5] ? parseInt(values[5]) : undefined,
+                semester: values[6] ? parseInt(values[6]) : undefined,
+                password: values[7] || undefined,
               });
             }
           }
@@ -155,8 +164,12 @@ const RegisterStudents = () => {
     const headers = "Email,Password,Status,Error\n";
     const csvContent = uploadResult.results
       .map(
-        (r: any) =>
-          `${r.email},${r.password || "N/A"},${r.status},${r.error || ""}`
+        (r: {
+          email: string;
+          password?: string;
+          status: string;
+          error?: string;
+        }) => `${r.email},${r.password || "N/A"},${r.status},${r.error || ""}`
       )
       .join("\n");
 
@@ -171,7 +184,7 @@ const RegisterStudents = () => {
 
   const downloadTemplate = () => {
     const template =
-      "first_name,last_name,email,batch,year,semester,password\nJohn,Doe,john.doe@example.com,2024,1,1,pass123\nJane,Smith,jane.smith@example.com,2024,1,1,securepass";
+      "first_name,last_name,email,university_id,batch,year,semester,password\nJohn,Doe,john.doe@example.com,U12345,2024,1,1,pass123\nJane,Smith,jane.smith@example.com,U67890,2024,1,1,securepass";
     const blob = new Blob([template], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -301,6 +314,9 @@ const RegisterStudents = () => {
                     Email
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    University ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Batch
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -325,6 +341,9 @@ const RegisterStudents = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {student.email}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {student.university_id || "-"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {student.batch || "-"}

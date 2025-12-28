@@ -12,6 +12,7 @@ export interface User {
   lastName: string;
   email: string;
   collegeId: string;
+  universityId?: string;
   role: Role;
   status: string;
   batch?: number;

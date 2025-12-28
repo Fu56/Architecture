@@ -41,7 +41,7 @@ const App = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="/upload" element={<Upload />} />
           <Route path="/dashboard" element={<UserDashboard />}>
-            <Route index element={<Navigate to="uploads" replace />} />
+            <Route index element={<Navigate to="profile" replace />} />
             <Route path="uploads" element={<MyUploads />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="profile" element={<Profile />} />
