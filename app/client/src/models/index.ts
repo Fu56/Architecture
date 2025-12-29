@@ -41,6 +41,7 @@ export interface Resource {
   isArchived: boolean;
   priority: boolean;
   uploadedAt: string;
+  adminComment?: string;
 }
 
 export interface Comment {

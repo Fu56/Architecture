@@ -1,10 +1,5 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/db";
-import {
-  sendNotificationEmail,
-  getApprovalHtml,
-  getRejectionHtml,
-} from "../utils/email";
 
 export const getPendingResources = async (req: Request, res: Response) => {
   try {
@@ -67,18 +62,12 @@ export const approveResource = async (req: Request, res: Response) => {
       data: {
         status: "student",
         approved_at: new Date(),
-      },
-      include: {
-        uploader: true,
-      },
+        admin_comment: comment,
+      } as any,
     });
 
     // Notify uploader
-    if (resource.uploader_id && resource.uploader) {
-      const uploader = resource.uploader;
-      const uploaderName = `${uploader.first_name} ${uploader.last_name}`;
-
-      // Internal notification
+    if (resource.uploader_id) {
       await prisma.notification.create({
         data: {
           user_id: resource.uploader_id,
@@ -89,18 +78,6 @@ export const approveResource = async (req: Request, res: Response) => {
           resource_id: resource.id,
         },
       });
-
-      // Email notification
-      if (uploader.email) {
-        await sendNotificationEmail(
-          uploader.email,
-          "Resource Approved - Digital Library",
-          `Your resource "${resource.title}" has been approved.${
-            comment ? "\nComment: " + comment : ""
-          }`,
-          getApprovalHtml(uploaderName, resource.title, comment)
-        );
-      }
     }
 
     res.json({ message: "Resource approved", resource });
@@ -119,17 +96,11 @@ export const rejectResource = async (req: Request, res: Response) => {
       data: {
         status: "rejected",
         rejected_at: new Date(),
-      },
-      include: {
-        uploader: true,
-      },
+        admin_comment: reason,
+      } as any,
     });
 
-    if (resource.uploader_id && resource.uploader) {
-      const uploader = resource.uploader;
-      const uploaderName = `${uploader.first_name} ${uploader.last_name}`;
-
-      // Internal notification
+    if (resource.uploader_id) {
       await prisma.notification.create({
         data: {
           user_id: resource.uploader_id,
@@ -140,18 +111,6 @@ export const rejectResource = async (req: Request, res: Response) => {
           resource_id: resource.id,
         },
       });
-
-      // Email notification
-      if (uploader.email) {
-        await sendNotificationEmail(
-          uploader.email,
-          "Resource Rejected - Digital Library",
-          `Your resource "${resource.title}" was rejected. ${
-            reason ? "\nReason: " + reason : ""
-          }`,
-          getRejectionHtml(uploaderName, resource.title, reason)
-        );
-      }
     }
 
     res.json({ message: "Resource rejected", resource });
@@ -177,7 +136,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
         email: user.email,
         role: user.role,
         status: user.status,
-        universityId: u.university_id || "N/A",
+        universityId: u.university_id || u.college_id || "N/A",
         batch: u.batch,
         year: u.year,
         semester: u.semester,
@@ -218,23 +177,11 @@ export const getStats = async (req: Request, res: Response) => {
       _sum: { download_count: true },
     });
 
-    // Get uploads in last 30 days
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const newResourcesLast30Days = await prisma.resource.count({
-      where: {
-        uploaded_at: {
-          gte: thirtyDaysAgo,
-        },
-      },
-    });
-
     res.json({
       totalUsers,
       totalResources,
       pendingResources,
       totalDownloads: downloads._sum.download_count || 0,
-      newResourcesLast30Days,
     });
   } catch (error) {
     res.status(500).json({ message: "Error fetching stats" });
@@ -370,6 +317,7 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
               `${email.split("@")[0].toUpperCase()}${Math.floor(
                 1000 + Math.random() * 9000
               )}`,
+            college_id: null,
           } as any,
         });
 

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Download, Star, User, Calendar, Eye } from "lucide-react";
+import { Download, Star, User, Calendar } from "lucide-react";
 import type { Resource } from "../../models";
 
 interface ResourceCardProps {
@@ -18,7 +18,6 @@ const fileTypeStyles: { [key: string]: string } = {
 };
 
 const ResourceCard = ({ resource }: ResourceCardProps) => {
-  const token = localStorage.getItem("token");
   const {
     id,
     title,
@@ -30,13 +29,6 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
     uploader,
     uploadedAt,
   } = resource;
-
-  const downloadUrl = `${
-    import.meta.env.VITE_API_URL
-  }/resources/${id}/download?token=${token}`;
-  const viewUrl = `${
-    import.meta.env.VITE_API_URL
-  }/resources/${id}/view?token=${token}`;
 
   const typeStyle =
     (fileType && fileTypeStyles[fileType.toLowerCase()]) ||
@@ -85,43 +77,21 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
         </div>
       </div>
       <div className="border-t border-gray-100 bg-gray-50/50 px-6 py-4">
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between text-sm text-gray-600">
-            <div className="flex items-center gap-1.5">
-              <Download className="h-4 w-4 text-gray-400" />
-              <span>{downloadCount}</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Calendar className="h-4 w-4 text-gray-400" />
-              <span>{new Date(uploadedAt).toLocaleDateString()}</span>
-            </div>
-            <Link
-              to={`/resources/${id}`}
-              className="font-semibold text-indigo-600 hover:text-indigo-500"
-            >
-              Details
-            </Link>
+        <div className="flex items-center justify-between text-sm text-gray-600">
+          <div className="flex items-center gap-1.5">
+            <Download className="h-4 w-4 text-gray-400" />
+            <span>{downloadCount}</span>
           </div>
-
-          <div className="flex gap-2">
-            <a
-              href={viewUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="flex-1 flex items-center justify-center gap-1 py-2 text-xs font-bold bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <Eye className="h-3.5 w-3.5" />
-              Preview
-            </a>
-            <a
-              href={downloadUrl}
-              download
-              className="flex-1 flex items-center justify-center gap-1 py-2 text-xs font-bold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
-            >
-              <Download className="h-3.5 w-3.5" />
-              Download
-            </a>
+          <div className="flex items-center gap-1.5">
+            <Calendar className="h-4 w-4 text-gray-400" />
+            <span>{new Date(uploadedAt).toLocaleDateString()}</span>
           </div>
+          <Link
+            to={`/resources/${id}`}
+            className="font-semibold text-indigo-600 hover:text-indigo-500"
+          >
+            Details
+          </Link>
         </div>
       </div>
     </div>

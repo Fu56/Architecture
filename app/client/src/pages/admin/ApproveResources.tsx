@@ -3,7 +3,6 @@ import { api } from "../../lib/api";
 import type { Resource } from "../../models";
 
 const ApproveResources = () => {
-  const token = localStorage.getItem("token");
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -54,7 +53,6 @@ const ApproveResources = () => {
             resource={resource}
             onApprove={handleApprove}
             onReject={handleReject}
-            token={token}
           />
         ))}
         {resources.length === 0 && !loading && (
@@ -71,12 +69,10 @@ const ResourceApprovalCard = ({
   resource,
   onApprove,
   onReject,
-  token,
 }: {
   resource: Resource;
   onApprove: (id: number, comment?: string) => void;
   onReject: (id: number, reason?: string) => void;
-  token: string | null;
 }) => {
   const [comment, setComment] = useState("");
 
@@ -118,16 +114,6 @@ const ResourceApprovalCard = ({
           rows={2}
         />
         <div className="flex justify-end gap-3 mt-3">
-          <a
-            href={`${import.meta.env.VITE_API_URL}/resources/${
-              resource.id
-            }/view?token=${token ? encodeURIComponent(token) : ""}`}
-            target="_blank"
-            rel="noreferrer"
-            className="px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-50 rounded-md hover:bg-indigo-100 border border-transparent flex items-center gap-1"
-          >
-            Review Resource
-          </a>
           <button
             onClick={() => onReject(resource.id, comment)}
             className="px-4 py-2 text-sm font-medium text-red-700 bg-red-50 rounded-md hover:bg-red-100 border border-transparent"

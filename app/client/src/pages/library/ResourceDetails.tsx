@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../lib/api";
 import type { Resource, Comment } from "../../models";
-import { Loader2, ServerCrash, Download, User, Flag, Eye } from "lucide-react";
+import { Loader2, ServerCrash, Download, User, Flag } from "lucide-react";
 
 const ResourceDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -51,8 +51,6 @@ const ResourceDetails = () => {
 
   if (!resource) return null;
 
-  const token = localStorage.getItem("token");
-
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="grid lg:grid-cols-3 gap-8">
@@ -63,17 +61,29 @@ const ResourceDetails = () => {
               <span className="text-sm font-bold uppercase px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full">
                 {resource.fileType}
               </span>
-              {resource.status !== "student" &&
-                resource.status !== "approved" && (
-                  <span
-                    className={`text-sm font-bold uppercase px-3 py-1 rounded-full ${
-                      resource.status === "pending"
-                        ? "bg-amber-100 text-amber-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {resource.status}
-                  </span>
+              {resource.status !== "approved" &&
+                resource.status !== "student" && (
+                  <div className="flex flex-col gap-2">
+                    <span
+                      className={`text-sm font-bold uppercase px-3 py-1 rounded-full w-fit ${
+                        resource.status === "pending"
+                          ? "bg-amber-100 text-amber-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {resource.status}
+                    </span>
+                    {resource.adminComment && (
+                      <div className="bg-gray-50 border border-gray-200 p-4 rounded-lg mt-2">
+                        <p className="text-sm font-semibold text-gray-700 mb-1">
+                          Admin Feedback:
+                        </p>
+                        <p className="text-sm text-gray-600 italic">
+                          "{resource.adminComment}"
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 )}
             </div>
             <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mt-4">
@@ -133,21 +143,10 @@ const ResourceDetails = () => {
             <a
               href={`${import.meta.env.VITE_API_URL}/resources/${
                 resource.id
-              }/view?token=${token}`}
+              }/download`}
               target="_blank"
               rel="noreferrer"
-              className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-indigo-600 text-base font-medium rounded-lg text-indigo-600 bg-white hover:bg-indigo-50 mb-3 transition-colors"
-            >
-              <Eye className="h-5 w-5" />
-              Review / Preview
-            </a>
-            <a
-              href={`${import.meta.env.VITE_API_URL}/resources/${
-                resource.id
-              }/download?token=${token}`}
-              target="_blank"
-              rel="noreferrer"
-              className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm"
+              className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700"
             >
               <Download className="h-5 w-5" />
               Download File

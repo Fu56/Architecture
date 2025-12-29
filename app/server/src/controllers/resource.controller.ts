@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import path from "path";
 import { prisma } from "../config/db";
 
 // Helper to get user ID from request (assumes middleware populated req.user)
@@ -84,7 +83,7 @@ export const createResource = async (req: Request, res: Response) => {
 
 export const listResources = async (req: Request, res: Response) => {
   try {
-    const { search, stage, year, type, status, sortBy, limit } = req.query;
+    const { search, stage, year, type, status } = req.query;
 
     // Build filter
     const where: any = {};
@@ -111,22 +110,13 @@ export const listResources = async (req: Request, res: Response) => {
       ];
     }
 
-    // Handle sorting
-    let orderBy: any = [{ priority_tag: "desc" }, { uploaded_at: "desc" }];
-    if (sortBy === "downloads") {
-      orderBy = [{ download_count: "desc" }];
-    } else if (sortBy === "date") {
-      orderBy = [{ uploaded_at: "desc" }];
-    }
-
     const resources = await prisma.resource.findMany({
       where,
       include: {
         uploader: { select: { first_name: true, last_name: true, role: true } },
         design_stage: true,
       },
-      orderBy,
-      take: limit ? Number(limit) : undefined,
+      orderBy: [{ priority_tag: "desc" }, { uploaded_at: "desc" }],
     });
 
     const formattedResources = resources.map((r) => ({
@@ -149,6 +139,7 @@ export const listResources = async (req: Request, res: Response) => {
           }
         : null,
       designStage: r.design_stage,
+      adminComment: (r as any).admin_comment,
     }));
 
     res.json(formattedResources);
@@ -198,6 +189,7 @@ export const getResource = async (req: Request, res: Response) => {
           }
         : null,
       designStage: r.design_stage,
+      adminComment: (r as any).admin_comment,
       comments: r.comments.map((c) => ({
         id: c.id,
         text: c.text,
@@ -237,24 +229,6 @@ export const downloadResource = async (req: Request, res: Response) => {
     res.download(resource.file_path, resource.title); // Ensure title is safe or use fallback
   } catch (error) {
     console.error("Download Error:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-export const viewResource = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const resource = await prisma.resource.findUnique({
-      where: { id: Number(id) },
-    });
-
-    if (!resource)
-      return res.status(404).json({ message: "Resource not found" });
-
-    // Send file for viewing in browser (no download header)
-    res.sendFile(path.resolve(resource.file_path));
-  } catch (error) {
-    console.error("View Error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
