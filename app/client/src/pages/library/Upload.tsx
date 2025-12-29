@@ -18,6 +18,15 @@ const Upload = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [isReady] = useState(() => {
+    return !!localStorage.getItem("token") && !!localStorage.getItem("user");
+  });
+
+  useEffect(() => {
+    if (!isReady) {
+      navigate("/login", { replace: true, state: { from: "/upload" } });
+    }
+  }, [isReady, navigate]);
 
   useEffect(() => {
     const fetchStages = async () => {
@@ -30,6 +39,8 @@ const Upload = () => {
     };
     fetchStages();
   }, []);
+
+  if (!isReady) return null;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
