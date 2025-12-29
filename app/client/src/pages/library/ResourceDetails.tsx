@@ -57,9 +57,22 @@ const ResourceDetails = () => {
         {/* Main Content */}
         <div className="lg:col-span-2 bg-white p-8 rounded-xl shadow-sm border">
           <div className="mb-6">
-            <span className="text-sm font-bold uppercase px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full">
-              {resource.fileType}
-            </span>
+            <div className="flex flex-wrap gap-2">
+              <span className="text-sm font-bold uppercase px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full">
+                {resource.fileType}
+              </span>
+              {resource.status !== "approved" && (
+                <span
+                  className={`text-sm font-bold uppercase px-3 py-1 rounded-full ${
+                    resource.status === "pending"
+                      ? "bg-amber-100 text-amber-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {resource.status}
+                </span>
+              )}
+            </div>
             <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mt-4">
               {resource.title}
             </h1>

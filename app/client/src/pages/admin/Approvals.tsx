@@ -6,13 +6,14 @@ import { Link } from "react-router-dom";
 
 const Approvals = () => {
   const [resources, setResources] = useState<Resource[]>([]);
+  const [comments, setComments] = useState<{ [key: number]: string }>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPendingResources = async () => {
       setLoading(true);
       try {
-        const { data } = await api.get("/admin/resources?status=pending");
+        const { data } = await api.get("/admin/resources/pending");
         if (Array.isArray(data)) {
           setResources(data);
         }
@@ -29,14 +30,27 @@ const Approvals = () => {
     resourceId: number,
     status: "approved" | "rejected"
   ) => {
+    const feedback = comments[resourceId] || "";
     // Optimistic update
     setResources(resources.filter((r) => r.id !== resourceId));
     try {
-      await api.patch(`/admin/resources/${resourceId}/status`, { status });
+      if (status === "approved") {
+        await api.patch(`/admin/resources/${resourceId}/approve`, {
+          comment: feedback,
+        });
+      } else {
+        await api.patch(`/admin/resources/${resourceId}/reject`, {
+          reason: feedback,
+        });
+      }
     } catch (err) {
-      // TODO: Add error handling and potentially revert state
       console.error(`Failed to set status to ${status}:`, err);
+      // Optional: fetch resources again to revert state if failed
     }
+  };
+
+  const handleCommentChange = (resourceId: number, value: string) => {
+    setComments((prev) => ({ ...prev, [resourceId]: value }));
   };
 
   if (loading) {
@@ -50,47 +64,68 @@ const Approvals = () => {
   return (
     <div>
       {resources.length > 0 ? (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {resources.map((resource) => (
             <div
               key={resource.id}
-              className="bg-gray-50 p-4 rounded-lg border flex flex-col sm:flex-row sm:items-center sm:justify-between"
+              className="bg-white p-6 rounded-2xl border shadow-sm flex flex-col gap-4"
             >
-              <div className="mb-4 sm:mb-0">
-                <Link
-                  to={`/resources/${resource.id}`}
-                  className="font-bold text-lg text-gray-900 hover:text-indigo-600"
-                >
-                  {resource.title}
-                </Link>
-                <p className="text-sm text-gray-600">
-                  Uploaded by {resource.uploader.firstName} on{" "}
-                  {new Date(resource.uploadedAt).toLocaleDateString()}
-                </p>
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                <div className="space-y-1">
+                  <Link
+                    to={`/resources/${resource.id}`}
+                    className="font-black text-xl text-gray-900 hover:text-indigo-600 transition-colors"
+                  >
+                    {resource.title}
+                  </Link>
+                  <p className="text-sm text-gray-500 font-medium">
+                    Uploaded by{" "}
+                    <span className="text-indigo-600 font-bold">
+                      {resource.uploader.firstName} {resource.uploader.lastName}
+                    </span>{" "}
+                    • {new Date(resource.uploadedAt).toLocaleDateString()}
+                  </p>
+                </div>
+
+                <div className="flex gap-2">
+                  <a
+                    href={`${import.meta.env.VITE_API_URL}/resources/${
+                      resource.id
+                    }/download`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 shadow-sm text-sm font-bold rounded-xl text-gray-700 bg-white hover:bg-gray-50 transition-all hover:scale-105"
+                  >
+                    <Download className="h-4 w-4" /> Review File
+                  </a>
+                </div>
               </div>
-              <div className="flex-shrink-0 flex gap-2">
+
+              {/* Comment Input */}
+              <div className="relative">
+                <textarea
+                  placeholder="Reviewer comment or rejection reason... (optional)"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none resize-none"
+                  rows={2}
+                  value={comments[resource.id] || ""}
+                  onChange={(e) =>
+                    handleCommentChange(resource.id, e.target.value)
+                  }
+                />
+              </div>
+
+              <div className="flex gap-3 justify-end pt-2 border-t border-gray-50">
                 <button
-                  onClick={() => {
-                    const downloadUrl = `${
-                      import.meta.env.VITE_API_URL
-                    }/resources/${resource.id}/download`;
-                    window.location.href = downloadUrl;
-                  }}
-                  className="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                  onClick={() => handleDecision(resource.id, "rejected")}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 border border-transparent shadow-md text-sm font-black rounded-xl text-white bg-red-500 hover:bg-red-600 transition-all hover:scale-105 active:scale-95"
                 >
-                  <Download className="h-4 w-4" /> Review
+                  <X className="h-4 w-4" /> Reject
                 </button>
                 <button
                   onClick={() => handleDecision(resource.id, "approved")}
-                  className="inline-flex items-center gap-2 px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 border border-transparent shadow-md text-sm font-black rounded-xl text-white bg-green-500 hover:bg-green-600 transition-all hover:scale-105 active:scale-95"
                 >
                   <Check className="h-4 w-4" /> Approve
-                </button>
-                <button
-                  onClick={() => handleDecision(resource.id, "rejected")}
-                  className="inline-flex items-center gap-2 px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
-                >
-                  <X className="h-4 w-4" /> Reject
                 </button>
               </div>
             </div>
