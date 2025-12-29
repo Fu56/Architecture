@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { api } from "../../lib/api";
 import type { Resource } from "../../models";
-import { Loader2, Check, X, Download, CheckSquare } from "lucide-react";
+import { Loader2, Check, X, Eye, CheckSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Approvals = () => {
@@ -91,12 +91,14 @@ const Approvals = () => {
                   <a
                     href={`${import.meta.env.VITE_API_URL}/resources/${
                       resource.id
-                    }/download`}
+                    }/view?token=${encodeURIComponent(
+                      localStorage.getItem("token") || ""
+                    )}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 shadow-sm text-sm font-bold rounded-xl text-gray-700 bg-white hover:bg-gray-50 transition-all hover:scale-105"
+                    className="inline-flex items-center gap-2 px-4 py-2 border border-blue-200 shadow-sm text-sm font-bold rounded-xl text-blue-700 bg-blue-50 hover:bg-blue-100 transition-all hover:scale-105"
                   >
-                    <Download className="h-4 w-4" /> Review File
+                    <Eye className="h-4 w-4" /> Review File
                   </a>
                 </div>
               </div>

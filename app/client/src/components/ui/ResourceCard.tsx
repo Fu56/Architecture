@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Download, Star, User, Calendar } from "lucide-react";
+import { Download, Star, User, Calendar, Eye } from "lucide-react";
 import type { Resource } from "../../models";
 
 interface ResourceCardProps {
@@ -75,23 +75,71 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
               </span>
             ))}
         </div>
+        {resource.status && resource.status !== "student" && (
+          <div className="mt-2 pt-2 border-t border-gray-100">
+            <span
+              className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-md ${
+                resource.status === "rejected"
+                  ? "bg-red-50 text-red-600 border border-red-100"
+                  : "bg-amber-50 text-amber-600 border border-amber-100"
+              }`}
+            >
+              Status: {resource.status}
+            </span>
+            {resource.adminComment && (
+              <p className="text-xs text-gray-500 mt-1 italic line-clamp-2">
+                "{resource.adminComment}"
+              </p>
+            )}
+          </div>
+        )}
       </div>
       <div className="border-t border-gray-100 bg-gray-50/50 px-6 py-4">
-        <div className="flex items-center justify-between text-sm text-gray-600">
-          <div className="flex items-center gap-1.5">
-            <Download className="h-4 w-4 text-gray-400" />
-            <span>{downloadCount}</span>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between text-sm text-gray-600">
+            <div className="flex items-center gap-1.5">
+              <Download className="h-4 w-4 text-gray-400" />
+              <span>{downloadCount}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Calendar className="h-4 w-4 text-gray-400" />
+              <span>{new Date(uploadedAt).toLocaleDateString()}</span>
+            </div>
+            <Link
+              to={`/resources/${id}`}
+              className="font-semibold text-indigo-600 hover:text-indigo-500"
+            >
+              Details
+            </Link>
           </div>
-          <div className="flex items-center gap-1.5">
-            <Calendar className="h-4 w-4 text-gray-400" />
-            <span>{new Date(uploadedAt).toLocaleDateString()}</span>
+
+          <div className="flex gap-2">
+            <a
+              href={`${
+                import.meta.env.VITE_API_URL
+              }/resources/${id}/view?token=${encodeURIComponent(
+                localStorage.getItem("token") || ""
+              )}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex-1 flex items-center justify-center gap-1 py-2 text-xs font-bold bg-white text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <Eye className="h-3.5 w-3.5" />
+              Preview
+            </a>
+            <a
+              href={`${
+                import.meta.env.VITE_API_URL
+              }/resources/${id}/download?token=${encodeURIComponent(
+                localStorage.getItem("token") || ""
+              )}`}
+              download
+              className="flex-1 flex items-center justify-center gap-1 py-2 text-xs font-bold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
+            >
+              <Download className="h-3.5 w-3.5" />
+              Download
+            </a>
           </div>
-          <Link
-            to={`/resources/${id}`}
-            className="font-semibold text-indigo-600 hover:text-indigo-500"
-          >
-            Details
-          </Link>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import path from "path";
 import { prisma } from "../config/db";
 
 // Helper to get user ID from request (assumes middleware populated req.user)
@@ -229,6 +230,24 @@ export const downloadResource = async (req: Request, res: Response) => {
     res.download(resource.file_path, resource.title); // Ensure title is safe or use fallback
   } catch (error) {
     console.error("Download Error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const viewResource = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const resource = await prisma.resource.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!resource)
+      return res.status(404).json({ message: "Resource not found" });
+
+    // Send file for viewing in browser (no download header)
+    res.sendFile(path.resolve(resource.file_path));
+  } catch (error) {
+    console.error("View Error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
