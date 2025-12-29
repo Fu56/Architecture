@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Download, Star, User, Calendar } from "lucide-react";
+import { Download, Star, User, Calendar, Eye } from "lucide-react";
 import type { Resource } from "../../models";
 
 interface ResourceCardProps {
@@ -86,12 +86,23 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             <Calendar className="h-4 w-4 text-gray-400" />
             <span>{new Date(uploadedAt).toLocaleDateString()}</span>
           </div>
-          <Link
-            to={`/resources/${id}`}
-            className="font-semibold text-indigo-600 hover:text-indigo-500"
-          >
-            Details
-          </Link>
+          <div className="flex items-center gap-3">
+            <a
+              href={`${import.meta.env.VITE_API_URL}/resources/${id}/view`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1 font-semibold text-gray-600 hover:text-indigo-600 transition-colors"
+            >
+              <Eye className="h-4 w-4" />
+              Preview
+            </a>
+            <Link
+              to={`/resources/${id}`}
+              className="font-semibold text-indigo-600 hover:text-indigo-500"
+            >
+              Details
+            </Link>
+          </div>
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../lib/api";
 import type { Resource, Comment } from "../../models";
-import { Loader2, ServerCrash, Download, User, Flag } from "lucide-react";
+import { Loader2, ServerCrash, Download, User, Flag, Eye } from "lucide-react";
 
 const ResourceDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -61,8 +61,8 @@ const ResourceDetails = () => {
               <span className="text-sm font-bold uppercase px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full">
                 {resource.fileType}
               </span>
-              {resource.status !== "approved" &&
-                resource.status !== "student" && (
+              {resource.status !== "student" &&
+                resource.status !== "approved" && (
                   <span
                     className={`text-sm font-bold uppercase px-3 py-1 rounded-full ${
                       resource.status === "pending"
@@ -131,10 +131,21 @@ const ResourceDetails = () => {
             <a
               href={`${import.meta.env.VITE_API_URL}/resources/${
                 resource.id
+              }/view`}
+              target="_blank"
+              rel="noreferrer"
+              className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-indigo-600 text-base font-medium rounded-lg text-indigo-600 bg-white hover:bg-indigo-50 mb-3 transition-colors"
+            >
+              <Eye className="h-5 w-5" />
+              Review / Preview
+            </a>
+            <a
+              href={`${import.meta.env.VITE_API_URL}/resources/${
+                resource.id
               }/download`}
               target="_blank"
               rel="noreferrer"
-              className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700"
+              className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm"
             >
               <Download className="h-5 w-5" />
               Download File

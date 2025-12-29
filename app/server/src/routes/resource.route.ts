@@ -7,6 +7,7 @@ import {
   listResources,
   getResource,
   downloadResource,
+  viewResource,
   flagResource,
   addComment,
   rateResource,
@@ -17,6 +18,7 @@ const router = Router();
 router.get("/", listResources);
 router.get("/:id", getResource);
 router.get("/:id/download", requireAuth, downloadResource);
+router.get("/:id/view", viewResource);
 
 router.post("/", requireAuth, upload.single("file"), createResource);
 router.post("/:id/flag", requireAuth, flagResource);
