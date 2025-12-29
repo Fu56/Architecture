@@ -28,6 +28,7 @@ async function main() {
     "Integrated Design II",
     "Integrated Design III",
     "Thesis Project",
+    "Others",
   ];
   for (const stageName of stages) {
     // Note: Design_stage doesn't have a unique constraint on name in the provided schema
@@ -98,6 +99,82 @@ async function main() {
       status: "active",
     },
   });
+
+  // Create sample resources
+  console.log("Seeding sample resources...");
+  const stage1 = await prisma.design_stage.findFirst({
+    where: { name: "Architectural Design I" },
+  });
+  const facultyUser = await prisma.user.findUnique({
+    where: { email: "faculty@archit.edu" },
+  });
+
+  const sampleResources = [
+    {
+      title: "Modern Housing Project",
+      author: "Ar. Smith",
+      keywords: ["housing", "modern", "residential"],
+      forYearStudents: 1,
+      file_path: "storage/sample1.pdf",
+      file_type: "application/pdf",
+      file_size: 1024 * 1024 * 2,
+      uploader_id: facultyUser?.id,
+      design_stage_id: stage1?.id,
+      status: "student",
+      download_count: 15,
+      priority_tag: "Faculty Upload",
+    },
+    {
+      title: "Sustainable Urban Design",
+      author: "Ar. Jane Doe",
+      keywords: ["urban", "sustainable", "green"],
+      forYearStudents: 2,
+      file_path: "storage/sample2.pdf",
+      file_type: "application/pdf",
+      file_size: 1024 * 1024 * 5,
+      uploader_id: facultyUser?.id,
+      design_stage_id: stage1?.id,
+      status: "student",
+      download_count: 50,
+    },
+    {
+      title: "Cultural Center Concept",
+      author: "Student A",
+      keywords: ["culture", "concept", "sketch"],
+      forYearStudents: 3,
+      file_path: "storage/sample3.pdf",
+      file_type: "application/pdf",
+      file_size: 1024 * 1024 * 1,
+      uploader_id: facultyUser?.id,
+      design_stage_id: stage1?.id,
+      status: "student",
+      download_count: 10,
+    },
+    {
+      title: "Hospital Design Standards",
+      author: "Ar. Health",
+      keywords: ["hospital", "medical", "planning"],
+      forYearStudents: 4,
+      file_path: "storage/sample4.pdf",
+      file_type: "application/pdf",
+      file_size: 1024 * 1024 * 8,
+      uploader_id: facultyUser?.id,
+      design_stage_id: stage1?.id,
+      status: "student",
+      download_count: 100,
+      priority_tag: "Featured",
+    },
+  ];
+
+  for (const r of sampleResources) {
+    // Basic check to avoid duplicates on title
+    const exists = await prisma.resource.findFirst({
+      where: { title: r.title },
+    });
+    if (!exists) {
+      await prisma.resource.create({ data: r });
+    }
+  }
 
   console.log("Seed completed successfully.");
   console.log("\n🔐 Sample Login Credentials:");

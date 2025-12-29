@@ -83,7 +83,7 @@ export const createResource = async (req: Request, res: Response) => {
 
 export const listResources = async (req: Request, res: Response) => {
   try {
-    const { search, stage, year, type, status } = req.query;
+    const { search, stage, year, type, status, sortBy, limit } = req.query;
 
     // Build filter
     const where: any = {};
@@ -110,13 +110,22 @@ export const listResources = async (req: Request, res: Response) => {
       ];
     }
 
+    // Handle sorting
+    let orderBy: any = [{ priority_tag: "desc" }, { uploaded_at: "desc" }];
+    if (sortBy === "downloads") {
+      orderBy = [{ download_count: "desc" }];
+    } else if (sortBy === "date") {
+      orderBy = [{ uploaded_at: "desc" }];
+    }
+
     const resources = await prisma.resource.findMany({
       where,
       include: {
         uploader: { select: { first_name: true, last_name: true, role: true } },
         design_stage: true,
       },
-      orderBy: [{ priority_tag: "desc" }, { uploaded_at: "desc" }],
+      orderBy,
+      take: limit ? Number(limit) : undefined,
     });
 
     const formattedResources = resources.map((r) => ({

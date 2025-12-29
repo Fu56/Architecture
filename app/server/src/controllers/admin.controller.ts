@@ -134,7 +134,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
         email: user.email,
         role: user.role,
         status: user.status,
-        universityId: u.university_id || u.college_id || "N/A",
+        universityId: u.university_id || "N/A",
         batch: u.batch,
         year: u.year,
         semester: u.semester,
@@ -315,7 +315,6 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
               `${email.split("@")[0].toUpperCase()}${Math.floor(
                 1000 + Math.random() * 9000
               )}`,
-            college_id: null,
           } as any,
         });
 
