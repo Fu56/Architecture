@@ -121,7 +121,7 @@ const ResourceApprovalCard = ({
           <a
             href={`${import.meta.env.VITE_API_URL}/resources/${
               resource.id
-            }/view?token=${token}`}
+            }/view?token=${token ? encodeURIComponent(token) : ""}`}
             target="_blank"
             rel="noreferrer"
             className="px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-50 rounded-md hover:bg-indigo-100 border border-transparent flex items-center gap-1"

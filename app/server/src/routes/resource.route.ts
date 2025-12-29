@@ -16,9 +16,9 @@ import {
 const router = Router();
 
 router.get("/", listResources);
-router.get("/:id", getResource);
 router.get("/:id/download", requireAuth, downloadResource);
 router.get("/:id/view", requireAuth, viewResource);
+router.get("/:id", getResource);
 
 router.post("/", requireAuth, upload.single("file"), createResource);
 router.post("/:id/flag", requireAuth, flagResource);
