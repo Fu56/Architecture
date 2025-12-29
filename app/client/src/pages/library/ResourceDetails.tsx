@@ -51,6 +51,8 @@ const ResourceDetails = () => {
 
   if (!resource) return null;
 
+  const token = localStorage.getItem("token");
+
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="grid lg:grid-cols-3 gap-8">
@@ -142,7 +144,7 @@ const ResourceDetails = () => {
             <a
               href={`${import.meta.env.VITE_API_URL}/resources/${
                 resource.id
-              }/download`}
+              }/download?token=${token}`}
               target="_blank"
               rel="noreferrer"
               className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm"

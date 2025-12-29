@@ -14,9 +14,16 @@ export const requireAuth = (
   next: NextFunction
 ) => {
   const header = req.headers.authorization;
-  if (!header?.startsWith("Bearer "))
-    return res.status(401).json({ message: "Unauthorized" });
-  const token = header.split(" ")[1];
+  let token = "";
+
+  if (header?.startsWith("Bearer ")) {
+    token = header.split(" ")[1];
+  } else if (req.query.token) {
+    token = String(req.query.token);
+  }
+
+  if (!token) return res.status(401).json({ message: "Unauthorized" });
+
   try {
     const payload = jwt.verify(token, env.jwtSecret) as any;
     (req as any).user = {
