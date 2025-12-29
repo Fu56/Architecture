@@ -1,5 +1,10 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/db";
+import {
+  sendNotificationEmail,
+  getApprovalHtml,
+  getRejectionHtml,
+} from "../utils/email";
 
 export const getPendingResources = async (req: Request, res: Response) => {
   try {
@@ -63,10 +68,17 @@ export const approveResource = async (req: Request, res: Response) => {
         status: "student",
         approved_at: new Date(),
       },
+      include: {
+        uploader: true,
+      },
     });
 
     // Notify uploader
-    if (resource.uploader_id) {
+    if (resource.uploader_id && resource.uploader) {
+      const uploader = resource.uploader;
+      const uploaderName = `${uploader.first_name} ${uploader.last_name}`;
+
+      // Internal notification
       await prisma.notification.create({
         data: {
           user_id: resource.uploader_id,
@@ -77,6 +89,18 @@ export const approveResource = async (req: Request, res: Response) => {
           resource_id: resource.id,
         },
       });
+
+      // Email notification
+      if (uploader.email) {
+        await sendNotificationEmail(
+          uploader.email,
+          "Resource Approved - Digital Library",
+          `Your resource "${resource.title}" has been approved.${
+            comment ? "\nComment: " + comment : ""
+          }`,
+          getApprovalHtml(uploaderName, resource.title, comment)
+        );
+      }
     }
 
     res.json({ message: "Resource approved", resource });
@@ -96,9 +120,16 @@ export const rejectResource = async (req: Request, res: Response) => {
         status: "rejected",
         rejected_at: new Date(),
       },
+      include: {
+        uploader: true,
+      },
     });
 
-    if (resource.uploader_id) {
+    if (resource.uploader_id && resource.uploader) {
+      const uploader = resource.uploader;
+      const uploaderName = `${uploader.first_name} ${uploader.last_name}`;
+
+      // Internal notification
       await prisma.notification.create({
         data: {
           user_id: resource.uploader_id,
@@ -109,6 +140,18 @@ export const rejectResource = async (req: Request, res: Response) => {
           resource_id: resource.id,
         },
       });
+
+      // Email notification
+      if (uploader.email) {
+        await sendNotificationEmail(
+          uploader.email,
+          "Resource Rejected - Digital Library",
+          `Your resource "${resource.title}" was rejected. ${
+            reason ? "\nReason: " + reason : ""
+          }`,
+          getRejectionHtml(uploaderName, resource.title, reason)
+        );
+      }
     }
 
     res.json({ message: "Resource rejected", resource });
