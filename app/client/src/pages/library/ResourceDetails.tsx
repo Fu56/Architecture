@@ -133,7 +133,7 @@ const ResourceDetails = () => {
             <a
               href={`${import.meta.env.VITE_API_URL}/resources/${
                 resource.id
-              }/view`}
+              }/view?token=${token}`}
               target="_blank"
               rel="noreferrer"
               className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-indigo-600 text-base font-medium rounded-lg text-indigo-600 bg-white hover:bg-indigo-50 mb-3 transition-colors"

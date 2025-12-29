@@ -18,7 +18,7 @@ const router = Router();
 router.get("/", listResources);
 router.get("/:id", getResource);
 router.get("/:id/download", requireAuth, downloadResource);
-router.get("/:id/view", viewResource);
+router.get("/:id/view", requireAuth, viewResource);
 
 router.post("/", requireAuth, upload.single("file"), createResource);
 router.post("/:id/flag", requireAuth, flagResource);

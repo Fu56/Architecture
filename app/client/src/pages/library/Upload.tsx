@@ -122,7 +122,8 @@ const Upload = () => {
                     </p>
                   ) : (
                     <p className="text-xs text-gray-500">
-                      PDF, DOCX, JPG, PNG, MP4, RFA, SKP up to 50MB
+                      PDF, DOCX, PPTX, DWG, RVT, SKP, ZIP, JPG, PNG, MP4, TXT up
+                      to 5GB
                     </p>
                   )}
                 </div>

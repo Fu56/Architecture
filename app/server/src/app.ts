@@ -39,3 +39,18 @@ app.use("/api/user", userRoutes);
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
 });
+
+// Global Error Handler
+app.use(
+  (
+    err: any,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    console.error("Global Error:", err);
+    res.status(err.status || 500).json({
+      message: err.message || "Internal server error",
+    });
+  }
+);

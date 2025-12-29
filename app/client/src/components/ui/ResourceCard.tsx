@@ -34,7 +34,9 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
   const downloadUrl = `${
     import.meta.env.VITE_API_URL
   }/resources/${id}/download?token=${token}`;
-  const viewUrl = `${import.meta.env.VITE_API_URL}/resources/${id}/view`;
+  const viewUrl = `${
+    import.meta.env.VITE_API_URL
+  }/resources/${id}/view?token=${token}`;
 
   const typeStyle =
     (fileType && fileTypeStyles[fileType.toLowerCase()]) ||
