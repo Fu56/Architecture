@@ -175,11 +175,23 @@ export const getStats = async (req: Request, res: Response) => {
       _sum: { download_count: true },
     });
 
+    // Get uploads in last 30 days
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const newResourcesLast30Days = await prisma.resource.count({
+      where: {
+        uploaded_at: {
+          gte: thirtyDaysAgo,
+        },
+      },
+    });
+
     res.json({
       totalUsers,
       totalResources,
       pendingResources,
       totalDownloads: downloads._sum.download_count || 0,
+      newResourcesLast30Days,
     });
   } catch (error) {
     res.status(500).json({ message: "Error fetching stats" });
