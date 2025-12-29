@@ -41,12 +41,13 @@ const App = () => {
 
         {/* Protected User Routes */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/upload" element={<Upload />} />
           <Route path="/dashboard" element={<UserDashboard />}>
             {/* Default redirect when visiting /dashboard */}
             <Route index element={<Overview />} />
+            <Route path="upload" element={<Upload />} />
             <Route path="uploads" element={<MyUploads />} />
             <Route path="resources" element={<Resources />} />
+            <Route path="resources/:id" element={<ResourceDetails />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="profile" element={<Profile />} />
           </Route>
@@ -60,6 +61,7 @@ const App = () => {
             <Route path="analytics" element={<Analytics />} />
             <Route path="users" element={<ManageUsers />} />
             <Route path="resources" element={<Resources />} />
+            <Route path="resources/:id" element={<ResourceDetails />} />
             <Route path="register-students" element={<RegisterStudents />} />
             <Route path="register-faculty" element={<RegisterFaculty />} />
             <Route path="approvals" element={<Approvals />} />

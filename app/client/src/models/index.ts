@@ -58,6 +58,7 @@ export interface Flag {
   reporter: User;
   reason: string;
   status: "open" | "resolved";
+  createdAt: string;
 }
 
 export interface Notification {

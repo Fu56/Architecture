@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Download, Star, User, Calendar, Eye } from "lucide-react";
 import type { Resource } from "../../models";
+import { isAuthenticated, currentRole } from "../../lib/auth";
 
 interface ResourceCardProps {
   resource: Resource;
@@ -18,6 +19,19 @@ const fileTypeStyles: { [key: string]: string } = {
 };
 
 const ResourceCard = ({ resource }: ResourceCardProps) => {
+  const role = currentRole();
+  const isAuth = isAuthenticated();
+
+  const getDetailPath = () => {
+    if (!isAuth) return `/resources/${resource.id}`;
+    if (role === "Admin" || role === "SuperAdmin" || role === "admin") {
+      return `/admin/resources/${resource.id}`;
+    }
+    return `/dashboard/resources/${resource.id}`;
+  };
+
+  const detailPath = getDetailPath();
+
   const {
     id,
     title,
@@ -52,7 +66,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
         </div>
         <h3 className="text-lg font-bold text-gray-900 leading-tight mb-1">
           <Link
-            to={`/resources/${id}`}
+            to={detailPath}
             className="hover:text-indigo-600 transition-colors"
           >
             {title}
@@ -106,7 +120,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
               <span>{new Date(uploadedAt).toLocaleDateString()}</span>
             </div>
             <Link
-              to={`/resources/${id}`}
+              to={detailPath}
               className="font-semibold text-indigo-600 hover:text-indigo-500"
             >
               Details

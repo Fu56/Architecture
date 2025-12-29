@@ -156,7 +156,7 @@ const Layout = () => {
               {/* Upload Button (Authenticated Users) */}
               {isAuthenticated() && (
                 <Link
-                  to="/upload"
+                  to="/dashboard/upload"
                   className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-105 ${
                     isScrolled || !isHomePage
                       ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-600/30"
@@ -365,7 +365,7 @@ const Layout = () => {
                 {isAuthenticated() && (
                   <>
                     <Link
-                      to="/upload"
+                      to="/dashboard/upload"
                       onClick={() => setMobileMenuOpen(false)}
                       className="px-4 py-4 rounded-2xl text-2xl font-black tracking-tight text-gray-900 flex items-center gap-3"
                     >

@@ -34,7 +34,7 @@ const Overview = () => {
             </div>
           </div>
           <Link
-            to="/upload"
+            to="/dashboard/upload"
             className="text-blue-600 font-semibold text-sm hover:underline"
           >
             Share a resource &rarr;

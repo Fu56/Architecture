@@ -1,15 +1,44 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation, Link } from "react-router-dom";
 import { api } from "../../lib/api";
 import type { Resource, Comment } from "../../models";
-import { Loader2, ServerCrash, Download, User, Flag } from "lucide-react";
+import {
+  Loader2,
+  ServerCrash,
+  Download,
+  User,
+  Flag,
+  Eye,
+  Clock,
+} from "lucide-react";
+import { isAuthenticated, currentRole } from "../../lib/auth";
 
 const ResourceDetails = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [resource, setResource] = useState<Resource | null>(null);
+  const [recentResources, setRecentResources] = useState<Resource[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const role = currentRole();
+  const isAuth = isAuthenticated();
+  const isNested =
+    location.pathname.startsWith("/dashboard") ||
+    location.pathname.startsWith("/admin");
+
+  // Redirect to nested route if logged in but on public route
+  useEffect(() => {
+    if (isAuth && !isNested) {
+      if (role === "Admin" || role === "SuperAdmin" || role === "admin") {
+        navigate(`/admin/resources/${id}`, { replace: true });
+      } else {
+        navigate(`/dashboard/resources/${id}`, { replace: true });
+      }
+    }
+  }, [isAuth, isNested, id, role, navigate]);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -20,6 +49,14 @@ const ResourceDetails = () => {
         const { data } = await api.get(`/resources/${id}`);
         setResource(data);
         setComments(data.comments || []);
+
+        // Fetch recent resources for the sidebar
+        const { data: recentData } = await api.get("/resources?limit=5");
+        if (Array.isArray(recentData)) {
+          setRecentResources(
+            recentData.filter((r: Resource) => r.id !== Number(id))
+          );
+        }
       } catch (err) {
         console.error("Failed to fetch resource details:", err);
         setError(
@@ -42,7 +79,11 @@ const ResourceDetails = () => {
 
   if (error) {
     return (
-      <div className="container mx-auto text-center py-20 bg-red-50 rounded-lg my-8">
+      <div
+        className={`${
+          isNested ? "" : "container mx-auto"
+        } text-center py-20 bg-red-50 rounded-lg my-8`}
+      >
         <ServerCrash className="h-12 w-12 text-red-500 mx-auto" />
         <p className="mt-4 text-lg font-medium text-red-700">{error}</p>
       </div>
@@ -52,10 +93,14 @@ const ResourceDetails = () => {
   if (!resource) return null;
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div
+      className={`${
+        isNested ? "" : "container mx-auto px-4 sm:px-6 lg:px-8 py-12"
+      }`}
+    >
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Main Content */}
-        <div className="lg:col-span-2 bg-white p-8 rounded-xl shadow-sm border">
+        <div className="lg:col-span-2 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
           <div className="mb-6">
             <div className="flex flex-wrap gap-2">
               <span className="text-sm font-bold uppercase px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full">
@@ -112,7 +157,7 @@ const ResourceDetails = () => {
             <div className="mb-8">{/* Add form here */}</div>
             <div className="space-y-6">
               {comments.length > 0 ? (
-                comments.map((comment) => (
+                comments.map((comment: Comment) => (
                   <div key={comment.id} className="flex gap-4">
                     <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
                       <User className="h-6 w-6 text-gray-500" />
@@ -137,58 +182,110 @@ const ResourceDetails = () => {
           </div>
         </div>
 
-        {/* Sidebar */}
+        {/* Metadata Sidebar */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-3">
             <a
-              href={`${import.meta.env.VITE_API_URL}/resources/${
-                resource.id
-              }/download`}
+              href={`${
+                import.meta.env.VITE_API_URL
+              }/resources/${id}/view?token=${encodeURIComponent(
+                localStorage.getItem("token") || ""
+              )}`}
               target="_blank"
               rel="noreferrer"
-              className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700"
+              className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-indigo-100 text-sm font-bold rounded-xl text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all hover:scale-[1.02]"
+            >
+              <Eye className="h-4 w-4" />
+              Preview File
+            </a>
+            <a
+              href={`${
+                import.meta.env.VITE_API_URL
+              }/resources/${id}/download?token=${encodeURIComponent(
+                localStorage.getItem("token") || ""
+              )}`}
+              target="_blank"
+              rel="noreferrer"
+              className="w-full flex justify-center items-center gap-2 py-4 px-4 border border-transparent text-base font-black rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-600/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               <Download className="h-5 w-5" />
               Download File
             </a>
-            <div className="mt-6 space-y-3 text-sm text-gray-700">
-              <div className="flex justify-between">
-                <span className="font-medium text-gray-500">Downloads</span>{" "}
-                <span>{resource.downloadCount}</span>
+            <div className="mt-8 space-y-4">
+              <div className="flex justify-between items-center pb-3 border-b border-gray-50">
+                <span className="text-xs font-black uppercase tracking-widest text-gray-400">
+                  Downloads
+                </span>{" "}
+                <span className="font-bold text-gray-900">
+                  {resource.downloadCount}
+                </span>
               </div>
-              <div className="flex justify-between">
-                <span className="font-medium text-gray-500">File Size</span>{" "}
-                <span>{resource.fileSize.toFixed(2)} MB</span>
+              <div className="flex justify-between items-center pb-3 border-b border-gray-50">
+                <span className="text-xs font-black uppercase tracking-widest text-gray-400">
+                  File Size
+                </span>{" "}
+                <span className="font-bold text-gray-900">
+                  {resource.fileSize.toFixed(2)} MB
+                </span>
               </div>
-              <div className="flex justify-between">
-                <span className="font-medium text-gray-500">Uploaded</span>{" "}
-                <span>
+              <div className="flex justify-between items-center pb-3 border-b border-gray-50">
+                <span className="text-xs font-black uppercase tracking-widest text-gray-400">
+                  Uploaded
+                </span>{" "}
+                <span className="font-bold text-gray-900">
                   {new Date(resource.uploadedAt).toLocaleDateString()}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="font-medium text-gray-500">Uploader</span>{" "}
-                <span>{resource.uploader.firstName}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-black uppercase tracking-widest text-gray-400">
+                  Uploader
+                </span>{" "}
+                <span className="font-bold text-gray-900">
+                  {resource.uploader.firstName}
+                </span>
               </div>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <h3 className="font-bold text-lg mb-4">Keywords</h3>
-            <div className="flex flex-wrap gap-2">
-              {resource.keywords.map((k) => (
-                <span
-                  key={k}
-                  className="text-xs bg-gray-100 text-gray-700 px-2.5 py-1.5 rounded-full"
+
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <h3 className="font-black text-gray-900 mb-6 tracking-tight flex items-center gap-2">
+              <Clock className="h-5 w-5 text-indigo-500" />
+              Recent Uploads
+            </h3>
+            <div className="space-y-4">
+              {recentResources.map((recent: Resource) => (
+                <Link
+                  key={recent.id}
+                  to={
+                    isAuth
+                      ? role === "Admin" || role === "SuperAdmin"
+                        ? `/admin/resources/${recent.id}`
+                        : `/dashboard/resources/${recent.id}`
+                      : `/resources/${recent.id}`
+                  }
+                  className="flex items-start gap-3 group"
                 >
-                  {k}
-                </span>
+                  <div className="h-10 w-10 flex-shrink-0 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-[10px] uppercase border border-indigo-100 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                    {recent.fileType}
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
+                      {recent.title}
+                    </h4>
+                    <p className="text-[10px] text-gray-400 font-medium">
+                      {recent.uploader?.firstName} •{" "}
+                      {new Date(recent.uploadedAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>
-          <div className="text-center">
-            <button className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-red-600">
-              <Flag className="h-4 w-4" />
-              Report this resource
+
+          <div className="text-center pt-4">
+            <button className="inline-flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-red-600 transition-colors uppercase tracking-widest">
+              <Flag className="h-3.5 w-3.5" />
+              Report Content
             </button>
           </div>
         </div>

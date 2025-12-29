@@ -203,14 +203,50 @@ export const archiveResource = async (req: Request, res: Response) => {
 
 export const getFlags = async (req: Request, res: Response) => {
   try {
-    const flags = await prisma.flag.findMany({
+    const flags = await (prisma.flag as any).findMany({
       where: { status: "pending" },
       include: {
-        resource: { select: { title: true, id: true } },
+        resource: {
+          include: {
+            uploader: {
+              select: { first_name: true, last_name: true },
+            },
+          },
+        },
+        reporter: {
+          select: { first_name: true, last_name: true },
+        },
       },
     });
-    res.json(flags);
+
+    // Map to camelCase for frontend
+    const formattedFlags = flags.map((f: any) => ({
+      id: f.id,
+      resourceId: f.resource_id,
+      reason: f.reason,
+      status: f.status,
+      createdAt: f.created_at,
+      resource: {
+        id: f.resource.id,
+        title: f.resource.title,
+        uploader: f.resource.uploader
+          ? {
+              firstName: f.resource.uploader.first_name,
+              lastName: f.resource.uploader.last_name,
+            }
+          : null,
+      },
+      reporter: f.reporter
+        ? {
+            firstName: f.reporter.first_name,
+            lastName: f.reporter.last_name,
+          }
+        : { firstName: "Anonymous", lastName: "" },
+    }));
+
+    res.json({ flags: formattedFlags });
   } catch (error) {
+    console.error("Get Flags Error:", error);
     res.status(500).json({ message: "Error fetching flags" });
   }
 };

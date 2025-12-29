@@ -298,12 +298,13 @@ export const flagResource = async (req: Request, res: Response) => {
     const { reason } = req.body;
     const userId = getUserId(req); // Optional for flag?
 
-    await prisma.flag.create({
+    await (prisma.flag as any).create({
       data: {
         resource_id: Number(id),
         reason: reason,
         status: "pending",
-      },
+        reporter_id: userId,
+      } as any,
     });
 
     // Also update flag boolean on resource for quick check?
