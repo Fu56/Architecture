@@ -42,6 +42,9 @@ const ResourceDetails = () => {
   const [isSubmittingReport, setIsSubmittingReport] = useState(false);
   const [reportSuccess, setReportSuccess] = useState(false);
 
+  const [newComment, setNewComment] = useState("");
+  const [submittingComment, setSubmittingComment] = useState(false);
+
   const role = currentRole();
   const isAuth = isAuthenticated();
   const isNested =
@@ -147,6 +150,28 @@ const ResourceDetails = () => {
     } catch (error) {
       console.error("Failed to rate", error);
       alert("Failed to save rating.");
+    }
+  };
+
+  const handleSubmitComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+
+    setSubmittingComment(true);
+    try {
+      await api.post(`/resources/${id}/comments`, {
+        text: newComment,
+      });
+      // Format the new comment to match existing structure or re-fetch.
+      // Re-fetching is safer for getting user details populated.
+      const { data: updatedResource } = await api.get(`/resources/${id}`);
+      setComments(updatedResource.comments || []);
+      setNewComment("");
+    } catch (error) {
+      console.error("Failed to submit comment:", error);
+      alert("Failed to post comment.");
+    } finally {
+      setSubmittingComment(false);
     }
   };
 
@@ -275,7 +300,34 @@ const ResourceDetails = () => {
               Community Discussion
             </h2>
             {/* New Comment Form */}
-            <div className="mb-8">{/* Add form here */}</div>
+            <div className="mb-8">
+              {isAuth ? (
+                <form onSubmit={handleSubmitComment} className="flex gap-4">
+                  <input
+                    type="text"
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    placeholder="Add a comment..."
+                    className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50"
+                  />
+                  <button
+                    type="submit"
+                    disabled={submittingComment || !newComment.trim()}
+                    className="px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+                  >
+                    {submittingComment ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      "Post"
+                    )}
+                  </button>
+                </form>
+              ) : (
+                <p className="text-gray-500 text-sm">
+                  Please log in to add comments.
+                </p>
+              )}
+            </div>
             <div className="space-y-6">
               {comments.length > 0 ? (
                 comments.map((comment: Comment) => (
