@@ -14,6 +14,9 @@ import {
   resolveFlag,
   bulkRegisterStudents,
   registerFaculty,
+  createUser,
+  updateUser,
+  deleteUser,
 } from "../controllers/admin.controller";
 
 const router = Router();
@@ -29,7 +32,10 @@ router.get("/flags", getFlags);
 router.patch("/flags/:id/resolve", resolveFlag);
 
 router.get("/users", getAllUsers);
-router.patch("/users/:id/role", manageUserRole);
+router.post("/users/create", createUser);
+router.patch("/users/:id", updateUser); // Generic update
+router.delete("/users/:id", deleteUser);
+router.patch("/users/:id/role", manageUserRole); // Keep specific if needed, or deprecate
 router.post("/users/bulk-register", bulkRegisterStudents);
 router.post("/users/register-faculty", registerFaculty);
 

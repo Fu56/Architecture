@@ -460,3 +460,127 @@ export const registerFaculty = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error registering faculty member" });
   }
 };
+// Create User (Generic)
+export const createUser = async (req: Request, res: Response) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      roleName,
+      universityId,
+      batch,
+      year,
+      semester,
+    } = req.body;
+
+    if (!firstName || !lastName || !email || !password || !roleName) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser)
+      return res.status(409).json({ message: "Email already exists" });
+
+    const role = await prisma.role.findUnique({ where: { name: roleName } });
+    if (!role) return res.status(404).json({ message: "Role not found" });
+
+    const bcrypt = require("bcryptjs");
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await prisma.user.create({
+      data: {
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        password: hashedPassword,
+        roleId: role.id,
+        status: "active",
+        university_id: universityId,
+        batch: batch ? Number(batch) : null,
+        year: year ? Number(year) : null,
+        semester: semester ? Number(semester) : null,
+      } as any,
+    });
+
+    res.status(201).json({ message: "User created successfully", user });
+  } catch (error) {
+    console.error("Create User Error:", error);
+    res.status(500).json({ message: "Failed to create user" });
+  }
+};
+
+// Update User
+export const updateUser = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const {
+      firstName,
+      lastName,
+      email,
+      roleName,
+      status,
+      universityId,
+      batch,
+      year,
+      semester,
+    } = req.body;
+
+    // Optional: Check existence
+
+    let updateData: any = {
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      status,
+      university_id: universityId,
+      batch: batch ? Number(batch) : null,
+      year: year ? Number(year) : null,
+      semester: semester ? Number(semester) : null,
+    };
+
+    if (roleName) {
+      const role = await prisma.role.findUnique({ where: { name: roleName } });
+      if (role) updateData.roleId = role.id;
+    }
+
+    // Filter out undefined keys if any (though typical put sends all, patch sends partial. let's assume partial is ok or full)
+    // Actually simpler to just update what is passed if using PATCH.
+    // We'll use PATCH logic: only update defined fields.
+    // However, Prisma updates only what is in 'data'. If keys are undefined, it might error or set null.
+    // Let's rely on frontend sending necessary data, but for safety:
+    Object.keys(updateData).forEach(
+      (key) => updateData[key] === undefined && delete updateData[key]
+    );
+
+    const user = await prisma.user.update({
+      where: { id: Number(id) },
+      data: updateData,
+    });
+
+    res.json({ message: "User updated successfully", user });
+  } catch (error) {
+    console.error("Update User Error:", error);
+    res.status(500).json({ message: "Failed to update user" });
+  }
+};
+
+// Delete User
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    // Potentially check if user has resources/dependencies?
+    // Prisma might throw constraint error. Admin might need to know.
+    // For now, simple delete.
+
+    await prisma.user.delete({
+      where: { id: Number(id) },
+    });
+
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Delete User Error:", error);
+    res.status(500).json({ message: "Failed to delete user" });
+  }
+};

@@ -26,6 +26,8 @@ import {
   currentRole,
 } from "../../lib/auth";
 import Footer from "./Footer";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Layout = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -414,6 +416,7 @@ const Layout = () => {
       </main>
 
       <Footer />
+      <ToastContainer position="bottom-right" autoClose={3000} />
     </div>
   );
 };
