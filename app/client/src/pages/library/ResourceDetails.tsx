@@ -10,6 +10,7 @@ import {
   Flag,
   Eye,
   Clock,
+  CheckCircle,
 } from "lucide-react";
 import { isAuthenticated, currentRole } from "../../lib/auth";
 
@@ -22,6 +23,11 @@ const ResourceDetails = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [reporting, setReporting] = useState(false);
+  const [reportReason, setReportReason] = useState("");
+  const [isSubmittingReport, setIsSubmittingReport] = useState(false);
+  const [reportSuccess, setReportSuccess] = useState(false);
 
   const role = currentRole();
   const isAuth = isAuthenticated();
@@ -69,6 +75,27 @@ const ResourceDetails = () => {
     fetchDetails();
   }, [id]);
 
+  const handleReport = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reportReason.trim()) return;
+
+    setIsSubmittingReport(true);
+    try {
+      await api.post(`/resources/${id}/flag`, { reason: reportReason });
+      setReportSuccess(true);
+      setTimeout(() => {
+        setReporting(false);
+        setReportSuccess(false);
+        setReportReason("");
+      }, 2000);
+    } catch (err) {
+      console.error("Failed to report resource:", err);
+      alert("Failed to submit report. Please try again.");
+    } finally {
+      setIsSubmittingReport(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center py-40">
@@ -106,30 +133,40 @@ const ResourceDetails = () => {
               <span className="text-sm font-bold uppercase px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full">
                 {resource.fileType}
               </span>
-              {resource.status !== "approved" &&
-                resource.status !== "student" && (
-                  <div className="flex flex-col gap-2">
-                    <span
-                      className={`text-sm font-bold uppercase px-3 py-1 rounded-full w-fit ${
-                        resource.status === "pending"
-                          ? "bg-amber-100 text-amber-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {resource.status}
-                    </span>
-                    {resource.adminComment && (
-                      <div className="bg-gray-50 border border-gray-200 p-4 rounded-lg mt-2">
-                        <p className="text-sm font-semibold text-gray-700 mb-1">
-                          Admin Feedback:
-                        </p>
-                        <p className="text-sm text-gray-600 italic">
-                          "{resource.adminComment}"
-                        </p>
-                      </div>
-                    )}
+              <div className="flex flex-col gap-2">
+                <span
+                  className={`text-sm font-bold uppercase px-3 py-1 rounded-full w-fit flex items-center gap-1.5 ${
+                    resource.status === "student" ||
+                    resource.status === "approved"
+                      ? "bg-green-100 text-green-800"
+                      : resource.status === "pending"
+                      ? "bg-amber-100 text-amber-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  <span
+                    className={`h-2 w-2 rounded-full ${
+                      resource.status === "student" ||
+                      resource.status === "approved"
+                        ? "bg-green-500"
+                        : resource.status === "pending"
+                        ? "bg-amber-500"
+                        : "bg-red-500"
+                    }`}
+                  ></span>
+                  {resource.status === "student" ? "Approved" : resource.status}
+                </span>
+                {resource.adminComment && (
+                  <div className="bg-gray-50 border border-gray-100 p-4 rounded-xl mt-1">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                      System Feedback
+                    </p>
+                    <p className="text-sm text-gray-600 italic leading-relaxed">
+                      "{resource.adminComment}"
+                    </p>
                   </div>
                 )}
+              </div>
             </div>
             <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mt-4">
               {resource.title}
@@ -141,7 +178,6 @@ const ResourceDetails = () => {
           </div>
 
           <div className="prose prose-lg max-w-none text-gray-700">
-            {/* Placeholder for a resource description if available */}
             <p>
               This section can contain a brief description or abstract of the
               resource, providing users with more context before they download.
@@ -283,13 +319,75 @@ const ResourceDetails = () => {
           </div>
 
           <div className="text-center pt-4">
-            <button className="inline-flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-red-600 transition-colors uppercase tracking-widest">
+            <button
+              onClick={() => setReporting(true)}
+              className="inline-flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-red-600 transition-colors uppercase tracking-widest"
+            >
               <Flag className="h-3.5 w-3.5" />
               Report Content
             </button>
           </div>
         </div>
       </div>
+
+      {/* Reporting Modal */}
+      {reporting && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white rounded-[2rem] shadow-2xl p-8 max-w-md w-full border border-gray-100 animate-in zoom-in-95 duration-300">
+            {reportSuccess ? (
+              <div className="text-center py-8">
+                <div className="h-16 w-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="h-8 w-8" />
+                </div>
+                <h3 className="text-2xl font-black text-gray-900 mb-2">
+                  Report Received
+                </h3>
+                <p className="text-gray-500 font-medium">
+                  Thank you for helping us keep the library safe.
+                </p>
+              </div>
+            ) : (
+              <>
+                <h3 className="text-2xl font-black text-gray-900 mb-2">
+                  Report Resource
+                </h3>
+                <p className="text-gray-500 font-medium mb-6">
+                  Please provide a reason for reporting this content.
+                </p>
+                <form onSubmit={handleReport} className="space-y-4">
+                  <textarea
+                    required
+                    value={reportReason}
+                    onChange={(e) => setReportReason(e.target.value)}
+                    placeholder="e.g. Copyright violation, incorrect metadata, improper content..."
+                    className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[120px] text-gray-700 bg-gray-50"
+                  />
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setReporting(false)}
+                      className="flex-1 py-3 px-4 rounded-xl text-gray-500 font-bold hover:bg-gray-100 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmittingReport || !reportReason.trim()}
+                      className="flex-1 bg-red-600 text-white py-3 px-4 rounded-xl font-bold shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {isSubmittingReport ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "Submit Report"
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
