@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Library,
   UploadCloud,
+  BookOpen,
 } from "lucide-react";
 import { getUser } from "../../lib/auth";
 
@@ -13,7 +14,8 @@ const dashboardNavLinks = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
   { name: "Upload New", href: "/dashboard/upload", icon: UploadCloud },
   { name: "My Library", href: "/dashboard/resources", icon: Library },
-  { name: "My Uploads", href: "/dashboard/uploads", icon: Upload }, // Shows user's uploaded resources
+  { name: "Assignments", href: "/dashboard/assignments", icon: BookOpen },
+  { name: "My Uploads", href: "/dashboard/uploads", icon: Upload },
   { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
   { name: "Profile", href: "/dashboard/profile", icon: User },
 ];

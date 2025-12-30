@@ -70,3 +70,22 @@ export interface Notification {
   resourceId?: number;
   createdAt: string;
 }
+
+export interface Assignment {
+  id: number;
+  title: string;
+  description?: string;
+  due_date?: string;
+  file_path?: string;
+  file_type?: string;
+  file_size?: number;
+  creator: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email?: string;
+  };
+  design_stage?: DesignStage;
+  created_at: string;
+  updated_at: string;
+}

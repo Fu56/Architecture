@@ -23,6 +23,7 @@ const allowed = [
   "rar",
   "7z",
   "txt",
+  "md",
 ];
 
 if (!fs.existsSync(env.uploadDir))

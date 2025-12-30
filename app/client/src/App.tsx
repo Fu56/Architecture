@@ -19,6 +19,9 @@ import Flags from "./pages/admin/Flags";
 import RegisterStudents from "./pages/admin/RegisterStudents";
 import RegisterFaculty from "./pages/admin/RegisterFaculty";
 import Resources from "./pages/dashboard/Resources";
+import Assignments from "./pages/library/Assignments";
+import AssignmentDetails from "./pages/library/AssignmentDetails";
+import PostAssignment from "./pages/library/PostAssignment";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
 
@@ -50,6 +53,9 @@ const App = () => {
             <Route path="resources/:id" element={<ResourceDetails />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="assignments" element={<Assignments />} />
+            <Route path="assignments/:id" element={<AssignmentDetails />} />
+            <Route path="assignments/new" element={<PostAssignment />} />
           </Route>
         </Route>
 
@@ -66,6 +72,9 @@ const App = () => {
             <Route path="register-faculty" element={<RegisterFaculty />} />
             <Route path="approvals" element={<Approvals />} />
             <Route path="flags" element={<Flags />} />
+            <Route path="assignments" element={<Assignments />} />
+            <Route path="assignments/:id" element={<AssignmentDetails />} />
+            <Route path="assignments/new" element={<PostAssignment />} />
           </Route>
         </Route>
 
