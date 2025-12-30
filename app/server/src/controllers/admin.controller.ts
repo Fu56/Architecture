@@ -60,7 +60,7 @@ export const approveResource = async (req: Request, res: Response) => {
     const resource = await prisma.resource.update({
       where: { id: Number(id) },
       data: {
-        status: "approved",
+        status: "student",
         approved_at: new Date(),
       },
     });

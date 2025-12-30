@@ -61,17 +61,18 @@ const ResourceDetails = () => {
               <span className="text-sm font-bold uppercase px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full">
                 {resource.fileType}
               </span>
-              {resource.status !== "approved" && (
-                <span
-                  className={`text-sm font-bold uppercase px-3 py-1 rounded-full ${
-                    resource.status === "pending"
-                      ? "bg-amber-100 text-amber-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
-                >
-                  {resource.status}
-                </span>
-              )}
+              {resource.status !== "approved" &&
+                resource.status !== "student" && (
+                  <span
+                    className={`text-sm font-bold uppercase px-3 py-1 rounded-full ${
+                      resource.status === "pending"
+                        ? "bg-amber-100 text-amber-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {resource.status}
+                  </span>
+                )}
             </div>
             <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mt-4">
               {resource.title}

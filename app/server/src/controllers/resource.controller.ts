@@ -94,9 +94,8 @@ export const listResources = async (req: Request, res: Response) => {
     if (status) {
       where.status = String(status);
     } else {
-      // Default to Approved? Or handle via Separate Admin Endpoint?
-      // If unspecified, maybe return approved.
-      where.status = "approved";
+      // Default to 'student' status as requested
+      where.status = "student";
     }
 
     if (stage) where.design_stage_id = Number(stage);

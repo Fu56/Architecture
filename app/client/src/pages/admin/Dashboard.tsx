@@ -6,6 +6,7 @@ import {
   BarChart2,
   UserPlus,
   FileSpreadsheet,
+  Library,
 } from "lucide-react";
 
 const adminNavLinks = [
@@ -18,6 +19,7 @@ const adminNavLinks = [
   },
   { name: "Register Faculty", href: "/admin/register-faculty", icon: UserPlus },
   { name: "Resource Approvals", href: "/admin/approvals", icon: CheckSquare },
+  { name: "Resources", href: "/admin/resources", icon: Library },
   { name: "Flagged Content", href: "/admin/flags", icon: Flag },
 ];
 

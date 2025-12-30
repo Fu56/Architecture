@@ -1,8 +1,9 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { Upload, Bell, User, LayoutDashboard } from "lucide-react";
+import { Upload, Bell, User, LayoutDashboard, Library } from "lucide-react";
 
 const dashboardNavLinks = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
+  { name: "My Library", href: "/dashboard/resources", icon: Library },
   { name: "My Uploads", href: "/dashboard/uploads", icon: Upload }, // Shows user's uploaded resources
   { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
   { name: "Profile", href: "/dashboard/profile", icon: User },

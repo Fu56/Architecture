@@ -18,6 +18,7 @@ import Approvals from "./pages/admin/Approvals";
 import Flags from "./pages/admin/Flags";
 import RegisterStudents from "./pages/admin/RegisterStudents";
 import RegisterFaculty from "./pages/admin/RegisterFaculty";
+import Resources from "./pages/dashboard/Resources";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
 
@@ -45,6 +46,7 @@ const App = () => {
             {/* Default redirect when visiting /dashboard */}
             <Route index element={<Overview />} />
             <Route path="uploads" element={<MyUploads />} />
+            <Route path="resources" element={<Resources />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="profile" element={<Profile />} />
           </Route>
@@ -57,6 +59,7 @@ const App = () => {
             <Route index element={<Navigate to="analytics" replace />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="users" element={<ManageUsers />} />
+            <Route path="resources" element={<Resources />} />
             <Route path="register-students" element={<RegisterStudents />} />
             <Route path="register-faculty" element={<RegisterFaculty />} />
             <Route path="approvals" element={<Approvals />} />

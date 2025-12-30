@@ -8,7 +8,7 @@ export const stats = async (_req: Request, res: Response) => {
       where: { archived_at: null },
     });
     const mostDownloaded = await prisma.resource.findMany({
-      where: { status: "approved", archived_at: null },
+      where: { status: "student", archived_at: null },
       orderBy: { download_count: "desc" },
       take: 10,
       select: {
