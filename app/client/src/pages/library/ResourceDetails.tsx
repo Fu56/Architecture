@@ -11,8 +11,15 @@ import {
   Eye,
   Clock,
   CheckCircle,
+  Star,
 } from "lucide-react";
 import { isAuthenticated, currentRole } from "../../lib/auth";
+
+interface Rating {
+  id: number;
+  rate: number;
+  user_id: number;
+}
 
 const ResourceDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,6 +30,12 @@ const ResourceDetails = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [averageRating, setAverageRating] = useState(0);
+  const [ratingCount, setRatingCount] = useState(0);
+  const [userRating, setUserRating] = useState(0);
 
   const [reporting, setReporting] = useState(false);
   const [reportReason, setReportReason] = useState("");
@@ -63,6 +76,23 @@ const ResourceDetails = () => {
             recentData.filter((r: Resource) => r.id !== Number(id))
           );
         }
+
+        // Calculate ratings
+        if (data.ratings && data.ratings.length > 0) {
+          const sum = data.ratings.reduce(
+            (acc: number, r: Rating) => acc + r.rate,
+            0
+          );
+          setAverageRating(sum / data.ratings.length);
+          setRatingCount(data.ratings.length);
+
+          // Check if current user has rated
+          const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+          const myRating = data.ratings.find(
+            (r: Rating) => r.user_id === currentUser.id
+          );
+          if (myRating) setUserRating(myRating.rate);
+        }
       } catch (err) {
         console.error("Failed to fetch resource details:", err);
         setError(
@@ -93,6 +123,30 @@ const ResourceDetails = () => {
       alert("Failed to submit report. Please try again.");
     } finally {
       setIsSubmittingReport(false);
+    }
+  };
+
+  const handleRate = async (rate: number) => {
+    try {
+      await api.post(`/resources/${id}/rate`, { rate });
+      setUserRating(rate);
+
+      // Optimistic update
+      // If updating existing rating, re-calc average properly is complex without full data,
+      // but for simplicity we can re-fetch or approximate.
+      // Let's re-fetch to be safe and simple.
+      const { data } = await api.get(`/resources/${id}`);
+      if (data.ratings && data.ratings.length > 0) {
+        const sum = data.ratings.reduce(
+          (acc: number, r: Rating) => acc + r.rate,
+          0
+        );
+        setAverageRating(sum / data.ratings.length);
+        setRatingCount(data.ratings.length);
+      }
+    } catch (error) {
+      console.error("Failed to rate", error);
+      alert("Failed to save rating.");
     }
   };
 
@@ -174,6 +228,37 @@ const ResourceDetails = () => {
             <div className="flex items-center text-md text-gray-600 mt-2">
               <User className="h-5 w-5 mr-2 text-gray-400" />
               <span>Authored by {resource.author}</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 mt-6 p-4 bg-gray-50 rounded-2xl border border-gray-100 w-fit">
+            <div className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  disabled={!isAuth}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(0)}
+                  onClick={() => handleRate(star)}
+                  className="focus:outline-none transition-transform hover:scale-110"
+                >
+                  <Star
+                    className={`h-6 w-6 ${
+                      (hoverRating ||
+                        userRating ||
+                        Math.round(averageRating)) >= star
+                        ? "text-amber-400 fill-amber-400"
+                        : "text-gray-300"
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+            <div className="text-sm">
+              <p className="font-bold text-gray-900">
+                {averageRating.toFixed(1)} / 5.0
+              </p>
+              <p className="text-gray-500 text-xs">({ratingCount} ratings)</p>
             </div>
           </div>
 
