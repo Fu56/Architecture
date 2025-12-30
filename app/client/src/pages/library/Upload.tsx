@@ -13,14 +13,28 @@ const Upload = () => {
     design_stage_id: "",
     forYearStudents: "",
     batch: "",
+    isPriority: false,
   });
   const [designStages, setDesignStages] = useState<DesignStage[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
   const [isReady] = useState(() => {
     return !!localStorage.getItem("token") && !!localStorage.getItem("user");
   });
+  const [userRole, setUserRole] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        setUserRole(user.role?.name || "");
+      } catch (e) {
+        console.error("Failed to parse user");
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (!isReady) {
@@ -51,7 +65,10 @@ const Upload = () => {
   const handleMetaChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    setMetadata({ ...metadata, [e.target.name]: e.target.value });
+    const { name, value, type } = e.target;
+    // @ts-ignore
+    const val = type === "checkbox" ? e.target.checked : value;
+    setMetadata({ ...metadata, [name]: val });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,6 +88,8 @@ const Upload = () => {
     formData.append("design_stage_id", metadata.design_stage_id);
     formData.append("forYearStudents", metadata.forYearStudents);
     if (metadata.batch) formData.append("batch", metadata.batch);
+    if (metadata.isPriority)
+      formData.append("priority_tag", "Faculty Priority");
 
     try {
       const { data } = await api.post("/resources", formData, {
@@ -207,6 +226,30 @@ const Upload = () => {
                   />
                 </div>
               </div>
+
+              {(userRole === "Faculty" ||
+                userRole === "Admin" ||
+                userRole === "SuperAdmin") && (
+                <div className="flex items-center gap-3 bg-indigo-50 p-4 rounded-xl border border-indigo-100">
+                  <input
+                    type="checkbox"
+                    name="isPriority"
+                    checked={metadata.isPriority}
+                    onChange={handleMetaChange}
+                    className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    id="priority"
+                  />
+                  <label
+                    htmlFor="priority"
+                    className="font-bold text-indigo-900 cursor-pointer select-none"
+                  >
+                    Mark as Priority Resource{" "}
+                    <span className="text-indigo-600 font-normal text-sm ml-1">
+                      (Featured at top of lists)
+                    </span>
+                  </label>
+                </div>
+              )}
             </div>
 
             {error && (
