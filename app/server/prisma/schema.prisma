@@ -139,6 +139,8 @@ model Assignment {
     title           String
     description     String?
     due_date        DateTime?
+    academic_year   Int?
+    semester        Int?
     file_path       String?
     file_type       String?
     file_size       Float?

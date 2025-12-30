@@ -17,6 +17,10 @@ export const createAssignment = async (req: Request, res: Response) => {
         title,
         description,
         due_date: due_date ? new Date(due_date) : null,
+        academic_year: req.body.academic_year
+          ? Number(req.body.academic_year)
+          : null,
+        semester: req.body.semester ? Number(req.body.semester) : null,
         file_path: file?.path,
         file_type: file?.mimetype,
         file_size: file?.size,
@@ -34,7 +38,28 @@ export const createAssignment = async (req: Request, res: Response) => {
 
 export const listAssignments = async (req: Request, res: Response) => {
   try {
+    const userId = getUserId(req);
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { role: true },
+    });
+
+    let whereClause = {};
+    if (user?.role?.name === "Student") {
+      whereClause = {
+        AND: [
+          {
+            OR: [{ academic_year: user.year }, { academic_year: null }],
+          },
+          {
+            OR: [{ semester: user.semester }, { semester: null }],
+          },
+        ],
+      };
+    }
+
     const assignments = await (prisma as any).assignment.findMany({
+      where: whereClause,
       include: {
         creator: {
           select: {
@@ -60,6 +85,13 @@ export const getAssignment = async (req: Request, res: Response) => {
     const { id } = req.params;
     const userId = getUserId(req);
 
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { role: true },
+    });
+
+    const isStudent = user?.role?.name === "Student";
+
     const assignment = await (prisma as any).assignment.findUnique({
       where: { id: Number(id) },
       include: {
@@ -68,9 +100,19 @@ export const getAssignment = async (req: Request, res: Response) => {
         },
         design_stage: true,
         submissions: {
-          where: userId ? { student_id: userId } : undefined,
+          where: isStudent ? { student_id: userId } : undefined,
+          include: {
+            student: {
+              select: {
+                id: true,
+                first_name: true,
+                last_name: true,
+                year: true,
+                batch: true,
+              },
+            },
+          },
           orderBy: { submitted_at: "desc" },
-          take: 1,
         },
       },
     });
@@ -196,5 +238,72 @@ export const downloadSubmission = async (req: Request, res: Response) => {
     res.download(absPath);
   } catch (error) {
     res.status(500).json({ message: "Error downloading submission" });
+  }
+};
+
+export const approveSubmission = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // Submission ID
+    const userId = getUserId(req);
+
+    // Verify User Role (Admin/Faculty only)
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { role: true },
+    });
+
+    if (
+      user?.role?.name !== "Admin" &&
+      user?.role?.name !== "Faculty" &&
+      user?.role?.name !== "SuperAdmin"
+    ) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    const submission = await (prisma as any).submission.findUnique({
+      where: { id: Number(id) },
+      include: {
+        assignment: { include: { design_stage: true } },
+        student: true,
+      },
+    });
+
+    if (!submission) {
+      return res.status(404).json({ message: "Submission not found" });
+    }
+
+    // Create Resource
+    const resource = await (prisma as any).resource.create({
+      data: {
+        title: submission.assignment.title,
+        author: `${submission.student.first_name} ${submission.student.last_name}`,
+        keywords: [],
+        // Use user's year/batch or assignment's? User usually.
+        forYearStudents: submission.student.year || 0,
+        batch: submission.student.batch,
+        file_path: submission.file_path,
+        file_type: submission.file_type,
+        file_size: submission.file_size,
+        uploader_id: submission.student_id,
+        design_stage_id: submission.assignment.design_stage_id,
+        status: "approved",
+        approved_at: new Date(),
+        priority_tag: "Assignment Output",
+      },
+    });
+
+    // Update submission status
+    await (prisma as any).submission.update({
+      where: { id: Number(id) },
+      data: { status: "approved" },
+    });
+
+    res.status(200).json({
+      message: "Submission approved and added to resources",
+      resource,
+    });
+  } catch (error) {
+    console.error("Approve Submission Error:", error);
+    res.status(500).json({ message: "Failed to approve submission" });
   }
 };

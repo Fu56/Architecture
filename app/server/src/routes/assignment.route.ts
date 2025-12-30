@@ -9,6 +9,7 @@ import {
   downloadAssignmentFile,
   submitAssignment,
   downloadSubmission,
+  approveSubmission,
 } from "../controllers/assignment.controller";
 
 const router = Router();
@@ -27,5 +28,6 @@ router.post(
 router.delete("/:id", requireAuth, deleteAssignment);
 
 router.get("/submissions/:id/download", requireAuth, downloadSubmission);
+router.post("/submissions/:id/approve", requireAuth, approveSubmission);
 
 export default router;

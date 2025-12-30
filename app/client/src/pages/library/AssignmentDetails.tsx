@@ -36,11 +36,21 @@ interface AssignmentWithSubmissions {
   };
   created_at: string;
   updated_at: string;
+  academic_year?: number;
+  semester?: number;
   isPastDeadline?: boolean;
   submissions?: Array<{
     id: number;
     submitted_at: string;
     file_path: string;
+    student?: {
+      id: number;
+      first_name: string;
+      last_name: string;
+      year?: number;
+      batch?: number;
+    };
+    status?: string;
   }>;
 }
 
@@ -114,6 +124,19 @@ const AssignmentDetails = () => {
       );
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleApprove = async (submissionId: number) => {
+    try {
+      await api.post(`/assignments/submissions/${submissionId}/approve`);
+      toast.success("Submission approved and added to resources!");
+      // Refresh
+      const { data } = await api.get(`/assignments/${id}`);
+      setAssignment(data);
+    } catch (error) {
+      console.error("Failed to approve:", error);
+      toast.error("Failed to approve submission.");
     }
   };
 
@@ -343,6 +366,66 @@ const AssignmentDetails = () => {
           )}
         </div>
       )}
+
+      {/* Admin/Faculty Review Section */}
+      {isCreatorOrAdmin &&
+        assignment.submissions &&
+        assignment.submissions.length > 0 && (
+          <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 mb-10">
+            <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
+              <User className="h-6 w-6 text-indigo-600" />
+              Student Submissions
+            </h2>
+            <div className="space-y-4">
+              {assignment.submissions.map((sub) => (
+                <div
+                  key={sub.id}
+                  className="bg-gray-50 rounded-2xl p-6 flex justify-between items-center"
+                >
+                  <div>
+                    <h4 className="font-bold text-gray-900">
+                      {sub.student
+                        ? `${sub.student.first_name} ${sub.student.last_name}`
+                        : "Unknown Student"}
+                    </h4>
+                    <p className="text-sm text-gray-500">
+                      Year {sub.student?.year} | Submitted:{" "}
+                      {new Date(sub.submitted_at).toLocaleDateString()}
+                    </p>
+                    {sub.status === "approved" && (
+                      <span className="inline-block mt-2 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-bold rounded-full">
+                        Approved
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <a
+                      href={`${
+                        import.meta.env.VITE_API_URL
+                      }/assignments/submissions/${
+                        sub.id
+                      }/download?token=${encodeURIComponent(
+                        localStorage.getItem("token") || ""
+                      )}`}
+                      className="p-3 bg-white text-indigo-600 rounded-xl font-bold shadow-sm hover:bg-indigo-50 border border-gray-100"
+                      title="Download"
+                    >
+                      <Download className="h-5 w-5" />
+                    </a>
+                    {sub.status !== "approved" && (
+                      <button
+                        onClick={() => handleApprove(sub.id)}
+                        className="px-4 py-2 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors text-sm"
+                      >
+                        Approve
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
       <div className="bg-indigo-50 rounded-[2.5rem] p-8 border border-indigo-100 flex items-center gap-6">
         <div className="h-16 w-16 bg-white rounded-3xl flex items-center justify-center shadow-sm text-indigo-600">

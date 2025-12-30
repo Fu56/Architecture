@@ -19,6 +19,8 @@ const PostAssignment = () => {
     title: "",
     description: "",
     due_date: "",
+    academic_year: "",
+    semester: "",
     design_stage_id: "",
   });
   const [designStages, setDesignStages] = useState<DesignStage[]>([]);
@@ -64,6 +66,9 @@ const PostAssignment = () => {
     formData.append("title", metadata.title);
     formData.append("description", metadata.description);
     if (metadata.due_date) formData.append("due_date", metadata.due_date);
+    if (metadata.academic_year)
+      formData.append("academic_year", metadata.academic_year);
+    if (metadata.semester) formData.append("semester", metadata.semester);
     if (metadata.design_stage_id)
       formData.append("design_stage_id", metadata.design_stage_id);
 
@@ -133,6 +138,40 @@ const PostAssignment = () => {
                   onChange={handleMetaChange}
                   className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-gray-900"
                 />
+              </div>
+
+              <div>
+                <label className="flex items-center gap-2 text-xs font-black text-gray-400 uppercase tracking-widest mb-3 px-1">
+                  Target Audience
+                </label>
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <select
+                    name="academic_year"
+                    value={metadata.academic_year}
+                    onChange={handleMetaChange}
+                    className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-gray-900"
+                  >
+                    <option value="">Year</option>
+                    {[1, 2, 3, 4, 5].map((y) => (
+                      <option key={y} value={y}>
+                        Year {y}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    name="semester"
+                    value={metadata.semester}
+                    onChange={handleMetaChange}
+                    className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-gray-900"
+                  >
+                    <option value="">Semester</option>
+                    {[1, 2].map((s) => (
+                      <option key={s} value={s}>
+                        Sem {s}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               <div>
