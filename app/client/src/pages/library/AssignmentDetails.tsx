@@ -131,12 +131,25 @@ const AssignmentDetails = () => {
     try {
       await api.post(`/assignments/submissions/${submissionId}/approve`);
       toast.success("Submission approved and added to resources!");
-      // Refresh
       const { data } = await api.get(`/assignments/${id}`);
       setAssignment(data);
     } catch (error) {
       console.error("Failed to approve:", error);
       toast.error("Failed to approve submission.");
+    }
+  };
+
+  const handleReject = async (submissionId: number) => {
+    if (!window.confirm("Are you sure you want to reject this submission?"))
+      return;
+    try {
+      await api.post(`/assignments/submissions/${submissionId}/reject`);
+      toast.success("Submission rejected.");
+      const { data } = await api.get(`/assignments/${id}`);
+      setAssignment(data);
+    } catch (error) {
+      console.error("Failed to reject:", error);
+      toast.error("Failed to reject submission.");
     }
   };
 
@@ -154,7 +167,8 @@ const AssignmentDetails = () => {
   const isCreatorOrAdmin =
     currentUser?.id === assignment.creator.id ||
     role === "Admin" ||
-    role === "SuperAdmin";
+    role === "SuperAdmin" ||
+    role === "Faculty";
 
   const isStudent = role === "Student";
   const hasSubmitted =
@@ -397,6 +411,11 @@ const AssignmentDetails = () => {
                         Approved
                       </span>
                     )}
+                    {sub.status === "rejected" && (
+                      <span className="inline-block mt-2 px-2 py-0.5 bg-red-100 text-red-700 text-xs font-bold rounded-full">
+                        Rejected
+                      </span>
+                    )}
                   </div>
                   <div className="flex gap-2">
                     <a
@@ -408,17 +427,25 @@ const AssignmentDetails = () => {
                         localStorage.getItem("token") || ""
                       )}`}
                       className="p-3 bg-white text-indigo-600 rounded-xl font-bold shadow-sm hover:bg-indigo-50 border border-gray-100"
-                      title="Download"
+                      title="Download to Review"
                     >
                       <Download className="h-5 w-5" />
                     </a>
-                    {sub.status !== "approved" && (
-                      <button
-                        onClick={() => handleApprove(sub.id)}
-                        className="px-4 py-2 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors text-sm"
-                      >
-                        Approve
-                      </button>
+                    {sub.status !== "approved" && sub.status !== "rejected" && (
+                      <>
+                        <button
+                          onClick={() => handleApprove(sub.id)}
+                          className="px-4 py-2 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors text-sm"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          onClick={() => handleReject(sub.id)}
+                          className="px-4 py-2 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition-colors text-sm"
+                        >
+                          Reject
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
