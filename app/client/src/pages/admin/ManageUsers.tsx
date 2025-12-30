@@ -125,7 +125,8 @@ const ManageUsers = () => {
     } catch (err: unknown) {
       console.error("Submit error", err);
       const errorMessage =
-        (err as any).response?.data?.message || "Operation failed";
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Operation failed";
       toast.error(errorMessage);
     } finally {
       setProcessing(false);
