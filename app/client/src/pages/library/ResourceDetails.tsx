@@ -401,6 +401,16 @@ const ResourceDetails = () => {
                   {resource.fileSize.toFixed(2)} MB
                 </span>
               </div>
+              {resource.semester && (
+                <div className="flex justify-between items-center pb-3 border-b border-gray-50">
+                  <span className="text-xs font-black uppercase tracking-widest text-gray-400">
+                    Semester
+                  </span>{" "}
+                  <span className="font-bold text-gray-900">
+                    {resource.semester}
+                  </span>
+                </div>
+              )}
               <div className="flex justify-between items-center pb-3 border-b border-gray-50">
                 <span className="text-xs font-black uppercase tracking-widest text-gray-400">
                   Uploaded

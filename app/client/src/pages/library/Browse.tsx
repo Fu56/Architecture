@@ -19,6 +19,8 @@ const Browse = () => {
       if (filters.fileType) params.append("fileType", filters.fileType);
       if (filters.stage) params.append("stage", filters.stage);
       if (filters.year) params.append("year", filters.year);
+      if (filters.semester) params.append("semester", filters.semester);
+      if (filters.sort) params.append("sort", filters.sort);
 
       const { data } = await api.get(`/resources?${params.toString()}`);
 

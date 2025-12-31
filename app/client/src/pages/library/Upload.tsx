@@ -12,6 +12,7 @@ const Upload = () => {
     keywords: "",
     design_stage_id: "",
     forYearStudents: "",
+    semester: "",
     batch: "",
     isPriority: false,
   });
@@ -86,6 +87,7 @@ const Upload = () => {
     formData.append("keywords", metadata.keywords);
     formData.append("design_stage_id", metadata.design_stage_id);
     formData.append("forYearStudents", metadata.forYearStudents);
+    if (metadata.semester) formData.append("semester", metadata.semester);
     if (metadata.batch) formData.append("batch", metadata.batch);
     if (metadata.isPriority)
       formData.append("priority_tag", "Faculty Priority");
@@ -209,7 +211,7 @@ const Upload = () => {
                   <input
                     type="number"
                     name="forYearStudents"
-                    placeholder="For Year Students (e.g. 1-5)"
+                    placeholder="Year (1-5)"
                     value={metadata.forYearStudents}
                     onChange={handleMetaChange}
                     required
@@ -217,8 +219,16 @@ const Upload = () => {
                   />
                   <input
                     type="number"
+                    name="semester"
+                    placeholder="Semester (1-2)"
+                    value={metadata.semester}
+                    onChange={handleMetaChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                  <input
+                    type="number"
                     name="batch"
-                    placeholder="Batch Year (Optional)"
+                    placeholder="Batch (Opt)"
                     value={metadata.batch}
                     onChange={handleMetaChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"

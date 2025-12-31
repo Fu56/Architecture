@@ -6,6 +6,8 @@ export type FilterState = {
   fileType?: string;
   stage?: string;
   year?: string;
+  semester?: string;
+  sort?: string;
 };
 
 interface FiltersProps {
@@ -99,11 +101,28 @@ const Filters = ({ onFilterChange }: FiltersProps) => {
           <input
             type="number"
             name="year"
-            placeholder="Batch Year (e.g., 2023)"
+            placeholder="Year (e.g., 2023)"
             value={filters.year || ""}
             onChange={handleInputChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
+          <input
+            type="number"
+            name="semester"
+            placeholder="Semester (1-2)"
+            value={filters.semester || ""}
+            onChange={handleInputChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <select
+            name="sort"
+            value={filters.sort || ""}
+            onChange={handleInputChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="">Sort By: Newest</option>
+            <option value="oldest">Sort By: Oldest</option>
+          </select>
         </div>
       )}
     </div>

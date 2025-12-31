@@ -31,6 +31,7 @@ export interface Resource {
   author: string;
   keywords: string[];
   batchYear?: number;
+  semester?: number;
   filePath: string;
   fileType: string;
   fileSize: number;

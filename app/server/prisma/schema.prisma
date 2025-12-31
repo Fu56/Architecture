@@ -59,6 +59,7 @@ model Resource {
     // keyword         String?
     keywords        String[]
     forYearStudents           Int
+    semester        Int?
     batch Int?
     file_path       String
     file_type       String?

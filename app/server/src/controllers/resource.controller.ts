@@ -21,6 +21,7 @@ export const createResource = async (req: Request, res: Response) => {
       design_stage_id,
       priority_tag,
       batch,
+      semester,
     } = req.body;
     const userId = getUserId(req);
 
@@ -53,6 +54,7 @@ export const createResource = async (req: Request, res: Response) => {
         author,
         keywords: keywordList,
         forYearStudents: Number(forYearStudents),
+        semester: semester ? Number(semester) : null,
         batch: batch ? Number(batch) : null,
         file_path: file.path,
         file_type: file.mimetype, // or extension
@@ -84,7 +86,7 @@ export const createResource = async (req: Request, res: Response) => {
 
 export const listResources = async (req: Request, res: Response) => {
   try {
-    const { search, stage, year, type, status } = req.query;
+    const { search, stage, year, type, status, semester, sort } = req.query;
 
     // Build filter
     const where: any = {};
@@ -101,6 +103,7 @@ export const listResources = async (req: Request, res: Response) => {
 
     if (stage) where.design_stage_id = Number(stage);
     if (year) where.forYearStudents = Number(year);
+    if (semester) where.semester = Number(semester);
     if (type) where.file_type = { contains: String(type) };
 
     if (search) {
@@ -111,13 +114,21 @@ export const listResources = async (req: Request, res: Response) => {
       ];
     }
 
+    const orderBy: any[] = [{ priority_tag: "desc" }];
+
+    if (sort === "oldest") {
+      orderBy.push({ uploaded_at: "asc" });
+    } else {
+      orderBy.push({ uploaded_at: "desc" });
+    }
+
     const resources = await prisma.resource.findMany({
       where,
       include: {
         uploader: { select: { first_name: true, last_name: true, role: true } },
         design_stage: true,
       },
-      orderBy: [{ priority_tag: "desc" }, { uploaded_at: "desc" }],
+      orderBy,
     });
 
     const formattedResources = resources.map((r) => ({
@@ -140,6 +151,7 @@ export const listResources = async (req: Request, res: Response) => {
           }
         : null,
       designStage: r.design_stage,
+      semester: r.semester,
       adminComment: (r as any).admin_comment,
     }));
 
@@ -190,6 +202,7 @@ export const getResource = async (req: Request, res: Response) => {
           }
         : null,
       designStage: r.design_stage,
+      semester: r.semester,
       adminComment: (r as any).admin_comment,
       comments: r.comments.map((c) => ({
         id: c.id,
