@@ -13,6 +13,7 @@ import commonRoutes from "./routes/common.routes";
 import notificationRoutes from "./routes/notification.routes";
 import userRoutes from "./routes/user.routes";
 import assignmentRoutes from "./routes/assignment.route";
+import blogRoutes from "./routes/blog.route";
 
 export const app = express();
 
@@ -36,6 +37,7 @@ app.use("/api/common", commonRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/assignments", assignmentRoutes);
+app.use("/api/blogs", blogRoutes);
 
 // Simple ping
 app.get("/api/health", (_req, res) => {

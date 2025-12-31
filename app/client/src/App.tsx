@@ -24,6 +24,8 @@ import AssignmentDetails from "./pages/library/AssignmentDetails";
 import PostAssignment from "./pages/library/PostAssignment";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
+import BlogDetails from "./pages/library/BlogDetails";
+import PostBlog from "./pages/library/PostBlog";
 
 // Placeholder pages for static content
 import AboutUs from "./pages/AboutUs";
@@ -44,6 +46,7 @@ const App = () => {
         <Route path="/explore" element={<Explore />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:id" element={<BlogDetails />} />
         <Route path="/news" element={<News />} />
 
         {/* Protected User Routes */}
@@ -60,6 +63,7 @@ const App = () => {
             <Route path="assignments" element={<Assignments />} />
             <Route path="assignments/:id" element={<AssignmentDetails />} />
             <Route path="assignments/new" element={<PostAssignment />} />
+            <Route path="blog/new" element={<PostBlog />} />
           </Route>
         </Route>
 
@@ -79,6 +83,7 @@ const App = () => {
             <Route path="assignments" element={<Assignments />} />
             <Route path="assignments/:id" element={<AssignmentDetails />} />
             <Route path="assignments/new" element={<PostAssignment />} />
+            <Route path="blog/new" element={<PostBlog />} />
           </Route>
         </Route>
 

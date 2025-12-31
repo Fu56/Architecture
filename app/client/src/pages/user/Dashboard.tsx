@@ -7,6 +7,7 @@ import {
   Library,
   UploadCloud,
   BookOpen,
+  PenTool,
 } from "lucide-react";
 import { getUser } from "../../lib/auth";
 
@@ -16,6 +17,12 @@ const dashboardNavLinks = [
   { name: "My Library", href: "/dashboard/resources", icon: Library },
   { name: "Assignments", href: "/dashboard/assignments", icon: BookOpen },
   { name: "My Uploads", href: "/dashboard/uploads", icon: Upload },
+  {
+    name: "Post Blog",
+    href: "/dashboard/blog/new",
+    icon: PenTool,
+    role: "Faculty",
+  },
   { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
   { name: "Profile", href: "/dashboard/profile", icon: User },
 ];
@@ -59,33 +66,40 @@ const UserDashboard = () => {
               <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 px-2">
                 Menu
               </p>
-              {dashboardNavLinks.map((link) => (
-                <NavLink
-                  key={link.name}
-                  to={link.href}
-                  end={link.exact}
-                  className={({ isActive }) =>
-                    `group flex items-center px-4 py-3 text-sm font-bold rounded-2xl transition-all duration-300 ${
-                      isActive
-                        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 -translate-y-0.5"
-                        : "text-gray-500 hover:text-indigo-600 hover:bg-indigo-50"
-                    }`
-                  }
-                >
-                  <link.icon
-                    className={`mr-3 h-5 w-5 transition-transform duration-300 group-hover:scale-110 ${
-                      (
-                        link.exact
-                          ? location.pathname === link.href
-                          : location.pathname.startsWith(link.href)
-                      )
-                        ? "text-white"
-                        : "text-gray-400 group-hover:text-indigo-500"
-                    }`}
-                  />
-                  <span>{link.name}</span>
-                </NavLink>
-              ))}
+              {dashboardNavLinks
+                .filter(
+                  (link) =>
+                    !link.role ||
+                    user?.role?.name === link.role ||
+                    user?.role === link.role
+                )
+                .map((link) => (
+                  <NavLink
+                    key={link.name}
+                    to={link.href}
+                    end={link.exact}
+                    className={({ isActive }) =>
+                      `group flex items-center px-4 py-3 text-sm font-bold rounded-2xl transition-all duration-300 ${
+                        isActive
+                          ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 -translate-y-0.5"
+                          : "text-gray-500 hover:text-indigo-600 hover:bg-indigo-50"
+                      }`
+                    }
+                  >
+                    <link.icon
+                      className={`mr-3 h-5 w-5 transition-transform duration-300 group-hover:scale-110 ${
+                        (
+                          link.exact
+                            ? location.pathname === link.href
+                            : location.pathname.startsWith(link.href)
+                        )
+                          ? "text-white"
+                          : "text-gray-400 group-hover:text-indigo-500"
+                      }`}
+                    />
+                    <span>{link.name}</span>
+                  </NavLink>
+                ))}
             </nav>
           </div>
         </aside>

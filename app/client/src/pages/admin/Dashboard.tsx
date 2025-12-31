@@ -7,6 +7,7 @@ import {
   UserPlus,
   FileSpreadsheet,
   Library,
+  PenTool,
 } from "lucide-react";
 
 import { getUser } from "../../lib/auth";
@@ -22,6 +23,7 @@ const adminNavLinks = [
   { name: "Register Faculty", href: "/admin/register-faculty", icon: UserPlus },
   { name: "Resource Approvals", href: "/admin/approvals", icon: CheckSquare },
   { name: "Resources", href: "/admin/resources", icon: Library },
+  { name: "Post Blog", href: "/admin/blog/new", icon: PenTool },
   { name: "Flagged Content", href: "/admin/flags", icon: Flag },
 ];
 

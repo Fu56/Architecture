@@ -90,3 +90,15 @@ export interface Assignment {
   created_at: string;
   updated_at: string;
 }
+
+export interface Blog {
+  id: number;
+  title: string;
+  content: string;
+  image_path?: string;
+  published: boolean;
+  tags: string[];
+  author: User;
+  created_at: string;
+  updated_at: string;
+}
