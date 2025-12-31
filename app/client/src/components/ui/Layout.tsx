@@ -114,10 +114,8 @@ const Layout = () => {
                       isScrolled || !isHomePage ? "text-gray-900" : "text-white"
                     }`}
                   >
-                    ARC
-                    <span className="text-indigo-500 underline decoration-2 underline-offset-4">
-                      HIVE
-                    </span>
+                    ARCH
+                    <span className="text-indigo-500 ml-1">VAULT</span>
                   </span>
                   <span
                     className={`text-[10px] font-bold tracking-[0.2em] uppercase transition-colors opacity-60 ${
@@ -126,7 +124,7 @@ const Layout = () => {
                         : "text-white/80"
                     }`}
                   >
-                    Infrastructure
+                    Digital Library
                   </span>
                 </div>
               </Link>
@@ -296,23 +294,13 @@ const Layout = () => {
                   <div className="flex items-center gap-3">
                     <Link
                       to="/login"
-                      className={`px-5 py-2.5 text-sm font-bold tracking-tight rounded-full border transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] ${
+                      className={`px-6 py-2.5 text-sm font-black tracking-tight rounded-full shadow-lg transition-all duration-300 hover:scale-[1.05] active:scale-[0.95] ${
                         isScrolled || !isHomePage
-                          ? "border-gray-200 text-gray-700 hover:border-indigo-600 hover:text-indigo-600 hover:bg-indigo-50"
-                          : "border-white/30 text-white hover:bg-white/10 hover:border-white/50"
+                          ? "bg-indigo-600 text-white shadow-indigo-600/30 hover:bg-indigo-700"
+                          : "bg-white text-indigo-600 hover:bg-gray-50 shadow-white/20"
                       }`}
                     >
                       Sign In
-                    </Link>
-                    <Link
-                      to="/register"
-                      className={`px-5 py-2.5 text-sm font-black tracking-tight rounded-full shadow-lg shadow-indigo-600/20 transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] ${
-                        isScrolled || !isHomePage
-                          ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                          : "bg-white text-indigo-600 hover:bg-gray-50"
-                      }`}
-                    >
-                      Join Now
                     </Link>
                   </div>
                 )}
@@ -390,20 +378,13 @@ const Layout = () => {
 
               <div className="pt-8 border-t border-gray-100">
                 {!isAuthenticated() && (
-                  <div className="grid grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1">
                     <Link
                       to="/login"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="w-full py-5 text-center font-bold text-gray-600 bg-gray-50 rounded-2xl"
-                    >
-                      Sign In
-                    </Link>
-                    <Link
-                      to="/register"
-                      onClick={() => setMobileMenuOpen(false)}
                       className="w-full py-5 text-center font-black text-white bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-600/20"
                     >
-                      Get Started
+                      Sign In
                     </Link>
                   </div>
                 )}
