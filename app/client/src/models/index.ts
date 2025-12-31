@@ -8,18 +8,17 @@ export interface Role {
 
 export interface User {
   id: number;
-  firstName: string;
-  lastName: string;
-  first_name?: string; // Backend compatibility
-  last_name?: string; // Backend compatibility
+  firstName?: string;
+  lastName?: string;
+  first_name?: string;
+  last_name?: string;
   email: string;
-  collegeId: string;
-  universityId?: string;
+  university_id?: string;
   role: Role | string;
   status: string;
   batch?: number;
   year?: number;
-  createdAt: string; // Dates are strings over the API
+  createdAt?: string;
 }
 
 export interface DesignStage {

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { api } from "../../lib/api";
-import { UserPlus, Loader2, CheckCircle } from "lucide-react";
+import { UserPlus, Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 interface FacultyFormData {
   first_name: string;
@@ -21,8 +22,6 @@ const RegisterFaculty = () => {
     specialization: "",
   });
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -30,8 +29,6 @@ const RegisterFaculty = () => {
       ...prev,
       [name]: value,
     }));
-    setError("");
-    setSuccess(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,30 +41,30 @@ const RegisterFaculty = () => {
       !formData.email ||
       !formData.password
     ) {
-      setError("Please fill in all required fields");
+      toast.warning(
+        "Missing identity fields: All required protocols must be filled"
+      );
       return;
     }
 
     if (!formData.email.includes("@")) {
-      setError("Please enter a valid email address");
+      toast.warning("Invalid credential format: Studio email required");
       return;
     }
 
     if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters");
+      toast.warning("Security breach: Password must be at least 6 characters");
       return;
     }
 
     setLoading(true);
-    setError("");
 
     try {
       await api.post("/admin/users/register-faculty", {
         ...formData,
         role: "Faculty",
       });
-
-      setSuccess(true);
+      toast.success("Faculty node successfully integrated into system");
       // Reset form
       setFormData({
         first_name: "",
@@ -77,13 +74,11 @@ const RegisterFaculty = () => {
         department: "",
         specialization: "",
       });
-
-      // Clear success message after 3 seconds
-      setTimeout(() => setSuccess(false), 3000);
-    } catch (err) {
+    } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      setError(
-        error.response?.data?.message || "Failed to register faculty member"
+      toast.error(
+        error.response?.data?.message ||
+          "Protocol Error: Faculty registration failed"
       );
     } finally {
       setLoading(false);
@@ -110,25 +105,6 @@ const RegisterFaculty = () => {
           Add a new faculty member to the system
         </p>
       </div>
-
-      {/* Success Message */}
-      {success && (
-        <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
-          <div className="flex items-center">
-            <CheckCircle className="h-5 w-5 text-green-600" />
-            <p className="ml-3 text-sm font-medium text-green-800">
-              Faculty member registered successfully!
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Error Message */}
-      {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-sm text-red-800">{error}</p>
-        </div>
-      )}
 
       {/* Form */}
       <form

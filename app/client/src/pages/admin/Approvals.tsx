@@ -3,6 +3,7 @@ import { api } from "../../lib/api";
 import type { Resource } from "../../models";
 import { Loader2, Check, X, Eye, CheckSquare } from "lucide-react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Approvals = () => {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -43,9 +44,11 @@ const Approvals = () => {
           reason: feedback,
         });
       }
+      toast.success(`Resource ${status} successfully`);
     } catch (err) {
       console.error(`Failed to set status to ${status}:`, err);
-      // Optional: fetch resources again to revert state if failed
+      toast.error(`Failed to ${status} resource`);
+      // Re-fetch logic or revert optimistic UI
     }
   };
 

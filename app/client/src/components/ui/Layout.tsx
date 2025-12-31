@@ -26,7 +26,7 @@ import {
   currentRole,
 } from "../../lib/auth";
 import Footer from "./Footer";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Layout = () => {
@@ -62,6 +62,7 @@ const Layout = () => {
     clearToken();
     localStorage.removeItem("user");
     setUserMenuOpen(false);
+    toast.info("Session terminated. Securely logged out.");
     navigate("/login");
   };
 

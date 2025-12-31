@@ -14,6 +14,7 @@ import {
   Briefcase,
   Sparkles,
 } from "lucide-react";
+import { toast } from "react-toastify";
 import { api } from "../lib/api";
 import type { Resource, Blog } from "../models";
 import ResourceCard from "../components/ui/ResourceCard";
@@ -98,10 +99,11 @@ const Home = () => {
     e.preventDefault();
     if (email.trim()) {
       setSubscribed(true);
+      toast.success("Newsletter subscription activated.");
       setTimeout(() => {
         setSubscribed(false);
         setEmail("");
-      }, 3000);
+      }, 5000);
     }
   };
 

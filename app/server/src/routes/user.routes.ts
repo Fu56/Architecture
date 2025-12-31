@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { requireAuth } from "../middleware/auth";
 import { prisma } from "../config/db";
+import { updateProfile, changePassword } from "../controllers/user.controller";
 
 const router = Router();
 
@@ -45,5 +46,8 @@ router.get("/resources", requireAuth, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+router.patch("/profile", requireAuth, updateProfile);
+router.patch("/change-password", requireAuth, changePassword);
 
 export default router;

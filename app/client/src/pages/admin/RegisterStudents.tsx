@@ -8,6 +8,7 @@ import {
   Loader2,
   Download,
 } from "lucide-react";
+import { toast } from "react-toastify";
 
 interface StudentRow {
   first_name: string;
@@ -145,6 +146,9 @@ const RegisterStudents = () => {
 
       // Clear form after successful upload
       if (response.data.success > 0) {
+        toast.success(
+          `Registered ${response.data.success} students successfully`
+        );
         setFile(null);
         setPreview([]);
         setValidationResult(null);
@@ -152,7 +156,10 @@ const RegisterStudents = () => {
     } catch (err) {
       const error = err as { response?: { data?: { message?: string } } };
       console.error("Upload error:", error);
-      alert(error.response?.data?.message || "Failed to register students");
+      toast.error(
+        error.response?.data?.message ||
+          "Protocol Error: Student registration failed"
+      );
     } finally {
       setLoading(false);
     }

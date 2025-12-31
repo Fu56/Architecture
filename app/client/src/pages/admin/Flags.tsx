@@ -3,6 +3,7 @@ import { api } from "../../lib/api";
 import type { Flag as FlagModel } from "../../models";
 import { Loader2, Eye, Archive, ShieldCheck, Flag, User } from "lucide-react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Flags = () => {
   const [flags, setFlags] = useState<FlagModel[]>([]);
@@ -30,8 +31,10 @@ const Flags = () => {
     setFlags((prev) => prev.filter((f) => f.id !== flagId));
     try {
       await api.patch(`/admin/flags/${flagId}/resolve`, { status: "resolved" });
+      toast.success("Flag dismissed successfully");
     } catch (err) {
       console.error("Failed to resolve flag:", err);
+      toast.error("Failed to dismiss flag");
       // Refresh to be safe
       const { data } = await api.get("/admin/flags");
       if (data && Array.isArray(data.flags)) setFlags(data.flags);
@@ -44,8 +47,10 @@ const Flags = () => {
     try {
       await api.patch(`/admin/resources/${resourceId}/archive`);
       await api.patch(`/admin/flags/${flagId}/resolve`, { status: "resolved" });
+      toast.success("Resource archived and flag resolved");
     } catch (err) {
       console.error("Failed to archive resource:", err);
+      toast.error("Failed to archive resource");
     }
   };
 
