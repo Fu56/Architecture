@@ -19,14 +19,17 @@ router.post(
   upload.single("image"),
   createBlog
 );
+
 router.get("/", listBlogs);
 router.get("/:id", getBlog);
+
 router.put(
   "/:id",
   requireAuth,
   requireRole(["Admin", "SuperAdmin", "Faculty"]),
   updateBlog
 );
+
 router.delete(
   "/:id",
   requireAuth,
