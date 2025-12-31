@@ -21,20 +21,19 @@ const Upload = () => {
   const [isReady] = useState(() => {
     return !!localStorage.getItem("token") && !!localStorage.getItem("user");
   });
-  const [userRole, setUserRole] = useState("");
-  const navigate = useNavigate();
-
-  useEffect(() => {
+  const [userRole] = useState(() => {
     const userStr = localStorage.getItem("user");
     if (userStr) {
       try {
         const user = JSON.parse(userStr);
-        setUserRole(user.role?.name || "");
-      } catch (e) {
+        return user.role?.name || "";
+      } catch {
         console.error("Failed to parse user");
       }
     }
-  }, []);
+    return "";
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isReady) {
@@ -66,8 +65,8 @@ const Upload = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
-    // @ts-ignore
-    const val = type === "checkbox" ? e.target.checked : value;
+    const val =
+      type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
     setMetadata({ ...metadata, [name]: val });
   };
 
