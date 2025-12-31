@@ -26,8 +26,10 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
 
 // Placeholder pages for static content
-const About = () => <div className="container mx-auto py-8">About Us Page</div>;
-const Blog = () => <div className="container mx-auto py-8">Blog Page</div>;
+import AboutUs from "./pages/AboutUs";
+import Blog from "./pages/Blog";
+import Explore from "./pages/Explore";
+import News from "./pages/News";
 
 const App = () => {
   return (
@@ -39,8 +41,10 @@ const App = () => {
         <Route path="/resources/:id" element={<ResourceDetails />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/explore" element={<Explore />} />
+        <Route path="/about" element={<AboutUs />} />
         <Route path="/blog" element={<Blog />} />
+        <Route path="/news" element={<News />} />
 
         {/* Protected User Routes */}
         <Route element={<ProtectedRoute />}>

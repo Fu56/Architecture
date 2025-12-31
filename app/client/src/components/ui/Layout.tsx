@@ -66,9 +66,11 @@ const Layout = () => {
   };
 
   const navLinks = [
-    { name: "Browse", href: "/browse" },
-    { name: "Insights", href: "/blog" },
-    { name: "About", href: "/about" },
+    { name: "Browse Resource", href: "/browse" },
+    { name: "Explore", href: "/explore" },
+    { name: "About Us", href: "/about" },
+    { name: "Blog", href: "/blog" },
+    { name: "News", href: "/news" },
   ];
 
   const isHomePage = location.pathname === "/";
@@ -294,10 +296,10 @@ const Layout = () => {
                   <div className="flex items-center gap-3">
                     <Link
                       to="/login"
-                      className={`text-sm font-bold tracking-tight transition-colors ${
+                      className={`px-5 py-2.5 text-sm font-bold tracking-tight rounded-full border transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] ${
                         isScrolled || !isHomePage
-                          ? "text-gray-600 hover:text-indigo-600"
-                          : "text-white hover:text-indigo-200"
+                          ? "border-gray-200 text-gray-700 hover:border-indigo-600 hover:text-indigo-600 hover:bg-indigo-50"
+                          : "border-white/30 text-white hover:bg-white/10 hover:border-white/50"
                       }`}
                     >
                       Sign In
