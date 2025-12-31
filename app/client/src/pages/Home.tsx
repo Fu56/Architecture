@@ -503,83 +503,134 @@ const Home = () => {
       </section>
 
       {/* Top Rated Resources */}
-      <section className="py-32 bg-gray-50">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="flex items-end justify-between mb-20">
-            <div>
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-600 mb-2 block">
-                Curation
-              </span>
-              <h2 className="text-5xl font-black tracking-tighter text-gray-900 uppercase">
-                Top Rated
+      <section className="py-40 bg-white relative overflow-hidden">
+        {/* Subtle Decorative Elements */}
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-50 -skew-x-12 translate-x-1/2 z-0" />
+
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-8">
+            <div className="max-w-2xl">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-[1px] bg-indigo-600" />
+                <span className="text-[11px] font-black uppercase tracking-[0.4em] text-indigo-600">
+                  Global Curation
+                </span>
+              </div>
+              <h2 className="text-5xl md:text-6xl font-black tracking-tighter text-slate-900 leading-none uppercase">
+                SPOTLIGHT <br />{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+                  RESOURCES.
+                </span>
               </h2>
+              <p className="text-slate-500 mt-8 text-lg font-medium max-w-xl">
+                The most downloaded and peer-reviewed architectural artifacts
+                across the global network this week.
+              </p>
             </div>
+
             <Link
               to="/browse"
-              className="text-sm font-black uppercase tracking-widest text-gray-400 hover:text-indigo-600 transition-colors"
+              className="group flex items-center gap-4 px-10 py-5 bg-slate-900 hover:bg-indigo-600 text-white rounded-2xl transition-all shadow-xl shadow-slate-900/20 active:scale-95"
             >
-              Browse All Resources
+              <span className="text-xs font-black uppercase tracking-[0.2em]">
+                Explore Gallery
+              </span>
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
-          <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-            {topResources.map((resource) => (
-              <ResourceCard key={resource.id} resource={resource} />
-            ))}
-          </div>
+
+          {topResources.length > 0 ? (
+            <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+              {topResources.map((resource) => (
+                <div
+                  key={resource.id}
+                  className="animate-in fade-in slide-in-from-bottom-8 duration-700"
+                >
+                  <ResourceCard resource={resource} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="py-24 bg-slate-50 rounded-[3.5rem] border border-dashed border-slate-200 flex flex-col items-center text-center">
+              <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center shadow-sm mb-6">
+                <Layers className="h-10 w-10 text-slate-300" />
+              </div>
+              <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tight">
+                Synchronizing Data
+              </h3>
+              <p className="text-slate-400 font-medium">
+                Fetching the latest architectural benchmarks from the CDN...
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
       {/* Faculty Insights & News */}
-      <section className="py-32">
+      <section className="py-40 bg-white">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="flex flex-col lg:flex-row gap-24">
             {/* Blogs */}
             <div className="lg:w-2/3">
-              <div className="mb-16">
-                <h2 className="text-5xl font-black tracking-tighter text-gray-900 leading-none">
+              <div className="mb-20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-[1px] bg-slate-900" />
+                  <span className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-900">
+                    Research & Perspectives
+                  </span>
+                </div>
+                <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-slate-900 leading-[0.9]">
                   FACULTY <br />
-                  <span className="text-indigo-600">RESEARCH.</span>
+                  <span className="text-indigo-600">INSIGHTS.</span>
                 </h2>
               </div>
-              <div className="grid gap-12 sm:grid-cols-2">
+
+              <div className="grid gap-16 sm:grid-cols-2">
                 {blogs.map((blog) => (
-                  <article key={blog.id} className="group cursor-pointer">
-                    <div className="aspect-[4/3] rounded-[2.5rem] overflow-hidden mb-8 shadow-2xl relative">
-                      <img
-                        src={
-                          blog.image_path
-                            ? `${import.meta.env.VITE_API_URL}/${
-                                blog.image_path
-                              }`
-                            : "/assets/blog-placeholder.png"
-                        }
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                        alt={blog.title}
-                      />
-                      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
-                    </div>
-                    <div className="space-y-4">
-                      <div className="flex gap-3">
+                  <article key={blog.id} className="group">
+                    <Link to={`/blog/${blog.id}`} className="block">
+                      <div className="relative aspect-[4/3] rounded-[3rem] overflow-hidden mb-10 shadow-2xl group-hover:shadow-indigo-500/10 transition-all duration-700">
+                        <img
+                          src={
+                            blog.image_path
+                              ? `${import.meta.env.VITE_API_URL}/${
+                                  blog.image_path
+                                }`
+                              : "/assets/blog-placeholder.png"
+                          }
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+                          alt={blog.title}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                        <div className="absolute bottom-6 left-6 right-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                          <div className="px-6 py-3 bg-white/20 backdrop-blur-md rounded-2xl border border-white/20 text-white text-xs font-black uppercase tracking-widest text-center">
+                            Read Publication
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                    <div className="space-y-5">
+                      <div className="flex gap-4">
                         {blog.tags.slice(0, 2).map((tag) => (
                           <span
                             key={tag}
-                            className="text-[10px] font-black uppercase tracking-widest text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full"
+                            className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-full"
                           >
                             {tag}
                           </span>
                         ))}
                       </div>
-                      <h3 className="text-2xl font-black tracking-tight text-gray-900 group-hover:text-indigo-600 transition-colors">
+                      <h3 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900 group-hover:text-indigo-600 transition-colors leading-tight">
                         {blog.title}
                       </h3>
-                      <p className="text-gray-500 line-clamp-2 text-sm font-medium">
-                        {blog.content.slice(0, 100)}...
+                      <p className="text-slate-500 line-clamp-2 text-base font-medium leading-relaxed">
+                        {blog.content.slice(0, 120)}...
                       </p>
                       <Link
                         to={`/blog/${blog.id}`}
-                        className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-gray-950"
+                        className="inline-flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.2em] text-slate-900 hover:text-indigo-600 transition-all"
                       >
-                        Read More <ArrowUpRight className="h-4 w-4" />
+                        Explore Story <ArrowUpRight className="h-4 w-4" />
                       </Link>
                     </div>
                   </article>
@@ -587,33 +638,48 @@ const Home = () => {
               </div>
             </div>
 
-            {/* News Sidebar */}
+            {/* News Sidebar - High End Journal Style */}
             <div className="lg:w-1/3">
-              <div className="bg-slate-900 p-12 rounded-[3.5rem] text-white space-y-12">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-black uppercase tracking-tighter">
-                    Journal
-                  </h3>
-                  <Calendar className="h-6 w-6 text-indigo-400" />
+              <div className="bg-slate-950 p-12 rounded-[4rem] text-white space-y-16 shadow-2xl relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/10 blur-[100px] -translate-y-1/2 translate-x-1/2" />
+
+                <div className="relative z-10 flex items-center justify-between pb-8 border-b border-white/10">
+                  <div>
+                    <h3 className="text-3xl font-black uppercase tracking-tighter mb-1">
+                      Journal
+                    </h3>
+                    <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.3em]">
+                      Issue No. 42
+                    </p>
+                  </div>
+                  <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
+                    <Calendar className="h-6 w-6 text-indigo-400" />
+                  </div>
                 </div>
-                <div className="space-y-10">
+
+                <div className="relative z-10 space-y-12">
                   {news.map((item) => (
                     <div
                       key={item.id}
-                      className="group cursor-pointer space-y-2"
+                      className="group/news cursor-pointer space-y-4"
                     >
-                      <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-gray-500">
-                        <span>{item.source}</span>
-                        <span>{item.time}</span>
+                      <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest">
+                        <span className="text-indigo-400 px-2 py-0.5 bg-indigo-400/10 rounded">
+                          Live
+                        </span>
+                        <span className="text-white/30">{item.source}</span>
+                        <span className="text-white/10">•</span>
+                        <span className="text-white/30">{item.time}</span>
                       </div>
-                      <h4 className="text-lg font-bold group-hover:text-indigo-400 transition-colors leading-tight">
+                      <h4 className="text-xl font-bold group-hover/news:text-indigo-400 transition-colors leading-snug">
                         {item.title}
                       </h4>
                     </div>
                   ))}
                 </div>
-                <button className="w-full py-5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-[1.5rem] text-[12px] font-black uppercase tracking-[0.2em] transition-all">
-                  View Full Feed
+
+                <button className="relative z-10 w-full py-6 bg-white text-slate-950 hover:bg-indigo-600 hover:text-white rounded-[2rem] text-[11px] font-black uppercase tracking-[0.3em] transition-all duration-500 shadow-xl shadow-white/5">
+                  View Full Journal
                 </button>
               </div>
             </div>
@@ -621,40 +687,61 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Newsletter Section */}
-      <section className="py-24 bg-indigo-600">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="bg-white/10 backdrop-blur-3xl rounded-[4rem] p-16 border border-white/20 flex flex-col lg:flex-row items-center gap-16">
+      {/* Newsletter Section - Geometric Glassmorphism */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-slate-950 z-0" />
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_35%,rgba(79,70,229,0.2),transparent_50%)]" />
+
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
+          <div className="bg-white/5 backdrop-blur-3xl rounded-[5rem] p-16 sm:p-24 border border-white/10 flex flex-col lg:flex-row items-center gap-20">
             <div className="lg:w-1/2 text-white">
-              <h2 className="text-5xl font-black tracking-tighter mb-6">
-                UNBOX INNOVATION.
+              <div className="inline-flex items-center gap-3 px-4 py-2 bg-indigo-600/20 border border-indigo-500/30 rounded-full text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-8">
+                <Sparkles className="h-3 w-3" /> Monthly Publication
+              </div>
+              <h2 className="text-5xl md:text-6xl font-black tracking-tighter mb-8 leading-[0.9]">
+                UNBOX <br />{" "}
+                <span className="text-indigo-400">INNOVATION.</span>
               </h2>
-              <p className="text-xl text-indigo-100 font-medium">
-                Get monthly digests of the best architectural thesis, BIM
-                families, and technical articles.
+              <p className="text-xl text-white/50 font-medium leading-relaxed max-w-md">
+                Get monthly curated digests of top-tier thesis, BIM families,
+                and technical insights directly to your studio.
               </p>
             </div>
+
             <div className="lg:w-1/2 w-full">
               {subscribed ? (
-                <div className="bg-white text-indigo-600 p-8 rounded-[2rem] text-center font-black animate-bounce shadow-2xl">
-                  SUBSCRIBED SUCCESSFULLY!
+                <div className="bg-emerald-500 text-white p-12 rounded-[3rem] text-center font-black animate-in zoom-in-95 duration-500 shadow-2xl flex flex-col items-center gap-4">
+                  <ShieldCheck className="h-12 w-12" />
+                  <span className="text-2xl uppercase tracking-tighter leading-none">
+                    Subscription Active
+                  </span>
+                  <p className="text-xs text-white/80 font-bold uppercase tracking-widest mt-2">
+                    Welcome to the inner circle.
+                  </p>
                 </div>
               ) : (
-                <form onSubmit={handleSubscribe} className="relative group">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter architectural email"
-                    required
-                    className="w-full h-24 bg-white rounded-[2rem] pl-10 pr-40 text-lg font-bold text-gray-900 outline-none focus:ring-8 focus:ring-white/20 transition-all shadow-2xl"
-                  />
-                  <button
-                    type="submit"
-                    className="absolute right-4 top-4 bottom-4 px-10 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg active:scale-95"
-                  >
-                    Subscribe
-                  </button>
+                <form onSubmit={handleSubscribe} className="space-y-6">
+                  <div className="relative group">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-[2.5rem] blur opacity-20 group-focus-within:opacity-40 transition" />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter studio email..."
+                      required
+                      className="relative w-full h-24 bg-white/5 border border-white/10 rounded-[2.2rem] pl-10 pr-40 text-lg font-bold text-white placeholder:text-white/20 outline-none focus:ring-4 focus:ring-indigo-500/20 transition-all shadow-2xl"
+                    />
+                    <button
+                      type="submit"
+                      className="absolute right-4 top-4 bottom-4 px-12 bg-indigo-600 hover:bg-white hover:text-slate-950 text-white font-black uppercase tracking-widest rounded-[1.8rem] transition-all duration-500 shadow-lg active:scale-95"
+                    >
+                      Join Now
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-white/20 font-bold uppercase tracking-[0.2em] text-center px-10">
+                    Secure & Encrypted • Zero Spam Guarantee • Unsubscribe
+                    Anytime
+                  </p>
                 </form>
               )}
             </div>
@@ -663,47 +750,72 @@ const Home = () => {
       </section>
 
       {/* Categories & Global CDN */}
-      <section className="py-32 bg-white">
+      <section className="py-40 bg-white">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-32">
             {categories.map((cat) => (
               <Link
                 key={cat.name}
                 to={`/browse?category=${cat.name}`}
-                className="p-10 bg-slate-50 rounded-[2.5rem] hover:bg-indigo-50 transition-all group"
+                className="relative p-12 bg-slate-50 rounded-[3.5rem] hover:bg-slate-900 transition-all duration-500 group overflow-hidden border border-slate-100"
               >
-                <div className="text-4xl mb-4 group-hover:scale-125 transition-transform">
-                  {cat.icon}
+                <div className="relative z-10">
+                  <div className="text-5xl mb-6 group-hover:scale-125 group-hover:-rotate-12 transition-transform duration-500">
+                    {cat.icon}
+                  </div>
+                  <h4 className="text-2xl font-black text-slate-900 group-hover:text-white transition-colors tracking-tight uppercase">
+                    {cat.name}
+                  </h4>
+                  <div className="mt-4 flex items-center justify-between">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-white/40">
+                      {cat.count} Artifacts
+                    </p>
+                    <ArrowRight className="h-4 w-4 text-indigo-600 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0" />
+                  </div>
                 </div>
-                <h4 className="text-xl font-bold text-gray-900">{cat.name}</h4>
-                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                  {cat.count} Artifacts
-                </p>
+                {/* Decorative background element */}
+                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-600/5 rounded-full blur-3xl group-hover:bg-indigo-600/20 transition-all" />
               </Link>
             ))}
           </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-between pt-20 border-t border-slate-100 gap-8">
-            <div className="flex items-center gap-6">
+          <div className="flex flex-col md:flex-row items-center justify-between pt-24 border-t border-slate-100 gap-12">
+            <div className="flex flex-col sm:flex-row items-center gap-8">
               <div className="flex -space-x-4">
-                {[1, 2, 3, 4].map((i) => (
+                {[1, 2, 3, 4, 5].map((i) => (
                   <div
                     key={i}
-                    className="w-12 h-12 rounded-full border-4 border-white bg-slate-200 overflow-hidden"
+                    className="w-14 h-14 rounded-full border-[6px] border-white bg-slate-100 overflow-hidden shadow-lg"
                   >
-                    <img src={`https://i.pravatar.cc/150?u=${i}`} alt="user" />
+                    <img
+                      src={`https://i.pravatar.cc/150?u=${i + 20}`}
+                      alt="user"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 ))}
               </div>
-              <p className="text-sm font-bold text-slate-500">
-                Trusted by 5,000+ Students & Faculty
-              </p>
+              <div className="text-center sm:text-left">
+                <p className="text-xl font-black text-slate-900 tracking-tight leading-none mb-1">
+                  5,000+ AND GROWING.
+                </p>
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.3em]">
+                  Verified Students & Faculty Globally
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-3 px-6 py-3 bg-slate-50 rounded-full border border-slate-100">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">
-                ArchVault CDN: Hong Kong Region
-              </span>
+
+            <div className="flex items-center gap-5 px-8 py-4 bg-slate-950 rounded-full border border-white/10 shadow-2xl relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
+              <div className="flex flex-col">
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">
+                  ARCHVAULT CDN
+                </span>
+                <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest">
+                  Active Region: Hong Kong High-Speed
+                </span>
+              </div>
             </div>
           </div>
         </div>
