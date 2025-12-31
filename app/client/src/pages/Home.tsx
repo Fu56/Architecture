@@ -381,64 +381,122 @@ const Home = () => {
       </section>
 
       {/* Explore Platform Sections */}
-      <section className="py-32">
+      <section className="py-40 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-50 via-white to-slate-100">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="grid lg:grid-cols-3 gap-8">
-            <div className="group bg-slate-50 p-10 rounded-[3rem] border border-slate-100 transition-all hover:bg-white hover:shadow-2xl hover:-translate-y-2">
-              <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center shadow-lg mb-8 group-hover:bg-indigo-600 group-hover:text-white transition-all">
-                <Trophy className="h-8 w-8" />
+          <div className="text-center mb-24">
+            <span className="text-[11px] font-black uppercase tracking-[0.4em] text-indigo-500 mb-4 block">
+              Core Ecosystem
+            </span>
+            <h2 className="text-5xl md:text-6xl font-black tracking-tighter text-slate-900 uppercase">
+              The Architecture <br />{" "}
+              <span className="text-indigo-600">Standard.</span>
+            </h2>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-10">
+            {/* Elite Projects */}
+            <div className="group relative bg-white p-12 rounded-[3.5rem] border border-slate-100 transition-all hover:shadow-[0_40px_80px_-20px_rgba(79,70,229,0.15)] hover:-translate-y-3 overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                <Trophy className="h-32 w-32" />
               </div>
-              <h3 className="text-2xl font-black tracking-tight text-gray-900 mb-4">
-                Elite Projects
-              </h3>
-              <p className="text-gray-500 leading-relaxed font-medium mb-8">
-                Explore award-winning architectural designs and research papers
-                from top-tier students.
-              </p>
-              <Link
-                to="/browse?sort=top"
-                className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-indigo-600 hover:gap-4 transition-all"
-              >
-                View Projects <ArrowRight className="h-4 w-4" />
-              </Link>
+              <div className="relative z-10">
+                <div className="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-10 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-lg shadow-indigo-100">
+                  <Trophy className="h-8 w-8" />
+                </div>
+                <h3 className="text-2xl font-black tracking-tight text-slate-900 mb-4 uppercase">
+                  Elite Projects
+                </h3>
+                <p className="text-slate-500 leading-relaxed font-medium mb-10 text-lg">
+                  Explore award-winning architectural designs and research
+                  papers from top-tier students worldwide.
+                </p>
+                <div className="flex flex-col gap-4 mb-10 text-sm font-bold text-slate-400">
+                  <span className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />{" "}
+                    Peer-Reviewed Designs
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />{" "}
+                    Thesis Gold Standards
+                  </span>
+                </div>
+                <Link
+                  to="/browse?sort=top"
+                  className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-indigo-600 hover:gap-4 transition-all"
+                >
+                  View Archive <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
             </div>
 
-            <div className="group bg-slate-50 p-10 rounded-[3rem] border border-slate-100 transition-all hover:bg-white hover:shadow-2xl hover:-translate-y-2">
-              <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center shadow-lg mb-8 group-hover:bg-purple-600 group-hover:text-white transition-all">
-                <Briefcase className="h-8 w-8" />
+            {/* Course Assignments */}
+            <div className="group relative bg-white p-12 rounded-[3.5rem] border border-slate-100 transition-all hover:shadow-[0_40px_80px_-20px_rgba(168,85,247,0.15)] hover:-translate-y-3 overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                <Briefcase className="h-32 w-32" />
               </div>
-              <h3 className="text-2xl font-black tracking-tight text-gray-900 mb-4">
-                Course Assignments
-              </h3>
-              <p className="text-gray-500 leading-relaxed font-medium mb-8">
-                Access structured coursework and reference materials provided by
-                faculty members.
-              </p>
-              <Link
-                to="/dashboard/assignments"
-                className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-purple-600 hover:gap-4 transition-all"
-              >
-                Get Started <ArrowRight className="h-4 w-4" />
-              </Link>
+              <div className="relative z-10">
+                <div className="w-16 h-16 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-10 group-hover:bg-purple-600 group-hover:text-white transition-all shadow-lg shadow-purple-100">
+                  <Briefcase className="h-8 w-8" />
+                </div>
+                <h3 className="text-2xl font-black tracking-tight text-slate-900 mb-4 uppercase">
+                  Faculty Benchmarks
+                </h3>
+                <p className="text-slate-500 leading-relaxed font-medium mb-10 text-lg">
+                  Access structured coursework and verified professional
+                  reference materials provided by senior faculty.
+                </p>
+                <div className="flex flex-col gap-4 mb-10 text-sm font-bold text-slate-400">
+                  <span className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-purple-500" />{" "}
+                    Syllabus Alignment
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-purple-500" />{" "}
+                    Studio Guidelines
+                  </span>
+                </div>
+                <Link
+                  to="/dashboard/assignments"
+                  className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-purple-600 hover:gap-4 transition-all"
+                >
+                  Direct Access <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
             </div>
 
-            <div className="group bg-slate-50 p-10 rounded-[3rem] border border-slate-100 transition-all hover:bg-white hover:shadow-2xl hover:-translate-y-2">
-              <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center shadow-lg mb-8 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                <ShieldCheck className="h-8 w-8" />
+            {/* Verified Platform */}
+            <div className="group relative bg-slate-900 p-12 rounded-[3.5rem] transition-all hover:shadow-[0_40px_80px_-20px_rgba(15,23,42,0.3)] hover:-translate-y-3 overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-10">
+                <ShieldCheck className="h-32 w-32 text-indigo-500" />
               </div>
-              <h3 className="text-2xl font-black tracking-tight text-gray-900 mb-4">
-                Verified Platform
-              </h3>
-              <p className="text-gray-500 leading-relaxed font-medium mb-8">
-                A secure ecosystem with peer-reviewed content and intellectual
-                property protection.
-              </p>
-              <Link
-                to="/register"
-                className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-blue-600 hover:gap-4 transition-all"
-              >
-                Join Network <ArrowRight className="h-4 w-4" />
-              </Link>
+              <div className="relative z-10">
+                <div className="w-16 h-16 bg-white/10 text-white rounded-2xl flex items-center justify-center mb-10 group-hover:bg-indigo-600 transition-all shadow-lg">
+                  <ShieldCheck className="h-8 w-8" />
+                </div>
+                <h3 className="text-2xl font-black tracking-tight text-white mb-4 uppercase">
+                  Verified Trust
+                </h3>
+                <p className="text-slate-400 leading-relaxed font-medium mb-10 text-lg">
+                  A high-security ecosystem ensuring intellectual property
+                  protection and content authenticity for all users.
+                </p>
+                <div className="flex flex-col gap-4 mb-10 text-sm font-bold text-slate-500">
+                  <span className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-400" />{" "}
+                    End-to-End Encryption
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-400" />{" "}
+                    Copyright Protection
+                  </span>
+                </div>
+                <Link
+                  to="/about"
+                  className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-white hover:text-indigo-400 hover:gap-4 transition-all"
+                >
+                  Learn More <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
