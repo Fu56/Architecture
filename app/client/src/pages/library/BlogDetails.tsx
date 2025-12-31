@@ -84,7 +84,9 @@ const BlogDetails = () => {
                   {blog.author.firstName} {blog.author.lastName}
                 </p>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                  {blog.author.role?.name || "Architectural Contributor"}
+                  {typeof blog.author.role === "object"
+                    ? blog.author.role.name
+                    : blog.author.role || "Architectural Contributor"}
                 </p>
               </div>
             </div>

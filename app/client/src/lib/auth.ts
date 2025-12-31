@@ -1,4 +1,5 @@
 import { jwtDecode } from "jwt-decode";
+import type { User } from "../models";
 
 export type Role =
   | "student"
@@ -13,7 +14,7 @@ export const getToken = () => localStorage.getItem("token");
 export const setToken = (t: string) => localStorage.setItem("token", t);
 export const clearToken = () => localStorage.removeItem("token");
 
-export const getUser = () => {
+export const getUser = (): User | null => {
   const u = localStorage.getItem("user");
   return u ? JSON.parse(u) : null;
 };

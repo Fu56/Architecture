@@ -20,13 +20,11 @@ const Footer = () => {
               </div>
               <div className="flex flex-col">
                 <span className="text-2xl font-black tracking-tighter text-white leading-none">
-                  ARC
-                  <span className="text-indigo-500 underline decoration-2 underline-offset-4">
-                    HIVE
-                  </span>
+                  ARCH
+                  <span className="text-indigo-500 ml-1">VAULT</span>
                 </span>
                 <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/40">
-                  Infrastructure
+                  Digital Library
                 </span>
               </div>
             </Link>
@@ -110,7 +108,10 @@ const Footer = () => {
                 placeholder="Email address"
                 className="w-full bg-black/40 border border-white/10 rounded-2xl py-4 pl-5 pr-14 text-sm font-bold text-white outline-none focus:border-indigo-500 transition-all"
               />
-              <button className="absolute right-2 top-2 p-2.5 bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-colors">
+              <button
+                type="button"
+                className="absolute right-2 top-2 p-2.5 bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-colors"
+              >
                 <ArrowRight className="h-5 w-5 text-white" />
               </button>
             </form>
@@ -120,8 +121,7 @@ const Footer = () => {
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-col items-center md:items-start gap-2">
             <p className="text-xs font-bold text-gray-600">
-              &copy; {new Date().getFullYear()} ARCHIVE INFRASTRUCTURE. OPERATED
-              BY DIGITAL LIBRARY CORP.
+              &copy; {new Date().getFullYear()} ARCHVAULT DIGITAL LIBRARY.
             </p>
             <div className="flex items-center gap-6 text-[10px] font-black tracking-widest uppercase">
               <Link

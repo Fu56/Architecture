@@ -58,7 +58,9 @@ const UserDashboard = () => {
                 {user?.first_name} <br /> {user?.last_name}
               </h3>
               <p className="text-xs font-bold text-indigo-500 uppercase tracking-widest mt-2 bg-indigo-50 px-3 py-1 rounded-full">
-                {user?.role?.name || user?.role || "Member"}
+                {typeof user?.role === "object"
+                  ? user.role.name
+                  : user?.role || "Member"}
               </p>
             </div>
 
@@ -70,8 +72,9 @@ const UserDashboard = () => {
                 .filter(
                   (link) =>
                     !link.role ||
-                    user?.role?.name === link.role ||
-                    user?.role === link.role
+                    (typeof user?.role === "object"
+                      ? user.role.name
+                      : user?.role) === link.role
                 )
                 .map((link) => (
                   <NavLink

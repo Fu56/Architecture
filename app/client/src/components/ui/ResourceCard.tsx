@@ -48,6 +48,15 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
     (fileType && fileTypeStyles[fileType.toLowerCase()]) ||
     fileTypeStyles.default;
 
+  // Safeguard against missing or raw uploader data
+  const uploaderName = uploader
+    ? uploader.firstName && uploader.lastName
+      ? `${uploader.firstName} ${uploader.lastName}`
+      : uploader.first_name && uploader.last_name
+      ? `${uploader.first_name} ${uploader.last_name}`
+      : "Anonymous"
+    : "Anonymous";
+
   return (
     <div className="bg-white rounded-xl shadow-sm border hover:shadow-lg transition-shadow duration-300 flex flex-col">
       <div className="p-6 flex-grow">
@@ -74,9 +83,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
         </h3>
         <div className="flex items-center text-sm text-gray-500 mb-4">
           <User className="h-4 w-4 mr-1.5" />
-          <span>
-            {author || uploader?.firstName + " " + uploader?.lastName}
-          </span>
+          <span>{author || uploaderName}</span>
         </div>
         <div className="flex flex-wrap gap-2 mb-4">
           {Array.isArray(keywords) &&

@@ -214,7 +214,7 @@ const Layout = () => {
                               : "text-white"
                           }`}
                         >
-                          {user?.first_name || "User"}
+                          {user?.first_name || user?.firstName || "User"}
                         </p>
                         <p
                           className={`text-xs ${
@@ -223,7 +223,9 @@ const Layout = () => {
                               : "text-white/60"
                           }`}
                         >
-                          {user?.role || "Member"}
+                          {typeof user?.role === "object"
+                            ? user.role.name
+                            : user?.role || "Member"}
                         </p>
                       </div>
                       <ChevronDown
@@ -242,7 +244,8 @@ const Layout = () => {
                       <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
                         <div className="px-4 py-3 border-b border-gray-100">
                           <p className="text-sm font-bold text-gray-900">
-                            {user?.first_name} {user?.last_name}
+                            {user?.first_name || user?.firstName}{" "}
+                            {user?.last_name || user?.lastName}
                           </p>
                           <p className="text-xs text-gray-500">{user?.email}</p>
                         </div>
@@ -257,7 +260,9 @@ const Layout = () => {
                             Dashboard
                           </Link>
 
-                          {user?.role === "Admin" && (
+                          {(typeof user?.role === "object"
+                            ? user.role.name
+                            : user?.role) === "Admin" && (
                             <Link
                               to="/admin"
                               onClick={() => setUserMenuOpen(false)}

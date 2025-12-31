@@ -10,10 +10,12 @@ export interface User {
   id: number;
   firstName: string;
   lastName: string;
+  first_name?: string; // Backend compatibility
+  last_name?: string; // Backend compatibility
   email: string;
   collegeId: string;
   universityId?: string;
-  role: Role;
+  role: Role | string;
   status: string;
   batch?: number;
   year?: number;

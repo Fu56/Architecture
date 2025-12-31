@@ -3,47 +3,20 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   Users,
-  TrendingUp,
-  Globe,
   Layers,
-  BookOpen,
-  Newspaper,
   ArrowUpRight,
   ShieldCheck,
   Search,
   Download,
-  Star,
-  Clock,
+  Cpu,
+  Trophy,
+  Calendar,
+  Briefcase,
   Sparkles,
-  Mail,
-  CheckCircle,
 } from "lucide-react";
 import { api } from "../lib/api";
-import type { Resource } from "../models";
+import type { Resource, Blog } from "../models";
 import ResourceCard from "../components/ui/ResourceCard";
-
-const blogs = [
-  {
-    id: 1,
-    title: "The Future of Sustainable Urbanism",
-    author: "Prof. Sarah Johnson",
-    date: "Dec 24, 2025",
-    category: "Teaching Insight",
-    image: "/assets/blog1.png",
-    excerpt:
-      "Exploring how integrated design can revolutionize our approach to city planning in the next decade.",
-  },
-  {
-    id: 2,
-    title: "Mastering the Thesis: A Guide for Students",
-    author: "Dr. Robert Chen",
-    date: "Dec 20, 2025",
-    category: "Guidance",
-    image: "/assets/blog2.png",
-    excerpt:
-      "Crucial tips on structuring your architectural thesis and effectively presenting your structural concepts.",
-  },
-];
 
 const news = [
   {
@@ -77,17 +50,17 @@ interface Stats {
   totalResources: number;
   totalUsers: number;
   totalDownloads: number;
-  pendingResources: number;
+  facultyCount: number;
 }
 
 const Home = () => {
   const [topResources, setTopResources] = useState<Resource[]>([]);
-  const [recentResources, setRecentResources] = useState<Resource[]>([]);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
   const [stats, setStats] = useState<Stats>({
     totalResources: 0,
     totalUsers: 0,
     totalDownloads: 0,
-    pendingResources: 0,
+    facultyCount: 0,
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [email, setEmail] = useState("");
@@ -97,30 +70,23 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch top resources
-        const { data: topData } = await api.get(
-          "/resources?sortBy=downloads&limit=4"
-        );
-        if (Array.isArray(topData.resources)) {
+        const [topRes, , statsRes, blogRes] = await Promise.all([
+          api.get("/resources?sortBy=downloads&limit=4"),
+          api.get("/resources?sortBy=recent&limit=3"),
+          api.get("/common/stats"),
+          api.get("/blogs?published=true&limit=2"),
+        ]);
+
+        const topData = topRes.data;
+        const statsData = statsRes.data;
+        const blogData = blogRes.data;
+
+        if (Array.isArray(topData)) setTopResources(topData);
+        else if (topData && topData.resources)
           setTopResources(topData.resources);
-        }
 
-        // Fetch recent resources
-        const { data: recentData } = await api.get(
-          "/resources?sortBy=recent&limit=3"
-        );
-        if (Array.isArray(recentData.resources)) {
-          setRecentResources(recentData.resources);
-        }
-
-        // Fetch stats (if admin endpoint is accessible, otherwise use defaults)
-        try {
-          const { data: statsData } = await api.get("/admin/stats");
-          setStats(statsData);
-        } catch (err) {
-          // Use default stats if not authorized
-          console.log("Using default stats");
-        }
+        if (statsData) setStats(statsData);
+        if (Array.isArray(blogData)) setBlogs(blogData);
       } catch (err) {
         console.error("Failed to fetch data:", err);
       }
@@ -138,7 +104,6 @@ const Home = () => {
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) {
-      // TODO: Implement newsletter subscription
       setSubscribed(true);
       setTimeout(() => {
         setSubscribed(false);
@@ -148,511 +113,542 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen selection:bg-indigo-100">
+    <div className="flex flex-col min-h-screen selection:bg-indigo-100 bg-white">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center overflow-hidden">
-        {/* Animated Background Overlay */}
+      <section className="relative min-h-screen flex items-center overflow-hidden pt-20">
+        {/* Animated Background */}
         <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gray-950/20 z-10" />
           <img
             src="/assets/hero.png"
             alt="Hero Architectural"
-            className="w-full h-full object-cover brightness-[0.6] scale-105 animate-[pulse_10s_ease-in-out_infinite]"
+            className="w-full h-full object-cover brightness-[0.6] scale-105 animate-slow-zoom"
           />
-          <div className="absolute inset-0 bg-gradient-to-tr from-gray-900/90 via-gray-900/40 to-transparent" />
+          {/* Overlay Gradients */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-gray-950 via-gray-950/40 to-transparent z-10" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(79,70,229,0.15),transparent_50%)] z-10" />
+          {/* Grid Overlay */}
+          <div className="absolute inset-0 opacity-[0.03] z-10 [background-image:linear-gradient(to_right,#888_1px,transparent_1px),linear-gradient(to_bottom,#888_1px,transparent_1px)] [background-size:60px_60px]" />
         </div>
 
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10 w-full">
-          <div className="max-w-4xl">
-            <div className="inline-flex items-center gap-2.5 px-3 py-1.5 mb-8 text-[11px] font-black uppercase tracking-[0.25em] text-white bg-white/10 backdrop-blur-2xl border border-white/20 rounded-full animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-20 w-full mt-10">
+          <div className="max-w-5xl">
+            {/* Premium Badge */}
+            <div className="inline-flex items-center gap-3 px-5 py-2.5 mb-10 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.3em] text-white bg-white/5 backdrop-blur-3xl border border-white/10 rounded-full animate-in fade-in slide-in-from-top-6 duration-1000 shadow-2xl group cursor-default">
+              <div className="relative">
+                <Sparkles className="h-4 w-4 text-indigo-400 animate-pulse" />
+                <div className="absolute inset-0 bg-indigo-400 blur-lg opacity-50 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <span className="relative z-10">
+                THE FUTURE OF ARCHITECTURAL KNOWLEDGE
               </span>
-              Digital Repository v4.0.1
+              <div className="ml-2 w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             </div>
 
-            <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-white mb-8 leading-[0.95] animate-in fade-in slide-in-from-bottom-8 duration-1000">
-              BUILDING <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-300 drop-shadow-2xl">
-                THE FUTURE
+            <h1 className="text-6xl sm:text-7xl md:text-[6.5rem] lg:text-[7.5rem] font-black tracking-tighter text-white mb-10 leading-[0.85] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-100">
+              WHERE VISION <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-white drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
+                MEETS STRUCTURE
               </span>{" "}
               <br />
-              TOGETHER.
+              IN EXCELLENCE.
             </h1>
 
-            <p className="text-xl text-white/70 mb-12 max-w-xl leading-relaxed font-medium animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200">
-              Access the largest collection of architectural resources, research
-              papers, and building information models (BIM) shared by experts.
-            </p>
+            <div className="flex flex-col md:flex-row md:items-center gap-10 mb-16 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300">
+              <p className="text-lg sm:text-xl text-white/60 max-w-xl leading-relaxed font-medium border-l-2 border-indigo-500/50 pl-8">
+                The premier repository for architectural research, design
+                projects, and assignments. Elevate your academic journey with
+                peer-reviewed resources.
+              </p>
 
-            {/* Search Bar */}
+              <div className="hidden lg:flex items-center gap-6 p-6 bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl">
+                <div className="flex -space-x-4">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="w-12 h-12 rounded-full border-4 border-gray-900 bg-gray-800 overflow-hidden ring-2 ring-indigo-500/20"
+                    >
+                      <img
+                        src={`https://i.pravatar.cc/150?u=${i + 10}`}
+                        alt="Active User"
+                      />
+                    </div>
+                  ))}
+                  <div className="w-12 h-12 rounded-full border-4 border-gray-900 bg-indigo-600 flex items-center justify-center text-[10px] font-black text-white">
+                    +5k
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm font-black text-white leading-none mb-1">
+                    Join the Elite
+                  </p>
+                  <p className="text-xs text-white/40 font-bold uppercase tracking-widest">
+                    Active Community
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <form
               onSubmit={handleSearch}
-              className="mb-8 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300"
+              className="mb-14 animate-in fade-in slide-in-from-bottom-20 duration-1000 delay-500"
             >
-              <div className="relative max-w-2xl">
-                <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search for resources, topics, or authors..."
-                  className="w-full pl-14 pr-6 py-5 bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xl"
-                />
-                <button
-                  type="submit"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl transition-all"
-                >
-                  Search
-                </button>
+              <div className="relative max-w-3xl group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-[2.5rem] blur opacity-25 group-focus-within:opacity-50 transition duration-1000 group-hover:duration-200" />
+
+                <div className="relative flex items-center bg-white/95 backdrop-blur-2xl rounded-[2.2rem] overflow-hidden shadow-2xl ring-1 ring-white/20 transition-all group-focus-within:ring-indigo-500/50">
+                  <div className="pl-8">
+                    <Search className="h-6 w-6 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
+                  </div>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Find blueprints, thesis papers, or models..."
+                    className="w-full pl-6 pr-6 py-8 bg-transparent text-gray-900 placeholder:text-gray-400 text-lg font-bold focus:outline-none"
+                  />
+                  <div className="pr-3">
+                    <button
+                      type="submit"
+                      className="whitespace-nowrap px-10 py-5 bg-indigo-600 hover:bg-slate-900 text-white text-sm font-black uppercase tracking-[0.2em] rounded-[1.5rem] transition-all duration-500 active:scale-95 shadow-xl shadow-indigo-600/20 flex items-center gap-2 group/btn"
+                    >
+                      Search
+                      <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
+                </div>
               </div>
             </form>
 
-            <div className="flex flex-wrap gap-5 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-400">
-              <Link
-                to="/browse"
-                className="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-black uppercase tracking-widest rounded-2xl shadow-2xl shadow-indigo-600/40 transition-all duration-300 active:scale-95 flex items-center gap-2 group"
-              >
-                Explore Library
-                <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
-              <Link
-                to="/register"
-                className="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/20 text-white text-sm font-black uppercase tracking-widest rounded-2xl shadow-2xl transition-all duration-300 active:scale-95"
-              >
-                Join Community
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
-          <div className="w-px h-16 bg-gradient-to-b from-white/0 via-white/50 to-white/0" />
-          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/50">
-            Scroll
-          </span>
-        </div>
-      </section>
-
-      {/* Stats Bar */}
-      <section className="relative z-20 py-16 -mt-12">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="bg-white rounded-3xl p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-50 grid grid-cols-2 lg:grid-cols-4 gap-12">
-            <div className="flex flex-col items-center lg:items-start group cursor-pointer">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-indigo-50 rounded-xl group-hover:scale-110 transition-transform">
-                  <Layers className="h-5 w-5 text-indigo-600" />
-                </div>
-                <p className="text-4xl font-black tracking-tighter text-gray-900">
-                  {stats.totalResources > 0
-                    ? `${Math.floor(stats.totalResources / 1000)}k+`
-                    : "10k+"}
-                </p>
-              </div>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-                Resources Shared
-              </p>
-            </div>
-            <div className="flex flex-col items-center lg:items-start group cursor-pointer">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-purple-50 rounded-xl group-hover:scale-110 transition-transform">
-                  <Users className="h-5 w-5 text-purple-600" />
-                </div>
-                <p className="text-4xl font-black tracking-tighter text-gray-900">
-                  {stats.totalUsers > 0
-                    ? `${Math.floor(stats.totalUsers / 1000)}k+`
-                    : "5k+"}
-                </p>
-              </div>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-                Active Members
-              </p>
-            </div>
-            <div className="flex flex-col items-center lg:items-start group cursor-pointer">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-blue-50 rounded-xl group-hover:scale-110 transition-transform">
-                  <Download className="h-5 w-5 text-blue-600" />
-                </div>
-                <p className="text-4xl font-black tracking-tighter text-gray-900">
-                  {stats.totalDownloads > 0
-                    ? `${Math.floor(stats.totalDownloads / 1000)}k+`
-                    : "50k+"}
-                </p>
-              </div>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-                Total Downloads
-              </p>
-            </div>
-            <div className="flex flex-col items-center lg:items-start group cursor-pointer">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-emerald-50 rounded-xl group-hover:scale-110 transition-transform">
-                  <Globe className="h-5 w-5 text-emerald-600" />
-                </div>
-                <p className="text-4xl font-black tracking-tighter text-gray-900">
-                  50+
-                </p>
-              </div>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-                Expert Faculty
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Categories */}
-      <section className="py-20 bg-white">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="text-center mb-12">
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-600 mb-2 block">
-              Browse by Category
-            </span>
-            <h2 className="text-4xl font-black tracking-tighter text-gray-900">
-              EXPLORE TOPICS
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {categories.map((category) => (
-              <Link
-                key={category.name}
-                to={`/browse?category=${encodeURIComponent(category.name)}`}
-                className="group relative bg-gradient-to-br from-gray-50 to-white p-8 rounded-3xl border border-gray-100 hover:border-indigo-200 hover:shadow-xl transition-all duration-300 overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative z-10">
-                  <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">
-                    {category.icon}
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors">
-                    {category.name}
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    {category.count} resources
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Recent Uploads */}
-      {recentResources.length > 0 && (
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-            <div className="flex items-center justify-between mb-12">
-              <div>
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-600 mb-2 block">
-                  <Clock className="inline-block h-3 w-3 mr-2" />
-                  Just Added
-                </span>
-                <h2 className="text-4xl font-black tracking-tighter text-gray-900">
-                  RECENT UPLOADS
-                </h2>
-              </div>
-              <Link
-                to="/browse?sortBy=recent"
-                className="hidden md:flex items-center gap-2 px-6 py-3 bg-white hover:bg-gray-50 border border-gray-200 rounded-2xl text-sm font-bold text-gray-900 transition-all"
-              >
-                View All <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-3">
-              {recentResources.map((resource) => (
-                <Link
-                  key={resource.id}
-                  to={`/resources/${resource.id}`}
-                  className="group bg-white p-6 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:shadow-lg transition-all"
+            <div className="flex flex-wrap items-center gap-4 sm:gap-8 animate-in fade-in slide-in-from-bottom-24 duration-1000 delay-700">
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
+                Trending Tags:
+              </span>
+              {[
+                "BIM Library",
+                "Sustainable Homes",
+                "Urban Design",
+                "Structure Analysis",
+              ].map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => {
+                    setSearchQuery(tag);
+                    navigate(`/browse?search=${encodeURIComponent(tag)}`);
+                  }}
+                  className="px-5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-[11px] font-bold text-white/80 hover:text-white transition-all backdrop-blur-md"
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <h3 className="font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors line-clamp-2">
-                        {resource.title}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        {resource.uploader?.first_name}{" "}
-                        {resource.uploader?.last_name}
-                      </p>
-                    </div>
-                    <Sparkles className="h-5 w-5 text-indigo-400 flex-shrink-0" />
-                  </div>
-                  <div className="flex items-center gap-4 text-xs text-gray-400">
-                    <span className="flex items-center gap-1">
-                      <Download className="h-3 w-3" />
-                      {resource.download_count || 0}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Star className="h-3 w-3" />
-                      New
-                    </span>
-                  </div>
-                </Link>
+                  {tag}
+                </button>
               ))}
             </div>
           </div>
-        </section>
-      )}
+        </div>
 
-      {/* Teachers Blog & News Section */}
-      <section className="py-32 bg-gray-50/50 overflow-hidden">
+        {/* Floating Scroll Indicator */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce cursor-pointer">
+          <div className="w-6 h-10 border-2 border-white/20 rounded-full flex justify-center p-1 backdrop-blur-md">
+            <div className="w-1 h-2 bg-indigo-400 rounded-full" />
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="relative z-30 py-12 -mt-24 sm:-mt-32">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="flex flex-col lg:flex-row gap-20">
-            {/* Blogs */}
-            <div className="lg:w-2/3">
-              <div className="flex items-end justify-between mb-16">
-                <div>
-                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500 mb-2 block">
-                    Curation
-                  </span>
-                  <h2 className="text-5xl font-black tracking-tighter text-gray-900 leading-none">
-                    TEACHER'S <br />
-                    <span className="text-indigo-600">INSIGHTS.</span>
-                  </h2>
+          <div className="bg-white/80 backdrop-blur-3xl rounded-[3rem] p-4 sm:p-5 shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] border border-white/50 ring-1 ring-slate-900/5 transition-all">
+            <div className="bg-white rounded-[2.5rem] p-10 lg:p-14 grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
+              {/* Stat 1 */}
+              <div className="flex flex-col items-center text-center space-y-5 lg:px-6 pt-8 lg:pt-0">
+                <div className="relative group/stat">
+                  <div className="absolute -inset-4 bg-indigo-50 rounded-2xl opacity-0 group-hover/stat:opacity-100 transition-opacity" />
+                  <div className="relative p-5 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-[1.25rem] shadow-lg shadow-indigo-200">
+                    <Layers className="h-7 w-7 text-white" />
+                  </div>
                 </div>
-                <Link
-                  to="/blog"
-                  className="hidden sm:flex items-center gap-2 px-6 py-3 bg-white hover:bg-gray-50 border border-gray-100 rounded-2xl text-[12px] font-black uppercase tracking-[0.2em] text-gray-900 transition-all active:scale-95"
-                >
-                  View Archive <ArrowRight className="h-4 w-4" />
-                </Link>
+                <div className="space-y-1">
+                  <div className="flex items-center justify-center gap-1.5">
+                    <p className="text-5xl font-black tracking-tighter text-gray-900">
+                      {stats.totalResources > 999
+                        ? `${(stats.totalResources / 1000).toFixed(1)}k+`
+                        : stats.totalResources}
+                    </p>
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-[11px] font-black uppercase tracking-[0.25em] text-gray-400">
+                      High-End Resources
+                    </p>
+                    <span className="text-[9px] font-bold text-indigo-500 uppercase tracking-widest mt-1 italic">
+                      Verified Library
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              <div className="grid gap-10 sm:grid-cols-2">
-                {blogs.map((blog) => (
-                  <article
-                    key={blog.id}
-                    className="group bg-white rounded-3xl border border-gray-100/50 shadow-[0_10px_40px_rgba(0,0,0,0.03)] overflow-hidden flex flex-col transition-all duration-500 hover:shadow-[0_40px_80px_rgba(0,0,0,0.08)] hover:-translate-y-2"
-                  >
-                    <div className="h-64 overflow-hidden relative">
-                      <img
-                        src={blog.image}
-                        alt={blog.title}
-                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                      <div className="absolute top-6 left-6">
-                        <span className="px-3 py-1.5 bg-white/90 backdrop-blur rounded-xl text-[10px] font-black uppercase tracking-widest text-indigo-600 shadow-xl">
-                          {blog.category}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-8 flex-grow">
-                      <div className="flex items-center gap-2 text-[11px] font-bold text-gray-400 mb-4 uppercase tracking-wider">
-                        <span className="text-gray-900">{blog.author}</span>
-                        <span className="opacity-30">•</span>
-                        <span>{blog.date}</span>
-                      </div>
-                      <h3 className="text-2xl font-black tracking-tight text-gray-900 mb-4 leading-tight group-hover:text-indigo-600 transition-colors">
-                        {blog.title}
-                      </h3>
-                      <p className="text-gray-500 leading-relaxed text-sm mb-6 line-clamp-3">
-                        {blog.excerpt}
-                      </p>
-                      <button className="flex items-center gap-2 text-[12px] font-black uppercase tracking-widest text-indigo-600 group/btn">
-                        Read Article
-                        <span className="w-8 h-px bg-indigo-100 transition-all group-hover/btn:w-12 group-hover/btn:bg-indigo-600" />
-                      </button>
-                    </div>
-                  </article>
-                ))}
+              {/* Stat 2 */}
+              <div className="flex flex-col items-center text-center space-y-5 lg:px-6 pt-8 lg:pt-0">
+                <div className="relative group/stat">
+                  <div className="absolute -inset-4 bg-purple-50 rounded-2xl opacity-0 group-hover/stat:opacity-100 transition-opacity" />
+                  <div className="relative p-5 bg-gradient-to-br from-purple-500 to-purple-600 rounded-[1.25rem] shadow-lg shadow-purple-200">
+                    <Users className="h-7 w-7 text-white" />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-5xl font-black tracking-tighter text-gray-900">
+                    {stats.totalUsers > 999
+                      ? `${(stats.totalUsers / 1000).toFixed(1)}k+`
+                      : stats.totalUsers}
+                  </p>
+                  <div className="flex flex-col">
+                    <p className="text-[11px] font-black uppercase tracking-[0.25em] text-gray-400">
+                      Global Architects
+                    </p>
+                    <span className="text-[9px] font-bold text-purple-500 uppercase tracking-widest mt-1 italic">
+                      Growing Daily
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stat 3 */}
+              <div className="flex flex-col items-center text-center space-y-5 lg:px-6 pt-8 lg:pt-0">
+                <div className="relative group/stat">
+                  <div className="absolute -inset-4 bg-blue-50 rounded-2xl opacity-0 group-hover/stat:opacity-100 transition-opacity" />
+                  <div className="relative p-5 bg-gradient-to-br from-blue-500 to-blue-600 rounded-[1.25rem] shadow-lg shadow-blue-200">
+                    <Download className="h-7 w-7 text-white" />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-5xl font-black tracking-tighter text-gray-900">
+                    {stats.totalDownloads > 999
+                      ? `${(stats.totalDownloads / 1000).toFixed(1)}k+`
+                      : stats.totalDownloads}
+                  </p>
+                  <div className="flex flex-col">
+                    <p className="text-[11px] font-black uppercase tracking-[0.25em] text-gray-400">
+                      Total Downloads
+                    </p>
+                    <span className="text-[9px] font-bold text-blue-500 uppercase tracking-widest mt-1 italic">
+                      Asset Utilization
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stat 4 */}
+              <div className="flex flex-col items-center text-center space-y-5 lg:px-6 pt-8 lg:pt-0">
+                <div className="relative group/stat">
+                  <div className="absolute -inset-4 bg-emerald-50 rounded-2xl opacity-0 group-hover/stat:opacity-100 transition-opacity" />
+                  <div className="relative p-5 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-[1.25rem] shadow-lg shadow-emerald-200">
+                    <Cpu className="h-7 w-7 text-white" />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-5xl font-black tracking-tighter text-gray-900">
+                    {stats.facultyCount}+
+                  </p>
+                  <div className="flex flex-col">
+                    <p className="text-[11px] font-black uppercase tracking-[0.25em] text-gray-400">
+                      Verified Faculty
+                    </p>
+                    <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest mt-1 italic">
+                      Expert Guidance
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Industry News */}
-            <div className="lg:w-1/3">
-              <div className="sticky top-32">
-                <div className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-[0_20px_60px_rgba(0,0,0,0.04)]">
-                  <div className="flex items-center gap-4 mb-10">
-                    <div className="p-3 bg-indigo-50 rounded-2xl">
-                      <Newspaper className="h-6 w-6 text-indigo-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-black tracking-tight text-gray-900 uppercase">
-                        Industry
-                      </h2>
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                        Global News Service
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-10">
-                    {news.map((item) => (
-                      <div key={item.id} className="group cursor-pointer">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] px-2 py-0.5 bg-indigo-50 rounded-md">
-                            {item.source}
-                          </span>
-                          <span className="text-[10px] font-bold text-gray-400 uppercase">
-                            {item.time}
-                          </span>
-                        </div>
-                        <h4 className="text-lg font-bold text-gray-900 leading-tight group-hover:text-indigo-600 transition-colors flex items-start gap-3">
-                          {item.title}
-                          <ArrowUpRight className="h-5 w-5 shrink-0 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                        </h4>
-                      </div>
-                    ))}
-                  </div>
-
-                  <button className="w-full mt-12 py-5 border border-gray-100 text-[12px] font-black uppercase tracking-[0.2em] text-gray-900 rounded-2xl hover:bg-gray-50 transition-all flex items-center justify-center gap-2 shadow-sm">
-                    Access Newsfeed <ArrowRight className="h-4 w-4" />
-                  </button>
-                </div>
-
-                {/* Design Slogan Card */}
-                <div className="mt-10 bg-gradient-to-br from-indigo-600 to-indigo-800 p-10 rounded-[40px] text-white relative overflow-hidden shadow-2xl shadow-indigo-600/30">
-                  <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-6">
-                      <BookOpen className="h-6 w-6 text-indigo-200" />
-                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-200">
-                        Quote of the Day
-                      </span>
-                    </div>
-                    <p className="text-2xl font-black leading-tight italic tracking-tight">
-                      "Every great architect is necessarily a great poet."
-                    </p>
-                    <div className="mt-6 flex items-center gap-3">
-                      <div className="h-px w-8 bg-indigo-400" />
-                      <p className="text-[11px] font-black uppercase tracking-widest text-indigo-200">
-                        Frank Lloyd Wright
-                      </p>
-                    </div>
-                  </div>
-                  {/* Decorative Elements */}
-                  <div className="absolute -bottom-10 -right-10 h-40 w-40 bg-white/10 rounded-full blur-3xl animate-pulse" />
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-full bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[size:16px_16px] opacity-10" />
-                </div>
+            {/* Live Indicator Bar */}
+            <div className="flex items-center justify-center gap-4 py-3 bg-slate-50 rounded-b-[2.5rem] border-t border-slate-100">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500">
+                  Live Network Stats
+                </span>
               </div>
+              <span className="text-[10px] text-slate-300">|</span>
+              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                Last synchronized:{" "}
+                {new Date().toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Featured Resources Section */}
-      <section className="py-32 bg-white relative overflow-hidden">
+      {/* Explore Platform Sections */}
+      <section className="py-32">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-8">
-            <div className="max-w-xl">
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-600 mb-2 block animate-bounce">
-                Top Rated
-              </span>
-              <h2 className="text-5xl md:text-6xl font-black tracking-tighter text-gray-900 leading-none">
-                CURATED <br />
-                RESOURCES.
-              </h2>
-              <p className="text-lg text-gray-500 mt-6 leading-relaxed">
-                The most downloaded and peer-reviewed materials from
-                architectural students and professors worldwide.
+          <div className="grid lg:grid-cols-3 gap-8">
+            <div className="group bg-slate-50 p-10 rounded-[3rem] border border-slate-100 transition-all hover:bg-white hover:shadow-2xl hover:-translate-y-2">
+              <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center shadow-lg mb-8 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                <Trophy className="h-8 w-8" />
+              </div>
+              <h3 className="text-2xl font-black tracking-tight text-gray-900 mb-4">
+                Elite Projects
+              </h3>
+              <p className="text-gray-500 leading-relaxed font-medium mb-8">
+                Explore award-winning architectural designs and research papers
+                from top-tier students.
               </p>
+              <Link
+                to="/browse?sort=top"
+                className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-indigo-600 hover:gap-4 transition-all"
+              >
+                View Projects <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            <div className="group bg-slate-50 p-10 rounded-[3rem] border border-slate-100 transition-all hover:bg-white hover:shadow-2xl hover:-translate-y-2">
+              <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center shadow-lg mb-8 group-hover:bg-purple-600 group-hover:text-white transition-all">
+                <Briefcase className="h-8 w-8" />
+              </div>
+              <h3 className="text-2xl font-black tracking-tight text-gray-900 mb-4">
+                Course Assignments
+              </h3>
+              <p className="text-gray-500 leading-relaxed font-medium mb-8">
+                Access structured coursework and reference materials provided by
+                faculty members.
+              </p>
+              <Link
+                to="/dashboard/assignments"
+                className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-purple-600 hover:gap-4 transition-all"
+              >
+                Get Started <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            <div className="group bg-slate-50 p-10 rounded-[3rem] border border-slate-100 transition-all hover:bg-white hover:shadow-2xl hover:-translate-y-2">
+              <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center shadow-lg mb-8 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                <ShieldCheck className="h-8 w-8" />
+              </div>
+              <h3 className="text-2xl font-black tracking-tight text-gray-900 mb-4">
+                Verified Platform
+              </h3>
+              <p className="text-gray-500 leading-relaxed font-medium mb-8">
+                A secure ecosystem with peer-reviewed content and intellectual
+                property protection.
+              </p>
+              <Link
+                to="/register"
+                className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-blue-600 hover:gap-4 transition-all"
+              >
+                Join Network <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Top Rated Resources */}
+      <section className="py-32 bg-gray-50">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="flex items-end justify-between mb-20">
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-600 mb-2 block">
+                Curation
+              </span>
+              <h2 className="text-5xl font-black tracking-tighter text-gray-900 uppercase">
+                Top Rated
+              </h2>
             </div>
             <Link
               to="/browse"
-              className="px-8 py-4 bg-gray-900 hover:bg-black text-white text-[12px] font-black uppercase tracking-[0.2em] rounded-2xl transition-all active:scale-95 shadow-xl"
+              className="text-sm font-black uppercase tracking-widest text-gray-400 hover:text-indigo-600 transition-colors"
             >
-              Explore All <ArrowRight className="inline-block ml-2 h-4 w-4" />
+              Browse All Resources
             </Link>
           </div>
-
           <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
             {topResources.map((resource) => (
               <ResourceCard key={resource.id} resource={resource} />
             ))}
           </div>
         </div>
+      </section>
 
-        {/* Background Text */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20vw] font-black text-gray-50/50 -z-10 select-none pointer-events-none tracking-tighter">
-          LIBRARY
+      {/* Faculty Insights & News */}
+      <section className="py-32">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="flex flex-col lg:flex-row gap-24">
+            {/* Blogs */}
+            <div className="lg:w-2/3">
+              <div className="mb-16">
+                <h2 className="text-5xl font-black tracking-tighter text-gray-900 leading-none">
+                  FACULTY <br />
+                  <span className="text-indigo-600">RESEARCH.</span>
+                </h2>
+              </div>
+              <div className="grid gap-12 sm:grid-cols-2">
+                {blogs.map((blog) => (
+                  <article key={blog.id} className="group cursor-pointer">
+                    <div className="aspect-[4/3] rounded-[2.5rem] overflow-hidden mb-8 shadow-2xl relative">
+                      <img
+                        src={
+                          blog.image_path
+                            ? `${import.meta.env.VITE_API_URL}/${
+                                blog.image_path
+                              }`
+                            : "/assets/blog-placeholder.png"
+                        }
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        alt={blog.title}
+                      />
+                      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
+                    </div>
+                    <div className="space-y-4">
+                      <div className="flex gap-3">
+                        {blog.tags.slice(0, 2).map((tag) => (
+                          <span
+                            key={tag}
+                            className="text-[10px] font-black uppercase tracking-widest text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <h3 className="text-2xl font-black tracking-tight text-gray-900 group-hover:text-indigo-600 transition-colors">
+                        {blog.title}
+                      </h3>
+                      <p className="text-gray-500 line-clamp-2 text-sm font-medium">
+                        {blog.content.slice(0, 100)}...
+                      </p>
+                      <Link
+                        to={`/blog/${blog.id}`}
+                        className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-gray-950"
+                      >
+                        Read More <ArrowUpRight className="h-4 w-4" />
+                      </Link>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            {/* News Sidebar */}
+            <div className="lg:w-1/3">
+              <div className="bg-slate-900 p-12 rounded-[3.5rem] text-white space-y-12">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-2xl font-black uppercase tracking-tighter">
+                    Journal
+                  </h3>
+                  <Calendar className="h-6 w-6 text-indigo-400" />
+                </div>
+                <div className="space-y-10">
+                  {news.map((item) => (
+                    <div
+                      key={item.id}
+                      className="group cursor-pointer space-y-2"
+                    >
+                      <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-gray-500">
+                        <span>{item.source}</span>
+                        <span>{item.time}</span>
+                      </div>
+                      <h4 className="text-lg font-bold group-hover:text-indigo-400 transition-colors leading-tight">
+                        {item.title}
+                      </h4>
+                    </div>
+                  ))}
+                </div>
+                <button className="w-full py-5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-[1.5rem] text-[12px] font-black uppercase tracking-[0.2em] transition-all">
+                  View Full Feed
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-20 bg-gradient-to-br from-indigo-50 to-purple-50">
+      <section className="py-24 bg-indigo-600">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex p-3 bg-white rounded-2xl shadow-lg mb-6">
-              <Mail className="h-8 w-8 text-indigo-600" />
+          <div className="bg-white/10 backdrop-blur-3xl rounded-[4rem] p-16 border border-white/20 flex flex-col lg:flex-row items-center gap-16">
+            <div className="lg:w-1/2 text-white">
+              <h2 className="text-5xl font-black tracking-tighter mb-6">
+                UNBOX INNOVATION.
+              </h2>
+              <p className="text-xl text-indigo-100 font-medium">
+                Get monthly digests of the best architectural thesis, BIM
+                families, and technical articles.
+              </p>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 mb-4">
-              STAY UPDATED
-            </h2>
-            <p className="text-lg text-gray-600 mb-8">
-              Get the latest resources, insights, and architectural trends
-              delivered to your inbox.
-            </p>
-
-            {subscribed ? (
-              <div className="inline-flex items-center gap-3 px-8 py-4 bg-green-100 text-green-800 rounded-2xl">
-                <CheckCircle className="h-5 w-5" />
-                <span className="font-bold">Successfully subscribed!</span>
-              </div>
-            ) : (
-              <form onSubmit={handleSubscribe} className="max-w-md mx-auto">
-                <div className="flex gap-3">
+            <div className="lg:w-1/2 w-full">
+              {subscribed ? (
+                <div className="bg-white text-indigo-600 p-8 rounded-[2rem] text-center font-black animate-bounce shadow-2xl">
+                  SUBSCRIBED SUCCESSFULLY!
+                </div>
+              ) : (
+                <form onSubmit={handleSubscribe} className="relative group">
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
+                    placeholder="Enter architectural email"
                     required
-                    className="flex-1 px-6 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full h-24 bg-white rounded-[2rem] pl-10 pr-40 text-lg font-bold text-gray-900 outline-none focus:ring-8 focus:ring-white/20 transition-all shadow-2xl"
                   />
                   <button
                     type="submit"
-                    className="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl transition-all active:scale-95 shadow-lg"
+                    className="absolute right-4 top-4 bottom-4 px-10 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg active:scale-95"
                   >
                     Subscribe
                   </button>
-                </div>
-              </form>
-            )}
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-40 bg-gray-900 relative overflow-hidden">
-        {/* Decorative Grid */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_2px_2px,_rgba(255,255,255,0.05)_1px,_transparent_0)] bg-[size:32px_32px]" />
+      {/* Categories & Global CDN */}
+      <section className="py-32 bg-white">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
+            {categories.map((cat) => (
+              <Link
+                key={cat.name}
+                to={`/browse?category=${cat.name}`}
+                className="p-10 bg-slate-50 rounded-[2.5rem] hover:bg-indigo-50 transition-all group"
+              >
+                <div className="text-4xl mb-4 group-hover:scale-125 transition-transform">
+                  {cat.icon}
+                </div>
+                <h4 className="text-xl font-bold text-gray-900">{cat.name}</h4>
+                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                  {cat.count} Artifacts
+                </p>
+              </Link>
+            ))}
+          </div>
 
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex p-3 bg-white/5 backdrop-blur-3xl rounded-3xl border border-white/10 mb-10">
-              <ShieldCheck className="h-8 w-8 text-indigo-500" />
+          <div className="flex flex-col md:flex-row items-center justify-between pt-20 border-t border-slate-100 gap-8">
+            <div className="flex items-center gap-6">
+              <div className="flex -space-x-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="w-12 h-12 rounded-full border-4 border-white bg-slate-200 overflow-hidden"
+                  >
+                    <img src={`https://i.pravatar.cc/150?u=${i}`} alt="user" />
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm font-bold text-slate-500">
+                Trusted by 5,000+ Students & Faculty
+              </p>
             </div>
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-white mb-8 leading-[0.95]">
-              JOIN THE <br />
-              <span className="text-indigo-500">KNOWLEDGE</span> NETWORK.
-            </h2>
-            <p className="text-xl text-white/50 mb-16 max-w-2xl mx-auto font-medium leading-relaxed">
-              Become part of a global academic ecosystem. Contribute your
-              research, download high-quality assets, and elevate your
-              architectural practice.
-            </p>
-            <div className="flex flex-wrap justify-center gap-6">
-              <Link
-                to="/upload"
-                className="px-10 py-5 bg-indigo-600 hover:bg-indigo-700 text-white text-[13px] font-black uppercase tracking-[0.2em] rounded-2xl shadow-2xl shadow-indigo-600/40 transition-all active:scale-95"
-              >
-                Upload Resource
-              </Link>
-              <Link
-                to="/register"
-                className="px-10 py-5 bg-white text-gray-900 hover:bg-gray-100 text-[13px] font-black uppercase tracking-[0.2em] rounded-2xl transition-all active:scale-95 shadow-xl"
-              >
-                Create Account Free
-              </Link>
+            <div className="flex items-center gap-3 px-6 py-3 bg-slate-50 rounded-full border border-slate-100">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">
+                ArchVault CDN: Hong Kong Region
+              </span>
             </div>
           </div>
         </div>
-
-        {/* Floating Accents */}
-        <div className="absolute top-20 left-20 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
       </section>
     </div>
   );
