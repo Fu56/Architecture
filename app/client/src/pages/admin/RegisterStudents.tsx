@@ -7,6 +7,11 @@ import {
   XCircle,
   Loader2,
   Download,
+  AlertTriangle,
+  Zap,
+  Database,
+  ArrowRight,
+  FileText,
 } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -60,15 +65,11 @@ const RegisterStudents = () => {
   const parseExcelFile = async (file: File) => {
     setLoading(true);
     try {
-      // Using FileReader to read the file
       const reader = new FileReader();
       reader.onload = async (e) => {
         const data = e.target?.result;
         if (typeof data === "string") {
-          // Parse CSV (simplified version)
           const lines = data.split("\n");
-          // Skip header row (first line)
-
           const students: StudentRow[] = [];
           for (let i = 1; i < lines.length; i++) {
             if (lines[i].trim()) {
@@ -85,7 +86,6 @@ const RegisterStudents = () => {
               });
             }
           }
-
           setPreview(students);
           validateStudents(students);
         }
@@ -93,6 +93,7 @@ const RegisterStudents = () => {
       reader.readAsText(file);
     } catch (error) {
       console.error("Error parsing file:", error);
+      toast.error("Protocol Error: Failed to parse transmission file");
     } finally {
       setLoading(false);
     }
@@ -104,16 +105,19 @@ const RegisterStudents = () => {
 
     students.forEach((student, index) => {
       const rowErrors: string[] = [];
-
       if (!student.first_name)
-        rowErrors.push(`Row ${index + 2}: Missing first name`);
+        rowErrors.push(
+          `Unit ${index + 1}: Missing source identity (First Name)`
+        );
       if (!student.last_name)
-        rowErrors.push(`Row ${index + 2}: Missing last name`);
-      if (!student.email) rowErrors.push(`Row ${index + 2}: Missing email`);
+        rowErrors.push(
+          `Unit ${index + 1}: Missing source identity (Last Name)`
+        );
+      if (!student.email)
+        rowErrors.push(`Unit ${index + 1}: Missing access endpoint (Email)`);
       if (student.email && !student.email.includes("@")) {
-        rowErrors.push(`Row ${index + 2}: Invalid email format`);
+        rowErrors.push(`Unit ${index + 1}: Invalid protocol format (Email)`);
       }
-
       if (rowErrors.length === 0) {
         validStudents.push(student);
       } else {
@@ -130,36 +134,28 @@ const RegisterStudents = () => {
 
   const handleUpload = async () => {
     if (!validationResult?.students.length) return;
-
     setLoading(true);
     try {
       const response = await api.post("/admin/users/bulk-register", {
         students: validationResult.students,
         role: "Student",
       });
-
       setUploadResult({
         success: response.data.success || 0,
         failed: response.data.failed || 0,
-        results: response.data.results, // Store the credentials results
+        results: response.data.results,
       });
-
-      // Clear form after successful upload
       if (response.data.success > 0) {
         toast.success(
-          `Registered ${response.data.success} students successfully`
+          `Broadcasting update: ${response.data.success} nodes successfully integrated`
         );
         setFile(null);
         setPreview([]);
         setValidationResult(null);
       }
     } catch (err) {
-      const error = err as { response?: { data?: { message?: string } } };
-      console.error("Upload error:", error);
-      toast.error(
-        error.response?.data?.message ||
-          "Protocol Error: Student registration failed"
-      );
+      console.error("Upload error:", err);
+      toast.error("Protocol Breach: Bulk registration failed");
     } finally {
       setLoading(false);
     }
@@ -167,273 +163,346 @@ const RegisterStudents = () => {
 
   const downloadCredentials = () => {
     if (!uploadResult?.results) return;
-
     const headers = "Email,Password,Status,Error\n";
     const csvContent = uploadResult.results
       .map(
-        (r: {
-          email: string;
-          password?: string;
-          status: string;
-          error?: string;
-        }) => `${r.email},${r.password || "N/A"},${r.status},${r.error || ""}`
+        (r) => `${r.email},${r.password || "N/A"},${r.status},${r.error || ""}`
       )
       .join("\n");
-
     const blob = new Blob([headers + csvContent], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "student_credentials.csv";
+    a.download = "nexus_student_credentials.csv";
     a.click();
     window.URL.revokeObjectURL(url);
   };
 
   const downloadTemplate = () => {
     const template =
-      "first_name,last_name,email,university_id,batch,year,semester,password\nJohn,Doe,john.doe@example.com,U12345,2024,1,1,pass123\nJane,Smith,jane.smith@example.com,U67890,2024,1,1,securepass";
+      "first_name,last_name,email,university_id,batch,year,semester,password\nJulien,Wright,julien.wright@example.com,U12345,2024,1,1,pass123";
     const blob = new Blob([template], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "student_registration_template.csv";
+    a.download = "nexus_integration_template.csv";
     a.click();
     window.URL.revokeObjectURL(url);
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-12">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">
-            Register Students (Bulk)
-          </h2>
-          <p className="mt-1 text-sm text-gray-600">
-            Upload an Excel/CSV file to register multiple students at once
-          </p>
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 bg-slate-50 p-10 rounded-[3.5rem] border border-slate-100 shadow-sm relative overflow-hidden group">
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="flex items-center gap-6 relative z-10">
+          <div className="h-16 w-16 bg-slate-950 rounded-[1.8rem] flex items-center justify-center text-white shadow-2xl">
+            <Database className="h-7 w-7" />
+          </div>
+          <div>
+            <h2 className="text-3xl font-black text-slate-950 tracking-tighter uppercase">
+              Bulk Nexus Integration
+            </h2>
+            <p className="text-xs text-slate-400 font-bold tracking-[0.2em] uppercase">
+              Student Node Population Protocol
+            </p>
+          </div>
         </div>
         <button
           onClick={downloadTemplate}
-          className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+          className="relative z-10 flex items-center gap-3 px-8 py-4 bg-white border-2 border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-slate-950 hover:border-indigo-500 hover:text-indigo-600 transition-all shadow-xl shadow-slate-200/50 active:scale-95"
         >
           <Download className="h-4 w-4" />
-          Download Template
+          Fetch Template Protocol
         </button>
       </div>
 
-      {/* Upload Section */}
-      <div className="bg-white p-6 rounded-lg border-2 border-dashed border-gray-300 hover:border-indigo-400 transition-colors">
-        <div className="text-center">
-          <FileSpreadsheet className="mx-auto h-12 w-12 text-gray-400" />
-          <div className="mt-4">
-            <label htmlFor="file-upload" className="cursor-pointer">
-              <span className="inline-flex items-center gap-2 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                <Upload className="h-4 w-4" />
-                Choose File
-              </span>
-              <input
-                id="file-upload"
-                name="file-upload"
-                type="file"
-                accept=".csv,.xlsx,.xls"
-                className="sr-only"
-                onChange={handleFileChange}
-              />
-            </label>
+      {/* Upload & Validation Grid */}
+      <div className="grid grid-cols-1 xl:grid-cols-5 gap-10">
+        <div className="xl:col-span-2 space-y-10">
+          {/* Upload Module */}
+          <div className="bg-white p-12 rounded-[3.5rem] border border-slate-100 shadow-3xl relative overflow-hidden group">
+            <div className="absolute inset-0 bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" />
+            <div className="text-center space-y-8">
+              <div className="h-24 w-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center text-slate-200 mx-auto group-hover:text-indigo-500 group-hover:bg-indigo-50 transition-all duration-500">
+                <FileSpreadsheet className="h-12 w-12" />
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-slate-950 tracking-tight">
+                  Transmission Source
+                </h3>
+                <p className="text-xs text-slate-400 font-medium mt-2">
+                  Upload CSV or XLSX for processing
+                </p>
+              </div>
+              <div className="relative">
+                <label htmlFor="file-upload" className="cursor-pointer">
+                  <span className="flex items-center justify-center gap-4 px-10 py-5 bg-slate-950 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-600 transition-all shadow-2xl shadow-slate-900/20 active:scale-95">
+                    <Upload className="h-4 w-4" />
+                    Load Matrix
+                  </span>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    accept=".csv,.xlsx,.xls"
+                    className="sr-only"
+                    onChange={handleFileChange}
+                  />
+                </label>
+              </div>
+              {file && (
+                <div className="flex items-center justify-center gap-3 p-4 bg-indigo-50 rounded-2xl animate-in slide-in-from-bottom-2">
+                  <FileText className="h-4 w-4 text-indigo-500" />
+                  <span className="text-[10px] font-black text-indigo-900 uppercase tracking-widest truncate max-w-[200px]">
+                    {file.name}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
-          {file && (
-            <p className="mt-2 text-sm text-gray-600">
-              Selected: <span className="font-medium">{file.name}</span>
-            </p>
+
+          {/* Validation Status */}
+          {validationResult && (
+            <div
+              className={`p-10 rounded-[3rem] border animate-in slide-in-from-left-4 duration-500 shadow-xl ${
+                validationResult.valid
+                  ? "bg-emerald-50/50 border-emerald-100"
+                  : "bg-rose-50/50 border-rose-100"
+              }`}
+            >
+              <div className="flex items-start gap-6">
+                <div
+                  className={`h-12 w-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${
+                    validationResult.valid ? "bg-emerald-500" : "bg-rose-500"
+                  }`}
+                >
+                  {validationResult.valid ? (
+                    <CheckCircle className="h-6 w-6" />
+                  ) : (
+                    <XCircle className="h-6 w-6" />
+                  )}
+                </div>
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <h3
+                      className={`text-sm font-black uppercase tracking-widest ${
+                        validationResult.valid
+                          ? "text-emerald-950"
+                          : "text-rose-950"
+                      }`}
+                    >
+                      {validationResult.valid
+                        ? "Validation Optimal"
+                        : "Integrity Failure"}
+                    </h3>
+                    <p
+                      className={`text-[10px] font-bold uppercase tracking-wider mt-1 ${
+                        validationResult.valid
+                          ? "text-emerald-600"
+                          : "text-rose-600"
+                      }`}
+                    >
+                      {validationResult.students.length} Units Validated for
+                      Integration
+                    </p>
+                  </div>
+                  {!validationResult.valid && (
+                    <div className="max-h-48 overflow-y-auto pr-4 space-y-2 mt-4 custom-scrollbar">
+                      {validationResult.errors.map((error, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-2 p-3 bg-white/50 rounded-xl border border-rose-100/50 text-[10px] font-medium text-rose-800"
+                        >
+                          <AlertTriangle className="h-3 w-3" />
+                          {error}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           )}
-          <p className="mt-2 text-xs text-gray-500">
-            CSV, XLS, or XLSX up to 10MB
-          </p>
+        </div>
+
+        {/* Preview & Action Area */}
+        <div className="xl:col-span-3 space-y-10">
+          {preview.length > 0 && (
+            <div className="bg-white rounded-[4rem] border border-slate-100 shadow-3xl overflow-hidden flex flex-col h-full max-h-[700px]">
+              <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-slate-50/50 backdrop-blur-md sticky top-0 z-10">
+                <div className="flex items-center gap-4">
+                  <div className="h-8 w-8 bg-slate-950 rounded-lg flex items-center justify-center text-white">
+                    <Zap className="h-4 w-4" />
+                  </div>
+                  <h3 className="text-sm font-black text-slate-950 uppercase tracking-widest">
+                    Pre-Integration Scrutiny ({preview.length} Units)
+                  </h3>
+                </div>
+              </div>
+              <div className="overflow-auto custom-scrollbar flex-1">
+                <table className="w-full text-left">
+                  <thead className="bg-white/90 backdrop-blur-sm sticky top-0 z-10 border-b border-slate-100">
+                    <tr>
+                      {[
+                        "Identifier",
+                        "Identity",
+                        "Endpoint",
+                        "Protocol Data",
+                      ].map((h) => (
+                        <th
+                          key={h}
+                          className="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]"
+                        >
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {preview.map((student, idx) => (
+                      <tr
+                        key={idx}
+                        className="hover:bg-slate-50/50 transition-colors group"
+                      >
+                        <td className="px-8 py-6">
+                          <span className="text-[10px] font-black text-slate-400 font-mono tracking-widest uppercase bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                            {student.university_id || `TMP-${idx + 1}`}
+                          </span>
+                        </td>
+                        <td className="px-8 py-6">
+                          <div className="text-xs font-black text-slate-950 uppercase">
+                            {student.first_name} {student.last_name}
+                          </div>
+                          <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">
+                            Matrix Subject
+                          </div>
+                        </td>
+                        <td className="px-8 py-6">
+                          <div className="text-xs font-medium text-slate-600">
+                            {student.email}
+                          </div>
+                        </td>
+                        <td className="px-8 py-6">
+                          <div className="flex gap-2">
+                            <span className="px-2 py-1 bg-indigo-50 text-indigo-600 text-[9px] font-black rounded-md border border-indigo-100 uppercase">
+                              B:{student.batch || "0"}
+                            </span>
+                            <span className="px-2 py-1 bg-slate-50 text-slate-400 text-[9px] font-black rounded-md border border-slate-100 uppercase">
+                              Y:{student.year || "0"}
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {validationResult?.valid && (
+                <div className="p-8 bg-slate-950 border-t border-slate-900 flex justify-between items-center mt-auto">
+                  <div className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] flex items-center gap-2">
+                    <ArrowRight className="h-4 w-4" /> Final Step: Sequential
+                    Deployment
+                  </div>
+                  <button
+                    onClick={handleUpload}
+                    disabled={loading}
+                    className="flex items-center gap-4 px-10 py-4 bg-white text-slate-950 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-500 hover:text-white transition-all shadow-2xl shadow-white/5 disabled:opacity-50"
+                  >
+                    {loading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Zap className="h-4 w-4" />
+                    )}
+                    Initialize {validationResult.students.length} Nodes
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Default Hero when no preview */}
+          {preview.length === 0 && !uploadResult && (
+            <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-slate-50 rounded-[4rem] border border-dashed border-slate-200 p-20 text-center space-y-8">
+              <div className="h-32 w-32 bg-white rounded-[3rem] flex items-center justify-center text-slate-100 shadow-2xl mb-4">
+                <Database className="h-16 w-16" />
+              </div>
+              <div className="max-w-md space-y-4">
+                <h2 className="text-3xl font-black text-slate-950 tracking-tighter uppercase leading-none">
+                  Awaiting Data Sequential
+                </h2>
+                <p className="text-xs text-slate-400 font-bold uppercase tracking-widest leading-loose">
+                  Deploy your integration files to populate the Nexus Student
+                  Registry. <br />
+                  Supports CSV and Excel protocols.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Success Terminal */}
+          {uploadResult && (
+            <div className="bg-slate-950 p-12 rounded-[4rem] border border-white/10 shadow-3xl relative overflow-hidden animate-in zoom-in-95 duration-700">
+              <div className="absolute top-0 right-0 p-20 opacity-5">
+                <Zap className="h-64 w-64 text-indigo-500" />
+              </div>
+              <div className="relative z-10 space-y-10">
+                <div className="flex items-center gap-6">
+                  <div className="h-16 w-16 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-emerald-400 ring-1 ring-white/20">
+                    <CheckCircle className="h-8 w-8" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-black text-white tracking-tight uppercase">
+                      Integration Segment Complete
+                    </h3>
+                    <p className="text-xs text-white/40 font-bold uppercase tracking-[0.2em] mt-1">
+                      Matrix Population Terminal
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="bg-white/5 border border-white/10 p-6 rounded-3xl">
+                    <span className="block text-4xl font-black text-white">
+                      {uploadResult.success}
+                    </span>
+                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">
+                      Successful Nodes
+                    </span>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 p-6 rounded-3xl">
+                    <span className="block text-4xl font-black text-white">
+                      {uploadResult.failed}
+                    </span>
+                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">
+                      Failed Packets
+                    </span>
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-white/10 flex flex-wrap gap-4">
+                  <button
+                    onClick={downloadCredentials}
+                    className="flex-1 flex items-center justify-center gap-4 px-10 py-5 bg-white text-slate-950 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-400 hover:text-white transition-all shadow-xl shadow-white/5"
+                  >
+                    <Download className="h-4 w-4" />
+                    Archive Credentials
+                  </button>
+                  <button
+                    onClick={() => {
+                      setUploadResult(null);
+                      setFile(null);
+                      setPreview([]);
+                    }}
+                    className="flex-1 flex items-center justify-center gap-4 px-10 py-5 bg-white/5 text-white/60 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white/10 hover:text-white transition-all"
+                  >
+                    Reset Terminal
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Validation Results */}
-      {validationResult && (
-        <div
-          className={`p-4 rounded-lg ${
-            validationResult.valid
-              ? "bg-green-50 border border-green-200"
-              : "bg-red-50 border border-red-200"
-          }`}
-        >
-          <div className="flex items-start">
-            {validationResult.valid ? (
-              <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-            ) : (
-              <XCircle className="h-5 w-5 text-red-600 mt-0.5" />
-            )}
-            <div className="ml-3 flex-1">
-              <h3
-                className={`text-sm font-medium ${
-                  validationResult.valid ? "text-green-800" : "text-red-800"
-                }`}
-              >
-                {validationResult.valid
-                  ? "Validation Passed"
-                  : "Validation Failed"}
-              </h3>
-              <div className="mt-2 text-sm">
-                <p
-                  className={
-                    validationResult.valid ? "text-green-700" : "text-red-700"
-                  }
-                >
-                  {validationResult.students.length} valid student(s) found
-                </p>
-                {validationResult.errors.length > 0 && (
-                  <ul className="mt-2 list-disc list-inside space-y-1 text-red-700">
-                    {validationResult.errors.map((error, idx) => (
-                      <li key={idx}>{error}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Preview Table */}
-      {preview.length > 0 && (
-        <div className="bg-white rounded-lg border overflow-hidden">
-          <div className="px-4 py-3 border-b bg-gray-50">
-            <h3 className="text-sm font-medium text-gray-900">
-              Preview ({preview.length} students)
-            </h3>
-          </div>
-          <div className="overflow-x-auto max-h-96">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50 sticky top-0">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    First Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Last Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    University ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Batch
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Year
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Semester
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Password
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {preview.map((student, idx) => (
-                  <tr key={idx} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {student.first_name}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {student.last_name}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {student.email}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.university_id || "-"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.batch || "-"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.year || "-"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.semester || "-"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.password ? "******" : "Auto-generated"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* Upload Button */}
-      {validationResult?.valid && validationResult.students.length > 0 && (
-        <div className="flex justify-end">
-          <button
-            onClick={handleUpload}
-            disabled={loading}
-            className="inline-flex items-center gap-2 px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="h-5 w-5 animate-spin" />
-                Registering...
-              </>
-            ) : (
-              <>
-                <CheckCircle className="h-5 w-5" />
-                Register {validationResult.students.length} Student(s)
-              </>
-            )}
-          </button>
-        </div>
-      )}
-
-      {/* Upload Result */}
-      {uploadResult && (
-        <div
-          className={`rounded-lg p-4 border ${
-            uploadResult.success > 0
-              ? "bg-green-50 border-green-200"
-              : "bg-red-50 border-red-200"
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <CheckCircle
-                className={`h-5 w-5 ${
-                  uploadResult.success > 0 ? "text-green-600" : "text-gray-400"
-                }`}
-              />
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-gray-900">
-                  Registration Complete
-                </h3>
-                <p className="mt-1 text-sm text-gray-600">
-                  Successfully registered {uploadResult.success} student(s).
-                  {uploadResult.failed > 0 && ` ${uploadResult.failed} failed.`}
-                </p>
-              </div>
-            </div>
-
-            {uploadResult.success > 0 && (
-              <button
-                onClick={downloadCredentials}
-                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-md hover:bg-indigo-700 transition-colors shadow-sm"
-              >
-                <Download className="h-4 w-4" />
-                Download Credentials
-              </button>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

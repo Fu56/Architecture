@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react";
 import { api } from "../../lib/api";
 import type { Resource } from "../../models";
-import { Loader2, Check, X, Eye, CheckSquare } from "lucide-react";
+import {
+  Loader2,
+  Check,
+  X,
+  Eye,
+  CheckSquare,
+  ShieldCheck,
+  Clock,
+  User,
+  Zap,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -11,21 +21,23 @@ const Approvals = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPendingResources = async () => {
-      setLoading(true);
-      try {
-        const { data } = await api.get("/admin/resources/pending");
-        if (Array.isArray(data)) {
-          setResources(data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch pending resources:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchPendingResources();
   }, []);
+
+  const fetchPendingResources = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get("/admin/resources/pending");
+      if (Array.isArray(data)) {
+        setResources(data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch pending resources:", err);
+      toast.error("Protocol Error: Failed to synchronize verification queue");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDecision = async (
     resourceId: number,
@@ -44,11 +56,15 @@ const Approvals = () => {
           reason: feedback,
         });
       }
-      toast.success(`Resource ${status} successfully`);
+      toast.success(
+        `Asset ${
+          status === "approved" ? "verified" : "sequestered"
+        } successfully`
+      );
     } catch (err) {
       console.error(`Failed to set status to ${status}:`, err);
-      toast.error(`Failed to ${status} resource`);
-      // Re-fetch logic or revert optimistic UI
+      toast.error(`Protocol Breach: Failed to ${status} asset`);
+      fetchPendingResources(); // Re-sync on failure
     }
   };
 
@@ -58,39 +74,88 @@ const Approvals = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+        <div className="relative">
+          <div className="h-16 w-16 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin" />
+          <Loader2 className="h-8 w-8 text-indigo-600 animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+        </div>
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">
+          Synchronizing Queue...
+        </p>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="space-y-10">
+      <div className="flex items-center justify-between bg-slate-50 p-6 rounded-[2.5rem] border border-slate-100">
+        <div className="flex items-center gap-4">
+          <div className="h-10 w-10 bg-slate-950 rounded-xl flex items-center justify-center text-white shadow-lg">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
+          <div>
+            <h3 className="text-sm font-black uppercase tracking-[0.3em] text-slate-950">
+              Verification Protocol
+            </h3>
+            <p className="text-xs text-slate-400 font-medium">
+              Awaiting Nexus Deployment
+            </p>
+          </div>
+        </div>
+        <div className="px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-indigo-100">
+          {resources.length} Pending Units
+        </div>
+      </div>
+
       {resources.length > 0 ? (
-        <div className="space-y-6">
+        <div className="space-y-8">
           {resources.map((resource) => (
             <div
               key={resource.id}
-              className="bg-white p-6 rounded-2xl border shadow-sm flex flex-col gap-4"
+              className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200/50 group transition-all duration-500 hover:border-indigo-500/20"
             >
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                <div className="space-y-1">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-10">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <span className="px-3 py-1 bg-slate-950 text-white text-[9px] font-black uppercase tracking-widest rounded-lg">
+                      {(resource as { type?: string; fileType?: string })
+                        .type ||
+                        (resource as { type?: string; fileType?: string })
+                          .fileType ||
+                        "Unit"}
+                    </span>
+                    <span className="flex items-center gap-1.5 text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                      <Clock className="h-3 w-3" />
+                      {new Date(resource.uploadedAt).toLocaleDateString()}
+                    </span>
+                  </div>
                   <Link
                     to={`/resources/${resource.id}`}
-                    className="font-black text-xl text-gray-900 hover:text-indigo-600 transition-colors"
+                    className="block text-3xl font-black text-slate-950 tracking-tighter hover:text-indigo-600 transition-colors"
                   >
                     {resource.title}
                   </Link>
-                  <p className="text-sm text-gray-500 font-medium">
-                    Uploaded by{" "}
-                    <span className="text-indigo-600 font-bold">
-                      {resource.uploader.firstName} {resource.uploader.lastName}
-                    </span>{" "}
-                    • {new Date(resource.uploadedAt).toLocaleDateString()}
-                  </p>
+                  <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
+                    <div className="flex items-center gap-2 px-3 py-1 bg-slate-50 rounded-full border border-slate-100">
+                      <User className="h-3.5 w-3.5 text-slate-400" />
+                      <span>
+                        Source:{" "}
+                        <span className="font-black text-slate-950">
+                          {
+                            (resource.uploader as { firstName?: string })
+                              .firstName
+                          }{" "}
+                          {
+                            (resource.uploader as { lastName?: string })
+                              .lastName
+                          }
+                        </span>
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-4">
                   <a
                     href={`${import.meta.env.VITE_API_URL}/resources/${
                       resource.id
@@ -99,19 +164,21 @@ const Approvals = () => {
                     )}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 border border-blue-200 shadow-sm text-sm font-bold rounded-xl text-blue-700 bg-blue-50 hover:bg-blue-100 transition-all hover:scale-105"
+                    className="h-14 flex items-center gap-4 px-8 bg-white border-2 border-slate-100 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl text-slate-950 hover:border-indigo-500 hover:text-indigo-600 transition-all active:scale-95 shadow-lg shadow-slate-100"
                   >
-                    <Eye className="h-4 w-4" /> Review File
+                    <Eye className="h-4 w-4" /> Inspect Payload
                   </a>
                 </div>
               </div>
 
               {/* Comment Input */}
-              <div className="relative">
+              <div className="relative mb-10">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2 block">
+                  Operations Directive / Feedback
+                </label>
                 <textarea
-                  placeholder="Reviewer comment or rejection reason... (optional)"
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none resize-none"
-                  rows={2}
+                  placeholder="Enter optional verification notes or sequestration reason..."
+                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-[2rem] text-sm focus:ring-4 focus:ring-indigo-500/10 focus:bg-white transition-all outline-none resize-none min-h-[100px]"
                   value={comments[resource.id] || ""}
                   onChange={(e) =>
                     handleCommentChange(resource.id, e.target.value)
@@ -119,31 +186,39 @@ const Approvals = () => {
                 />
               </div>
 
-              <div className="flex gap-3 justify-end pt-2 border-t border-gray-50">
-                <button
-                  onClick={() => handleDecision(resource.id, "rejected")}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 border border-transparent shadow-md text-sm font-black rounded-xl text-white bg-red-500 hover:bg-red-600 transition-all hover:scale-105 active:scale-95"
-                >
-                  <X className="h-4 w-4" /> Reject
-                </button>
-                <button
-                  onClick={() => handleDecision(resource.id, "approved")}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 border border-transparent shadow-md text-sm font-black rounded-xl text-white bg-green-500 hover:bg-green-600 transition-all hover:scale-105 active:scale-95"
-                >
-                  <Check className="h-4 w-4" /> Approve
-                </button>
+              <div className="flex flex-col sm:flex-row gap-4 items-center pt-8 border-t border-slate-50">
+                <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex-1">
+                  <Zap className="h-3 w-3 text-indigo-500" />
+                  Review Protocol active
+                </div>
+                <div className="flex gap-4 w-full sm:w-auto">
+                  <button
+                    onClick={() => handleDecision(resource.id, "rejected")}
+                    className="flex-1 sm:flex-none h-14 px-10 bg-white border-2 border-rose-100 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl text-rose-600 hover:bg-rose-50 transition-all active:scale-95 flex items-center justify-center gap-3"
+                  >
+                    <X className="h-4 w-4" /> Sequester
+                  </button>
+                  <button
+                    onClick={() => handleDecision(resource.id, "approved")}
+                    className="flex-1 sm:flex-none h-14 px-12 bg-slate-950 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-emerald-600 transition-all hover:-translate-y-1 shadow-2xl shadow-slate-950/20 active:scale-95 flex items-center justify-center gap-3"
+                  >
+                    <Check className="h-4 w-4" /> Verify & Deploy
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 border-2 border-dashed rounded-lg">
-          <CheckSquare className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-4 text-lg font-medium text-gray-800">
-            Approval Queue is Empty
+        <div className="text-center py-32 bg-slate-50 rounded-[4rem] border border-dashed border-slate-200">
+          <div className="h-24 w-24 bg-white rounded-[2.5rem] flex items-center justify-center text-slate-200 mx-auto mb-8 shadow-xl">
+            <CheckSquare className="h-12 w-12" />
+          </div>
+          <h3 className="text-2xl font-black text-slate-950 tracking-tight">
+            Registry Synchronized
           </h3>
-          <p className="mt-1 text-sm text-gray-500">
-            No new resources are waiting for review.
+          <p className="text-xs text-slate-400 font-medium mt-2 max-w-xs mx-auto uppercase tracking-widest">
+            No pending units detected in the verification queue.
           </p>
         </div>
       )}

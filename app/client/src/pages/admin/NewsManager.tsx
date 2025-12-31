@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  Bell,
   Plus,
   Trash2,
   Calendar,
@@ -8,6 +7,10 @@ import {
   ChevronRight,
   Sparkles,
   Info,
+  Loader2,
+  Megaphone,
+  Zap,
+  Clock,
 } from "lucide-react";
 import { api } from "../../lib/api";
 import { toast } from "react-toastify";
@@ -31,6 +34,7 @@ const NewsManager = () => {
   const [content, setContent] = useState("");
   const [isEvent, setIsEvent] = useState(false);
   const [eventDate, setEventDate] = useState("");
+  const [processing, setProcessing] = useState(false);
 
   const fetchNews = async () => {
     try {
@@ -38,7 +42,7 @@ const NewsManager = () => {
       const res = await api.get("/common/news");
       setNews(res.data);
     } catch {
-      toast.error("Failed to load news feed");
+      toast.error("Protocol Error: Failed to synchronize announcement feed");
     } finally {
       setLoading(false);
     }
@@ -50,6 +54,7 @@ const NewsManager = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setProcessing(true);
     try {
       await api.post("/admin/news", {
         title,
@@ -57,7 +62,7 @@ const NewsManager = () => {
         isEvent,
         eventDate: isEvent ? eventDate : null,
       });
-      toast.success("News published successfully");
+      toast.success("Intelligence successfully broadcasted");
       setShowForm(false);
       setTitle("");
       setContent("");
@@ -65,49 +70,74 @@ const NewsManager = () => {
       setEventDate("");
       fetchNews();
     } catch {
-      toast.error("Failed to publish news");
+      toast.error("Protocol Breach: Announcement release failed");
+    } finally {
+      setProcessing(false);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm("Are you sure you want to delete this news item?"))
+    if (
+      !window.confirm(
+        "Are you sure you want to terminate this announcement node?"
+      )
+    )
       return;
     try {
       await api.delete(`/admin/news/${id}`);
-      toast.success("News item deleted");
+      toast.success("Announcement node terminated");
       fetchNews();
     } catch {
-      toast.error("Failed to delete news item");
+      toast.error("Protocol Breach: Failed to terminate node");
     }
   };
 
+  if (loading && news.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+        <div className="relative">
+          <div className="h-16 w-16 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin" />
+          <Loader2 className="h-8 w-8 text-indigo-600 animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+        </div>
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">
+          Synchronizing Feed...
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       {/* Header & Toggle */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50 p-6 rounded-[2rem] border border-slate-100">
-        <div>
-          <h2 className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <Bell className="h-5 w-5 text-indigo-600" />
-            Announcement Center
-          </h2>
-          <p className="text-sm text-slate-500 font-medium">
-            Broadcast news and events to all users
-          </p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-slate-50 p-8 rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden group">
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="flex items-center gap-6 relative z-10">
+          <div className="h-14 w-14 bg-slate-950 rounded-[1.5rem] flex items-center justify-center text-white shadow-2xl">
+            <Megaphone className="h-6 w-6" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-black text-slate-950 tracking-tighter">
+              Announcement Terminal
+            </h2>
+            <p className="text-xs text-slate-400 font-medium tracking-wide uppercase">
+              Broadcasting Global Intelligence
+            </p>
+          </div>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className={`flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all ${
+          className={`relative z-10 w-full md:w-auto flex items-center justify-center gap-3 px-10 py-4 rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 ${
             showForm
-              ? "bg-slate-200 text-slate-700 hover:bg-slate-300"
-              : "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 hover:-translate-y-1 hover:bg-indigo-700"
+              ? "bg-white border-2 border-slate-100 text-slate-400 hover:text-rose-600 hover:border-rose-100 shadow-lg"
+              : "bg-slate-950 text-white shadow-2xl shadow-slate-950/20 hover:-translate-y-1 hover:bg-indigo-600"
           }`}
         >
           {showForm ? (
-            "Cancel Release"
+            <>Cancel Release</>
           ) : (
             <>
-              <Plus className="h-5 w-5" />
-              New Announcement
+              <Plus className="h-4 w-4" />
+              Initialize Release
             </>
           )}
         </button>
@@ -115,13 +145,16 @@ const NewsManager = () => {
 
       {/* Form Section */}
       {showForm && (
-        <div className="bg-white rounded-[2.5rem] border-2 border-slate-100 p-8 sm:p-10 shadow-xl animate-in fade-in slide-in-from-top-4 duration-500">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-6">
+        <div className="bg-white rounded-[3.5rem] border border-slate-100 p-10 sm:p-14 shadow-3xl animate-in zoom-in-95 duration-500 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-20 opacity-[0.02]">
+            <Zap className="h-64 w-64" />
+          </div>
+          <form onSubmit={handleSubmit} className="space-y-10 relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <div className="space-y-8">
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">
-                    Headline
+                  <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-3 ml-1">
+                    Announcement Headline
                   </label>
                   <input
                     type="text"
@@ -129,46 +162,46 @@ const NewsManager = () => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="E.g., Winter Semester Thesis Submissions Open"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none focus:border-indigo-500 transition-all"
+                    className="w-full bg-slate-50 border border-slate-100 rounded-[1.5rem] px-8 py-5 text-slate-950 font-black text-lg outline-none focus:ring-4 focus:ring-indigo-500/5 focus:bg-white transition-all placeholder:text-slate-200"
                   />
                 </div>
 
-                <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-200 space-y-4">
+                <div className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 space-y-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="text-sm font-black text-slate-900">
-                        Event Toggle
+                      <h4 className="text-xs font-black text-slate-950 uppercase tracking-widest">
+                        Event Sequencing
                       </h4>
-                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">
-                        Is this a date-specific event?
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">
+                        Enable temporal event scheduling
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => setIsEvent(!isEvent)}
-                      className={`relative w-12 h-6 rounded-full transition-colors ${
-                        isEvent ? "bg-indigo-600" : "bg-slate-300"
+                      className={`relative w-14 h-7 rounded-full transition-all duration-500 ${
+                        isEvent ? "bg-indigo-600" : "bg-slate-200"
                       }`}
                     >
                       <div
-                        className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-                          isEvent ? "left-7" : "left-1"
+                        className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow-md transition-all duration-500 ${
+                          isEvent ? "left-8" : "left-1"
                         }`}
                       />
                     </button>
                   </div>
 
                   {isEvent && (
-                    <div className="animate-in fade-in duration-300">
-                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
-                        Event Date & Time
+                    <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 ml-1">
+                        Temporal Markers (Date & Time)
                       </label>
                       <input
                         type="datetime-local"
                         required={isEvent}
                         value={eventDate}
                         onChange={(e) => setEventDate(e.target.value)}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 outline-none focus:border-indigo-500"
+                        className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-sm font-black text-slate-950 outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all"
                       />
                     </div>
                   )}
@@ -176,27 +209,34 @@ const NewsManager = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">
-                  Message Content
+                <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-3 ml-1">
+                  Message Body
                 </label>
                 <textarea
                   required
                   rows={8}
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  placeholder="Draft your announcement message here..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-[2rem] px-6 py-4 text-slate-900 font-medium outline-none focus:border-indigo-500 transition-all resize-none"
+                  placeholder="Draft your intelligence transmission here..."
+                  className="w-full bg-slate-50 border border-slate-100 rounded-[2rem] px-8 py-6 text-slate-900 font-medium text-base outline-none focus:ring-4 focus:ring-indigo-500/5 focus:bg-white transition-all resize-none min-h-[280px]"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end pt-4 border-t border-slate-50">
+            <div className="flex justify-end pt-10 border-t border-slate-50">
               <button
                 type="submit"
-                className="flex items-center gap-2 px-10 py-4 bg-slate-950 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-slate-900 transition-all shadow-xl shadow-slate-900/20"
+                disabled={processing}
+                className="flex items-center gap-4 px-12 py-5 bg-slate-950 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-600 transition-all hover:-translate-y-1 shadow-2xl shadow-slate-950/20 disabled:opacity-50"
               >
-                Release Announcement
-                <ChevronRight className="h-5 w-5" />
+                {processing ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <>
+                    Deploy Transmission
+                    <ChevronRight className="h-5 w-5" />
+                  </>
+                )}
               </button>
             </div>
           </form>
@@ -204,63 +244,66 @@ const NewsManager = () => {
       )}
 
       {/* Feed Section */}
-      <div className="space-y-6">
-        <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.3em] ml-2">
-          Active Journal Feed
-        </h3>
+      <div className="space-y-8">
+        <div className="flex items-center gap-4 ml-4">
+          <Clock className="h-4 w-4 text-indigo-500" />
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">
+            Journal Archive Transmission
+          </h3>
+        </div>
 
-        {loading ? (
-          <div className="h-40 bg-slate-50 rounded-[2rem] animate-pulse flex items-center justify-center">
-            <span className="text-slate-300 font-bold uppercase tracking-widest">
-              Synchronizing Feed...
-            </span>
-          </div>
-        ) : news.length === 0 ? (
-          <div className="p-12 text-center bg-slate-50 rounded-[2rem] border border-dashed border-slate-200">
-            <Info className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-            <p className="text-slate-400 font-bold">
-              No announcements released yet.
+        {news.length === 0 ? (
+          <div className="p-24 text-center bg-slate-50 rounded-[4rem] border border-dashed border-slate-200">
+            <Info className="h-16 w-16 text-slate-200 mx-auto mb-6" />
+            <p className="text-slate-400 text-xs font-black uppercase tracking-widest">
+              Awaiting Signal: No archives detected.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 gap-6">
             {news.map((item) => (
               <div
                 key={item.id}
-                className="group relative bg-white p-6 sm:p-8 rounded-[2rem] border border-slate-100 hover:border-indigo-200 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/5 hover:-translate-y-1"
+                className="group relative bg-white p-10 rounded-[3rem] border border-slate-100 transition-all duration-700 hover:border-indigo-500/20 hover:shadow-3xl hover:-translate-y-2 overflow-hidden"
               >
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
-                  <div className="flex-1 space-y-3">
-                    <div className="flex items-center gap-3">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-bl-[10rem] -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-10">
+                  <div className="flex-1 space-y-6">
+                    <div className="flex items-center gap-4">
                       {item.isEvent ? (
-                        <span className="px-3 py-1 bg-amber-50 text-amber-600 text-[10px] font-black uppercase tracking-widest border border-amber-100 rounded-full flex items-center gap-1.5">
+                        <span className="px-4 py-1.5 bg-amber-50 text-amber-600 text-[9px] font-black uppercase tracking-[0.2em] border border-amber-100 rounded-full flex items-center gap-2">
                           <Calendar className="h-3 w-3" />
-                          Event
+                          Temporal Event
                         </span>
                       ) : (
-                        <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest border border-indigo-100 rounded-full flex items-center gap-1.5">
+                        <span className="px-4 py-1.5 bg-indigo-50 text-indigo-600 text-[9px] font-black uppercase tracking-[0.2em] border border-indigo-100 rounded-full flex items-center gap-2">
                           <Sparkles className="h-3 w-3" />
-                          News
+                          Nexus News
                         </span>
                       )}
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
+                        <Clock className="h-3 w-3" />
                         {new Date(item.createdAt).toLocaleDateString()}
                       </span>
                     </div>
 
-                    <h4 className="text-xl font-black text-slate-900 leading-tight">
+                    <h4 className="text-3xl font-black text-slate-950 tracking-tighter leading-none lowercase">
                       {item.title}
                     </h4>
 
-                    <p className="text-slate-500 font-medium leading-relaxed max-w-3xl">
-                      {item.content}
+                    <p className="text-slate-500 font-medium text-lg leading-relaxed max-w-4xl italic">
+                      "{item.content}"
                     </p>
 
                     {item.isEvent && item.eventDate && (
-                      <div className="mt-4 flex items-center gap-3 p-4 bg-slate-50 rounded-2xl w-fit">
-                        <AlertCircle className="h-4 w-4 text-indigo-500" />
-                        <span className="text-xs font-black text-slate-700 uppercase tracking-wider">
-                          Scheduled: {new Date(item.eventDate).toLocaleString()}
+                      <div className="mt-6 flex items-center gap-4 p-5 bg-slate-50 border border-slate-100 rounded-[1.5rem] w-fit">
+                        <div className="h-8 w-8 bg-indigo-500 rounded-lg flex items-center justify-center text-white">
+                          <AlertCircle className="h-4 w-4" />
+                        </div>
+                        <span className="text-xs font-black text-slate-800 uppercase tracking-widest">
+                          Target Sequencing:{" "}
+                          {new Date(item.eventDate).toLocaleString()}
                         </span>
                       </div>
                     )}
@@ -268,9 +311,10 @@ const NewsManager = () => {
 
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="p-4 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all self-end sm:self-start opacity-0 group-hover:opacity-100"
+                    className="p-4 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-[1.2rem] transition-all self-end lg:self-start opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0"
+                    title="Terminate Node"
                   >
-                    <Trash2 className="h-5 w-5" />
+                    <Trash2 className="h-6 w-6" />
                   </button>
                 </div>
               </div>
