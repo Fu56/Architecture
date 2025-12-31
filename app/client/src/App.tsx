@@ -5,7 +5,6 @@ import Browse from "./pages/library/Browse";
 import ResourceDetails from "./pages/library/ResourceDetails";
 import Upload from "./pages/library/Upload";
 import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
 import UserDashboard from "./pages/user/Dashboard";
 import MyUploads from "./pages/user/MyUploads";
 import Notifications from "./pages/user/Notifications";
@@ -43,7 +42,6 @@ const App = () => {
         <Route path="/browse" element={<Browse />} />
         <Route path="/resources/:id" element={<ResourceDetails />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/blog" element={<Blog />} />

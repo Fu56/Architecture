@@ -14,6 +14,13 @@ import {
   Star,
   Info,
   ShieldAlert,
+  Calendar,
+  Layers,
+  Sparkles,
+  Zap,
+  ArrowLeft,
+  MessageSquare,
+  Box,
 } from "lucide-react";
 import { isAuthenticated, currentRole } from "../../lib/auth";
 import { toast } from "react-toastify";
@@ -53,7 +60,6 @@ const ResourceDetails = () => {
     location.pathname.startsWith("/dashboard") ||
     location.pathname.startsWith("/admin");
 
-  // Redirect to nested route if logged in but on public route
   useEffect(() => {
     if (isAuth && !isNested) {
       if (role === "Admin" || role === "SuperAdmin" || role === "admin") {
@@ -74,7 +80,6 @@ const ResourceDetails = () => {
         setResource(data);
         setComments(data.comments || []);
 
-        // Fetch recent resources for the sidebar
         const { data: recentData } = await api.get("/resources?limit=5");
         if (Array.isArray(recentData)) {
           setRecentResources(
@@ -82,7 +87,6 @@ const ResourceDetails = () => {
           );
         }
 
-        // Calculate ratings
         if (data.ratings && data.ratings.length > 0) {
           const sum = data.ratings.reduce(
             (acc: number, r: Rating) => acc + r.rate,
@@ -91,7 +95,6 @@ const ResourceDetails = () => {
           setAverageRating(sum / data.ratings.length);
           setRatingCount(data.ratings.length);
 
-          // Check if current user has rated
           const userStr = localStorage.getItem("user");
           if (userStr) {
             const currentUser = JSON.parse(userStr);
@@ -104,7 +107,7 @@ const ResourceDetails = () => {
       } catch (err) {
         console.error("Failed to fetch resource details:", err);
         setError(
-          "Could not load the resource. It may have been removed or the link is incorrect."
+          "Access Denied: The requested asset node could not be localized or has been neutralized."
         );
       } finally {
         setLoading(false);
@@ -121,7 +124,9 @@ const ResourceDetails = () => {
     try {
       await api.post(`/resources/${id}/flag`, { reason: reportReason });
       setReportSuccess(true);
-      toast.success("Security Alert: Report transmitted to moderation node");
+      toast.success(
+        "Security Directive: Breach report transmitted to moderator nexus"
+      );
       setTimeout(() => {
         setReporting(false);
         setReportSuccess(false);
@@ -129,7 +134,7 @@ const ResourceDetails = () => {
       }, 2000);
     } catch (err) {
       console.error("Failed to report resource:", err);
-      toast.error("Transmission Error: Report could not be submitted");
+      toast.error("Transmission Error: Report packet lost in transit");
     } finally {
       setIsSubmittingReport(false);
     }
@@ -137,13 +142,13 @@ const ResourceDetails = () => {
 
   const handleRate = async (rateValue: number) => {
     if (!isAuth) {
-      toast.info("Authentication required for evaluation");
+      toast.info("Authentication verified required for evaluation protocols");
       return;
     }
     try {
       await api.post(`/resources/${id}/rate`, { rate: rateValue });
       setUserRating(rateValue);
-      toast.success(`Asset evaluated: ${rateValue} stars registered`);
+      toast.success(`Evaluation Confirmed: Asset rated at ${rateValue} stars`);
 
       const { data } = await api.get(`/resources/${id}`);
       if (data.ratings && data.ratings.length > 0) {
@@ -156,7 +161,7 @@ const ResourceDetails = () => {
       }
     } catch (error) {
       console.error("Failed to rate", error);
-      toast.error("Evaluation Error: Rating could not be processed");
+      toast.error("Evaluation Error: Ratings matrix failed to update");
     }
   };
 
@@ -169,13 +174,13 @@ const ResourceDetails = () => {
       await api.post(`/resources/${id}/comments`, {
         text: newComment,
       });
-      toast.success("Message logged to community nexus");
+      toast.success("Intelligence logged to the community nexus");
       const { data: updatedResource } = await api.get(`/resources/${id}`);
       setComments(updatedResource.comments || []);
       setNewComment("");
     } catch (error) {
       console.error("Failed to submit comment:", error);
-      toast.error("Nexus Error: Comment could not be integrated");
+      toast.error("Nexus Error: Communication packet rejected");
     } finally {
       setSubmittingComment(false);
     }
@@ -183,32 +188,38 @@ const ResourceDetails = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-40">
-        <Loader2 className="h-12 w-12 animate-spin text-indigo-600" />
+      <div className="flex flex-col justify-center items-center py-40 animate-pulse">
+        <Loader2 className="h-16 w-16 animate-spin text-indigo-600 mb-6" />
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">
+          Synchronizing with Matrix...
+        </p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div
-        className={`${
-          isNested ? "" : "container mx-auto"
-        } text-center py-24 bg-red-50/50 rounded-[3rem] my-8 border border-red-100 border-dashed`}
-      >
-        <ServerCrash className="h-16 w-16 text-red-500 mx-auto mb-6" />
-        <h2 className="text-2xl font-black text-red-900 mb-2">
-          Matrix Disruption
-        </h2>
-        <p className="mt-2 text-red-700 font-medium max-w-md mx-auto">
-          {error}
-        </p>
-        <button
-          onClick={() => navigate(-1)}
-          className="mt-8 px-8 py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-colors"
-        >
-          Return to Safety
-        </button>
+      <div className={`${isNested ? "" : "container mx-auto px-4"} py-24`}>
+        <div className="bg-slate-950 p-20 rounded-[3rem] text-center border border-white/10 shadow-3xl relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(244,63,94,0.1),transparent_50%)]" />
+
+          <div className="relative z-10">
+            <ServerCrash className="h-20 w-20 text-rose-500 mx-auto mb-8 animate-bounce" />
+            <h2 className="text-4xl font-black text-white mb-4 tracking-tighter uppercase">
+              Node Seizure Detected
+            </h2>
+            <p className="mt-2 text-slate-400 font-bold uppercase tracking-widest text-sm max-w-md mx-auto leading-relaxed">
+              {error}
+            </p>
+            <button
+              onClick={() => navigate(-1)}
+              className="mt-12 px-12 py-5 bg-white text-slate-950 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-rose-500 hover:text-white transition-all transform active:scale-95 shadow-2xl"
+            >
+              Emergency Extraction
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -218,78 +229,119 @@ const ResourceDetails = () => {
   return (
     <div
       className={`${
-        isNested ? "" : "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
-      }`}
+        isNested ? "" : "max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 py-16"
+      } animate-in fade-in duration-700`}
     >
-      <div className="grid lg:grid-cols-12 gap-10">
-        {/* Main Content */}
-        <div className="lg:col-span-8 space-y-8">
-          <div className="bg-white p-10 sm:p-14 rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-slate-100">
-            <div className="mb-10">
-              <div className="flex flex-wrap items-center gap-3 mb-6">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5 bg-slate-900 text-white rounded-full">
-                  {resource.fileType}
+      <div className="grid lg:grid-cols-12 gap-12">
+        {/* Main Intelligence Content */}
+        <div className="lg:col-span-8 space-y-12">
+          {/* Header Module */}
+          <div className="bg-white p-10 sm:p-16 rounded-[4rem] shadow-2xl shadow-slate-200/50 border border-slate-100/50 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-bl-[8rem] -translate-y-8 translate-x-8 group-hover:bg-indigo-100 transition-colors duration-700" />
+
+            <div className="relative z-10">
+              <div className="flex flex-wrap items-center gap-4 mb-10">
+                <button
+                  onClick={() =>
+                    isNested ? navigate(-1) : navigate("/browse")
+                  }
+                  className="p-3 bg-slate-900 text-white rounded-2xl hover:bg-indigo-600 transition-all active:scale-90"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </button>
+                <div className="h-px w-8 bg-slate-200" />
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] px-5 py-2 bg-slate-950 text-white rounded-full">
+                  {resource.fileType} Protocol
                 </span>
                 <span
-                  className={`text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-full flex items-center gap-2 border ${
+                  className={`text-[10px] font-black uppercase tracking-[0.3em] px-5 py-2 rounded-full flex items-center gap-2 border ${
                     resource.status === "student" ||
                     resource.status === "approved"
-                      ? "bg-green-50 text-green-700 border-green-100"
+                      ? "bg-emerald-50 text-emerald-700 border-emerald-100"
                       : resource.status === "pending"
                       ? "bg-amber-50 text-amber-700 border-amber-100"
-                      : "bg-red-50 text-red-700 border-red-100"
+                      : "bg-rose-50 text-rose-700 border-rose-100"
                   }`}
                 >
                   <div
-                    className={`h-1.5 w-1.5 rounded-full ${
+                    className={`h-2 w-2 rounded-full ${
                       resource.status === "student" ||
                       resource.status === "approved"
-                        ? "bg-green-500"
+                        ? "bg-emerald-500"
                         : resource.status === "pending"
                         ? "bg-amber-500"
-                        : "bg-red-500"
-                    }`}
+                        : "bg-rose-500"
+                    } animate-pulse`}
                   />
                   {resource.status === "student" ? "Verified" : resource.status}
                 </span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-6">
+              <h1 className="text-5xl sm:text-7xl font-black text-slate-950 tracking-tighter leading-[0.9] mb-10 max-w-2xl">
                 {resource.title}
               </h1>
 
-              <div className="flex items-center gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100 w-fit">
-                <div className="h-10 w-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400">
-                  <User className="h-5 w-5" />
+              <div className="flex flex-wrap items-center gap-8">
+                <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-[2rem] border border-slate-100 hover:border-indigo-200 transition-colors cursor-default">
+                  <div className="h-14 w-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 shadow-sm">
+                    <User className="h-7 w-7" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">
+                      Authority Unit
+                    </p>
+                    <p className="text-lg font-black text-slate-900 leading-none">
+                      Architect {resource.author}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    Authority Unit
-                  </p>
-                  <p className="font-bold text-slate-900 leading-tight">
-                    Architect {resource.author}
-                  </p>
+
+                <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-[2rem] border border-slate-100">
+                  <div className="h-14 w-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-indigo-500 shadow-sm">
+                    <Calendar className="h-7 w-7" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">
+                      Genesis Date
+                    </p>
+                    <p className="text-lg font-black text-slate-900 leading-none">
+                      {new Date(resource.uploadedAt).toLocaleDateString()}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            {resource.adminComment && (
-              <div className="mb-10 p-6 bg-slate-950 rounded-3xl text-white relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 blur-3xl -translate-y-1/2 translate-x-1/2" />
-                <div className="relative z-10">
-                  <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-3 flex items-center gap-2">
-                    <ShieldAlert className="h-3 w-3" /> System Evaluation
-                    Directive
+          {resource.adminComment && (
+            <div className="p-8 bg-slate-950 rounded-[3rem] text-white relative overflow-hidden shadow-2xl ring-1 ring-white/10">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-600/20 blur-[60px] -translate-y-1/2 translate-x-1/2" />
+              <div className="relative z-10 flex items-start gap-6">
+                <div className="h-14 w-14 shrink-0 bg-white/10 rounded-2xl flex items-center justify-center text-indigo-400 border border-white/10">
+                  <ShieldAlert className="h-8 w-8" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-3">
+                    Operations Directive
                   </p>
-                  <p className="text-sm text-slate-300 italic font-medium leading-relaxed">
+                  <p className="text-lg text-slate-300 italic font-medium leading-relaxed">
                     "{resource.adminComment}"
                   </p>
                 </div>
               </div>
-            )}
+            </div>
+          )}
 
-            <div className="flex flex-wrap items-center gap-6 mb-12 p-6 bg-amber-50 rounded-3xl border border-amber-100 w-fit">
-              <div className="flex items-center gap-1.5">
+          {/* Evaluation Matrix */}
+          <div className="bg-white p-10 rounded-[3.5rem] shadow-xl border border-slate-100 flex flex-wrap items-center justify-between gap-10">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Sparkles className="h-5 w-5 text-amber-500 fill-amber-500" />
+                <h3 className="text-sm font-black text-slate-950 uppercase tracking-[0.2em]">
+                  Intel Evaluation
+                </h3>
+              </div>
+              <div className="flex items-center gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
@@ -297,311 +349,356 @@ const ResourceDetails = () => {
                     onMouseEnter={() => setHoverRating(star)}
                     onMouseLeave={() => setHoverRating(0)}
                     onClick={() => handleRate(star)}
-                    className="focus:outline-none transition-transform hover:scale-125"
+                    className="focus:outline-none transition-all hover:scale-125 group/star"
                   >
                     <Star
-                      className={`h-7 w-7 ${
+                      className={`h-10 w-10 ${
                         (hoverRating ||
                           userRating ||
                           Math.round(averageRating)) >= star
-                          ? "text-amber-500 fill-amber-500"
-                          : "text-amber-200"
-                      }`}
+                          ? "text-amber-400 fill-amber-400"
+                          : "text-slate-100 group-hover/star:text-amber-200"
+                      } transition-colors duration-200`}
                     />
                   </button>
                 ))}
               </div>
-              <div className="h-8 w-px bg-amber-200 hidden sm:block" />
-              <div>
-                <p className="text-2xl font-black text-amber-900 leading-none">
-                  {averageRating.toFixed(1)}{" "}
-                  <span className="text-sm font-bold text-amber-700/50">
-                    / 5.0
-                  </span>
-                </p>
-                <p className="text-[10px] font-black text-amber-700/60 uppercase tracking-widest mt-1">
-                  ({ratingCount} Valuations)
-                </p>
-              </div>
             </div>
 
-            <div className="prose prose-slate max-w-none mb-12">
-              <div className="flex items-center gap-2 text-slate-400 mb-4">
-                <Info className="h-4 w-4" />
-                <p className="text-xs font-bold uppercase tracking-widest">
-                  Digital Abstract
-                </p>
+            <div className="h-20 w-px bg-slate-100 hidden sm:block" />
+
+            <div className="text-right sm:text-left">
+              <div className="flex items-baseline gap-2 mb-1 justify-end sm:justify-start">
+                <span className="text-6xl font-black text-slate-950 tracking-tighter">
+                  {averageRating.toFixed(1)}
+                </span>
+                <span className="text-xl font-black text-slate-300">/ 5.0</span>
               </div>
-              <p className="text-slate-600 font-medium leading-relaxed text-lg italic border-l-4 border-slate-100 pl-6 py-2">
-                This asset contains verified architectural intelligence. Please
-                review the metadata matrix for technical specifications prior to
-                deployment.
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
+                Verified Valuations: {ratingCount}
               </p>
             </div>
+          </div>
 
-            {/* Comments Section */}
-            <div className="mt-16 pt-12 border-t border-slate-100">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-                  Nexus Intelligence
-                </h2>
-                <div className="px-3 py-1 bg-slate-100 rounded-full text-[10px] font-black text-slate-500 uppercase">
-                  {comments.length} Nodes
+          {/* Content Description */}
+          <div className="bg-white p-12 rounded-[4rem] shadow-xl border border-slate-100">
+            <div className="flex items-center gap-4 mb-10">
+              <div className="h-1 w-12 bg-indigo-600 rounded-full" />
+              <h3 className="text-xl font-black text-slate-950 uppercase tracking-tight">
+                Technical Abstract
+              </h3>
+            </div>
+            <div className="prose prose-slate prose-lg max-w-none prose-p:text-slate-500 prose-p:leading-relaxed prose-p:font-medium italic">
+              <p>
+                This high-voltage architectural protocol contains verified
+                structural intelligence. Users are advised to inspect the
+                component hierarchy and metadata matrix within the provided
+                preview terminal before deploying to active BIM environments.
+              </p>
+            </div>
+          </div>
+
+          {/* Nexus of Intelligence (Comments) */}
+          <div className="pt-8 space-y-10">
+            <div className="flex items-center justify-between">
+              <h2 className="text-3xl font-black text-slate-950 tracking-tighter uppercase flex items-center gap-4">
+                <MessageSquare className="h-8 w-8 text-indigo-600" />
+                Nexus Intelligence
+              </h2>
+              <div className="px-6 py-2 bg-slate-100 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-widest border border-slate-200">
+                {comments.length} Logged Pulse(s)
+              </div>
+            </div>
+
+            {isAuth ? (
+              <form onSubmit={handleSubmitComment} className="flex gap-4 group">
+                <div className="flex-grow relative">
+                  <div className="absolute inset-0 bg-indigo-500/5 blur-xl group-focus-within:bg-indigo-500/10 transition-colors" />
+                  <input
+                    type="text"
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    placeholder="Input community intelligence..."
+                    className="relative w-full px-8 py-5 bg-white border border-slate-200 rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-slate-900 font-bold placeholder-slate-400"
+                  />
                 </div>
+                <button
+                  type="submit"
+                  disabled={submittingComment || !newComment.trim()}
+                  className="px-10 py-5 bg-slate-950 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-[2rem] hover:bg-indigo-600 transition-all shadow-2xl active:scale-95 disabled:opacity-50"
+                >
+                  {submittingComment ? (
+                    <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                  ) : (
+                    "Transmit"
+                  )}
+                </button>
+              </form>
+            ) : (
+              <div className="p-10 bg-slate-50 rounded-[3rem] border border-slate-200 border-dashed text-center">
+                <ShieldAlert className="h-10 w-10 text-slate-300 mx-auto mb-4" />
+                <p className="text-slate-500 font-bold uppercase tracking-widest text-xs mb-6">
+                  Identity Verification Protocol Required for Transmission
+                </p>
+                <Link
+                  to="/login"
+                  className="px-8 py-3 bg-indigo-600 text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-slate-950 transition-all shadow-xl shadow-indigo-600/20"
+                >
+                  Access Terminal
+                </Link>
               </div>
+            )}
 
-              <div className="mb-10">
-                {isAuth ? (
-                  <form onSubmit={handleSubmitComment} className="flex gap-4">
-                    <input
-                      type="text"
-                      value={newComment}
-                      onChange={(e) => setNewComment(e.target.value)}
-                      placeholder="Input community intelligence..."
-                      className="flex-1 px-8 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] focus:outline-none focus:border-indigo-500 focus:bg-white transition-all text-slate-900 font-bold placeholder-slate-400"
-                    />
-                    <button
-                      type="submit"
-                      disabled={submittingComment || !newComment.trim()}
-                      className="px-8 py-5 bg-slate-950 text-white text-xs font-black uppercase tracking-widest rounded-[2rem] hover:bg-indigo-600 transition-all shadow-xl shadow-slate-950/10 active:scale-95 disabled:opacity-50"
-                    >
-                      {submittingComment ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        "Log Message"
-                      )}
-                    </button>
-                  </form>
-                ) : (
-                  <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 border-dashed text-center">
-                    <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
-                      Identity Verification Required for Transmission
-                    </p>
-                    <Link
-                      to="/login"
-                      className="mt-4 inline-block text-indigo-600 font-black text-xs uppercase tracking-widest hover:text-slate-950 transition-colors"
-                    >
-                      Access Central Terminal
-                    </Link>
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-10">
-                {comments.length > 0 ? (
-                  comments.map((comment: CommentModel) => (
-                    <div key={comment.id} className="flex gap-6 group">
-                      <div className="flex-shrink-0 h-14 w-14 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-slate-950 group-hover:text-white transition-colors group-hover:scale-110">
-                        <User className="h-6 w-6" />
-                      </div>
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-3">
-                          <p className="font-black text-slate-900">
-                            {comment.user.first_name || comment.user.firstName}{" "}
-                            {comment.user.last_name || comment.user.lastName}
-                          </p>
-                          <span className="h-1 w-1 bg-slate-200 rounded-full" />
-                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                            {new Date(comment.createdAt).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <p className="text-slate-600 font-medium leading-relaxed">
-                          {comment.text}
+            <div className="space-y-6">
+              {comments.length > 0 ? (
+                comments.map((comment: CommentModel) => (
+                  <div
+                    key={comment.id}
+                    className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-lg hover:shadow-xl transition-all flex gap-6 items-start group"
+                  >
+                    <div className="flex-shrink-0 h-16 w-16 rounded-2xl bg-slate-900 flex items-center justify-center text-white font-black text-xl shadow-xl group-hover:scale-110 transition-transform">
+                      {(comment.user.first_name || comment.user.firstName)?.[0]}
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-4">
+                        <p className="font-black text-slate-950 text-lg tracking-tight">
+                          {comment.user.first_name || comment.user.firstName}{" "}
+                          {comment.user.last_name || comment.user.lastName}
+                        </p>
+                        <span className="h-1.5 w-1.5 bg-indigo-500 rounded-full" />
+                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">
+                          Log:{" "}
+                          {new Date(comment.createdAt).toLocaleDateString()}
                         </p>
                       </div>
+                      <p className="text-slate-500 font-medium leading-relaxed text-base">
+                        {comment.text}
+                      </p>
                     </div>
-                  ))
-                ) : (
-                  <div className="text-center py-10 opacity-30">
-                    <Info className="mx-auto h-8 w-8 text-slate-400 mb-2" />
-                    <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">
-                      Awaiting Signal
-                    </p>
                   </div>
-                )}
-              </div>
+                ))
+              ) : (
+                <div className="text-center py-20 opacity-20 select-none">
+                  <Box className="h-16 w-16 mx-auto text-slate-400 mb-4" />
+                  <p className="text-xs font-black uppercase tracking-[0.5em] text-slate-950">
+                    Awaiting Signal
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Metadata Sidebar */}
-        <div className="lg:col-span-4 space-y-8">
-          <div className="bg-slate-950 p-10 rounded-[3rem] shadow-2xl shadow-indigo-200/20 text-white relative overflow-hidden">
-            <div className="absolute bottom-0 left-0 w-full h-1 bg-indigo-600" />
+        {/* Control Center Sidebar */}
+        <div className="lg:col-span-4 space-y-10">
+          <div className="bg-slate-950 p-10 rounded-[4rem] shadow-3xl text-white relative overflow-hidden ring-1 ring-white/10">
+            <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+            <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
 
-            <div className="relative z-10 space-y-6">
-              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-indigo-400 mb-8 flex items-center gap-2">
-                <ShieldAlert className="h-4 w-4" /> Control Center
-              </h3>
-
-              <a
-                href={`${
-                  import.meta.env.VITE_API_URL
-                }/resources/${id}/view?token=${encodeURIComponent(
-                  localStorage.getItem("token") || ""
-                )}`}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full h-16 flex justify-center items-center gap-3 border border-indigo-500/30 text-xs font-black uppercase tracking-widest rounded-2xl text-indigo-400 bg-indigo-500/5 hover:bg-indigo-500/10 transition-all active:scale-95"
-              >
-                <Eye className="h-5 w-5" />
-                Preview Matrix
-              </a>
-
-              <a
-                href={`${
-                  import.meta.env.VITE_API_URL
-                }/resources/${id}/download?token=${encodeURIComponent(
-                  localStorage.getItem("token") || ""
-                )}`}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full h-20 flex justify-center items-center gap-4 bg-indigo-600 text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-indigo-500 shadow-2xl shadow-indigo-600/40 transition-all hover:-translate-y-1 active:scale-95"
-              >
-                <Download className="h-6 w-6" />
-                Deploy Payload
-              </a>
-
-              <div className="pt-8 space-y-5 border-t border-white/5">
-                <div className="flex justify-between items-center group">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 group-hover:text-indigo-400 transition-colors">
-                    Integrations
-                  </span>
-                  <span className="font-black text-white">
-                    {resource.downloadCount}
-                  </span>
+            <div className="relative z-10 space-y-8">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="h-10 w-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/30">
+                  <Zap className="h-5 w-5 text-white" />
                 </div>
-                <div className="flex justify-between items-center group">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 group-hover:text-indigo-400 transition-colors">
-                    Mass Unit
-                  </span>
-                  <span className="font-black text-white">
-                    {resource.fileSize.toFixed(2)} MB
-                  </span>
-                </div>
-                {resource.semester && (
-                  <div className="flex justify-between items-center group">
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 group-hover:text-indigo-400 transition-colors">
-                      Semester
-                    </span>
-                    <span className="font-black text-white">
-                      {resource.semester}
+                <h3 className="text-sm font-black uppercase tracking-[0.3em] text-indigo-400">
+                  Control Center
+                </h3>
+              </div>
+
+              <div className="space-y-4">
+                <a
+                  href={`${
+                    import.meta.env.VITE_API_URL
+                  }/resources/${id}/view?token=${encodeURIComponent(
+                    localStorage.getItem("token") || ""
+                  )}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full h-16 flex justify-center items-center gap-4 bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl text-white hover:bg-white/10 transition-all active:scale-95 group"
+                >
+                  <Eye className="h-5 w-5 text-indigo-400 group-hover:scale-110 transition-transform" />
+                  Scan Matrix
+                </a>
+
+                <a
+                  href={`${
+                    import.meta.env.VITE_API_URL
+                  }/resources/${id}/download?token=${encodeURIComponent(
+                    localStorage.getItem("token") || ""
+                  )}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full h-20 flex justify-center items-center gap-5 bg-indigo-600 text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-[2rem] hover:bg-indigo-500 shadow-2xl shadow-indigo-600/50 transition-all hover:-translate-y-1 active:scale-95"
+                >
+                  <Download className="h-7 w-7" />
+                  Deploy Payload
+                </a>
+              </div>
+
+              <div className="pt-8 space-y-6 border-t border-white/10">
+                {[
+                  {
+                    label: "Transmission Count",
+                    value: resource.downloadCount.toLocaleString(),
+                    icon: Download,
+                  },
+                  {
+                    label: "Data Mass",
+                    value:
+                      resource.fileSize > 1024
+                        ? `${(resource.fileSize / 1024).toFixed(2)} MB`
+                        : `${resource.fileSize.toFixed(2)} KB`,
+                    icon: Layers,
+                  },
+                  {
+                    label: "Design Phase",
+                    value: resource.designStage?.name || "Unclassified",
+                    icon: Box,
+                  },
+                  {
+                    label: "Academic Cluster",
+                    value: resource.semester
+                      ? `Semester ${resource.semester}`
+                      : "Global Node",
+                    icon: Info,
+                  },
+                  {
+                    label: "Batch Registry",
+                    value: resource.batchYear
+                      ? `Class of ${resource.batchYear}`
+                      : "Open Access",
+                    icon: User,
+                  },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex justify-between items-center group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <item.icon className="h-4 w-4 text-white/20 group-hover:text-indigo-400 transition-colors" />
+                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 group-hover:text-white transition-colors">
+                        {item.label}
+                      </span>
+                    </div>
+                    <span className="font-black text-white text-xs">
+                      {item.value}
                     </span>
                   </div>
-                )}
-                <div className="flex justify-between items-center group">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 group-hover:text-indigo-400 transition-colors">
-                    Genesis Date
-                  </span>
-                  <span className="font-black text-white">
-                    {new Date(resource.uploadedAt).toLocaleDateString()}
-                  </span>
-                </div>
+                ))}
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-10 rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-slate-100">
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em] mb-10 flex items-center gap-3">
-              <Clock className="h-5 w-5 text-indigo-500" />
-              Temporal Links
+          {/* Temporal Links Cluster */}
+          <div className="bg-white p-10 rounded-[4rem] shadow-xl border border-slate-100">
+            <h3 className="text-xs font-black text-slate-950 uppercase tracking-[0.3em] mb-12 flex items-center gap-4">
+              <Clock className="h-5 w-5 text-indigo-600" />
+              Related Artifacts
             </h3>
-            <div className="space-y-8">
-              {recentResources.map((recent: Resource) => (
-                <Link
-                  key={recent.id}
-                  to={
-                    isAuth
-                      ? role === "Admin" ||
-                        role === "SuperAdmin" ||
-                        role === "admin"
-                        ? `/admin/resources/${recent.id}`
-                        : `/dashboard/resources/${recent.id}`
-                      : `/resources/${recent.id}`
-                  }
-                  className="flex items-start gap-5 group"
-                >
-                  <div className="h-12 w-12 flex-shrink-0 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 font-black text-[10px] uppercase border border-slate-100 group-hover:bg-slate-950 group-hover:text-white transition-all group-hover:scale-110">
-                    {recent.fileType}
-                  </div>
-                  <div className="space-y-1">
-                    <h4 className="text-sm font-black text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1 leading-snug">
-                      {recent.title}
-                    </h4>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                      {new Date(recent.uploadedAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                </Link>
-              ))}
+            <div className="space-y-10">
+              {recentResources.length > 0 ? (
+                recentResources.map((recent: Resource) => (
+                  <Link
+                    key={recent.id}
+                    to={
+                      isAuth
+                        ? role === "Admin" ||
+                          role === "SuperAdmin" ||
+                          role === "admin"
+                          ? `/admin/resources/${recent.id}`
+                          : `/dashboard/resources/${recent.id}`
+                        : `/resources/${recent.id}`
+                    }
+                    className="flex items-center gap-6 group"
+                  >
+                    <div className="h-16 w-16 shrink-0 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-slate-950 group-hover:text-white transition-all transform group-hover:scale-110 border border-slate-100 shadow-sm">
+                      <Layers className="h-7 w-7" />
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="text-base font-black text-slate-950 group-hover:text-indigo-600 transition-colors line-clamp-1 leading-tight">
+                        {recent.title}
+                      </h4>
+                      <p className="text-[9px] text-slate-400 font-black uppercase tracking-[0.2em]">
+                        Registry:{" "}
+                        {new Date(recent.uploadedAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest text-center">
+                  No secondary artifacts localized.
+                </p>
+              )}
             </div>
           </div>
 
-          <div className="text-center pt-2">
+          {/* Report Peripheral */}
+          <div className="text-center pt-4">
             <button
               onClick={() => setReporting(true)}
-              className="inline-flex items-center gap-2 text-[10px] font-black text-slate-300 hover:text-red-500 transition-all uppercase tracking-[0.3em] py-2 px-6 border border-slate-100 rounded-full hover:border-red-100 hover:bg-red-50/50"
+              className="inline-flex items-center gap-3 text-[9px] font-black text-slate-300 hover:text-rose-500 transition-all uppercase tracking-[0.4em] py-3 px-10 border border-slate-100 rounded-full hover:border-rose-100 hover:bg-rose-50/50"
             >
               <Flag className="h-3.5 w-3.5" />
-              Report Disruption
+              Report Protocol Violation
             </button>
           </div>
         </div>
       </div>
 
-      {/* Reporting Modal */}
+      {/* Security Incident Reporting Modal */}
       {reporting && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="bg-white rounded-[3rem] shadow-2xl p-10 sm:p-14 max-w-lg w-full border border-slate-100 animate-in zoom-in-95 duration-300 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-2 bg-red-600" />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-950/90 backdrop-blur-xl animate-in fade-in duration-500">
+          <div className="bg-white rounded-[4rem] shadow-3xl p-12 sm:p-20 max-w-2xl w-full border border-slate-100 animate-in zoom-in-95 duration-500 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-3 bg-rose-500" />
 
             {reportSuccess ? (
-              <div className="text-center py-10">
-                <div className="h-24 w-24 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 border border-green-100">
-                  <CheckCircle className="h-10 w-10" />
+              <div className="text-center py-10 scale-in-center">
+                <div className="h-32 w-32 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-10 border border-emerald-100 shadow-lg">
+                  <CheckCircle className="h-14 w-14" />
                 </div>
-                <h3 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">
+                <h3 className="text-4xl font-black text-slate-950 mb-6 tracking-tighter uppercase">
                   Signal Received
                 </h3>
-                <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">
-                  ModMatrix Node has logged the disturbance.
+                <p className="text-slate-500 font-bold uppercase tracking-[0.2em] text-xs">
+                  The moderator nexus has been alerted.
                 </p>
               </div>
             ) : (
               <>
-                <div className="mb-10">
-                  <h3 className="text-3xl font-black text-slate-900 mb-2 tracking-tight">
-                    Issue Isolation
+                <div className="mb-12">
+                  <h3 className="text-4xl font-black text-slate-950 mb-3 tracking-tighter uppercase">
+                    Isolate Incident
                   </h3>
-                  <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">
-                    Specify the nature of the content disruption.
+                  <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px]">
+                    Detail the nature of the architectural breach.
                   </p>
                 </div>
-                <form onSubmit={handleReport} className="space-y-8">
+                <form onSubmit={handleReport} className="space-y-10">
                   <textarea
                     required
                     value={reportReason}
                     onChange={(e) => setReportReason(e.target.value)}
-                    placeholder="e.g. Integrity breach, metadata distortion, unauthorized access..."
-                    className="w-full px-8 py-6 bg-slate-50 border border-slate-200 rounded-[2rem] focus:outline-none focus:border-red-500 focus:bg-white transition-all text-slate-900 font-bold placeholder-slate-400 min-h-[160px] outline-none"
+                    placeholder="e.g. Intellectual property disruption, metadata distortion, unauthorized access..."
+                    className="w-full px-10 py-8 bg-slate-50 border border-slate-200 rounded-[3rem] focus:outline-none focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 transition-all text-slate-900 font-bold placeholder-slate-400 min-h-[220px] outline-none text-lg"
                   />
-                  <div className="flex gap-4">
+                  <div className="flex gap-6">
                     <button
                       type="button"
                       onClick={() => setReporting(false)}
-                      className="flex-1 py-5 px-4 rounded-2xl text-slate-400 text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-colors"
+                      className="flex-1 py-6 px-4 rounded-3xl text-slate-400 text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-colors"
                     >
-                      Abort
+                      Abort Mission
                     </button>
                     <button
                       type="submit"
                       disabled={isSubmittingReport || !reportReason.trim()}
-                      className="flex-1 bg-red-600 text-white py-5 px-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-red-600/20 hover:bg-red-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="flex-1 bg-rose-600 text-white py-6 px-4 rounded-3xl text-[10px] font-black uppercase tracking-[0.3em] shadow-3xl shadow-rose-600/30 hover:bg-rose-700 transition-all disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
                     >
                       {isSubmittingReport ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <Loader2 className="h-5 w-5 animate-spin" />
                       ) : (
-                        "Issue Signal"
+                        "Issue Directive"
                       )}
                     </button>
                   </div>
