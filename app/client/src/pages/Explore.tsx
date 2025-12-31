@@ -257,7 +257,7 @@ const Explore = () => {
               global CDN.
             </p>
             <Link
-              to="/upload"
+              to="/login"
               className="inline-flex items-center justify-center h-24 w-24 bg-indigo-600 text-white rounded-full hover:scale-110 hover:shadow-2xl hover:shadow-indigo-600/50 transition-all duration-500 group"
             >
               <ArrowRight className="h-10 w-10 group-hover:translate-x-2 transition-transform" />
