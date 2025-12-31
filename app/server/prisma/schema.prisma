@@ -183,3 +183,16 @@ model Submission {
     status         String?    @default("submitted") // e.g. submitted, graded
 }
 
+model News {
+    id          Int      @id @default(autoincrement())
+    title       String
+    content     String
+    source      String?  @default("ArchVault Admin")
+    is_event    Boolean  @default(false)
+    event_date  DateTime?
+    published   Boolean  @default(true)
+    created_at  DateTime @default(now())
+    updated_at  DateTime @updatedAt
+}
+
+

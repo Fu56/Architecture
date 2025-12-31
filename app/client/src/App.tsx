@@ -18,6 +18,7 @@ import Approvals from "./pages/admin/Approvals";
 import Flags from "./pages/admin/Flags";
 import RegisterStudents from "./pages/admin/RegisterStudents";
 import RegisterFaculty from "./pages/admin/RegisterFaculty";
+import NewsManager from "./pages/admin/NewsManager";
 import Resources from "./pages/dashboard/Resources";
 import Assignments from "./pages/library/Assignments";
 import AssignmentDetails from "./pages/library/AssignmentDetails";
@@ -79,6 +80,7 @@ const App = () => {
             <Route path="register-students" element={<RegisterStudents />} />
             <Route path="register-faculty" element={<RegisterFaculty />} />
             <Route path="approvals" element={<Approvals />} />
+            <Route path="news" element={<NewsManager />} />
             <Route path="flags" element={<Flags />} />
             <Route path="assignments" element={<Assignments />} />
             <Route path="assignments/:id" element={<AssignmentDetails />} />

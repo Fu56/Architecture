@@ -44,3 +44,28 @@ export const getPublicStats = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error fetching stats" });
   }
 };
+
+export const getAllNews = async (req: Request, res: Response) => {
+  try {
+    const news = await prisma.news.findMany({
+      where: { published: true },
+      orderBy: { created_at: "desc" },
+    });
+
+    // Format for frontend
+    const formattedNews = news.map((item) => ({
+      id: item.id,
+      title: item.title,
+      content: item.content,
+      source: item.source,
+      isEvent: item.is_event,
+      eventDate: item.event_date,
+      createdAt: item.created_at,
+      time: new Date(item.created_at).toLocaleDateString(), // Simplistic for now
+    }));
+
+    res.json(formattedNews);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching news" });
+  }
+};

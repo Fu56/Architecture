@@ -584,3 +584,41 @@ export const deleteUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to delete user" });
   }
 };
+// News Management
+export const createNews = async (req: Request, res: Response) => {
+  try {
+    const { title, content, isEvent, eventDate } = req.body;
+
+    if (!title || !content) {
+      return res
+        .status(400)
+        .json({ message: "Title and content are required" });
+    }
+
+    const news = await prisma.news.create({
+      data: {
+        title,
+        content,
+        is_event: !!isEvent,
+        event_date: eventDate ? new Date(eventDate) : null,
+      },
+    });
+
+    res
+      .status(201)
+      .json({ message: "News/Event published successfully", news });
+  } catch (error) {
+    console.error("Create News Error:", error);
+    res.status(500).json({ message: "Failed to create news" });
+  }
+};
+
+export const deleteNews = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    await prisma.news.delete({ where: { id: Number(id) } });
+    res.json({ message: "News deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete news" });
+  }
+};

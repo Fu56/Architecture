@@ -18,26 +18,15 @@ import { api } from "../lib/api";
 import type { Resource, Blog } from "../models";
 import ResourceCard from "../components/ui/ResourceCard";
 
-const news = [
-  {
-    id: 1,
-    title: "Pritzker Prize 2026 Nominees Announced",
-    source: "ArchDaily",
-    time: "2h ago",
-  },
-  {
-    id: 2,
-    title: "Global Summit on Sustainable Materials",
-    source: "Architect Magazine",
-    time: "5h ago",
-  },
-  {
-    id: 3,
-    title: "The Rise of Parametric Design in Social Housing",
-    source: "Dezeen",
-    time: "12h ago",
-  },
-];
+interface NewsItem {
+  id: number;
+  title: string;
+  source: string;
+  isEvent: boolean;
+  eventDate: string | null;
+  createdAt: string;
+  time: string;
+}
 
 const categories = [
   { name: "Structural", icon: "🏗️", count: 1240 },
@@ -62,6 +51,7 @@ const Home = () => {
     totalDownloads: 0,
     facultyCount: 0,
   });
+  const [realNews, setRealNews] = useState<NewsItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
@@ -70,16 +60,18 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [topRes, , statsRes, blogRes] = await Promise.all([
+        const [topRes, , statsRes, blogRes, newsRes] = await Promise.all([
           api.get("/resources?sortBy=downloads&limit=4"),
           api.get("/resources?sortBy=recent&limit=3"),
           api.get("/common/stats"),
           api.get("/blogs?published=true&limit=2"),
+          api.get("/common/news"),
         ]);
 
         const topData = topRes.data;
         const statsData = statsRes.data;
         const blogData = blogRes.data;
+        const newsData = newsRes.data;
 
         if (Array.isArray(topData)) setTopResources(topData);
         else if (topData && topData.resources)
@@ -87,6 +79,7 @@ const Home = () => {
 
         if (statsData) setStats(statsData);
         if (Array.isArray(blogData)) setBlogs(blogData);
+        if (Array.isArray(newsData)) setRealNews(newsData.slice(0, 3));
       } catch (err) {
         console.error("Failed to fetch data:", err);
       }
@@ -145,7 +138,7 @@ const Home = () => {
               <div className="ml-2 w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             </div>
 
-            <h1 className="text-6xl sm:text-7xl md:text-[6.5rem] lg:text-[7.5rem] font-black tracking-tighter text-white mb-10 leading-[0.85] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-100">
+            <h1 className="text-5xl sm:text-7xl md:text-[6.5rem] lg:text-[7.5rem] font-black tracking-tighter text-white mb-8 sm:mb-10 leading-[0.85] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-100">
               WHERE VISION <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-white drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
                 MEETS STRUCTURE
@@ -196,21 +189,21 @@ const Home = () => {
               <div className="relative max-w-3xl group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-[2.5rem] blur opacity-25 group-focus-within:opacity-50 transition duration-1000 group-hover:duration-200" />
 
-                <div className="relative flex items-center bg-white/95 backdrop-blur-2xl rounded-[2.2rem] overflow-hidden shadow-2xl ring-1 ring-white/20 transition-all group-focus-within:ring-indigo-500/50">
-                  <div className="pl-8">
+                <div className="relative flex flex-col sm:flex-row items-center bg-white/95 backdrop-blur-2xl rounded-[2rem] sm:rounded-[2.2rem] overflow-hidden shadow-2xl ring-1 ring-white/20 transition-all group-focus-within:ring-indigo-500/50">
+                  <div className="hidden sm:block pl-8">
                     <Search className="h-6 w-6 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
                   </div>
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Find blueprints, thesis papers, or models..."
-                    className="w-full pl-6 pr-6 py-8 bg-transparent text-gray-900 placeholder:text-gray-400 text-lg font-bold focus:outline-none"
+                    placeholder="Find blueprints, thesis..."
+                    className="w-full pl-6 sm:pl-6 pr-6 py-6 sm:py-8 bg-transparent text-gray-900 placeholder:text-gray-400 text-base sm:text-lg font-bold focus:outline-none"
                   />
-                  <div className="pr-3">
+                  <div className="w-full sm:w-auto p-2 sm:pr-3">
                     <button
                       type="submit"
-                      className="whitespace-nowrap px-10 py-5 bg-indigo-600 hover:bg-slate-900 text-white text-sm font-black uppercase tracking-[0.2em] rounded-[1.5rem] transition-all duration-500 active:scale-95 shadow-xl shadow-indigo-600/20 flex items-center gap-2 group/btn"
+                      className="w-full sm:w-auto whitespace-nowrap px-6 sm:px-10 py-4 sm:py-5 bg-indigo-600 hover:bg-slate-900 text-white text-xs sm:text-sm font-black uppercase tracking-[0.2em] rounded-[1.2rem] sm:rounded-[1.5rem] transition-all duration-500 active:scale-95 shadow-xl shadow-indigo-600/20 flex items-center justify-center gap-2 group/btn"
                     >
                       Search
                       <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -256,10 +249,10 @@ const Home = () => {
       {/* Stats Section */}
       <section className="relative z-30 py-12 -mt-24 sm:-mt-32">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="bg-white/80 backdrop-blur-3xl rounded-[3rem] p-4 sm:p-5 shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] border border-white/50 ring-1 ring-slate-900/5 transition-all">
-            <div className="bg-white rounded-[2.5rem] p-10 lg:p-14 grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
+          <div className="bg-white/80 backdrop-blur-3xl rounded-[2.5rem] sm:rounded-[3rem] p-3 sm:p-5 shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] border border-white/50 ring-1 ring-slate-900/5 transition-all">
+            <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] p-8 sm:p-10 lg:p-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-8 divide-y sm:divide-y-0 lg:divide-x divide-slate-100">
               {/* Stat 1 */}
-              <div className="flex flex-col items-center text-center space-y-5 lg:px-6 pt-8 lg:pt-0">
+              <div className="flex flex-col items-center text-center space-y-4 lg:px-6 py-6 sm:py-0">
                 <div className="relative group/stat">
                   <div className="absolute -inset-4 bg-indigo-50 rounded-2xl opacity-0 group-hover/stat:opacity-100 transition-opacity" />
                   <div className="relative p-5 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-[1.25rem] shadow-lg shadow-indigo-200">
@@ -657,25 +650,42 @@ const Home = () => {
                   </div>
                 </div>
 
-                <div className="relative z-10 space-y-12">
-                  {news.map((item) => (
-                    <div
-                      key={item.id}
-                      className="group/news cursor-pointer space-y-4"
-                    >
-                      <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest">
-                        <span className="text-indigo-400 px-2 py-0.5 bg-indigo-400/10 rounded">
-                          Live
-                        </span>
-                        <span className="text-white/30">{item.source}</span>
-                        <span className="text-white/10">•</span>
-                        <span className="text-white/30">{item.time}</span>
+                <div className="relative z-10 space-y-12 min-h-[300px]">
+                  {realNews.length > 0 ? (
+                    realNews.map((item) => (
+                      <div
+                        key={item.id}
+                        className="group/news cursor-pointer space-y-4"
+                      >
+                        <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest">
+                          <span
+                            className={`${
+                              item.isEvent
+                                ? "text-amber-400 bg-amber-400/10"
+                                : "text-indigo-400 bg-indigo-400/10"
+                            } px-2 py-0.5 rounded`}
+                          >
+                            {item.isEvent ? "Event" : "Live"}
+                          </span>
+                          <span className="text-white/30">
+                            {item.source || "ArchVault Admin"}
+                          </span>
+                          <span className="text-white/10">•</span>
+                          <span className="text-white/30">{item.time}</span>
+                        </div>
+                        <h4 className="text-xl font-bold group-hover/news:text-indigo-400 transition-colors leading-snug">
+                          {item.title}
+                        </h4>
                       </div>
-                      <h4 className="text-xl font-bold group-hover/news:text-indigo-400 transition-colors leading-snug">
-                        {item.title}
-                      </h4>
+                    ))
+                  ) : (
+                    <div className="py-10 text-center space-y-4">
+                      <p className="text-white/20 font-bold uppercase tracking-widest text-xs">
+                        Awaiting Updates
+                      </p>
+                      <div className="w-8 h-[1px] bg-white/10 mx-auto" />
                     </div>
-                  ))}
+                  )}
                 </div>
 
                 <button className="relative z-10 w-full py-6 bg-white text-slate-950 hover:bg-indigo-600 hover:text-white rounded-[2rem] text-[11px] font-black uppercase tracking-[0.3em] transition-all duration-500 shadow-xl shadow-white/5">
@@ -710,18 +720,18 @@ const Home = () => {
 
             <div className="lg:w-1/2 w-full">
               {subscribed ? (
-                <div className="bg-emerald-500 text-white p-12 rounded-[3rem] text-center font-black animate-in zoom-in-95 duration-500 shadow-2xl flex flex-col items-center gap-4">
+                <div className="bg-emerald-500 text-white p-10 sm:p-12 rounded-[2.5rem] sm:rounded-[3rem] text-center font-black animate-in zoom-in-95 duration-500 shadow-2xl flex flex-col items-center gap-4">
                   <ShieldCheck className="h-12 w-12" />
-                  <span className="text-2xl uppercase tracking-tighter leading-none">
+                  <span className="text-xl sm:text-2xl uppercase tracking-tighter leading-none">
                     Subscription Active
                   </span>
-                  <p className="text-xs text-white/80 font-bold uppercase tracking-widest mt-2">
+                  <p className="text-[10px] sm:text-xs text-white/80 font-bold uppercase tracking-widest mt-2">
                     Welcome to the inner circle.
                   </p>
                 </div>
               ) : (
                 <form onSubmit={handleSubscribe} className="space-y-6">
-                  <div className="relative group">
+                  <div className="relative group flex flex-col sm:block">
                     <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-[2.5rem] blur opacity-20 group-focus-within:opacity-40 transition" />
                     <input
                       type="email"
@@ -729,16 +739,16 @@ const Home = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter studio email..."
                       required
-                      className="relative w-full h-24 bg-white/5 border border-white/10 rounded-[2.2rem] pl-10 pr-40 text-lg font-bold text-white placeholder:text-white/20 outline-none focus:ring-4 focus:ring-indigo-500/20 transition-all shadow-2xl"
+                      className="relative w-full h-20 sm:h-24 bg-white/5 border border-white/10 rounded-[1.8rem] sm:rounded-[2.2rem] pl-8 sm:pl-10 pr-10 sm:pr-40 text-base sm:text-lg font-bold text-white placeholder:text-white/20 outline-none focus:ring-4 focus:ring-indigo-500/20 transition-all shadow-2xl"
                     />
                     <button
                       type="submit"
-                      className="absolute right-4 top-4 bottom-4 px-12 bg-indigo-600 hover:bg-white hover:text-slate-950 text-white font-black uppercase tracking-widest rounded-[1.8rem] transition-all duration-500 shadow-lg active:scale-95"
+                      className="mt-4 sm:mt-0 relative sm:absolute sm:right-4 sm:top-4 sm:bottom-4 px-10 sm:px-12 py-4 sm:py-0 bg-indigo-600 hover:bg-white hover:text-slate-950 text-white font-black uppercase tracking-widest rounded-[1.5rem] sm:rounded-[1.8rem] transition-all duration-500 shadow-lg active:scale-95"
                     >
                       Join Now
                     </button>
                   </div>
-                  <p className="text-[10px] text-white/20 font-bold uppercase tracking-[0.2em] text-center px-10">
+                  <p className="text-[9px] sm:text-[10px] text-white/20 font-bold uppercase tracking-[0.2em] text-center px-4 sm:px-10">
                     Secure & Encrypted • Zero Spam Guarantee • Unsubscribe
                     Anytime
                   </p>

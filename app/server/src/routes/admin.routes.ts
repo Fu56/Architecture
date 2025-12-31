@@ -17,6 +17,8 @@ import {
   createUser,
   updateUser,
   deleteUser,
+  createNews,
+  deleteNews,
 } from "../controllers/admin.controller";
 
 const router = Router();
@@ -40,5 +42,9 @@ router.post("/users/bulk-register", bulkRegisterStudents);
 router.post("/users/register-faculty", registerFaculty);
 
 router.get("/stats", getStats);
+
+// News management
+router.post("/news", createNews);
+router.delete("/news/:id", deleteNews);
 
 export default router;
