@@ -8,6 +8,7 @@ import {
   FileSpreadsheet,
   Library,
   PenTool,
+  Megaphone,
 } from "lucide-react";
 
 import { getUser } from "../../lib/auth";
@@ -24,6 +25,7 @@ const adminNavLinks = [
   { name: "Resource Approvals", href: "/admin/approvals", icon: CheckSquare },
   { name: "Resources", href: "/admin/resources", icon: Library },
   { name: "Post Blog", href: "/admin/blog/new", icon: PenTool },
+  { name: "News & Events", href: "/admin/news", icon: Megaphone },
   { name: "Flagged Content", href: "/admin/flags", icon: Flag },
 ];
 

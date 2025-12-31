@@ -239,57 +239,71 @@ const Layout = () => {
                       />
                     </button>
 
-                    {/* User Dropdown Menu */}
+                    {/* User Dropdown Menu - Premium Architectural Style */}
                     {isUserMenuOpen && (
-                      <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                        <div className="px-4 py-3 border-b border-gray-100">
-                          <p className="text-sm font-bold text-gray-900">
-                            {user?.first_name || user?.firstName}{" "}
-                            {user?.last_name || user?.lastName}
-                          </p>
-                          <p className="text-xs text-gray-500">{user?.email}</p>
+                      <div className="absolute right-0 mt-4 w-72 bg-white/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] border border-white p-3 py-4 animate-in fade-in slide-in-from-top-4 duration-500 z-[100] ring-1 ring-slate-900/5">
+                        {/* Menu Header */}
+                        <div className="px-5 py-6 mb-2 mx-2 rounded-[2rem] bg-slate-950 relative overflow-hidden group/header">
+                          <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-600/20 blur-[50px] transition-all group-hover/header:bg-indigo-600/40" />
+                          <div className="relative z-10">
+                            <p className="text-xs font-black uppercase tracking-[0.25em] text-indigo-400 mb-2">
+                              System Access
+                            </p>
+                            <p className="text-lg font-black text-white leading-none tracking-tight">
+                              {user?.first_name || user?.firstName}
+                            </p>
+                            <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1">
+                              {user?.email}
+                            </p>
+                          </div>
                         </div>
 
-                        <div className="py-2">
+                        {/* Menu Links */}
+                        <div className="space-y-1 p-1">
                           <Link
                             to={dashboardPath}
                             onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+                            className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-slate-600 hover:text-indigo-600 hover:bg-slate-50 rounded-2xl transition-all group/item"
                           >
-                            <LayoutDashboard className="h-4 w-4" />
-                            Dashboard
+                            <div className="p-2 bg-slate-50 rounded-xl group-hover/item:bg-indigo-600 group-hover/item:text-white transition-all">
+                              <LayoutDashboard className="h-4 w-4" />
+                            </div>
+                            Personal Console
                           </Link>
 
-                          {(typeof user?.role === "object"
-                            ? user.role.name
-                            : user?.role) === "Admin" && (
+                          {isAdmin && (
                             <Link
                               to="/admin"
                               onClick={() => setUserMenuOpen(false)}
-                              className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-indigo-600 bg-indigo-50/50 hover:bg-indigo-600 hover:text-white rounded-2xl transition-all group/item"
                             >
-                              <ShieldCheck className="h-4 w-4" />
-                              Admin Panel
+                              <div className="p-2 bg-white rounded-xl shadow-sm text-indigo-600 group-hover/item:bg-indigo-500 group-hover/item:text-white transition-all">
+                                <ShieldCheck className="h-4 w-4" />
+                              </div>
+                              Admin Command Center
                             </Link>
                           )}
 
                           <Link
                             to="/dashboard/profile"
                             onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+                            className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-slate-600 hover:text-indigo-600 hover:bg-slate-50 rounded-2xl transition-all group/item"
                           >
-                            <Settings className="h-4 w-4" />
-                            Settings
+                            <div className="p-2 bg-slate-50 rounded-xl group-hover/item:bg-indigo-600 group-hover/item:text-white transition-all">
+                              <Settings className="h-4 w-4" />
+                            </div>
+                            System Settings
                           </Link>
                         </div>
 
-                        <div className="border-t border-gray-100 pt-2">
+                        {/* Menu Footer */}
+                        <div className="mt-2 pt-2 border-t border-slate-50 px-1">
                           <button
                             onClick={handleLogout}
-                            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                            className="flex items-center gap-4 w-full px-5 py-4 text-sm font-black uppercase tracking-widest text-red-500 hover:bg-red-50 rounded-2xl transition-all"
                           >
                             <LogOut className="h-4 w-4" />
-                            Sign Out
+                            Terminate Session
                           </button>
                         </div>
                       </div>
