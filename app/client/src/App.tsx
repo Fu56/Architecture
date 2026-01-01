@@ -26,6 +26,9 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
 import BlogDetails from "./pages/library/BlogDetails";
 import PostBlog from "./pages/library/PostBlog";
+import Privacy from "./pages/Privacy"; // Added
+import Terms from "./pages/Terms"; // Added
+import ScrollToTop from "./components/utils/ScrollToTop"; // Added
 
 // Placeholder pages for static content
 import AboutUs from "./pages/AboutUs";
@@ -35,62 +38,70 @@ import News from "./pages/News";
 
 const App = () => {
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/browse" element={<Browse />} />
-        <Route path="/resources/:id" element={<ResourceDetails />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/explore" element={<Explore />} />
-        <Route path="/about" element={<AboutUs />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:id" element={<BlogDetails />} />
-        <Route path="/news" element={<News />} />
-
-        {/* Protected User Routes */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<UserDashboard />}>
-            {/* Default redirect when visiting /dashboard */}
-            <Route index element={<Overview />} />
-            <Route path="upload" element={<Upload />} />
-            <Route path="uploads" element={<MyUploads />} />
-            <Route path="resources" element={<Resources />} />
-            <Route path="resources/:id" element={<ResourceDetails />} />
-            <Route path="notifications" element={<Notifications />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="assignments" element={<Assignments />} />
-            <Route path="assignments/:id" element={<AssignmentDetails />} />
-            <Route path="assignments/new" element={<PostAssignment />} />
-            <Route path="blog/new" element={<PostBlog />} />
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route element={<Layout />}>
+          {/* Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/browse" element={<Browse />} />
+          <Route path="/resources/:id" element={<ResourceDetails />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogDetails />} />
+          <Route path="/news" element={<News />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/cookies" element={<Privacy />} />{" "}
+          {/* Placeholder to Privacy for now */}
+          <Route path="/ethics" element={<Terms />} />{" "}
+          {/* Placeholder to Terms for now */}
+          <Route path="/legal" element={<Terms />} />{" "}
+          {/* Placeholder to Terms for now */}
+          {/* Protected User Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<UserDashboard />}>
+              {/* Default redirect when visiting /dashboard */}
+              <Route index element={<Overview />} />
+              <Route path="upload" element={<Upload />} />
+              <Route path="uploads" element={<MyUploads />} />
+              <Route path="resources" element={<Resources />} />
+              <Route path="resources/:id" element={<ResourceDetails />} />
+              <Route path="notifications" element={<Notifications />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="assignments" element={<Assignments />} />
+              <Route path="assignments/:id" element={<AssignmentDetails />} />
+              <Route path="assignments/new" element={<PostAssignment />} />
+              <Route path="blog/new" element={<PostBlog />} />
+            </Route>
           </Route>
-        </Route>
-
-        {/* Protected Admin Routes */}
-        <Route path="/admin" element={<AdminRoute />}>
-          <Route element={<AdminDashboard />}>
-            {/* Default redirect when visiting /admin */}
-            <Route index element={<Navigate to="analytics" replace />} />
-            <Route path="analytics" element={<Analytics />} />
-            <Route path="users" element={<ManageUsers />} />
-            <Route path="resources" element={<Resources />} />
-            <Route path="resources/:id" element={<ResourceDetails />} />
-            <Route path="register-students" element={<RegisterStudents />} />
-            <Route path="register-faculty" element={<RegisterFaculty />} />
-            <Route path="approvals" element={<Approvals />} />
-            <Route path="news" element={<NewsManager />} />
-            <Route path="flags" element={<Flags />} />
-            <Route path="assignments" element={<Assignments />} />
-            <Route path="assignments/:id" element={<AssignmentDetails />} />
-            <Route path="assignments/new" element={<PostAssignment />} />
-            <Route path="blog/new" element={<PostBlog />} />
+          {/* Protected Admin Routes */}
+          <Route path="/admin" element={<AdminRoute />}>
+            <Route element={<AdminDashboard />}>
+              {/* Default redirect when visiting /admin */}
+              <Route index element={<Navigate to="analytics" replace />} />
+              <Route path="analytics" element={<Analytics />} />
+              <Route path="users" element={<ManageUsers />} />
+              <Route path="resources" element={<Resources />} />
+              <Route path="resources/:id" element={<ResourceDetails />} />
+              <Route path="register-students" element={<RegisterStudents />} />
+              <Route path="register-faculty" element={<RegisterFaculty />} />
+              <Route path="approvals" element={<Approvals />} />
+              <Route path="news" element={<NewsManager />} />
+              <Route path="flags" element={<Flags />} />
+              <Route path="assignments" element={<Assignments />} />
+              <Route path="assignments/:id" element={<AssignmentDetails />} />
+              <Route path="assignments/new" element={<PostAssignment />} />
+              <Route path="blog/new" element={<PostBlog />} />
+            </Route>
           </Route>
+          {/* Not Found */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
-
-        {/* Not Found */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Route>
-    </Routes>
+      </Routes>
+    </>
   );
 };
 
