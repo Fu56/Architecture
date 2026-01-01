@@ -20,6 +20,7 @@ import {
   createNews,
   deleteNews,
   sendDirectNotification,
+  broadcastNotification,
 } from "../controllers/admin.controller";
 
 const router = Router();
@@ -48,5 +49,6 @@ router.get("/stats", getStats);
 router.post("/news", createNews);
 router.delete("/news/:id", deleteNews);
 router.post("/notifications/send", sendDirectNotification);
+router.post("/notifications/broadcast", broadcastNotification);
 
 export default router;

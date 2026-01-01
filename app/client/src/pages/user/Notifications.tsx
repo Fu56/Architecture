@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../lib/api";
 import { toast } from "react-toastify";
+import { useSession } from "../../lib/auth-client";
 import type { Notification } from "../../models";
 import { Bell, CheckCircle, XCircle, Info, Zap } from "lucide-react";
 
@@ -16,10 +17,15 @@ const NotificationIcon = ({ title }: { title: string }) => {
   return <Info className="h-4 w-4 text-indigo-500" />;
 };
 
+interface SessionUser {
+  role?: string | { name: string };
+}
+
 const Notifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -60,10 +66,16 @@ const Notifications = () => {
       handleMarkAsRead(notification.id);
     }
 
+    const user = session?.user as SessionUser | undefined;
+    const role = typeof user?.role === "object" ? user.role.name : user?.role;
+    const isAdmin =
+      role === "Admin" || role === "SuperAdmin" || role === "admin";
+    const basePrefix = isAdmin ? "/admin" : "/dashboard";
+
     if (notification.resource_id) {
-      navigate(`/resources/${notification.resource_id}`);
+      navigate(`${basePrefix}/resources/${notification.resource_id}`);
     } else if (notification.assignment_id) {
-      navigate(`/dashboard/assignments/${notification.assignment_id}`);
+      navigate(`${basePrefix}/assignments/${notification.assignment_id}`);
     }
   };
 

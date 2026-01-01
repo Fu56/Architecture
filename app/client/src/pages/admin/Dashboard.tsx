@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   Layout,
   Command,
+  Bell,
 } from "lucide-react";
 
 import { getUser } from "../../lib/auth";
@@ -30,6 +31,7 @@ const adminNavLinks = [
   { name: "Post Blog", href: "/admin/blog/new", icon: PenTool },
   { name: "News & Events", href: "/admin/news", icon: Megaphone },
   { name: "Flagged Content", href: "/admin/flags", icon: Flag },
+  { name: "Signals", href: "/admin/notifications", icon: Bell },
 ];
 
 const AdminDashboard = () => {

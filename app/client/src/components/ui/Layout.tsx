@@ -123,6 +123,9 @@ const Layout = () => {
       : user?.role;
   const isAdmin = role === "Admin" || role === "SuperAdmin" || role === "admin";
   const dashboardPath = isAdmin ? "/admin" : "/dashboard";
+  const notificationsPath = isAdmin
+    ? "/admin/notifications"
+    : "/dashboard/notifications";
 
   return (
     <div className="min-h-screen flex flex-col font-sans selection:bg-indigo-100 selection:text-indigo-900">
@@ -237,7 +240,7 @@ const Layout = () => {
               {/* Notifications (Authenticated Users) */}
               {isAuthenticated && (
                 <Link
-                  to="/dashboard/notifications"
+                  to={notificationsPath}
                   className={`relative p-2.5 rounded-full transition-all hover:scale-110 ${
                     isScrolled || !isHomePage
                       ? "text-gray-600 hover:bg-gray-100"

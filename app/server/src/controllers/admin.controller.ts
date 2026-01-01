@@ -648,3 +648,21 @@ export const sendDirectNotification = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to transmit notification" });
   }
 };
+
+export const broadcastNotification = async (req: Request, res: Response) => {
+  try {
+    const { title, message } = req.body;
+    if (!title || !message) {
+      return res
+        .status(400)
+        .json({ message: "Title and message are required" });
+    }
+
+    await notifyAll(title, message);
+
+    res.json({ message: "Global broadcast transmitted successfully" });
+  } catch (error) {
+    console.error("Broadcast Error:", error);
+    res.status(500).json({ message: "Failed to transmit global broadcast" });
+  }
+};

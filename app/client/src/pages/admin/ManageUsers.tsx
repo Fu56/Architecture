@@ -120,6 +120,7 @@ const ManageUsers = () => {
   };
 
   const [isNotifyModalOpen, setIsNotifyModalOpen] = useState(false);
+  const [isBroadcastModalOpen, setIsBroadcastModalOpen] = useState(false);
   const [notifyData, setNotifyData] = useState({ title: "", message: "" });
 
   const handleNotifySubmit = async (e: React.FormEvent) => {
@@ -138,6 +139,24 @@ const ManageUsers = () => {
     } catch (err: unknown) {
       console.error("Direct transmission error:", err);
       toast.error("Transmission failed: Protocol error.");
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleBroadcastSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!notifyData.title || !notifyData.message) return;
+
+    setProcessing(true);
+    try {
+      await api.post("/admin/notifications/broadcast", notifyData);
+      toast.success("Global broadcast transmitted to all nodes.");
+      setIsBroadcastModalOpen(false);
+      setNotifyData({ title: "", message: "" });
+    } catch (err: unknown) {
+      console.error("Broadcast transmission error:", err);
+      toast.error("Global transmission failed: Protocol error.");
     } finally {
       setProcessing(false);
     }
@@ -231,13 +250,22 @@ const ManageUsers = () => {
             className="w-full h-12 pl-12 pr-6 bg-white border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all"
           />
         </div>
-        <button
-          onClick={handleOpenCreate}
-          className="w-full md:w-auto px-8 py-3 bg-slate-950 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-indigo-600 transition-all hover:-translate-y-1 shadow-2xl shadow-slate-950/20 active:scale-95 flex items-center justify-center gap-3"
-        >
-          <UserPlus className="h-4 w-4" />
-          Initialize Node
-        </button>
+        <div className="flex gap-3 w-full md:w-auto">
+          <button
+            onClick={() => setIsBroadcastModalOpen(true)}
+            className="flex-1 md:flex-none px-6 py-3 bg-indigo-50 text-indigo-700 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-indigo-600 hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3"
+          >
+            <Zap className="h-4 w-4" />
+            Global Broadcast
+          </button>
+          <button
+            onClick={handleOpenCreate}
+            className="flex-1 md:flex-none px-8 py-3 bg-slate-950 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-slate-800 transition-all hover:-translate-y-1 shadow-2xl shadow-slate-950/20 active:scale-95 flex items-center justify-center gap-3"
+          >
+            <UserPlus className="h-4 w-4" />
+            Initialize Node
+          </button>
+        </div>
       </div>
 
       {/* User Registry Table */}
@@ -588,6 +616,87 @@ const ManageUsers = () => {
                     <>
                       <Zap className="h-3 w-3" />
                       Authorize Transmission
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Global Broadcast Modal */}
+      {isBroadcastModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-slate-950/40 backdrop-blur-xl animate-in fade-in duration-500"
+            onClick={() => setIsBroadcastModalOpen(false)}
+          />
+          <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
+            <div className="bg-indigo-600 px-10 py-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-[50px]" />
+              <div className="relative z-10">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/60 mb-2">
+                  Emergency Broadcast
+                </p>
+                <h3 className="text-2xl font-black text-white leading-tight">
+                  Global Intelligence Relay
+                </h3>
+              </div>
+            </div>
+
+            <form onSubmit={handleBroadcastSubmit} className="p-10 space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  Relay Headline
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Universal objective..."
+                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  value={notifyData.title}
+                  onChange={(e) =>
+                    setNotifyData({ ...notifyData, title: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  Broadcast Payload
+                </label>
+                <textarea
+                  required
+                  rows={4}
+                  placeholder="Distribute intelligence to all active nodes..."
+                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 resize-none"
+                  value={notifyData.message}
+                  onChange={(e) =>
+                    setNotifyData({ ...notifyData, message: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="pt-4 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsBroadcastModalOpen(false)}
+                  className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-950"
+                >
+                  Abort
+                </button>
+                <button
+                  type="submit"
+                  disabled={processing}
+                  className="px-8 py-2.5 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/30 flex items-center gap-2"
+                >
+                  {processing ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <>
+                      <Zap className="h-3 w-3" />
+                      Engage Wide-Spectrum Broadcast
                     </>
                   )}
                 </button>
