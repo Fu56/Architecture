@@ -53,6 +53,7 @@ const Notifications = () => {
     );
     try {
       await api.patch(`/notifications/${id}/read`);
+      window.dispatchEvent(new Event("notificationsUpdated"));
     } catch {
       // Revert on error
       setNotifications(
@@ -158,18 +159,25 @@ const Notifications = () => {
                     )}
                   </span>
                 </div>
-                <h3
-                  className={`text-sm mt-1 font-bold ${
-                    !notification.is_read ? "text-slate-950" : "text-slate-600"
+                <p
+                  className={`text-sm mt-2 leading-relaxed whitespace-pre-wrap ${
+                    !notification.is_read
+                      ? "text-slate-700 font-medium"
+                      : "text-slate-500"
                   }`}
                 >
                   {notification.message}
-                </h3>
+                </p>
 
                 <div className="mt-4 flex items-center gap-4">
-                  {(notification.resource_id || notification.assignment_id) && (
+                  {notification.resource_id && (
                     <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest hover:underline decoration-2 underline-offset-4">
                       Inspect Resource →
+                    </span>
+                  )}
+                  {notification.assignment_id && (
+                    <span className="text-[10px] font-black text-amber-600 uppercase tracking-widest hover:underline decoration-2 underline-offset-4">
+                      View Assignment →
                     </span>
                   )}
                   {!notification.is_read && (

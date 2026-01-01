@@ -74,9 +74,14 @@ const Layout = () => {
     };
 
     updateNotificationCount();
+    window.addEventListener("notificationsUpdated", updateNotificationCount);
 
     return () => {
       isMounted = false;
+      window.removeEventListener(
+        "notificationsUpdated",
+        updateNotificationCount
+      );
     };
   }, [session]);
 
