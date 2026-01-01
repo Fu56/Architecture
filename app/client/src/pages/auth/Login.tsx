@@ -1,12 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../../lib/api";
-import { setToken, setUser } from "../../lib/auth";
+import { authClient } from "../../lib/auth-client";
+import { syncSessionToStorage } from "../../lib/auth";
 import { LogIn } from "lucide-react";
 import { toast } from "react-toastify";
 
+interface UserWithRole {
+  id: string | number;
+  email: string;
+  name?: string;
+  role?: { name: string } | string;
+}
+
 const Login = () => {
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({
+    email: "fuadabdela95@gmail.com",
+    password: "Fuad@ab5659",
+  });
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -14,24 +25,42 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await api.post("/auth/login", form);
-      setToken(data.token);
-      setUser(data.user);
+      const result = await authClient.signIn.email({
+        email: form.email,
+        password: form.password,
+      });
 
-      // Redirect based on role
-      const role = data.user.role;
-      toast.success(`Welcome back, ${data.user.first_name}!`);
-      if (role === "Admin" || role === "SuperAdmin") {
-        navigate("/admin");
-      } else {
-        navigate("/");
+      if (result.error) {
+        toast.error(
+          result.error.message || "Login failed. Please check your credentials."
+        );
+        return;
+      }
+
+      // Sync session to storage for legacy components
+      await syncSessionToStorage();
+
+      // Get user data from session
+      const session = await authClient.getSession();
+      const user = session?.data?.user as UserWithRole | undefined;
+
+      if (user) {
+        toast.success(`Welcome back, ${user.name || user.email}!`);
+
+        // Redirect based on role
+        const role =
+          typeof user.role === "object" && user.role !== null
+            ? user.role.name
+            : user.role;
+        if (role === "Admin" || role === "SuperAdmin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
       }
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } } };
-      toast.error(
-        error.response?.data?.message ||
-          "Login failed. Please check your credentials."
-      );
+      console.error("Login error:", err);
+      toast.error("Login failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }

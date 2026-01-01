@@ -19,15 +19,20 @@ import {
   LayoutDashboard,
   ChevronDown,
 } from "lucide-react";
-import {
-  isAuthenticated,
-  clearToken,
-  getUser,
-  currentRole,
-} from "../../lib/auth";
+import { useSession, authClient } from "../../lib/auth-client";
+import { syncSessionToStorage } from "../../lib/auth";
 import Footer from "./Footer";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+interface UserWithRole {
+  id: string | number;
+  email: string;
+  name?: string;
+  first_name?: string;
+  firstName?: string;
+  role?: { name: string } | string;
+}
 
 const Layout = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -36,7 +41,13 @@ const Layout = () => {
   const notificationCount = 3; // TODO: Fetch from API and convert to state
   const navigate = useNavigate();
   const location = useLocation();
-  const user = getUser();
+  const { data: session } = useSession();
+  const user = session?.user as UserWithRole | undefined;
+
+  // Sync session to storage for legacy components
+  useEffect(() => {
+    syncSessionToStorage();
+  }, [session]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,9 +69,8 @@ const Layout = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    clearToken();
-    localStorage.removeItem("user");
+  const handleLogout = async () => {
+    await authClient.signOut();
     setUserMenuOpen(false);
     toast.info("Session terminated. Securely logged out.");
     navigate("/login");
@@ -75,7 +85,11 @@ const Layout = () => {
   ];
 
   const isHomePage = location.pathname === "/";
-  const role = currentRole();
+  const isAuthenticated = !!session;
+  const role =
+    user && typeof user.role === "object" && user.role !== null
+      ? user.role.name
+      : user?.role;
   const isAdmin = role === "Admin" || role === "SuperAdmin" || role === "admin";
   const dashboardPath = isAdmin ? "/admin" : "/dashboard";
 
@@ -157,7 +171,7 @@ const Layout = () => {
             {/* Actions Section */}
             <div className="flex items-center gap-3 lg:gap-4 ml-auto">
               {/* Upload Button (Authenticated Users) */}
-              {isAuthenticated() && (
+              {isAuthenticated && (
                 <Link
                   to="/dashboard/upload"
                   className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-105 ${
@@ -172,7 +186,7 @@ const Layout = () => {
               )}
 
               {/* Notifications (Authenticated Users) */}
-              {isAuthenticated() && (
+              {isAuthenticated && (
                 <Link
                   to="/dashboard/notifications"
                   className={`relative p-2.5 rounded-full transition-all hover:scale-110 ${
@@ -192,7 +206,7 @@ const Layout = () => {
 
               {/* User Section */}
               <div className="flex items-center gap-2">
-                {isAuthenticated() ? (
+                {isAuthenticated ? (
                   <div className="relative user-menu-container">
                     <button
                       onClick={() => setUserMenuOpen(!isUserMenuOpen)}
@@ -374,7 +388,7 @@ const Layout = () => {
                   </NavLink>
                 ))}
 
-                {isAuthenticated() && (
+                {isAuthenticated && (
                   <>
                     <Link
                       to="/dashboard/upload"
@@ -397,7 +411,7 @@ const Layout = () => {
               </div>
 
               <div className="pt-8 border-t border-gray-100">
-                {!isAuthenticated() && (
+                {!isAuthenticated && (
                   <div className="grid grid-cols-1">
                     <Link
                       to="/login"

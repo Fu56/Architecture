@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { env } from "../config/env";
+import { auth } from "../lib/auth";
 
 export interface AuthUser {
   id: number;
@@ -8,33 +7,31 @@ export interface AuthUser {
   role?: string;
 }
 
-export const requireAuth = (
+export const requireAuth = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const authHeader = req.headers.authorization;
-  const queryToken = req.query.token as string;
-
-  let token = "";
-  if (authHeader?.startsWith("Bearer ")) {
-    token = authHeader.split(" ")[1];
-  } else if (queryToken) {
-    token = queryToken;
-  }
-
-  if (!token || token === "null" || token === "undefined") {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
   try {
-    const payload = jwt.verify(token, env.jwtSecret) as any;
+    // Get session from Better Auth
+    const session = await auth.api.getSession({
+      headers: req.headers as any,
+    });
+
+    if (!session) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // Attach user info to request
     (req as any).user = {
-      id: Number(payload.id),
-      email: payload.email,
-      role: payload.role,
+      id: Number(session.user.id),
+      email: session.user.email,
+      role: (session.user as any).role?.name,
     };
+
     next();
-  } catch {
-    res.status(401).json({ message: "Invalid token" });
+  } catch (error) {
+    console.error("Auth error:", error);
+    res.status(401).json({ message: "Invalid session" });
   }
 };

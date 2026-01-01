@@ -123,7 +123,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany({
       include: { role: true },
-      orderBy: { created_at: "desc" },
+      orderBy: { createdAt: "desc" },
     });
 
     // Map to camelCase for frontend consistency
@@ -134,13 +134,13 @@ export const getAllUsers = async (req: Request, res: Response) => {
         firstName: user.first_name,
         lastName: user.last_name,
         email: user.email,
-        role: user.role,
+        role: u.role,
         status: user.status,
         universityId: u.university_id || u.college_id || "N/A",
         batch: u.batch,
         year: u.year,
         semester: u.semester,
-        createdAt: user.created_at,
+        createdAt: user.createdAt,
       };
     });
 
@@ -156,7 +156,7 @@ export const manageUserRole = async (req: Request, res: Response) => {
     const { roleId } = req.body;
 
     const user = await prisma.user.update({
-      where: { id: Number(id) },
+      where: { id: id },
       data: { roleId: Number(roleId) },
     });
 
@@ -339,6 +339,7 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
         // Create user
         await prisma.user.create({
           data: {
+            name: `${first_name} ${last_name}`,
             first_name,
             last_name,
             email,
@@ -431,6 +432,7 @@ export const registerFaculty = async (req: Request, res: Response) => {
 
     const user = await prisma.user.create({
       data: {
+        name: `${first_name} ${last_name}`,
         first_name,
         last_name,
         email,
@@ -491,6 +493,7 @@ export const createUser = async (req: Request, res: Response) => {
 
     const user = await prisma.user.create({
       data: {
+        name: `${firstName} ${lastName}`,
         first_name: firstName,
         last_name: lastName,
         email,
@@ -555,7 +558,7 @@ export const updateUser = async (req: Request, res: Response) => {
     );
 
     const user = await prisma.user.update({
-      where: { id: Number(id) },
+      where: { id: id },
       data: updateData,
     });
 
@@ -575,7 +578,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     // For now, simple delete.
 
     await prisma.user.delete({
-      where: { id: Number(id) },
+      where: { id: id },
     });
 
     res.json({ message: "User deleted successfully" });

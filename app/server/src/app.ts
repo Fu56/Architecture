@@ -4,8 +4,9 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { env } from "./config/env";
+import { auth } from "./lib/auth";
+import { toNodeHandler } from "better-auth/node";
 
-import authRoutes from "./routes/auth.route";
 import resourceRoutes from "./routes/resource.route";
 import adminRoutes from "./routes/admin.routes";
 import analyticsRoutes from "./routes/analytics.routes";
@@ -25,11 +26,15 @@ app.get("/", (req, res) => {
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(cors({ origin: true, credentials: true }));
 app.use(morgan("dev"));
+
+// Better Auth handler - BEFORE body parsers
+app.all(/\/api\/auth\/.*/, toNodeHandler(auth));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/uploads", express.static(path.resolve(env.uploadDir)));
-app.use("/api/auth", authRoutes);
+// app.use("/api/auth", authRoutes);
 app.use("/api/resources", resourceRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/analytics", analyticsRoutes);

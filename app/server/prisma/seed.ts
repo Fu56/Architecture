@@ -56,17 +56,29 @@ async function main() {
   });
 
   // Create Admin User
-  const adminPassword = await bcrypt.hash("admin123", 10);
+  const adminPassword = await bcrypt.hash("Fuad@ab5659", 10);
   await prisma.user.upsert({
-    where: { email: "admin@archit.edu" },
+    where: { email: "fuadabdela95@gmail.com" },
     update: {},
     create: {
-      first_name: "Admin",
-      last_name: "User",
-      email: "admin@archit.edu",
+      name: "Admin User",
+      first_name: "Fuad",
+      last_name: "Abdela",
+      email: "fuadabdela95@gmail.com",
       password: adminPassword,
       roleId: adminRole?.id,
       status: "active",
+      emailVerified: true,
+      accounts: {
+        create: {
+          id: "acc_admin",
+          providerId: "credential",
+          accountId: "fuadabdela95@gmail.com",
+          password: adminPassword,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      },
     },
   });
 
@@ -76,12 +88,24 @@ async function main() {
     where: { email: "faculty@archit.edu" },
     update: {},
     create: {
+      name: "John Professor",
       first_name: "John",
       last_name: "Professor",
       email: "faculty@archit.edu",
       password: facultyPassword,
       roleId: facultyRole?.id,
       status: "active",
+      emailVerified: true,
+      accounts: {
+        create: {
+          id: "acc_faculty",
+          providerId: "credential",
+          accountId: "faculty@archit.edu",
+          password: facultyPassword,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      },
     },
   });
 
@@ -91,12 +115,24 @@ async function main() {
     where: { email: "student@archit.edu" },
     update: {},
     create: {
+      name: "Jane Student",
       first_name: "Jane",
       last_name: "Student",
       email: "student@archit.edu",
       password: studentPassword,
       roleId: studentRole?.id,
       status: "active",
+      emailVerified: true,
+      accounts: {
+        create: {
+          id: "acc_student",
+          providerId: "credential",
+          accountId: "student@archit.edu",
+          password: studentPassword,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      },
     },
   });
 
@@ -178,7 +214,7 @@ async function main() {
 
   console.log("Seed completed successfully.");
   console.log("\n🔐 Sample Login Credentials:");
-  console.log("   Admin:   admin@archit.edu / admin123");
+  console.log("   Admin:   fuadabdela95@gmail.com / Fuad@ab5659");
   console.log("   Faculty: faculty@archit.edu / faculty123");
   console.log("   Student: student@archit.edu / student123");
 }
