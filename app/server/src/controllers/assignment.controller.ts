@@ -2,12 +2,21 @@ import { Request, Response } from "express";
 import { prisma } from "../config/db";
 import path from "path";
 
+import { notifyUsers } from "../utils/notifier";
+
 const getUserId = (req: Request): string | undefined => (req as any).user?.id;
 
 export const createAssignment = async (req: Request, res: Response) => {
   try {
     const file = (req as any).file;
-    const { title, description, due_date, design_stage_id } = req.body;
+    const {
+      title,
+      description,
+      due_date,
+      design_stage_id,
+      academic_year,
+      semester,
+    } = req.body;
     const userId = getUserId(req);
 
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
@@ -17,10 +26,8 @@ export const createAssignment = async (req: Request, res: Response) => {
         title,
         description,
         due_date: due_date ? new Date(due_date) : null,
-        academic_year: req.body.academic_year
-          ? Number(req.body.academic_year)
-          : null,
-        semester: req.body.semester ? Number(req.body.semester) : null,
+        academic_year: academic_year ? Number(academic_year) : null,
+        semester: semester ? Number(semester) : null,
         file_path: file?.path,
         file_type: file?.mimetype,
         file_size: file?.size,
@@ -28,6 +35,27 @@ export const createAssignment = async (req: Request, res: Response) => {
         design_stage_id: design_stage_id ? Number(design_stage_id) : null,
       },
     });
+
+    // Notify matching students
+    const targetStudents = await prisma.user.findMany({
+      where: {
+        role: { name: "Student" },
+        AND: [
+          academic_year ? { year: Number(academic_year) } : {},
+          semester ? { semester: Number(semester) } : {},
+        ],
+      },
+      select: { id: true },
+    });
+
+    if (targetStudents.length > 0) {
+      await notifyUsers({
+        userIds: targetStudents.map((s) => s.id),
+        title: "New Assignment Posted",
+        message: `A new assignment "${title}" has been published for your academic cycle.`,
+        assignmentId: assignment.id,
+      });
+    }
 
     res.status(201).json(assignment);
   } catch (error) {
@@ -296,6 +324,14 @@ export const approveSubmission = async (req: Request, res: Response) => {
     await (prisma as any).submission.update({
       where: { id: Number(id) },
       data: { status: "approved" },
+    });
+
+    // Notify student
+    await notifyUsers({
+      userIds: [submission.student_id],
+      title: "Submission Approved",
+      message: `Your submission for "${submission.assignment.title}" has been approved and moved to the Resource Library.`,
+      resourceId: resource.id,
     });
 
     res.status(200).json({

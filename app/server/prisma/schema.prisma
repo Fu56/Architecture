@@ -198,6 +198,8 @@ model Notification {
     created_at  DateTime  @default(now())
     resource    Resource? @relation(fields: [resource_id], references: [id])
     resource_id Int?
+    assignment  Assignment? @relation(fields: [assignment_id], references: [id])
+    assignment_id Int?
     user        User?     @relation(fields: [user_id], references: [id])
     user_id     String?
     commentId   Int?
@@ -221,6 +223,7 @@ model Assignment {
     updated_at      DateTime      @updatedAt
 
     submissions     Submission[]
+    notifications   Notification[]
 }
 
 model Submission {

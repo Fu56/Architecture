@@ -13,9 +13,9 @@ const Profile = () => {
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   const [profileForm, setProfileForm] = useState({
-    first_name: user?.first_name || "",
-    last_name: user?.last_name || "",
-    university_id: user?.university_id || "",
+    first_name: String(user?.first_name || ""),
+    last_name: String(user?.last_name || ""),
+    university_id: String(user?.university_id || ""),
   });
 
   const [passwordForm, setPasswordForm] = useState({
@@ -35,6 +35,15 @@ const Profile = () => {
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Identity Validation Protocol
+    if (!profileForm.first_name.trim() || !profileForm.last_name.trim()) {
+      toast.warn(
+        "Transmission Aborted: Legal First and Last identifiers required."
+      );
+      return;
+    }
+
     setLoading(true);
     try {
       const { data } = await api.patch("/user/profile", profileForm);
@@ -52,7 +61,7 @@ const Profile = () => {
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      toast.warning("New passwords do not match");
+      toast.warn("New passwords do not match");
       return;
     }
     setLoading(true);
@@ -258,7 +267,7 @@ const Profile = () => {
                     University ID
                   </p>
                   <p className="text-xl font-bold text-slate-900 pb-2 border-b border-slate-50">
-                    {user.university_id || "Not assigned"}
+                    {String(user.university_id || "Not assigned")}
                   </p>
                 </div>
               </div>

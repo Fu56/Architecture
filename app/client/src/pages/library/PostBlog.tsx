@@ -41,8 +41,15 @@ const PostBlog = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title || !formData.content) {
-      toast.error("Please fill in all required fields.");
+
+    // Intellectual Property Validation
+    if (!formData.title.trim()) {
+      toast.warn("Transmission Aborted: Compelling story title required.");
+      return;
+    }
+
+    if (!formData.content.trim()) {
+      toast.warn("Transmission Aborted: Narrative content body missing.");
       return;
     }
 

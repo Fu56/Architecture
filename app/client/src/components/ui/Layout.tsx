@@ -20,6 +20,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useSession, authClient } from "../../lib/auth-client";
+import { api } from "../../lib/api";
 import { syncSessionToStorage } from "../../lib/auth";
 import Footer from "./Footer";
 import { ToastContainer, toast } from "react-toastify";
@@ -38,7 +39,7 @@ const Layout = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
-  const notificationCount = 3; // TODO: Fetch from API and convert to state
+  const [notificationCount, setNotificationCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
   const { data: session } = useSession();
@@ -47,6 +48,36 @@ const Layout = () => {
   // Sync session to storage for legacy components
   useEffect(() => {
     syncSessionToStorage();
+  }, [session]);
+
+  // Fetch unread notification count with cleanup to avoid cascading renders
+  useEffect(() => {
+    let isMounted = true;
+
+    const updateNotificationCount = async () => {
+      if (!session) {
+        setNotificationCount(0);
+        return;
+      }
+
+      try {
+        const { data } = await api.get("/notifications");
+        if (isMounted && Array.isArray(data)) {
+          const unread = data.filter(
+            (n: { is_read: boolean }) => !n.is_read
+          ).length;
+          setNotificationCount(unread);
+        }
+      } catch (err) {
+        console.error("Failed to fetch notification count", err);
+      }
+    };
+
+    updateNotificationCount();
+
+    return () => {
+      isMounted = false;
+    };
   }, [session]);
 
   useEffect(() => {

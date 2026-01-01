@@ -66,8 +66,9 @@ const RegisterFaculty = () => {
       return;
     }
 
-    if (!formData.email.includes("@")) {
-      toast.warning("Invalid credential syntax.");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.warn("Protocol Breach: Invalid email syntax detected.");
       return;
     }
 

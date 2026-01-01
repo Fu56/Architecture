@@ -6,12 +6,11 @@ import {
   UserPlus,
   Edit2,
   Trash2,
-  X,
   Shield,
-  Database,
-  Mail,
   User as UserIcon,
   Search,
+  MessageSquare,
+  Zap,
 } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -120,8 +119,50 @@ const ManageUsers = () => {
     }
   };
 
+  const [isNotifyModalOpen, setIsNotifyModalOpen] = useState(false);
+  const [notifyData, setNotifyData] = useState({ title: "", message: "" });
+
+  const handleNotifySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedUser || !notifyData.title || !notifyData.message) return;
+
+    setProcessing(true);
+    try {
+      await api.post("/admin/notifications/send", {
+        userId: selectedUser.id,
+        ...notifyData,
+      });
+      toast.success("Intelligence transmitted to target node.");
+      setIsNotifyModalOpen(false);
+      setNotifyData({ title: "", message: "" });
+    } catch (err: unknown) {
+      console.error("Direct transmission error:", err);
+      toast.error("Transmission failed: Protocol error.");
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Registry Validation Protocol
+    if (!formData.firstName.trim() || !formData.lastName.trim()) {
+      toast.warn("Registry Denial: Legal Identity identifiers required.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.warn("Protocol Breach: Invalid email syntax detected.");
+      return;
+    }
+
+    if (modalMode === "create" && formData.password.length < 6) {
+      toast.warn("Security Warning: Initial authorization key is too short.");
+      return;
+    }
+
     setProcessing(true);
     try {
       if (modalMode === "create") {
@@ -198,156 +239,6 @@ const ManageUsers = () => {
           Initialize Node
         </button>
       </div>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
-            onClick={() => setIsModalOpen(false)}
-          />
-          <div className="bg-white rounded-[3rem] shadow-3xl w-full max-w-2xl p-10 relative z-10 border border-slate-100 animate-in zoom-in-95 duration-300">
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-8 right-8 p-2 text-slate-400 hover:text-slate-950 hover:bg-slate-50 rounded-xl transition-all"
-            >
-              <X className="h-6 w-6" />
-            </button>
-
-            <div className="flex items-center gap-4 mb-10">
-              <div className="h-12 w-12 bg-slate-950 rounded-2xl flex items-center justify-center text-white shadow-xl">
-                <Database className="h-6 w-6" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-black text-slate-950 tracking-tight">
-                  {modalMode === "create"
-                    ? "Initialize User Node"
-                    : "Configure User Node"}
-                </h2>
-                <p className="text-xs text-slate-400 font-medium tracking-wide uppercase">
-                  Nexus Registry Protocol
-                </p>
-              </div>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                    First Name
-                  </label>
-                  <input
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                    Last Name
-                  </label>
-                  <input
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300" />
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-12 pr-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
-                    required
-                  />
-                </div>
-              </div>
-
-              {modalMode === "create" && (
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                    Authorization Password
-                  </label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
-                    required={modalMode === "create"}
-                  />
-                </div>
-              )}
-
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                    Role Priority
-                  </label>
-                  <select
-                    name="roleName"
-                    value={formData.roleName}
-                    onChange={handleInputChange}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none"
-                  >
-                    <option value="Student">Student Node</option>
-                    <option value="Faculty">Faculty Node</option>
-                    <option value="Admin">Admin Node</option>
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                    Active Status
-                  </label>
-                  <select
-                    name="status"
-                    value={formData.status}
-                    onChange={handleInputChange}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none"
-                  >
-                    <option value="active">Protocol: Active</option>
-                    <option value="inactive">Protocol: Suspended</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="pt-8 flex justify-end gap-4 border-t border-slate-50">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-8 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-slate-950 transition-colors"
-                >
-                  Abort
-                </button>
-                <button
-                  type="submit"
-                  disabled={processing}
-                  className="px-10 py-3 bg-slate-950 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-indigo-600 transition-all shadow-xl disabled:opacity-50"
-                >
-                  {processing ? (
-                    <Loader2 className="h-4 w-4 animate-spin mx-auto" />
-                  ) : modalMode === "create" ? (
-                    "Initialize"
-                  ) : (
-                    "Deploy Changes"
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* User Registry Table */}
       <div className="bg-white rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200 overflow-hidden">
@@ -443,6 +334,16 @@ const ManageUsers = () => {
                     <td className="px-10 py-6 whitespace-nowrap text-right">
                       <div className="flex items-center justify-end gap-3">
                         <button
+                          onClick={() => {
+                            setSelectedUser(user);
+                            setIsNotifyModalOpen(true);
+                          }}
+                          className="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                          title="Direct Transmission"
+                        >
+                          <MessageSquare className="h-4 w-4" />
+                        </button>
+                        <button
                           onClick={() => handleOpenEdit(user)}
                           className="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
                           title="Configure"
@@ -463,19 +364,238 @@ const ManageUsers = () => {
               })}
             </tbody>
           </table>
+          {filteredUsers.length === 0 && (
+            <div className="py-24 text-center">
+              <UserIcon className="h-16 w-16 text-slate-100 mx-auto mb-6" />
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">
+                No Specimen Detected
+              </h3>
+              <p className="text-xs text-slate-400 font-medium mt-2">
+                The registry contains no matching user nodes.
+              </p>
+            </div>
+          )}
         </div>
-        {filteredUsers.length === 0 && (
-          <div className="py-24 text-center">
-            <UserIcon className="h-16 w-16 text-slate-100 mx-auto mb-6" />
-            <h3 className="text-xl font-black text-slate-900 tracking-tight">
-              No Specimen Detected
-            </h3>
-            <p className="text-xs text-slate-400 font-medium mt-2">
-              The registry contains no matching user nodes.
-            </p>
-          </div>
-        )}
       </div>
+
+      {/* User Management Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-slate-950/40 backdrop-blur-xl animate-in fade-in duration-500"
+            onClick={() => setIsModalOpen(false)}
+          />
+          <div className="relative w-full max-w-2xl bg-white rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
+            <div className="bg-slate-950 px-10 py-10 relative overflow-hidden group/modal">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/20 blur-[80px] transition-all group-hover/modal:bg-indigo-600/30" />
+              <div className="relative z-10">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400 mb-2">
+                  Registry Update
+                </p>
+                <h3 className="text-3xl font-black text-white leading-tight">
+                  {modalMode === "create"
+                    ? "Initialize User Node"
+                    : "Configure Specimen"}
+                </h3>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="p-10 space-y-8">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                    First Identifier
+                  </label>
+                  <input
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                    Last Identifier
+                  </label>
+                  <input
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  Communication Frequency (Email)
+                </label>
+                <input
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
+                  required
+                />
+              </div>
+
+              {modalMode === "create" && (
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                    Initial Authorization Key
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
+                    required={modalMode === "create"}
+                  />
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                    Role Priority
+                  </label>
+                  <select
+                    name="roleName"
+                    value={formData.roleName}
+                    onChange={handleInputChange}
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none"
+                  >
+                    <option value="Student">Student Node</option>
+                    <option value="Faculty">Faculty Node</option>
+                    <option value="Admin">Admin Node</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                    Active Status
+                  </label>
+                  <select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleInputChange}
+                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none"
+                  >
+                    <option value="active">Protocol: Active</option>
+                    <option value="inactive">Protocol: Suspended</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="pt-8 flex justify-end gap-4 border-t border-slate-50">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-8 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-slate-950 transition-colors"
+                >
+                  Abort
+                </button>
+                <button
+                  type="submit"
+                  disabled={processing}
+                  className="px-10 py-3 bg-slate-950 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-indigo-600 transition-all shadow-xl disabled:opacity-50"
+                >
+                  {processing ? (
+                    <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                  ) : modalMode === "create" ? (
+                    "Initialize"
+                  ) : (
+                    "Deploy Changes"
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Notification Dispatch Modal */}
+      {isNotifyModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-slate-950/40 backdrop-blur-xl animate-in fade-in duration-500"
+            onClick={() => setIsNotifyModalOpen(false)}
+          />
+          <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
+            <div className="bg-slate-950 px-10 py-8 relative overflow-hidden">
+              <div className="relative z-10">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400 mb-2">
+                  Communication Protocol
+                </p>
+                <h3 className="text-2xl font-black text-white leading-tight">
+                  Direct Briefing: {selectedUser?.firstName}
+                </h3>
+              </div>
+            </div>
+
+            <form onSubmit={handleNotifySubmit} className="p-10 space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  Briefing Headline
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Intel objective..."
+                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  value={notifyData.title}
+                  onChange={(e) =>
+                    setNotifyData({ ...notifyData, title: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  Narrative Payload
+                </label>
+                <textarea
+                  required
+                  rows={4}
+                  placeholder="Critical intelligence summary..."
+                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 resize-none"
+                  value={notifyData.message}
+                  onChange={(e) =>
+                    setNotifyData({ ...notifyData, message: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="pt-4 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsNotifyModalOpen(false)}
+                  className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-950"
+                >
+                  Abort
+                </button>
+                <button
+                  type="submit"
+                  disabled={processing}
+                  className="px-8 py-2.5 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/30 flex items-center gap-2"
+                >
+                  {processing ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <>
+                      <Zap className="h-3 w-3" />
+                      Authorize Transmission
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

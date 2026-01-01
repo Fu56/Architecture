@@ -18,7 +18,7 @@ const Resources = () => {
     setError(null);
     try {
       const params = new URLSearchParams();
-      if (filters.q) params.append("search", filters.q);
+      if (filters.search) params.append("search", filters.search);
       if (filters.fileType) params.append("type", filters.fileType);
       if (filters.stage) params.append("stage", filters.stage);
       if (filters.year) params.append("year", filters.year);

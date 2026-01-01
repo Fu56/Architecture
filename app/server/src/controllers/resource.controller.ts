@@ -1,12 +1,15 @@
 import { Request, Response } from "express";
 import path from "path";
 import { prisma } from "../config/db";
+import { notifyUsers } from "../utils/notifier";
 
 // Helper to get user ID from request (assumes middleware populated req.user)
 // You might need to extend Express Request type definition.
-const getUserId = (req: Request): number | undefined => (req as any).user?.id;
-const getUserRole = (req: Request): string | undefined =>
-  (req as any).user?.role;
+const getUserId = (req: Request): string | undefined => (req as any).user?.id;
+const getUserRole = (req: Request): string | undefined => {
+  const role = (req as any).user?.role;
+  return typeof role === "object" ? role.name : role;
+};
 
 export const createResource = async (req: Request, res: Response) => {
   try {
@@ -272,6 +275,12 @@ export const addComment = async (req: Request, res: Response) => {
     const userId = getUserId(req);
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
+    // Get resource uploader
+    const resource = await prisma.resource.findUnique({
+      where: { id: Number(id) },
+      select: { uploader_id: true, title: true },
+    });
+
     const comment = await prisma.comment.create({
       data: {
         text,
@@ -279,6 +288,20 @@ export const addComment = async (req: Request, res: Response) => {
         user_id: userId,
       },
     });
+
+    // Notify uploader
+    if (resource?.uploader_id && resource.uploader_id !== userId) {
+      await notifyUsers({
+        userIds: [resource.uploader_id],
+        title: "New Comment on Your Resource",
+        message: `Someone commented on "${resource.title}": "${text.substring(
+          0,
+          50
+        )}..."`,
+        resourceId: Number(id),
+      });
+    }
+
     res.status(201).json(comment);
   } catch (error) {
     res.status(500).json({ message: "Error adding comment" });

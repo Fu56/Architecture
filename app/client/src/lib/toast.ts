@@ -109,4 +109,6 @@ export const toast = {
     showToast(message, "info", options),
   warning: (message: string, options?: ToastOptions) =>
     showToast(message, "warning", options),
+  warn: (message: string, options?: ToastOptions) =>
+    showToast(message, "warning", options),
 };

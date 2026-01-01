@@ -59,6 +59,33 @@ const PostAssignment = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Mission Control Validation
+    if (!metadata.title.trim()) {
+      toast.warn("Protocol Error: Assignment Title identifier required.");
+      return;
+    }
+
+    if (!metadata.description.trim()) {
+      toast.warn("Protocol Error: Brief Description narrative missing.");
+      return;
+    }
+
+    if (!metadata.academic_year) {
+      toast.warn("Protocol Error: Target Academic Year not specified.");
+      return;
+    }
+
+    if (!metadata.semester) {
+      toast.warn("Protocol Error: Academic Semester sequence required.");
+      return;
+    }
+
+    if (!metadata.design_stage_id) {
+      toast.warn("Protocol Error: Phase Matrix selection required.");
+      return;
+    }
+
     setLoading(true);
 
     const formData = new FormData();

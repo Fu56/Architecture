@@ -98,7 +98,21 @@ const AssignmentDetails = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!submissionFile) return;
+
+    // Critical Submission Validation
+    if (!submissionFile) {
+      toast.warn(
+        "Transmission Failed: No artifact file selected for submission."
+      );
+      return;
+    }
+
+    if (assignment?.isPastDeadline) {
+      toast.error(
+        "Protocol Breach: Submission attempt after established deadline."
+      );
+      return;
+    }
 
     setSubmitting(true);
     const formData = new FormData();

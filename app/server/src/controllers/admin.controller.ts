@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/db";
+import { notifyUsers, notifyAll } from "../utils/notifier";
 
 export const getPendingResources = async (req: Request, res: Response) => {
   try {
@@ -68,15 +69,13 @@ export const approveResource = async (req: Request, res: Response) => {
 
     // Notify uploader
     if (resource.uploader_id) {
-      await prisma.notification.create({
-        data: {
-          user_id: resource.uploader_id,
-          title: "Resource Approved",
-          message: `Your resource "${resource.title}" has been approved.${
-            comment ? " Comment: " + comment : ""
-          }`,
-          resource_id: resource.id,
-        },
+      await notifyUsers({
+        userIds: [resource.uploader_id],
+        title: "Resource Approved",
+        message: `Your resource "${resource.title}" has been approved.${
+          comment ? " Comment: " + comment : ""
+        }`,
+        resourceId: resource.id,
       });
     }
 
@@ -101,15 +100,13 @@ export const rejectResource = async (req: Request, res: Response) => {
     });
 
     if (resource.uploader_id) {
-      await prisma.notification.create({
-        data: {
-          user_id: resource.uploader_id,
-          title: "Resource Rejected",
-          message: `Your resource "${resource.title}" was rejected. ${
-            reason ? "Reason: " + reason : ""
-          }`,
-          resource_id: resource.id,
-        },
+      await notifyUsers({
+        userIds: [resource.uploader_id],
+        title: "Resource Rejected",
+        message: `Your resource "${resource.title}" was rejected. ${
+          reason ? "Reason: " + reason : ""
+        }`,
+        resourceId: resource.id,
       });
     }
 
@@ -606,6 +603,12 @@ export const createNews = async (req: Request, res: Response) => {
       },
     });
 
+    // Notify all users about the news/event
+    await notifyAll(
+      isEvent ? "New Event Scheduled" : "System Announcement",
+      title
+    );
+
     res
       .status(201)
       .json({ message: "News/Event published successfully", news });
@@ -622,5 +625,26 @@ export const deleteNews = async (req: Request, res: Response) => {
     res.json({ message: "News deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Failed to delete news" });
+  }
+};
+
+export const sendDirectNotification = async (req: Request, res: Response) => {
+  try {
+    const { userId, title, message } = req.body;
+    if (!userId || !title || !message) {
+      return res
+        .status(400)
+        .json({ message: "UserId, title and message are required" });
+    }
+
+    await notifyUsers({
+      userIds: [userId],
+      title,
+      message,
+    });
+
+    res.json({ message: "Notification transmitted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to transmit notification" });
   }
 };

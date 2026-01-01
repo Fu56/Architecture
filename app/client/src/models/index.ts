@@ -67,10 +67,12 @@ export interface Notification {
   id: number;
   title: string;
   message: string;
-  isRead: boolean;
-  userId: number;
-  resourceId?: number;
-  createdAt: string;
+  is_read: boolean;
+  user_id: string;
+  resource_id?: number;
+  assignment_id?: number;
+  resource?: { title: string };
+  created_at: string;
 }
 
 export interface Assignment {

@@ -23,6 +23,19 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Enhanced Validation Protocol
+    if (!form.email.trim() || !form.password.trim()) {
+      toast.warn("Access Denied: Mission critical credentials missing.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      toast.warn("Protocol Breach: Invalid email syntax detected.");
+      return;
+    }
+
     setLoading(true);
     try {
       const result = await authClient.signIn.email({
@@ -32,7 +45,7 @@ const Login = () => {
 
       if (result.error) {
         toast.error(
-          result.error.message || "Login failed. Please check your credentials."
+          result.error.message || "Authentication Failed: Node access rejected."
         );
         return;
       }

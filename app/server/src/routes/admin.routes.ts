@@ -19,6 +19,7 @@ import {
   deleteUser,
   createNews,
   deleteNews,
+  sendDirectNotification,
 } from "../controllers/admin.controller";
 
 const router = Router();
@@ -46,5 +47,6 @@ router.get("/stats", getStats);
 // News management
 router.post("/news", createNews);
 router.delete("/news/:id", deleteNews);
+router.post("/notifications/send", sendDirectNotification);
 
 export default router;

@@ -120,7 +120,8 @@ const RegisterStudents = () => {
         );
       if (!student.email)
         rowErrors.push(`Unit ${index + 1}: Missing access endpoint (Email)`);
-      if (student.email && !student.email.includes("@")) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (student.email && !emailRegex.test(student.email)) {
         rowErrors.push(`Unit ${index + 1}: Invalid protocol format (Email)`);
       }
       if (rowErrors.length === 0) {

@@ -54,6 +54,25 @@ const NewsManager = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Broadcast Validation Protocols
+    if (!title.trim()) {
+      toast.warn("Transmission Aborted: Announcement Headline required.");
+      return;
+    }
+
+    if (!content.trim()) {
+      toast.warn("Transmission Aborted: Intelligence Body Narrative missing.");
+      return;
+    }
+
+    if (isEvent && !eventDate) {
+      toast.warn(
+        "Temporal Error: Event Sequencing requires a valid date marker."
+      );
+      return;
+    }
+
     setProcessing(true);
     try {
       await api.post("/admin/news", {

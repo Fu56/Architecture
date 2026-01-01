@@ -78,10 +78,44 @@ const Upload = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Technical Validation Protocol
     if (!file) {
-      toast.warning("Resource required: Please select a file to transmit");
+      toast.warn("Asset Core Missing: Please select a file to transmit.");
       return;
     }
+
+    if (!metadata.title.trim()) {
+      toast.warn("Protocol Error: Project Title descriptor required.");
+      return;
+    }
+
+    if (!metadata.author.trim()) {
+      toast.warn("Protocol Error: Author Authority must be established.");
+      return;
+    }
+
+    if (!metadata.design_stage_id) {
+      toast.warn("Protocol Error: Design Phase sequencing must be defined.");
+      return;
+    }
+
+    const yearNum = parseInt(metadata.forYearStudents);
+    if (isNaN(yearNum) || yearNum < 1 || yearNum > 5) {
+      toast.warn(
+        "Metadata Breach: Target Student Year must be between 1 and 5."
+      );
+      return;
+    }
+
+    if (metadata.semester) {
+      const semNum = parseInt(metadata.semester);
+      if (isNaN(semNum) || semNum < 1 || semNum > 2) {
+        toast.warn("Metadata Breach: Academic Semester out of range (1-2).");
+        return;
+      }
+    }
+
     setLoading(true);
 
     const formData = new FormData();
