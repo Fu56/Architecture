@@ -26,7 +26,7 @@ interface AssignmentWithSubmissions {
   file_type?: string;
   file_size?: number;
   creator: {
-    id: number;
+    id: string;
     first_name: string;
     last_name: string;
   };
@@ -44,7 +44,7 @@ interface AssignmentWithSubmissions {
     submitted_at: string;
     file_path: string;
     student?: {
-      id: number;
+      id: string;
       first_name: string;
       last_name: string;
       year?: number;

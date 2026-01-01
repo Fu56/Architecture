@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "../config/db";
 import path from "path";
 
-const getUserId = (req: Request): number | undefined => (req as any).user?.id;
+const getUserId = (req: Request): string | undefined => (req as any).user?.id;
 
 export const createAssignment = async (req: Request, res: Response) => {
   try {

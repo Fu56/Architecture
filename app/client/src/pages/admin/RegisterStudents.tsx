@@ -66,6 +66,11 @@ const RegisterStudents = () => {
     setLoading(true);
     try {
       const reader = new FileReader();
+      const safeParseInt = (val: string) => {
+        const parsed = parseInt(val);
+        return isNaN(parsed) ? undefined : parsed;
+      };
+
       reader.onload = async (e) => {
         const data = e.target?.result;
         if (typeof data === "string") {
@@ -79,9 +84,9 @@ const RegisterStudents = () => {
                 last_name: values[1] || "",
                 email: values[2] || "",
                 university_id: values[3] || undefined,
-                batch: values[4] ? parseInt(values[4]) : undefined,
-                year: values[5] ? parseInt(values[5]) : undefined,
-                semester: values[6] ? parseInt(values[6]) : undefined,
+                batch: safeParseInt(values[4]),
+                year: safeParseInt(values[5]),
+                semester: safeParseInt(values[6]),
                 password: values[7] || undefined,
               });
             }

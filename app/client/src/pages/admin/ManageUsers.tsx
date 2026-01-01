@@ -86,7 +86,10 @@ const ManageUsers = () => {
       lastName: user.lastName || user.last_name || "",
       email: user.email,
       password: "",
-      roleName: typeof user.role === "string" ? user.role : user.role.name,
+      roleName:
+        typeof user.role === "string"
+          ? user.role
+          : user.role?.name || "Student",
       universityId:
         (user as { university_id?: string }).university_id ||
         (user as { universityId?: string }).universityId ||
@@ -100,7 +103,7 @@ const ManageUsers = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (
       !window.confirm(
         "Are you sure you want to terminate this user node? This operation is irreversible."
@@ -372,7 +375,9 @@ const ManageUsers = () => {
             <tbody className="divide-y divide-slate-50">
               {filteredUsers.map((user) => {
                 const roleName =
-                  typeof user.role === "string" ? user.role : user.role.name;
+                  typeof user.role === "string"
+                    ? user.role
+                    : user.role?.name || "N/A";
                 return (
                   <tr
                     key={user.id}

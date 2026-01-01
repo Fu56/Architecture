@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { auth } from "../lib/auth";
 
 export interface AuthUser {
-  id: number;
+  id: string;
   email: string;
   role?: string;
 }
@@ -24,7 +24,7 @@ export const requireAuth = async (
 
     // Attach user info to request
     (req as any).user = {
-      id: Number(session.user.id),
+      id: session.user.id,
       email: session.user.email,
       role: (session.user as any).role?.name,
     };

@@ -157,7 +157,7 @@ export const manageUserRole = async (req: Request, res: Response) => {
 
     const user = await prisma.user.update({
       where: { id: id },
-      data: { roleId: Number(roleId) },
+      data: { role: { connect: { id: Number(roleId) } } },
     });
 
     res.json({ message: "User role updated", user });
@@ -344,7 +344,7 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
             last_name,
             email,
             password: hashedPassword,
-            roleId: studentRole.id,
+            role: { connect: { id: studentRole.id } },
             status: "active",
             batch: batch ? Number(batch) : null,
             year: year ? Number(year) : null,
@@ -354,7 +354,6 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
               `${email.split("@")[0].toUpperCase()}${Math.floor(
                 1000 + Math.random() * 9000
               )}`,
-            college_id: null,
           } as any,
         });
 
@@ -437,7 +436,7 @@ export const registerFaculty = async (req: Request, res: Response) => {
         last_name,
         email,
         password: hashedPassword,
-        roleId: facultyRole.id,
+        role: { connect: { id: facultyRole.id } },
         status: "active",
       },
       include: {
@@ -498,7 +497,7 @@ export const createUser = async (req: Request, res: Response) => {
         last_name: lastName,
         email,
         password: hashedPassword,
-        roleId: role.id,
+        role: { connect: { id: role.id } },
         status: "active",
         university_id: universityId,
         batch: batch ? Number(batch) : null,
@@ -545,7 +544,7 @@ export const updateUser = async (req: Request, res: Response) => {
 
     if (roleName) {
       const role = await prisma.role.findUnique({ where: { name: roleName } });
-      if (role) updateData.roleId = role.id;
+      if (role) updateData.role = { connect: { id: role.id } }; // Use assignment for relation
     }
 
     // Filter out undefined keys if any (though typical put sends all, patch sends partial. let's assume partial is ok or full)
