@@ -98,11 +98,11 @@ const Layout = () => {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-in-out ${
           isScrolled
-            ? "bg-white/80 backdrop-blur-2xl shadow-[0_4px_30px_rgba(0,0,0,0.03)] border-b border-gray-100/50 py-3"
+            ? "bg-white/80 backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.06)] border-b border-indigo-50/50 py-3"
             : `${
                 isHomePage
                   ? "bg-transparent py-6"
-                  : "bg-white/80 backdrop-blur-2xl py-4 border-b border-gray-100/50"
+                  : "bg-white/90 backdrop-blur-2xl py-4 border-b border-gray-100/50"
               }`
         }`}
       >
@@ -110,60 +110,78 @@ const Layout = () => {
           <div className="flex items-center justify-between gap-8">
             {/* Logo */}
             <div className="flex items-center shrink-0">
-              <Link to="/" className="flex items-center gap-2.5 group">
+              <Link to="/" className="flex items-center gap-3 group">
                 <div
-                  className={`relative p-2 rounded-2xl transition-all duration-500 overflow-hidden ${
+                  className={`relative p-2.5 rounded-2xl transition-all duration-500 overflow-hidden ${
                     isScrolled || !isHomePage
-                      ? "bg-indigo-600 shadow-[0_8px_20px_-4px_rgba(79,70,229,0.4)]"
-                      : "bg-white/10 backdrop-blur-md border border-white/20"
+                      ? "bg-indigo-600 shadow-[0_12px_24px_-6px_rgba(79,70,229,0.5)]"
+                      : "bg-white/10 backdrop-blur-md border border-white/30"
                   }`}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity bg-[length:200%_200%] animate-gradient-xy" />
                   <BookOpen
-                    className={`h-6 w-6 text-white transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6`}
+                    className={`h-6 w-6 text-white transition-transform duration-700 group-hover:scale-110 group-hover:rotate-[12deg]`}
                   />
                 </div>
                 <div className="flex flex-col">
                   <span
-                    className={`text-xl font-black tracking-tighter leading-none transition-colors font-display ${
-                      isScrolled || !isHomePage ? "text-gray-900" : "text-white"
+                    className={`text-2xl font-black tracking-tighter leading-none transition-all duration-500 font-display ${
+                      isScrolled || !isHomePage
+                        ? "text-slate-900 group-hover:text-indigo-600"
+                        : "text-white group-hover:scale-105"
                     }`}
                   >
                     ARCH
-                    <span className="text-indigo-500 ml-1">VAULT</span>
+                    <span className="text-indigo-500 ml-0.5">VAULT</span>
                   </span>
                   <span
-                    className={`text-[10px] font-bold tracking-[0.2em] uppercase transition-colors opacity-60 ${
+                    className={`text-[9px] font-black tracking-[0.3em] uppercase transition-all duration-500 ${
                       isScrolled || !isHomePage
-                        ? "text-gray-500"
-                        : "text-white/80"
+                        ? "text-slate-400"
+                        : "text-white/70"
                     }`}
                   >
-                    Digital Library
+                    Architectural Excellence
                   </span>
                 </div>
               </Link>
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-1">
+            <div className="hidden lg:flex items-center space-x-2">
               {navLinks.map((link) => (
                 <NavLink
                   key={link.name}
                   to={link.href}
                   className={({ isActive }) =>
-                    `px-5 py-2.5 rounded-full text-[14px] font-bold tracking-tight transition-all duration-300 ${
+                    `relative px-5 py-2.5 rounded-full text-[13px] font-black uppercase tracking-widest transition-all duration-500 group/nav ${
                       isActive
                         ? isScrolled || !isHomePage
-                          ? "bg-indigo-50 text-indigo-600"
-                          : "bg-white/20 text-white backdrop-blur-md"
+                          ? "text-indigo-600"
+                          : "text-white"
                         : isScrolled || !isHomePage
-                        ? "text-gray-600 hover:text-indigo-600 hover:bg-gray-50"
-                        : "text-white/80 hover:text-white hover:bg-white/10"
+                        ? "text-slate-600 hover:text-indigo-600"
+                        : "text-white/70 hover:text-white"
                     }`
                   }
                 >
-                  {link.name}
+                  {({ isActive }) => (
+                    <>
+                      <span className="relative z-10">{link.name}</span>
+                      {isActive && (
+                        <div
+                          className={`absolute inset-0 rounded-full -z-0 transition-all duration-500 ${
+                            isScrolled || !isHomePage
+                              ? "bg-indigo-50 shadow-inner shadow-indigo-100/50"
+                              : "bg-white/20 backdrop-blur-lg"
+                          }`}
+                        />
+                      )}
+                      {!isActive && (
+                        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-indigo-500 rounded-full transition-all duration-300 group-hover/nav:w-4 opacity-0 group-hover/nav:opacity-100" />
+                      )}
+                    </>
+                  )}
                 </NavLink>
               ))}
             </div>
