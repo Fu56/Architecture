@@ -159,8 +159,10 @@ const PostAssignment = () => {
                   (Optional)
                 </label>
                 <input
+                  id="due_date"
                   type="datetime-local"
                   name="due_date"
+                  title="Due Date & Time"
                   value={metadata.due_date}
                   onChange={handleMetaChange}
                   className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-gray-900"
@@ -173,7 +175,9 @@ const PostAssignment = () => {
                 </label>
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <select
+                    id="academic_year"
                     name="academic_year"
+                    title="Target Academic Year"
                     value={metadata.academic_year}
                     onChange={handleMetaChange}
                     className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-gray-900"
@@ -186,7 +190,9 @@ const PostAssignment = () => {
                     ))}
                   </select>
                   <select
+                    id="semester"
                     name="semester"
+                    title="Academic Semester"
                     value={metadata.semester}
                     onChange={handleMetaChange}
                     className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-gray-900"
@@ -206,7 +212,9 @@ const PostAssignment = () => {
                   Design Stage
                 </label>
                 <select
+                  id="design_stage_id"
                   name="design_stage_id"
+                  title="Design Stage"
                   value={metadata.design_stage_id}
                   onChange={handleMetaChange}
                   className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-gray-900"
@@ -244,7 +252,9 @@ const PostAssignment = () => {
             </label>
             <div className="relative group">
               <input
+                id="brief-file"
                 type="file"
+                title="Choose brief file"
                 onChange={handleFileChange}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
               />

@@ -167,7 +167,9 @@ const Profile = () => {
                       First Name
                     </label>
                     <input
+                      id="first_name"
                       type="text"
+                      title="First Name"
                       className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-900 focus:border-indigo-500 outline-none transition-all"
                       value={profileForm.first_name}
                       onChange={(e) =>
@@ -184,7 +186,9 @@ const Profile = () => {
                       Last Name
                     </label>
                     <input
+                      id="last_name"
                       type="text"
+                      title="Last Name"
                       className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-900 focus:border-indigo-500 outline-none transition-all"
                       value={profileForm.last_name}
                       onChange={(e) =>
@@ -201,7 +205,9 @@ const Profile = () => {
                       Email (Fixed)
                     </label>
                     <input
+                      id="email"
                       type="email"
+                      title="Email (Fixed)"
                       disabled
                       className="w-full bg-slate-100 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-400 cursor-not-allowed"
                       value={user.email}
@@ -212,7 +218,9 @@ const Profile = () => {
                       University ID
                     </label>
                     <input
+                      id="university_id"
                       type="text"
+                      title="University ID"
                       className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-900 focus:border-indigo-500 outline-none transition-all"
                       value={profileForm.university_id}
                       onChange={(e) =>

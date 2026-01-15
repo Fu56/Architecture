@@ -197,6 +197,7 @@ const NewsManager = () => {
                     </div>
                     <button
                       type="button"
+                      title="Toggle Event Sequencing"
                       onClick={() => setIsEvent(!isEvent)}
                       className={`relative w-14 h-7 rounded-full transition-all duration-500 ${
                         isEvent ? "bg-indigo-600" : "bg-slate-200"
@@ -216,7 +217,9 @@ const NewsManager = () => {
                         Temporal Markers (Date & Time)
                       </label>
                       <input
+                        id="eventDate"
                         type="datetime-local"
+                        title="Temporal Markers (Date & Time)"
                         required={isEvent}
                         value={eventDate}
                         onChange={(e) => setEventDate(e.target.value)}

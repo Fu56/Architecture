@@ -123,11 +123,15 @@ const Footer = () => {
                 <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-[2.5rem] blur opacity-0 group-focus-within/input:opacity-20 transition" />
                 <input
                   type="email"
+                  id="footer-subscribe-email"
+                  title="Subscription Email"
                   placeholder="STUDIO_IDENTIFIER@SECURE.COM"
                   className="relative w-full bg-slate-950 border border-white/10 rounded-[2rem] py-6 pl-8 pr-20 text-[10px] font-black uppercase tracking-widest text-white outline-none focus:border-indigo-500 transition-all shadow-2xl placeholder:text-white/10"
                 />
                 <button
                   type="button"
+                  title="Execute Subscription"
+                  aria-label="Subscribe to newsletter"
                   className="absolute right-3 top-3 bottom-3 px-6 bg-indigo-600 rounded-[1.5rem] hover:bg-white hover:text-slate-950 transition-all duration-500 text-white shadow-xl shadow-indigo-600/30"
                 >
                   <ArrowRight className="h-6 w-6" />

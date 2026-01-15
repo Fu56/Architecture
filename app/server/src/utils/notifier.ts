@@ -1,4 +1,5 @@
 import { prisma } from "../config/db";
+import { sendNotificationEmail, getGenericHtml } from "./email";
 
 export const notifyUsers = async ({
   userIds,
@@ -6,12 +7,14 @@ export const notifyUsers = async ({
   message,
   resourceId,
   assignmentId,
+  html,
 }: {
   userIds: string[];
   title: string;
   message: string;
   resourceId?: number;
   assignmentId?: number;
+  html?: string;
 }) => {
   try {
     const notifications = userIds.map((uid) => ({
@@ -25,6 +28,27 @@ export const notifyUsers = async ({
     await (prisma as any).notification.createMany({
       data: notifications,
     });
+
+    // Email Dispatch Protocol
+    const recipients = await prisma.user.findMany({
+      where: { id: { in: userIds } },
+      select: { email: true, first_name: true },
+    });
+
+    for (const user of recipients) {
+      if (user.email) {
+        await sendNotificationEmail(
+          user.email,
+          title,
+          message,
+          html ||
+            getGenericHtml(
+              title,
+              `Dear ${user.first_name || "User"},\n\n${message}`
+            )
+        );
+      }
+    }
   } catch (error) {
     console.error("Failed to send notifications:", error);
   }

@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/db";
 import { notifyUsers, notifyAll } from "../utils/notifier";
+import {
+  getApprovalHtml,
+  getRejectionHtml,
+  getGenericHtml,
+} from "../utils/email";
 
 export const getPendingResources = async (req: Request, res: Response) => {
   try {
@@ -65,22 +70,34 @@ export const approveResource = async (req: Request, res: Response) => {
         approved_at: new Date(),
         admin_comment: comment,
       } as any,
+      include: { uploader: true },
     });
 
     // Notify uploader
-    if (resource.uploader_id) {
+    if (resource.uploader_id && resource.uploader) {
+      const uploader = resource.uploader as any;
+      const title = "Resource Approved";
+      const message = `Your resource "${resource.title}" has been approved.${
+        comment ? " Comment: " + comment : ""
+      }`;
+
+      // Internal & Email Notification
       await notifyUsers({
         userIds: [resource.uploader_id],
-        title: "Resource Approved",
-        message: `Your resource "${resource.title}" has been approved.${
-          comment ? " Comment: " + comment : ""
-        }`,
+        title,
+        message,
         resourceId: resource.id,
+        html: getApprovalHtml(
+          uploader.first_name || "User",
+          resource.title,
+          comment
+        ),
       });
     }
 
     res.json({ message: "Resource approved", resource });
   } catch (error) {
+    console.error("Approval Error:", error);
     res.status(500).json({ message: "Error approving resource" });
   }
 };
@@ -97,21 +114,33 @@ export const rejectResource = async (req: Request, res: Response) => {
         rejected_at: new Date(),
         admin_comment: reason,
       } as any,
+      include: { uploader: true },
     });
 
-    if (resource.uploader_id) {
+    if (resource.uploader_id && resource.uploader) {
+      const uploader = resource.uploader as any;
+      const title = "Resource Rejected";
+      const message = `Your resource "${resource.title}" was rejected. ${
+        reason ? "Reason: " + reason : ""
+      }`;
+
+      // Internal & Email Notification
       await notifyUsers({
         userIds: [resource.uploader_id],
-        title: "Resource Rejected",
-        message: `Your resource "${resource.title}" was rejected. ${
-          reason ? "Reason: " + reason : ""
-        }`,
+        title,
+        message,
         resourceId: resource.id,
+        html: getRejectionHtml(
+          uploader.first_name || "User",
+          resource.title,
+          reason
+        ),
       });
     }
 
     res.json({ message: "Resource rejected", resource });
   } catch (error) {
+    console.error("Rejection Error:", error);
     res.status(500).json({ message: "Error rejecting resource" });
   }
 };

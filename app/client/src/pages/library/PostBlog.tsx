@@ -149,6 +149,7 @@ const PostBlog = () => {
                     />
                     <button
                       type="button"
+                      title="Remove Image"
                       onClick={(e) => {
                         e.stopPropagation();
                         setImage(null);
@@ -168,7 +169,9 @@ const PostBlog = () => {
                   </div>
                 )}
                 <input
+                  id="featured-image"
                   type="file"
+                  title="Featured Image"
                   ref={fileInputRef}
                   onChange={handleImageChange}
                   accept="image/*"

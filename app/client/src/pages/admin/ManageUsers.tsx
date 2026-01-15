@@ -435,7 +435,9 @@ const ManageUsers = () => {
                     First Identifier
                   </label>
                   <input
+                    id="firstName"
                     name="firstName"
+                    title="First Identifier"
                     value={formData.firstName}
                     onChange={handleInputChange}
                     className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
@@ -447,7 +449,9 @@ const ManageUsers = () => {
                     Last Identifier
                   </label>
                   <input
+                    id="lastName"
                     name="lastName"
+                    title="Last Identifier"
                     value={formData.lastName}
                     onChange={handleInputChange}
                     className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
@@ -461,8 +465,10 @@ const ManageUsers = () => {
                   Communication Frequency (Email)
                 </label>
                 <input
+                  id="email"
                   name="email"
                   type="email"
+                  title="Communication Frequency (Email)"
                   value={formData.email}
                   onChange={handleInputChange}
                   className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
@@ -476,8 +482,10 @@ const ManageUsers = () => {
                     Initial Authorization Key
                   </label>
                   <input
+                    id="password"
                     type="password"
                     name="password"
+                    title="Initial Authorization Key"
                     value={formData.password}
                     onChange={handleInputChange}
                     className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
@@ -492,7 +500,9 @@ const ManageUsers = () => {
                     Role Priority
                   </label>
                   <select
+                    id="roleName"
                     name="roleName"
+                    title="Role Priority"
                     value={formData.roleName}
                     onChange={handleInputChange}
                     className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none"
@@ -507,7 +517,9 @@ const ManageUsers = () => {
                     Active Status
                   </label>
                   <select
+                    id="status"
                     name="status"
+                    title="Active Status"
                     value={formData.status}
                     onChange={handleInputChange}
                     className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none"

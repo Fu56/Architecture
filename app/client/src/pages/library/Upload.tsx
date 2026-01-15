@@ -264,7 +264,9 @@ const Upload = () => {
                     Phase
                   </label>
                   <select
+                    id="design_stage_id"
                     name="design_stage_id"
+                    title="Phase"
                     value={metadata.design_stage_id}
                     onChange={handleMetaChange}
                     required

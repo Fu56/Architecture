@@ -45,14 +45,18 @@ export const createAssignment = async (req: Request, res: Response) => {
           semester ? { semester: Number(semester) } : {},
         ],
       },
-      select: { id: true },
+      select: { id: true, email: true, first_name: true },
     });
 
     if (targetStudents.length > 0) {
+      const title = "New Assignment Posted";
+      const message = `A new assignment "${assignment.title}" has been published for your academic cycle.`;
+
+      // Internal & Email Notification
       await notifyUsers({
         userIds: targetStudents.map((s) => s.id),
-        title: "New Assignment Posted",
-        message: `A new assignment "${title}" has been published for your academic cycle.`,
+        title,
+        message,
         assignmentId: assignment.id,
       });
     }
@@ -327,10 +331,15 @@ export const approveSubmission = async (req: Request, res: Response) => {
     });
 
     // Notify student
+    const student = submission.student as any;
+    const title = "Submission Approved";
+    const message = `Your submission for "${submission.assignment.title}" has been approved and moved to the Resource Library.`;
+
+    // Internal & Email Notification
     await notifyUsers({
       userIds: [submission.student_id],
-      title: "Submission Approved",
-      message: `Your submission for "${submission.assignment.title}" has been approved and moved to the Resource Library.`,
+      title,
+      message,
       resourceId: resource.id,
     });
 

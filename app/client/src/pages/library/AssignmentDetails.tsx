@@ -344,7 +344,9 @@ const AssignmentDetails = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="relative group">
                 <input
+                  id="submission-file"
                   type="file"
+                  title="Choose your submission file"
                   onChange={(e) =>
                     setSubmissionFile(e.target.files?.[0] || null)
                   }

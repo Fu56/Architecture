@@ -66,3 +66,10 @@ export const getRejectionHtml = (
         <p>You can re-upload the resource after addressing the issues mentioned above.</p>
     `;
 };
+export const getGenericHtml = (title: string, message: string) => {
+  return `
+        <h1>${title}</h1>
+        <p>${message.replace(/\n/g, "<br>")}</p>
+        <p>Access your dashboard for more details.</p>
+    `;
+};
