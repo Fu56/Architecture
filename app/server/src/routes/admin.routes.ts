@@ -7,6 +7,7 @@ import {
   approveResource,
   rejectResource,
   archiveResource,
+  restoreResource,
   getAllUsers,
   manageUserRole,
   getStats,
@@ -31,6 +32,7 @@ router.get("/resources/pending", getPendingResources);
 router.patch("/resources/:id/approve", approveResource);
 router.patch("/resources/:id/reject", rejectResource);
 router.patch("/resources/:id/archive", archiveResource);
+router.patch("/resources/:id/restore", restoreResource);
 
 router.get("/flags", getFlags);
 router.patch("/flags/:id/resolve", resolveFlag);

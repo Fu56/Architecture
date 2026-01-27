@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/db";
+import fs from "fs";
+import path from "path";
 import { notifyUsers, notifyAll } from "../utils/notifier";
 import {
   getApprovalHtml,
@@ -217,13 +219,112 @@ export const getStats = async (req: Request, res: Response) => {
 export const archiveResource = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const resource = await prisma.resource.update({
-      where: { id: Number(id) },
-      data: { archived_at: new Date() },
+    const resourceId = Number(id);
+
+    // 1. Fetch resource to get current file path
+    const resource = await prisma.resource.findUnique({
+      where: { id: resourceId },
     });
-    res.json({ message: "Resource archived", resource });
+
+    if (!resource) {
+      return res.status(404).json({ message: "Resource not found" });
+    }
+
+    let newFilePath = resource.file_path;
+
+    // 2. Move file to archive folder if it exists
+    if (resource.file_path && fs.existsSync(resource.file_path)) {
+      const fileName = path.basename(resource.file_path);
+      const archiveDir = path.join(process.cwd(), "storage", "archive");
+
+      // Ensure directory exists
+      if (!fs.existsSync(archiveDir)) {
+        fs.mkdirSync(archiveDir, { recursive: true });
+      }
+
+      newFilePath = path.join(archiveDir, fileName);
+
+      try {
+        fs.renameSync(resource.file_path, newFilePath);
+      } catch (moveError) {
+        console.error("Failed to move file to archive:", moveError);
+        // Continue even if file move fails? Maybe not.
+        return res
+          .status(500)
+          .json({ message: "Failed to move file to system archive" });
+      }
+    }
+
+    // 3. Update database
+    const updatedResource = await prisma.resource.update({
+      where: { id: resourceId },
+      data: {
+        status: "archived",
+        archived_at: new Date(),
+        file_path: newFilePath,
+      },
+    });
+
+    res.json({
+      message: "Resource archived and stored in system archive",
+      resource: updatedResource,
+    });
   } catch (error) {
+    console.error("Archive Error:", error);
     res.status(500).json({ message: "Error archiving resource" });
+  }
+};
+
+export const restoreResource = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const resourceId = Number(id);
+
+    // 1. Fetch resource
+    const resource = await prisma.resource.findUnique({
+      where: { id: resourceId },
+    });
+
+    if (!resource) {
+      return res.status(404).json({ message: "Resource not found" });
+    }
+
+    let newFilePath = resource.file_path;
+
+    // 2. Move file back to main storage if it's in the archive
+    if (resource.file_path && resource.file_path.includes("archive")) {
+      const fileName = path.basename(resource.file_path);
+      const mainStorageDir = path.join(process.cwd(), "storage");
+
+      newFilePath = path.join(mainStorageDir, fileName);
+
+      try {
+        fs.renameSync(resource.file_path, newFilePath);
+      } catch (moveError) {
+        console.error("Failed to restore file from archive:", moveError);
+        return res
+          .status(500)
+          .json({ message: "Failed to move file back to main storage" });
+      }
+    }
+
+    // 3. Update database
+    const updatedResource = await prisma.resource.update({
+      where: { id: resourceId },
+      data: {
+        status: "student", // Back to live
+        archived_at: null,
+        file_path: newFilePath,
+      },
+    });
+
+    res.json({
+      message: "Resource restored successfully",
+      resource: updatedResource,
+    });
+  } catch (error) {
+    console.error("Restore Error:", error);
+    res.status(500).json({ message: "Error restoring resource" });
   }
 };
 

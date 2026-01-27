@@ -60,8 +60,10 @@ export default function Sidebar({ isOpen, setOpen }: SidebarProps) {
         </Link>
         <Link
           onClick={closeSidebar}
-          className={`block px-3 py-2 rounded ${active("/upload")}`}
-          to="/upload"
+          className={`block px-3 py-2 rounded ${
+            loc.pathname.includes("/upload") ? "bg-gray-100" : ""
+          }`}
+          to={isAdmin ? "/admin/upload" : "/dashboard/upload"}
         >
           Upload
         </Link>

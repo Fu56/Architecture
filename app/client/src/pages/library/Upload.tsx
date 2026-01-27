@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { api } from "../../lib/api";
 import { UploadCloud, Loader2, Sparkles, Shield, Info } from "lucide-react";
 import { toast } from "react-toastify";
@@ -39,6 +39,9 @@ const Upload = () => {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isBaseAdmin = location.pathname.startsWith("/admin");
 
   useEffect(() => {
     if (!isReady) {
@@ -135,7 +138,11 @@ const Upload = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       toast.success("Resource successfully integrated into library matrix");
-      navigate(`/resources/${data.id}`);
+      if (isBaseAdmin) {
+        navigate("/admin/resources");
+      } else {
+        navigate(`/resources/${data.id}`);
+      }
     } catch (err: unknown) {
       const errorMessage = (
         err as { response?: { data?: { message?: string } } }

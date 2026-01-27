@@ -98,9 +98,19 @@ export const listResources = async (req: Request, res: Response) => {
     // If user is Admin, they might want 'pending'.
     // Let's assume this is the public/student list.
     if (status) {
-      where.status = String(status);
+      // Security Check: Only admins can view archived resources
+      if (
+        status === "archived" &&
+        getUserRole(req) !== "Admin" &&
+        getUserRole(req) !== "admin" &&
+        getUserRole(req) !== "SuperAdmin"
+      ) {
+        where.status = "student"; // Force back to public view
+      } else {
+        where.status = String(status);
+      }
     } else {
-      // Default to 'student' status as requested
+      // Default to 'student' status
       where.status = "student";
     }
 
@@ -185,6 +195,16 @@ export const getResource = async (req: Request, res: Response) => {
 
     if (!r) return res.status(404).json({ message: "Resource not found" });
 
+    // Security Check: If archived, only admins can view details
+    const role = getUserRole(req);
+    const isAdmin =
+      role === "Admin" || role === "admin" || role === "SuperAdmin";
+    if (r.status === "archived" && !isAdmin) {
+      return res
+        .status(403)
+        .json({ message: "Access denied: Resource is archived" });
+    }
+
     const formattedResource = {
       id: r.id,
       title: r.title,
@@ -236,6 +256,16 @@ export const downloadResource = async (req: Request, res: Response) => {
     if (!resource)
       return res.status(404).json({ message: "Resource not found" });
 
+    // Security Check: Archived resources only for admins
+    const role = getUserRole(req);
+    const isAdmin =
+      role === "Admin" || role === "admin" || role === "SuperAdmin";
+    if (resource.status === "archived" && !isAdmin) {
+      return res
+        .status(403)
+        .json({ message: "Access denied: Resource is archived" });
+    }
+
     // Increment count
     await prisma.resource.update({
       where: { id: Number(id) },
@@ -259,6 +289,16 @@ export const viewResource = async (req: Request, res: Response) => {
 
     if (!resource)
       return res.status(404).json({ message: "Resource not found" });
+
+    // Security Check: Archived resources only for admins
+    const role = getUserRole(req);
+    const isAdmin =
+      role === "Admin" || role === "admin" || role === "SuperAdmin";
+    if (resource.status === "archived" && !isAdmin) {
+      return res
+        .status(403)
+        .json({ message: "Access denied: Resource is archived" });
+    }
 
     // Send file for viewing in browser (no download header)
     res.sendFile(path.resolve(resource.file_path));
