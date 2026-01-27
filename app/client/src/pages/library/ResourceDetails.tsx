@@ -206,15 +206,15 @@ const ResourceDetails = () => {
 
           <div className="relative z-10">
             <ServerCrash className="h-20 w-20 text-rose-500 mx-auto mb-8 animate-bounce" />
-            <h2 className="text-4xl font-black text-white mb-4 tracking-tighter uppercase">
+            <h2 className="text-3xl font-bold text-white mb-4 tracking-tight uppercase">
               Node Seizure Detected
             </h2>
-            <p className="mt-2 text-slate-400 font-bold uppercase tracking-widest text-sm max-w-md mx-auto leading-relaxed">
+            <p className="mt-2 text-slate-400 font-bold uppercase tracking-widest text-xs max-w-md mx-auto leading-relaxed">
               {error}
             </p>
             <button
               onClick={() => navigate(-1)}
-              className="mt-12 px-12 py-5 bg-white text-slate-950 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-rose-500 hover:text-white transition-all transform active:scale-95 shadow-2xl"
+              className="mt-10 px-8 py-4 bg-white text-slate-950 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-rose-500 hover:text-white transition-all transform active:scale-95 shadow-xl"
             >
               Emergency Extraction
             </button>
@@ -229,32 +229,33 @@ const ResourceDetails = () => {
   return (
     <div
       className={`${
-        isNested ? "" : "max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 py-16"
+        isNested ? "" : "max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-10"
       } animate-in fade-in duration-700`}
     >
       <div className="grid lg:grid-cols-12 gap-12">
         {/* Main Intelligence Content */}
         <div className="lg:col-span-8 space-y-12">
           {/* Header Module */}
-          <div className="bg-white p-10 sm:p-16 rounded-[4rem] shadow-2xl shadow-slate-200/50 border border-slate-100/50 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-bl-[8rem] -translate-y-8 translate-x-8 group-hover:bg-indigo-100 transition-colors duration-700" />
+          <div className="bg-white p-6 sm:p-10 rounded-3xl shadow-xl border border-slate-100/50 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-50 rounded-bl-[4rem] -translate-y-8 translate-x-8 group-hover:bg-indigo-100 transition-colors duration-700" />
 
             <div className="relative z-10">
-              <div className="flex flex-wrap items-center gap-4 mb-10">
+              <div className="flex flex-wrap items-center gap-4 mb-8">
                 <button
                   onClick={() =>
                     isNested ? navigate(-1) : navigate("/browse")
                   }
-                  className="p-3 bg-slate-900 text-white rounded-2xl hover:bg-indigo-600 transition-all active:scale-90"
+                  title="Go Back"
+                  className="p-2.5 bg-slate-900 text-white rounded-xl hover:bg-indigo-600 transition-all active:scale-90"
                 >
                   <ArrowLeft className="h-5 w-5" />
                 </button>
                 <div className="h-px w-8 bg-slate-200" />
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] px-5 py-2 bg-slate-950 text-white rounded-full">
+                <span className="text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 bg-slate-950 text-white rounded-full">
                   {resource.fileType} Protocol
                 </span>
                 <span
-                  className={`text-[10px] font-black uppercase tracking-[0.3em] px-5 py-2 rounded-full flex items-center gap-2 border ${
+                  className={`text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full flex items-center gap-2 border ${
                     resource.status === "student" ||
                     resource.status === "approved"
                       ? "bg-emerald-50 text-emerald-700 border-emerald-100"
@@ -277,34 +278,34 @@ const ResourceDetails = () => {
                 </span>
               </div>
 
-              <h1 className="text-5xl sm:text-7xl font-black text-slate-950 tracking-tighter leading-[0.9] mb-10 max-w-2xl">
+              <h1 className="text-3xl sm:text-4xl font-bold text-slate-950 tracking-tight leading-tight mb-8 max-w-2xl">
                 {resource.title}
               </h1>
 
-              <div className="flex flex-wrap items-center gap-8">
-                <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-[2rem] border border-slate-100 hover:border-indigo-200 transition-colors cursor-default">
-                  <div className="h-14 w-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 shadow-sm">
-                    <User className="h-7 w-7" />
+              <div className="flex flex-wrap items-center gap-6">
+                <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-100 hover:border-indigo-200 transition-colors cursor-default">
+                  <div className="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 shadow-sm">
+                    <User className="h-6 w-6" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">
                       Authority Unit
                     </p>
-                    <p className="text-lg font-black text-slate-900 leading-none">
+                    <p className="text-base font-bold text-slate-900 leading-none">
                       Architect {resource.author}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-[2rem] border border-slate-100">
-                  <div className="h-14 w-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-indigo-500 shadow-sm">
-                    <Calendar className="h-7 w-7" />
+                <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                  <div className="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-indigo-500 shadow-sm">
+                    <Calendar className="h-6 w-6" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">
                       Genesis Date
                     </p>
-                    <p className="text-lg font-black text-slate-900 leading-none">
+                    <p className="text-base font-bold text-slate-900 leading-none">
                       {new Date(resource.uploadedAt).toLocaleDateString()}
                     </p>
                   </div>
@@ -314,17 +315,17 @@ const ResourceDetails = () => {
           </div>
 
           {resource.adminComment && (
-            <div className="p-8 bg-slate-950 rounded-[3rem] text-white relative overflow-hidden shadow-2xl ring-1 ring-white/10">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-600/20 blur-[60px] -translate-y-1/2 translate-x-1/2" />
-              <div className="relative z-10 flex items-start gap-6">
-                <div className="h-14 w-14 shrink-0 bg-white/10 rounded-2xl flex items-center justify-center text-indigo-400 border border-white/10">
-                  <ShieldAlert className="h-8 w-8" />
+            <div className="p-6 bg-slate-950 rounded-3xl text-white relative overflow-hidden shadow-xl ring-1 ring-white/10">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-600/10 blur-[40px] -translate-y-1/2 translate-x-1/2" />
+              <div className="relative z-10 flex items-start gap-5">
+                <div className="h-12 w-12 shrink-0 bg-white/10 rounded-xl flex items-center justify-center text-indigo-400 border border-white/10">
+                  <ShieldAlert className="h-6 w-6" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-3">
+                  <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-2">
                     Operations Directive
                   </p>
-                  <p className="text-lg text-slate-300 italic font-medium leading-relaxed">
+                  <p className="text-base text-slate-300 italic font-medium leading-relaxed">
                     "{resource.adminComment}"
                   </p>
                 </div>
@@ -333,15 +334,15 @@ const ResourceDetails = () => {
           )}
 
           {/* Evaluation Matrix */}
-          <div className="bg-white p-10 rounded-[3.5rem] shadow-xl border border-slate-100 flex flex-wrap items-center justify-between gap-10">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Sparkles className="h-5 w-5 text-amber-500 fill-amber-500" />
-                <h3 className="text-sm font-black text-slate-950 uppercase tracking-[0.2em]">
+          <div className="bg-white p-8 rounded-3xl shadow-lg border border-slate-100 flex flex-wrap items-center justify-between gap-8">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-amber-500 fill-amber-500" />
+                <h3 className="text-xs font-bold text-slate-950 uppercase tracking-widest">
                   Intel Evaluation
                 </h3>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
@@ -349,10 +350,11 @@ const ResourceDetails = () => {
                     onMouseEnter={() => setHoverRating(star)}
                     onMouseLeave={() => setHoverRating(0)}
                     onClick={() => handleRate(star)}
+                    title={`Rate ${star} stars`}
                     className="focus:outline-none transition-all hover:scale-125 group/star"
                   >
                     <Star
-                      className={`h-10 w-10 ${
+                      className={`h-8 w-8 ${
                         (hoverRating ||
                           userRating ||
                           Math.round(averageRating)) >= star
@@ -368,23 +370,23 @@ const ResourceDetails = () => {
             <div className="h-20 w-px bg-slate-100 hidden sm:block" />
 
             <div className="text-right sm:text-left">
-              <div className="flex items-baseline gap-2 mb-1 justify-end sm:justify-start">
-                <span className="text-6xl font-black text-slate-950 tracking-tighter">
+              <div className="flex items-baseline gap-1.5 mb-1 justify-end sm:justify-start">
+                <span className="text-4xl font-bold text-slate-950 tracking-tight">
                   {averageRating.toFixed(1)}
                 </span>
-                <span className="text-xl font-black text-slate-300">/ 5.0</span>
+                <span className="text-lg font-bold text-slate-300">/ 5.0</span>
               </div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 Verified Valuations: {ratingCount}
               </p>
             </div>
           </div>
 
           {/* Content Description */}
-          <div className="bg-white p-12 rounded-[4rem] shadow-xl border border-slate-100">
-            <div className="flex items-center gap-4 mb-10">
-              <div className="h-1 w-12 bg-indigo-600 rounded-full" />
-              <h3 className="text-xl font-black text-slate-950 uppercase tracking-tight">
+          <div className="bg-white p-8 rounded-3xl shadow-lg border border-slate-100">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="h-1 w-10 bg-indigo-600 rounded-full" />
+              <h3 className="text-lg font-bold text-slate-950 uppercase tracking-tight">
                 Technical Abstract
               </h3>
             </div>
@@ -425,7 +427,7 @@ const ResourceDetails = () => {
                 <button
                   type="submit"
                   disabled={submittingComment || !newComment.trim()}
-                  className="px-10 py-5 bg-slate-950 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-[2rem] hover:bg-indigo-600 transition-all shadow-2xl active:scale-95 disabled:opacity-50"
+                  className="px-8 py-4 bg-slate-950 text-white text-[10px] font-bold uppercase tracking-widest rounded-2xl hover:bg-indigo-600 transition-all shadow-xl active:scale-95 disabled:opacity-50"
                 >
                   {submittingComment ? (
                     <Loader2 className="h-4 w-4 animate-spin mx-auto" />
@@ -528,9 +530,9 @@ const ResourceDetails = () => {
                   )}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full h-20 flex justify-center items-center gap-5 bg-indigo-600 text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-[2rem] hover:bg-indigo-500 shadow-2xl shadow-indigo-600/50 transition-all hover:-translate-y-1 active:scale-95"
+                  className="w-full h-16 flex justify-center items-center gap-4 bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-widest rounded-2xl hover:bg-indigo-500 shadow-xl shadow-indigo-600/30 transition-all hover:-translate-y-1 active:scale-95"
                 >
-                  <Download className="h-7 w-7" />
+                  <Download className="h-6 w-6" />
                   Deploy Payload
                 </a>
               </div>

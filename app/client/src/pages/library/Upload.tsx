@@ -156,31 +156,31 @@ const Upload = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="bg-slate-950 rounded-[3rem] p-8 sm:p-12 mb-10 text-white relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/20 blur-[80px] -translate-y-1/2 translate-x-1/2" />
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="bg-slate-950 rounded-3xl p-6 sm:p-10 mb-8 text-white relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/10 blur-[60px] -translate-y-1/2 translate-x-1/2" />
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-600/20 border border-indigo-500/30 rounded-full text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-600/20 border border-indigo-500/30 rounded-full text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-4">
             <Sparkles className="h-3 w-3" /> Digital Archive
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tighter mb-4">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
             Resource Integration
           </h1>
-          <p className="text-white/40 font-bold uppercase tracking-[0.2em] text-xs">
+          <p className="text-white/40 font-bold uppercase tracking-widest text-xs">
             System Upload Protocol Node 04
           </p>
         </div>
       </div>
 
-      <div className="bg-white p-8 sm:p-12 rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100">
-        <form onSubmit={handleSubmit} className="space-y-10">
+      <div className="bg-white p-6 sm:p-10 rounded-3xl shadow-lg border border-slate-100">
+        <form onSubmit={handleSubmit} className="space-y-8">
           {/* File Input */}
           <div className="space-y-4">
-            <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-3">
-              <div className="p-2 bg-slate-950 text-white rounded-xl">01</div>
+            <h3 className="text-lg font-bold text-slate-900 uppercase tracking-tight flex items-center gap-3">
+              <div className="p-2 bg-slate-950 text-white rounded-lg">01</div>
               Select Core Asset
             </h3>
-            <div className="mt-1 flex justify-center px-6 pt-10 pb-10 border-2 border-slate-200 border-dashed rounded-[2rem] bg-slate-50 hover:bg-white hover:border-indigo-400 transition-all group">
+            <div className="mt-1 flex justify-center px-6 pt-10 pb-10 border-2 border-slate-200 border-dashed rounded-2xl bg-slate-50 hover:bg-white hover:border-indigo-400 transition-all group">
               <div className="space-y-2 text-center">
                 <div className="p-4 bg-white rounded-2xl shadow-sm w-fit mx-auto mb-4 group-hover:scale-110 transition-transform">
                   <UploadCloud className="h-8 w-8 text-indigo-600" />
@@ -203,12 +203,12 @@ const Upload = () => {
                   <p className="pl-1 font-medium italic">or drag-and-drop</p>
                 </div>
                 {file ? (
-                  <p className="text-sm text-indigo-600 font-black mt-2 bg-indigo-50 py-2 px-4 rounded-full inline-block">
+                  <p className="text-sm text-indigo-600 font-bold mt-2 bg-indigo-50 py-2 px-4 rounded-full inline-block">
                     {file.name}
                   </p>
                 ) : (
                   <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                    MAX PAYLOAD: 5GB • ARCHITECTURAL SCHEMATICS & MEDIA
+                    MAX PAYLOAD: 5GB • ARCHITECTURAL SCHEMATICS
                   </p>
                 )}
               </div>
@@ -217,8 +217,8 @@ const Upload = () => {
 
           {/* Metadata Input */}
           <div className="space-y-6">
-            <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight flex items-center gap-3">
-              <div className="p-2 bg-slate-950 text-white rounded-xl">02</div>
+            <h3 className="text-lg font-bold text-slate-900 uppercase tracking-tight flex items-center gap-3">
+              <div className="p-2 bg-slate-950 text-white rounded-lg">02</div>
               Asset Metadata
             </h3>
             <div className="grid grid-cols-1 gap-6">
@@ -232,7 +232,7 @@ const Upload = () => {
                   value={metadata.title}
                   onChange={handleMetaChange}
                   required
-                  className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
+                  className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
                 />
               </div>
 
@@ -247,7 +247,7 @@ const Upload = () => {
                     value={metadata.author}
                     onChange={handleMetaChange}
                     required
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
+                    className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
                   />
                 </div>
                 <div className="space-y-1">
@@ -260,7 +260,7 @@ const Upload = () => {
                     value={metadata.keywords}
                     onChange={handleMetaChange}
                     required
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
+                    className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
                   />
                 </div>
               </div>
@@ -277,7 +277,7 @@ const Upload = () => {
                     value={metadata.design_stage_id}
                     onChange={handleMetaChange}
                     required
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all appearance-none cursor-pointer"
+                    className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all appearance-none cursor-pointer"
                   >
                     <option value="" disabled>
                       Select Phase
@@ -300,7 +300,7 @@ const Upload = () => {
                     value={metadata.forYearStudents}
                     onChange={handleMetaChange}
                     required
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
+                    className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
                   />
                 </div>
                 <div className="space-y-1">
@@ -313,7 +313,7 @@ const Upload = () => {
                     placeholder="1-2"
                     value={metadata.semester}
                     onChange={handleMetaChange}
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
+                    className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
                   />
                 </div>
                 <div className="space-y-1">
@@ -326,7 +326,7 @@ const Upload = () => {
                     placeholder="Year"
                     value={metadata.batch}
                     onChange={handleMetaChange}
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
+                    className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
                   />
                 </div>
               </div>
@@ -336,18 +336,18 @@ const Upload = () => {
               userRole === "Admin" ||
               userRole === "SuperAdmin" ||
               userRole === "admin") && (
-              <div className="flex items-center gap-4 bg-indigo-50 p-6 rounded-[1.5rem] border border-indigo-100 shadow-inner">
+              <div className="flex items-center gap-4 bg-indigo-50 p-6 rounded-2xl border border-indigo-100 shadow-inner">
                 <input
                   type="checkbox"
                   name="isPriority"
                   checked={metadata.isPriority}
                   onChange={handleMetaChange}
-                  className="h-6 w-6 text-indigo-600 focus:ring-indigo-500 border-slate-300 rounded-lg cursor-pointer"
+                  className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-slate-300 rounded cursor-pointer"
                   id="priority"
                 />
                 <label
                   htmlFor="priority"
-                  className="font-black text-indigo-900 cursor-pointer select-none text-sm uppercase tracking-tight"
+                  className="font-bold text-indigo-900 cursor-pointer select-none text-sm uppercase tracking-tight"
                 >
                   Authorize as Priority Asset
                   <span className="block text-[10px] text-indigo-600/60 font-bold uppercase tracking-widest mt-1">
@@ -366,7 +366,7 @@ const Upload = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center gap-4 py-5 px-4 bg-slate-950 text-white text-sm font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-indigo-600 transition-all shadow-2xl shadow-slate-900/10 active:scale-95 disabled:opacity-50"
+              className="w-full flex justify-center items-center gap-3 py-4 px-4 bg-slate-950 text-white text-sm font-bold uppercase tracking-widest rounded-xl hover:bg-slate-800 transition-all shadow-lg active:scale-95 disabled:opacity-50"
             >
               {loading ? (
                 <>

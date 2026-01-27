@@ -62,16 +62,16 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
       <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
         {/* Search Bar - Premium Style */}
         <div className="relative flex-grow group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl blur opacity-20 group-focus-within:opacity-40 transition duration-500" />
-          <div className="relative flex items-center bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm group-focus-within:border-indigo-400 group-focus-within:shadow-indigo-500/10 transition-all">
+          <div className="absolute -inset-0.5 bg-indigo-500 rounded-xl blur opacity-10 group-focus-within:opacity-20 transition duration-500" />
+          <div className="relative flex items-center bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm group-focus-within:border-indigo-400 group-focus-within:shadow-indigo-500/5 transition-all">
             <Search className="ml-5 h-5 w-5 text-slate-400" />
             <input
               type="text"
               name="search"
-              placeholder="Search by title, author, or keyword Matrix..."
+              placeholder="Search library matrix..."
               value={filters.search || ""}
               onChange={handleInputChange}
-              className="w-full pl-4 pr-4 py-4 sm:py-5 text-slate-900 placeholder:text-slate-400 font-bold outline-none"
+              className="w-full pl-4 pr-4 py-3.5 text-slate-900 placeholder:text-slate-400 font-bold outline-none"
             />
             {filters.search && (
               <button
@@ -87,9 +87,9 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
         {/* Filter Toggle Button */}
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className={`flex items-center justify-center gap-3 px-8 py-4 sm:py-5 rounded-2xl font-black uppercase tracking-widest text-xs transition-all duration-300 border-2 ${
+          className={`flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl font-bold uppercase tracking-widest text-[10px] transition-all duration-300 border-2 ${
             showFilters || activeFilterCount > 0
-              ? "bg-indigo-600 text-white border-indigo-600 shadow-xl shadow-indigo-600/30"
+              ? "bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/20"
               : "bg-white text-slate-600 border-slate-100 hover:border-indigo-200"
           }`}
         >
@@ -117,29 +117,29 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
         }`}
       >
         <div className="overflow-hidden">
-          <div className="bg-slate-50 border border-slate-100 rounded-3xl p-8 space-y-8">
+          <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
                 Parameter Configuration
               </h3>
               <button
                 onClick={clearFilters}
-                className="text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-700 transition-colors"
+                className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 hover:text-indigo-700 transition-colors"
               >
                 Reset Matrix
               </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">
                   Asset Protocol
                 </label>
                 <select
                   name="fileType"
                   value={filters.fileType || ""}
                   onChange={handleInputChange}
-                  className="w-full px-5 py-4 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer"
                 >
                   <option value="">All Formats</option>
                   {fileTypes.map((type) => (
@@ -150,15 +150,15 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                 </select>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">
                   Design Stage Nexus
                 </label>
                 <select
                   name="stage"
                   value={filters.stage || ""}
                   onChange={handleInputChange}
-                  className="w-full px-5 py-4 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer"
                 >
                   <option value="">All Development Stages</option>
                   {designStages.map((stage) => (
@@ -169,15 +169,15 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                 </select>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">
                   Temporal Alignment
                 </label>
                 <select
                   name="sort"
                   value={filters.sort || ""}
                   onChange={handleInputChange}
-                  className="w-full px-5 py-4 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer"
                 >
                   <option value="">Chronological: Newest First</option>
                   <option value="oldest">Chronological: Archive Access</option>
@@ -195,7 +195,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                     placeholder="Year..."
                     value={filters.year || ""}
                     onChange={handleInputChange}
-                    className="w-full px-5 py-4 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                   <input
                     type="number"
@@ -203,7 +203,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                     placeholder="Sem..."
                     value={filters.semester || ""}
                     onChange={handleInputChange}
-                    className="w-full px-5 py-4 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
               </div>

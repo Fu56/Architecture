@@ -84,9 +84,7 @@ const Resources = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-black text-gray-900">
-            Resource Library
-          </h2>
+          <h2 className="text-xl font-bold text-gray-900">Resource Library</h2>
           <p className="text-sm text-gray-500 font-medium mt-1">
             Browse and manage all approved academic materials.
           </p>
@@ -159,10 +157,10 @@ const Resources = () => {
       ) : (
         <div className="text-center py-20 bg-white rounded-2xl border-2 border-dashed border-gray-200">
           <Library className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-gray-800">
+          <h3 className="text-base font-bold text-gray-800">
             No Resources Found
           </h3>
-          <p className="text-gray-500 text-sm max-w-xs mx-auto mt-1">
+          <p className="text-gray-500 text-xs max-w-xs mx-auto mt-1">
             We couldn't find any resources matching your criteria.
           </p>
         </div>
