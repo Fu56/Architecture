@@ -75,6 +75,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
             />
             {filters.search && (
               <button
+                title="Clear Search"
                 onClick={() => setFilters((prev) => ({ ...prev, search: "" }))}
                 className="mr-4 p-1 hover:bg-slate-100 rounded-full transition-colors"
               >
@@ -137,6 +138,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                 </label>
                 <select
                   name="fileType"
+                  title="File Type Protocol"
                   value={filters.fileType || ""}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer"
@@ -156,6 +158,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                 </label>
                 <select
                   name="stage"
+                  title="Design Stage Nexus"
                   value={filters.stage || ""}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer"
@@ -175,6 +178,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                 </label>
                 <select
                   name="sort"
+                  title="Temporal Alignment Sort"
                   value={filters.sort || ""}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer"

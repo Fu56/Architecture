@@ -6,6 +6,7 @@ import { notifyUsers, notifyAll } from "../utils/notifier";
 import {
   getApprovalHtml,
   getRejectionHtml,
+  getRegistrationHtml,
   getGenericHtml,
 } from "../utils/email";
 
@@ -464,7 +465,7 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
         const hashedPassword = await bcrypt.hash(finalPassword, 10);
 
         // Create user
-        await prisma.user.create({
+        const newUser = await prisma.user.create({
           data: {
             name: `${first_name} ${last_name}`,
             first_name,
@@ -482,6 +483,31 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
                 1000 + Math.random() * 9000
               )}`,
           } as any,
+        });
+
+        // Create Better Auth Account for credentials
+        await (prisma as any).account.create({
+          data: {
+            id: `${newUser.id}_credential`,
+            userId: newUser.id,
+            accountId: email,
+            providerId: "credential",
+            password: hashedPassword,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        });
+
+        // Notify Student
+        await notifyUsers({
+          userIds: [newUser.id],
+          title: "Registration Confirmed",
+          message: `Welcome to the Digital Library! You have been registered successfully.`,
+          html: getRegistrationHtml(
+            `${first_name} ${last_name}`,
+            email,
+            password || finalPassword
+          ),
         });
 
         successCount++;
@@ -556,6 +582,11 @@ export const registerFaculty = async (req: Request, res: Response) => {
     const bcrypt = require("bcryptjs");
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Generate unique ID
+    const univId = `${first_name.charAt(0)}${last_name.charAt(0)}${Math.floor(
+      1000 + Math.random() * 9000
+    )}`.toUpperCase();
+
     const user = await prisma.user.create({
       data: {
         name: `${first_name} ${last_name}`,
@@ -565,10 +596,32 @@ export const registerFaculty = async (req: Request, res: Response) => {
         password: hashedPassword,
         role: { connect: { id: facultyRole.id } },
         status: "active",
+        university_id: univId,
       },
       include: {
         role: true,
       },
+    });
+
+    // Create Better Auth Account for credentials
+    await (prisma as any).account.create({
+      data: {
+        id: `${user.id}_credential`,
+        userId: user.id,
+        accountId: email,
+        providerId: "credential",
+        password: hashedPassword,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    // Notify Faculty member
+    await notifyUsers({
+      userIds: [user.id],
+      title: "Faculty Registration",
+      message: `Welcome to the platform. You have been registered as a Faculty member.`,
+      html: getRegistrationHtml(`${first_name} ${last_name}`, email, password),
     });
 
     // TODO: Store department and specialization if you have a faculty profile table
@@ -609,13 +662,35 @@ export const createUser = async (req: Request, res: Response) => {
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser)
-      return res.status(409).json({ message: "Email already exists" });
+      return res
+        .status(409)
+        .json({ message: "Email already exists in the matrix." });
+
+    if (universityId) {
+      const existingUnivId = await prisma.user.findUnique({
+        where: { university_id: universityId },
+      });
+      if (existingUnivId) {
+        return res.status(409).json({
+          message:
+            "The provided University ID is already assigned to another node.",
+        });
+      }
+    }
 
     const role = await prisma.role.findUnique({ where: { name: roleName } });
-    if (!role) return res.status(404).json({ message: "Role not found" });
+    if (!role)
+      return res.status(404).json({ message: "Requested role not localized." });
 
     const bcrypt = require("bcryptjs");
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Generate unique ID if none provided
+    const finalUnivId =
+      universityId ||
+      `${firstName.charAt(0)}${lastName.charAt(0)}${Math.floor(
+        1000 + Math.random() * 9000
+      )}`.toUpperCase();
 
     const user = await prisma.user.create({
       data: {
@@ -626,11 +701,32 @@ export const createUser = async (req: Request, res: Response) => {
         password: hashedPassword,
         role: { connect: { id: role.id } },
         status: "active",
-        university_id: universityId,
+        university_id: finalUnivId,
         batch: batch ? Number(batch) : null,
         year: year ? Number(year) : null,
         semester: semester ? Number(semester) : null,
       } as any,
+    });
+
+    // Create Better Auth Account for credentials
+    await (prisma as any).account.create({
+      data: {
+        id: `${user.id}_credential`,
+        userId: user.id,
+        accountId: email,
+        providerId: "credential",
+        password: hashedPassword,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    // Notify User
+    await notifyUsers({
+      userIds: [user.id],
+      title: "Account Created",
+      message: `Your account has been created by the administrator.`,
+      html: getRegistrationHtml(`${firstName} ${lastName}`, email, password),
     });
 
     res.status(201).json({ message: "User created successfully", user });
