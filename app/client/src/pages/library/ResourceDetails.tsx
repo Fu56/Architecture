@@ -83,14 +83,14 @@ const ResourceDetails = () => {
         const { data: recentData } = await api.get("/resources?limit=5");
         if (Array.isArray(recentData)) {
           setRecentResources(
-            recentData.filter((r: Resource) => r.id !== Number(id))
+            recentData.filter((r: Resource) => r.id !== Number(id)),
           );
         }
 
         if (data.ratings && data.ratings.length > 0) {
           const sum = data.ratings.reduce(
             (acc: number, r: Rating) => acc + r.rate,
-            0
+            0,
           );
           setAverageRating(sum / data.ratings.length);
           setRatingCount(data.ratings.length);
@@ -99,7 +99,7 @@ const ResourceDetails = () => {
           if (userStr) {
             const currentUser = JSON.parse(userStr);
             const myRating = data.ratings.find(
-              (r: Rating) => r.user_id === currentUser.id
+              (r: Rating) => r.user_id === currentUser.id,
             );
             if (myRating) setUserRating(myRating.rate);
           }
@@ -107,7 +107,7 @@ const ResourceDetails = () => {
       } catch (err) {
         console.error("Failed to fetch resource details:", err);
         setError(
-          "Access Denied: The requested asset node could not be localized or has been neutralized."
+          "Access Denied: The requested asset node could not be localized or has been neutralized.",
         );
       } finally {
         setLoading(false);
@@ -125,7 +125,7 @@ const ResourceDetails = () => {
       await api.post(`/resources/${id}/flag`, { reason: reportReason });
       setReportSuccess(true);
       toast.success(
-        "Security Directive: Breach report transmitted to moderator nexus"
+        "Security Directive: Breach report transmitted to moderator nexus",
       );
       setTimeout(() => {
         setReporting(false);
@@ -154,7 +154,7 @@ const ResourceDetails = () => {
       if (data.ratings && data.ratings.length > 0) {
         const sum = data.ratings.reduce(
           (acc: number, r: Rating) => acc + r.rate,
-          0
+          0,
         );
         setAverageRating(sum / data.ratings.length);
         setRatingCount(data.ratings.length);
@@ -260,8 +260,8 @@ const ResourceDetails = () => {
                     resource.status === "approved"
                       ? "bg-emerald-50 text-emerald-700 border-emerald-100"
                       : resource.status === "pending"
-                      ? "bg-amber-50 text-amber-700 border-amber-100"
-                      : "bg-rose-50 text-rose-700 border-rose-100"
+                        ? "bg-amber-50 text-amber-700 border-amber-100"
+                        : "bg-rose-50 text-rose-700 border-rose-100"
                   }`}
                 >
                   <div
@@ -270,8 +270,8 @@ const ResourceDetails = () => {
                       resource.status === "approved"
                         ? "bg-emerald-500"
                         : resource.status === "pending"
-                        ? "bg-amber-500"
-                        : "bg-rose-500"
+                          ? "bg-amber-500"
+                          : "bg-rose-500"
                     } animate-pulse`}
                   />
                   {resource.status === "student" ? "Verified" : resource.status}
@@ -512,7 +512,7 @@ const ResourceDetails = () => {
                   href={`${
                     import.meta.env.VITE_API_URL
                   }/resources/${id}/view?token=${encodeURIComponent(
-                    localStorage.getItem("token") || ""
+                    localStorage.getItem("token") || "",
                   )}`}
                   target="_blank"
                   rel="noreferrer"
@@ -526,14 +526,14 @@ const ResourceDetails = () => {
                   href={`${
                     import.meta.env.VITE_API_URL
                   }/resources/${id}/download?token=${encodeURIComponent(
-                    localStorage.getItem("token") || ""
+                    localStorage.getItem("token") || "",
                   )}`}
                   target="_blank"
                   rel="noreferrer"
                   className="w-full h-16 flex justify-center items-center gap-4 bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-widest rounded-2xl hover:bg-indigo-500 shadow-xl shadow-indigo-600/30 transition-all hover:-translate-y-1 active:scale-95"
                 >
                   <Download className="h-6 w-6" />
-                  Deploy Payload
+                  Download Resource
                 </a>
               </div>
 

@@ -71,7 +71,7 @@ const Upload = () => {
   };
 
   const handleMetaChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value, type } = e.target;
     const val =
@@ -106,7 +106,7 @@ const Upload = () => {
     const yearNum = parseInt(metadata.forYearStudents);
     if (isNaN(yearNum) || yearNum < 1 || yearNum > 5) {
       toast.warn(
-        "Metadata Breach: Target Student Year must be between 1 and 5."
+        "Metadata Breach: Target Student Year must be between 1 and 5.",
       );
       return;
     }
@@ -148,7 +148,7 @@ const Upload = () => {
         err as { response?: { data?: { message?: string } } }
       ).response?.data?.message;
       toast.error(
-        errorMessage || "Protocol Error: Resource integration failed"
+        errorMessage || "Protocol Error: Resource integration failed",
       );
     } finally {
       setLoading(false);
@@ -190,7 +190,7 @@ const Upload = () => {
                     htmlFor="file-upload"
                     className="relative cursor-pointer font-black text-indigo-600 hover:text-indigo-700 focus-within:outline-none"
                   >
-                    <span>Deploy File</span>
+                    <span>upload File</span>
                     <input
                       id="file-upload"
                       name="file-upload"
@@ -374,7 +374,7 @@ const Upload = () => {
                 </>
               ) : (
                 <>
-                  Integrate Resource
+                  Upload Resource
                   <Sparkles className="h-5 w-5" />
                 </>
               )}

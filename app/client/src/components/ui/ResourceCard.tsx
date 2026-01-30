@@ -106,8 +106,8 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
     ? uploader.firstName && uploader.lastName
       ? `${uploader.firstName} ${uploader.lastName}`
       : uploader.first_name && uploader.last_name
-      ? `${uploader.first_name} ${uploader.last_name}`
-      : "Anonymous Architect"
+        ? `${uploader.first_name} ${uploader.last_name}`
+        : "Anonymous Architect"
     : "Anonymous Architect";
 
   return (
@@ -250,7 +250,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             href={`${
               import.meta.env.VITE_API_URL
             }/resources/${id}/view?token=${encodeURIComponent(
-              localStorage.getItem("token") || ""
+              localStorage.getItem("token") || "",
             )}`}
             target="_blank"
             rel="noreferrer"
@@ -263,13 +263,13 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             href={`${
               import.meta.env.VITE_API_URL
             }/resources/${id}/download?token=${encodeURIComponent(
-              localStorage.getItem("token") || ""
+              localStorage.getItem("token") || "",
             )}`}
             download
             className="flex items-center justify-center gap-2 py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-md active:scale-95 hover:-translate-y-0.5"
           >
             <Download className="h-3.5 w-3.5" />
-            Deploy
+            Download
           </a>
         </div>
       </div>

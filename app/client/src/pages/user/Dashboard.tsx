@@ -16,7 +16,7 @@ import { getUser } from "../../lib/auth";
 
 const dashboardNavLinks = [
   { name: "Terminal", href: "/dashboard", icon: LayoutDashboard, exact: true },
-  { name: "Deploy New", href: "/dashboard/upload", icon: UploadCloud },
+  { name: "Upload New", href: "/dashboard/upload", icon: UploadCloud },
   { name: "Asset Library", href: "/dashboard/resources", icon: Library },
   { name: "Assessments", href: "/dashboard/assignments", icon: BookOpen },
   { name: "My Archives", href: "/dashboard/uploads", icon: Upload },
@@ -38,7 +38,7 @@ const UserDashboard = () => {
     .find((l) =>
       l.exact
         ? location.pathname === l.href
-        : location.pathname.startsWith(l.href)
+        : location.pathname.startsWith(l.href),
     );
 
   const getTitle = () => {

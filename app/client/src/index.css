@@ -75,10 +75,14 @@
   }
 }
 
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
 
 :root {
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-family:
+    "Poppins",
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 h1,
@@ -86,7 +90,7 @@ h2,
 h3,
 h4,
 .font-display {
-  font-family: "Outfit", sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 body {
@@ -127,11 +131,8 @@ body {
 }
 
 .hero-gradient {
-  background: radial-gradient(
-      circle at top right,
-      rgba(99, 102, 241, 0.1),
-      transparent
-    ),
+  background:
+    radial-gradient(circle at top right, rgba(99, 102, 241, 0.1), transparent),
     radial-gradient(
       circle at bottom left,
       rgba(168, 85, 247, 0.05),
@@ -227,7 +228,8 @@ body {
 }
 
 .premium-shadow {
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 20px 40px -15px rgba(0, 0, 0, 0.1),
     0 15px 25px -10px rgba(0, 0, 0, 0.05);
 }
 
@@ -236,21 +238,15 @@ body {
 }
 
 .blueprint-grid {
-  background-image: linear-gradient(
-      to right,
-      rgba(99, 102, 241, 0.05) 1px,
-      transparent 1px
-    ),
+  background-image:
+    linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
 .blueprint-grid-dark {
-  background-image: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0.03) 1px,
-      transparent 1px
-    ),
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
 }
@@ -279,6 +275,15 @@ body {
 
 .group:hover .architect-border::before {
   @apply scale-100;
+}
+
+.architectural-dot-grid {
+  background-image: radial-gradient(
+    circle at 2px 2px,
+    white 1px,
+    transparent 0
+  );
+  background-size: 24px 24px;
 }
 
 ::selection {

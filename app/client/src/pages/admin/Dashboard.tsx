@@ -55,14 +55,7 @@ const AdminDashboard = () => {
           <aside className="w-full lg:w-[280px] lg:sticky lg:top-24 z-30">
             <div className="bg-slate-950 rounded-3xl p-6 shadow-xl relative overflow-hidden ring-1 ring-white/10 flex flex-col h-[calc(100vh-140px)]">
               {/* Architectural Grid Pattern Overlay */}
-              <div
-                className="absolute inset-0 opacity-[0.03] pointer-events-none"
-                style={{
-                  backgroundImage:
-                    "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
-                  backgroundSize: "24px 24px",
-                }}
-              />
+              <div className="absolute inset-0 opacity-[0.03] pointer-events-none architectural-dot-grid" />
               <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-600/10 blur-[60px] -translate-y-1/2 translate-x-1/2" />
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-purple-600/5 blur-[40px] translate-y-1/2 -translate-x-1/2" />
 
