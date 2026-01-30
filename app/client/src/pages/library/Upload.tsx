@@ -12,6 +12,7 @@ const Upload = () => {
     author: "",
     keywords: "",
     design_stage_id: "",
+    customStageName: "",
     forYearStudents: "",
     semester: "",
     batch: "",
@@ -19,6 +20,7 @@ const Upload = () => {
   });
   const [designStages, setDesignStages] = useState<DesignStage[]>([]);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [isReady] = useState(() => {
     return !!localStorage.getItem("token") && !!localStorage.getItem("user");
@@ -63,9 +65,19 @@ const Upload = () => {
 
   if (!isReady) return null;
 
+  const FieldError = ({ message }: { message?: string }) => {
+    if (!message) return null;
+    return (
+      <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest mt-2 ml-2 animate-in fade-in slide-in-from-top-1">
+        {message}
+      </p>
+    );
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
+      setErrors((prev) => ({ ...prev, file: "" }));
       toast.info(`File selected: ${e.target.files[0].name}`);
     }
   };
@@ -77,56 +89,75 @@ const Upload = () => {
     const val =
       type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
     setMetadata({ ...metadata, [name]: val });
+    // Clear error for this field
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const newErrors: Record<string, string> = {};
 
     // Technical Validation Protocol
     if (!file) {
-      toast.warn("Asset Core Missing: Please select a file to transmit.");
-      return;
+      newErrors.file = "Asset Core Missing: Please select a file to transmit.";
     }
 
     if (!metadata.title.trim()) {
-      toast.warn("Protocol Error: Project Title descriptor required.");
-      return;
+      newErrors.title = "Protocol Error: Project Title descriptor required.";
     }
 
     if (!metadata.author.trim()) {
-      toast.warn("Protocol Error: Author Authority must be established.");
-      return;
+      newErrors.author =
+        "Protocol Error: Author Authority must be established.";
     }
 
     if (!metadata.design_stage_id) {
-      toast.warn("Protocol Error: Design Phase sequencing must be defined.");
-      return;
+      newErrors.design_stage_id =
+        "Protocol Error: Design Phase sequencing must be defined.";
+    }
+
+    if (
+      metadata.design_stage_id === "others" &&
+      !metadata.customStageName.trim()
+    ) {
+      newErrors.customStageName =
+        "Protocol Error: Custom Course Name must be established.";
     }
 
     const yearNum = parseInt(metadata.forYearStudents);
     if (isNaN(yearNum) || yearNum < 1 || yearNum > 5) {
-      toast.warn(
-        "Metadata Breach: Target Student Year must be between 1 and 5.",
-      );
-      return;
+      newErrors.forYearStudents =
+        "Metadata Breach: Target Student Year must be between 1 and 5.";
     }
 
     if (metadata.semester) {
       const semNum = parseInt(metadata.semester);
       if (isNaN(semNum) || semNum < 1 || semNum > 2) {
-        toast.warn("Metadata Breach: Academic Semester out of range (1-2).");
-        return;
+        newErrors.semester =
+          "Metadata Breach: Academic Semester out of range (1-2).";
       }
     }
 
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast.error("Validation failed: Please correct the highlighted errors.");
+      return;
+    }
+
     setLoading(true);
+    setErrors({});
 
     const formData = new FormData();
-    formData.append("file", file);
+    if (file) formData.append("file", file);
     formData.append("title", metadata.title);
     formData.append("author", metadata.author);
     formData.append("keywords", metadata.keywords);
     formData.append("design_stage_id", metadata.design_stage_id);
+    if (metadata.design_stage_id === "others") {
+      formData.append("design_stage_name", metadata.customStageName);
+    }
     formData.append("forYearStudents", metadata.forYearStudents);
     if (metadata.semester) formData.append("semester", metadata.semester);
     if (metadata.batch) formData.append("batch", metadata.batch);
@@ -180,10 +211,20 @@ const Upload = () => {
               <div className="p-2 bg-slate-950 text-white rounded-lg">01</div>
               Select Core Asset
             </h3>
-            <div className="mt-1 flex justify-center px-6 pt-10 pb-10 border-2 border-slate-200 border-dashed rounded-2xl bg-slate-50 hover:bg-white hover:border-indigo-400 transition-all group">
+            <div
+              className={`mt-1 flex justify-center px-6 pt-10 pb-10 border-2 ${
+                errors.file
+                  ? "border-rose-300 bg-rose-50/30"
+                  : "border-slate-200"
+              } border-dashed rounded-2xl bg-slate-50 hover:bg-white hover:border-indigo-400 transition-all group relative`}
+            >
               <div className="space-y-2 text-center">
                 <div className="p-4 bg-white rounded-2xl shadow-sm w-fit mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <UploadCloud className="h-8 w-8 text-indigo-600" />
+                  <UploadCloud
+                    className={`h-8 w-8 ${
+                      errors.file ? "text-rose-500" : "text-indigo-600"
+                    }`}
+                  />
                 </div>
                 <div className="flex text-sm text-slate-600 justify-center">
                   <label
@@ -197,7 +238,6 @@ const Upload = () => {
                       type="file"
                       className="sr-only"
                       onChange={handleFileChange}
-                      required
                     />
                   </label>
                   <p className="pl-1 font-medium italic">or drag-and-drop</p>
@@ -211,6 +251,7 @@ const Upload = () => {
                     MAX PAYLOAD: 5GB • ARCHITECTURAL SCHEMATICS
                   </p>
                 )}
+                <FieldError message={errors.file} />
               </div>
             </div>
           </div>
@@ -231,9 +272,13 @@ const Upload = () => {
                   placeholder="e.g. Urban Nexus Schematic"
                   value={metadata.title}
                   onChange={handleMetaChange}
-                  required
-                  className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
+                  className={`w-full px-6 py-3.5 bg-slate-50 border ${
+                    errors.title
+                      ? "border-rose-400 bg-rose-50/20"
+                      : "border-slate-200"
+                  } rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none`}
                 />
+                <FieldError message={errors.title} />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -246,9 +291,13 @@ const Upload = () => {
                     placeholder="Principal Architect"
                     value={metadata.author}
                     onChange={handleMetaChange}
-                    required
-                    className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
+                    className={`w-full px-6 py-3.5 bg-slate-50 border ${
+                      errors.author
+                        ? "border-rose-400 bg-rose-50/20"
+                        : "border-slate-200"
+                    } rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none`}
                   />
+                  <FieldError message={errors.author} />
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">
@@ -259,7 +308,6 @@ const Upload = () => {
                     placeholder="Urban, Design, Matrix"
                     value={metadata.keywords}
                     onChange={handleMetaChange}
-                    required
                     className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
                   />
                 </div>
@@ -273,22 +321,49 @@ const Upload = () => {
                   <select
                     id="design_stage_id"
                     name="design_stage_id"
-                    title="Phase"
+                    title="Course Type"
                     value={metadata.design_stage_id}
                     onChange={handleMetaChange}
-                    required
-                    className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all appearance-none cursor-pointer"
+                    className={`w-full px-6 py-3.5 bg-slate-50 border ${
+                      errors.design_stage_id
+                        ? "border-rose-400 bg-rose-50/20"
+                        : "border-slate-200"
+                    } rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all appearance-none cursor-pointer`}
                   >
                     <option value="" disabled>
-                      Select Phase
+                      Select Course Type
                     </option>
-                    {designStages.map((stage) => (
-                      <option key={stage.id} value={stage.id}>
-                        {stage.name}
-                      </option>
-                    ))}
+                    {designStages
+                      .filter((stage) => stage.name.toLowerCase() !== "others")
+                      .map((stage) => (
+                        <option key={stage.id} value={stage.id}>
+                          {stage.name}
+                        </option>
+                      ))}
+                    <option value="others">Others</option>
                   </select>
+                  <FieldError message={errors.design_stage_id} />
                 </div>
+
+                {metadata.design_stage_id === "others" && (
+                  <div className="space-y-1 sm:col-span-2 lg:col-span-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">
+                      Course Title
+                    </label>
+                    <input
+                      name="customStageName"
+                      placeholder="Enter Course name"
+                      value={metadata.customStageName}
+                      onChange={handleMetaChange}
+                      className={`w-full px-6 py-3.5 bg-indigo-50/50 border ${
+                        errors.customStageName
+                          ? "border-rose-400 bg-rose-50/20"
+                          : "border-indigo-100"
+                      } rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none animate-in fade-in slide-in-from-top-2`}
+                    />
+                    <FieldError message={errors.customStageName} />
+                  </div>
+                )}
                 <div className="space-y-1">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">
                     Target Year
@@ -299,9 +374,13 @@ const Upload = () => {
                     placeholder="1-5"
                     value={metadata.forYearStudents}
                     onChange={handleMetaChange}
-                    required
-                    className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
+                    className={`w-full px-6 py-3.5 bg-slate-50 border ${
+                      errors.forYearStudents
+                        ? "border-rose-400 bg-rose-50/20"
+                        : "border-slate-200"
+                    } rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none`}
                   />
+                  <FieldError message={errors.forYearStudents} />
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">
@@ -313,8 +392,13 @@ const Upload = () => {
                     placeholder="1-2"
                     value={metadata.semester}
                     onChange={handleMetaChange}
-                    className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
+                    className={`w-full px-6 py-3.5 bg-slate-50 border ${
+                      errors.semester
+                        ? "border-rose-400 bg-rose-50/20"
+                        : "border-slate-200"
+                    } rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none`}
                   />
+                  <FieldError message={errors.semester} />
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">

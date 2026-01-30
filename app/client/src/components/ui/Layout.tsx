@@ -64,7 +64,7 @@ const Layout = () => {
         const { data } = await api.get("/notifications");
         if (isMounted && Array.isArray(data)) {
           const unread = data.filter(
-            (n: { is_read: boolean }) => !n.is_read
+            (n: { is_read: boolean }) => !n.is_read,
           ).length;
           setNotificationCount(unread);
         }
@@ -80,7 +80,7 @@ const Layout = () => {
       isMounted = false;
       window.removeEventListener(
         "notificationsUpdated",
-        updateNotificationCount
+        updateNotificationCount,
       );
     };
   }, [session]);
@@ -113,11 +113,11 @@ const Layout = () => {
   };
 
   const navLinks = [
-    { name: "Browse Resource", href: "/browse" },
-    { name: "Explore", href: "/explore" },
-    { name: "About Us", href: "/about" },
-    { name: "Blog", href: "/blog" },
     { name: "News", href: "/news" },
+    { name: "Blog", href: "/blog" },
+    { name: "Explore", href: "/explore" },
+    { name: "Browse Resource", href: "/browse" },
+    { name: "About Us", href: "/about" },
   ];
 
   const isHomePage = location.pathname === "/";
@@ -199,8 +199,8 @@ const Layout = () => {
                           ? "text-indigo-600"
                           : "text-white"
                         : isScrolled || !isHomePage
-                        ? "text-slate-600 hover:text-indigo-600"
-                        : "text-white/70 hover:text-white"
+                          ? "text-slate-600 hover:text-indigo-600"
+                          : "text-white/70 hover:text-white"
                     }`
                   }
                 >

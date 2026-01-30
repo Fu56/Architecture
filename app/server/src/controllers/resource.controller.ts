@@ -22,6 +22,7 @@ export const createResource = async (req: Request, res: Response) => {
       keywords,
       forYearStudents,
       design_stage_id,
+      design_stage_name, // New field for custom stage
       priority_tag,
       batch,
       semester,
@@ -51,6 +52,27 @@ export const createResource = async (req: Request, res: Response) => {
       finalPriorityTag = "Faculty Upload";
     }
 
+    // Handle Custom Design Stage if 'others' was selected
+    let finalStageId =
+      design_stage_id && !isNaN(Number(design_stage_id))
+        ? Number(design_stage_id)
+        : null;
+    if (design_stage_name && design_stage_name.trim()) {
+      const existingStage = await prisma.design_stage.findFirst({
+        where: {
+          name: { equals: design_stage_name.trim(), mode: "insensitive" },
+        },
+      });
+      if (existingStage) {
+        finalStageId = existingStage.id;
+      } else {
+        const newStage = await prisma.design_stage.create({
+          data: { name: design_stage_name.trim() },
+        });
+        finalStageId = newStage.id;
+      }
+    }
+
     const resource = await prisma.resource.create({
       data: {
         title,
@@ -63,7 +85,7 @@ export const createResource = async (req: Request, res: Response) => {
         file_type: file.mimetype, // or extension
         file_size: file.size,
         uploader_id: userId,
-        design_stage_id: design_stage_id ? Number(design_stage_id) : null,
+        design_stage_id: finalStageId,
         status: status,
         priority_tag: finalPriorityTag,
         download_count: 0,
@@ -336,7 +358,7 @@ export const addComment = async (req: Request, res: Response) => {
         title: "New Comment on Your Resource",
         message: `Someone commented on "${resource.title}": "${text.substring(
           0,
-          50
+          50,
         )}..."`,
         resourceId: Number(id),
       });
