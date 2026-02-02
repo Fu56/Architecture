@@ -6,6 +6,7 @@ import {
   createDepartmentHead,
   deleteDepartmentHead,
   updateDepartmentHead,
+  getSystemLogs,
 } from "../controllers/superadmin.controller";
 
 const router = Router();
@@ -16,5 +17,6 @@ router.get("/dept-heads", getDepartmentHeads);
 router.post("/dept-heads", createDepartmentHead);
 router.put("/dept-heads/:id", updateDepartmentHead);
 router.delete("/dept-heads/:id", deleteDepartmentHead);
+router.get("/logs", getSystemLogs);
 
 export default router;

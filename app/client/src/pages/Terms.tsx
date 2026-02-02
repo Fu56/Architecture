@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 const TermsOfService = () => {
   return (
-    <div className="min-h-screen bg-white selection:bg-indigo-100">
+    <div className="min-h-screen bg-white selection:bg-primary/20">
       {/* Minimal High-Tech Header */}
-      <header className="bg-slate-950 pt-32 pb-24 overflow-hidden relative">
+      <header className="bg-[#2A1205] pt-32 pb-24 overflow-hidden relative">
         <div className="absolute inset-0">
           <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_80%,rgba(79,70,229,0.15),transparent_50%)]" />
           <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
@@ -14,22 +14,22 @@ const TermsOfService = () => {
         <div className="max-w-4xl mx-auto px-4 relative z-10 text-center">
           <Link
             to="/"
-            className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 hover:text-indigo-400 mb-12 transition-all group"
+            className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] hover:text-primary/80 mb-12 transition-all group"
           >
             <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-1 transition-transform" />
             Main Nexus
           </Link>
 
-          <div className="inline-flex items-center gap-3 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400 mb-8 border-b-2">
+          <div className="inline-flex items-center gap-3 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 mb-8 border-b-2">
             <Scale className="h-3 w-3" /> Operational Guidelines
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-6 leading-none">
             TERMS OF <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary/80 to-purple-400">
               OPERATION.
             </span>
           </h1>
-          <p className="text-slate-400 font-medium text-lg max-w-2xl mx-auto">
+          <p className="text-gray-500 font-medium text-lg max-w-2xl mx-auto">
             By entering this digital perimeter, you agree to adhere to the
             structural protocols and ethical benchmarks of our design
             collective.
@@ -42,13 +42,13 @@ const TermsOfService = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
           <div
             className="md:col-span-2 prose prose-slate prose-lg max-w-none 
-                        prose-headings:font-black prose-headings:tracking-tight prose-headings:text-slate-900
-                        prose-p:text-slate-600 prose-p:leading-relaxed prose-p:font-medium
-                        prose-strong:text-slate-950 prose-strong:font-black"
+                        prose-headings:font-black prose-headings:tracking-tight prose-headings:text-[#5A270F]
+                        prose-p:text-[#5A270F]/80 prose-p:leading-relaxed prose-p:font-medium
+                        prose-strong:text-[#2A1205] prose-strong:font-black"
           >
             <section className="mb-16">
               <h2 className="text-3xl uppercase tracking-tighter mb-8 flex items-center gap-4">
-                <span className="h-1.5 w-12 bg-indigo-600 rounded-full" />
+                <span className="h-1.5 w-12 bg-primary rounded-full" />
                 01. Nexus Access
               </h2>
               <p>
@@ -62,7 +62,7 @@ const TermsOfService = () => {
 
             <section className="mb-16">
               <h2 className="text-3xl uppercase tracking-tighter mb-8 flex items-center gap-4">
-                <span className="h-1.5 w-12 bg-indigo-600 rounded-full" />
+                <span className="h-1.5 w-12 bg-primary rounded-full" />
                 02. Intellectual Assets
               </h2>
               <p>
@@ -76,7 +76,7 @@ const TermsOfService = () => {
 
             <section className="mb-16">
               <h2 className="text-3xl uppercase tracking-tighter mb-8 flex items-center gap-4">
-                <span className="h-1.5 w-12 bg-indigo-600 rounded-full" />
+                <span className="h-1.5 w-12 bg-primary rounded-full" />
                 03. Conduct Benchmarks
               </h2>
               <p>
@@ -89,7 +89,7 @@ const TermsOfService = () => {
 
             <section className="mb-16">
               <h2 className="text-3xl uppercase tracking-tighter mb-8 flex items-center gap-4">
-                <span className="h-1.5 w-12 bg-indigo-600 rounded-full" />
+                <span className="h-1.5 w-12 bg-primary rounded-full" />
                 04. Liability Clause
               </h2>
               <p>
@@ -102,26 +102,26 @@ const TermsOfService = () => {
 
           {/* Sidebar Stats/Info */}
           <div className="space-y-8">
-            <div className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-100">
-              <ShieldAlert className="h-8 w-8 text-amber-500 mb-6" />
-              <h3 className="text-sm font-black uppercase tracking-widest text-slate-900 mb-2">
+            <div className="bg-[#EFEDED] p-8 rounded-[2.5rem] border border-[#D9D9C2]">
+              <ShieldAlert className="h-8 w-8 text-[#DF8142] mb-6" />
+              <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F] mb-2">
                 Policy Enforcement
               </h3>
-              <p className="text-xs text-slate-500 font-medium leading-relaxed">
+              <p className="text-xs text-[#5A270F] font-medium leading-relaxed">
                 Violations lead to immediate credential suspension.
               </p>
             </div>
-            <div className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-100">
-              <CheckCircle2 className="h-8 w-8 text-emerald-500 mb-6" />
-              <h3 className="text-sm font-black uppercase tracking-widest text-slate-900 mb-2">
+            <div className="bg-[#EFEDED] p-8 rounded-[2.5rem] border border-[#D9D9C2]">
+              <CheckCircle2 className="h-8 w-8 text-[#5A270F] mb-6" />
+              <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F] mb-2">
                 Verified Content
               </h3>
-              <p className="text-xs text-slate-500 font-medium leading-relaxed">
+              <p className="text-xs text-[#5A270F] font-medium leading-relaxed">
                 Top-tier assets undergo faculty validation checks.
               </p>
             </div>
-            <div className="bg-slate-950 p-8 rounded-[2.5rem] shadow-xl shadow-indigo-600/10 text-white">
-              <Zap className="h-8 w-8 text-indigo-400 mb-6" />
+            <div className="bg-[#2A1205] p-8 rounded-[2.5rem] shadow-xl shadow-primary/10 text-white">
+              <Zap className="h-8 w-8 text-primary/80 mb-6" />
               <h3 className="text-sm font-black uppercase tracking-widest mb-2 text-white">
                 Rapid Dispute
               </h3>
@@ -130,7 +130,7 @@ const TermsOfService = () => {
               </p>
               <Link
                 to="/about"
-                className="text-[10px] font-black uppercase tracking-widest text-indigo-400"
+                className="text-[10px] font-black uppercase tracking-widest text-primary/80"
               >
                 Initialize Claim
               </Link>
@@ -140,8 +140,8 @@ const TermsOfService = () => {
       </main>
 
       {/* Footer Termination */}
-      <footer className="py-20 bg-slate-50 border-t border-slate-100 text-center">
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">
+      <footer className="py-20 bg-[#EFEDED] border-t border-[#D9D9C2] text-center">
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">
           End of Terms Protocol Transmission
         </p>
       </footer>

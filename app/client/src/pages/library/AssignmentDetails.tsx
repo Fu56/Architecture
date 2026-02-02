@@ -170,7 +170,7 @@ const AssignmentDetails = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-40">
-        <Loader2 className="h-12 w-12 animate-spin text-indigo-600" />
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     );
   }
@@ -193,7 +193,7 @@ const AssignmentDetails = () => {
     <div className="container mx-auto px-4 py-12 max-w-5xl">
       <Link
         to={`${basePath}/assignments`}
-        className="flex items-center gap-2 text-gray-400 hover:text-indigo-600 font-bold text-sm uppercase tracking-widest mb-10 transition-colors"
+        className="flex items-center gap-2 text-gray-400 hover:text-primary font-bold text-sm uppercase tracking-widest mb-10 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Assignments
@@ -203,7 +203,7 @@ const AssignmentDetails = () => {
         <div className="flex flex-col md:flex-row justify-between items-start gap-8">
           <div className="flex-grow">
             <div className="flex items-center gap-3 mb-6">
-              <span className="px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-full text-xs font-black uppercase tracking-widest border border-indigo-100">
+              <span className="px-4 py-1.5 bg-primary/10 text-primary rounded-full text-xs font-black uppercase tracking-widest border border-primary/20">
                 Brief
               </span>
               {assignment.design_stage && (
@@ -230,7 +230,7 @@ const AssignmentDetails = () => {
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
                   <div className="h-12 w-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-                    <Calendar className="h-6 w-6 text-indigo-600" />
+                    <Calendar className="h-6 w-6 text-primary" />
                   </div>
                   <div>
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
@@ -248,7 +248,7 @@ const AssignmentDetails = () => {
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="h-12 w-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-                    <User className="h-6 w-6 text-indigo-600" />
+                    <User className="h-6 w-6 text-primary" />
                   </div>
                   <div>
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
@@ -262,7 +262,7 @@ const AssignmentDetails = () => {
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="h-12 w-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-                    <Clock className="h-6 w-6 text-indigo-600" />
+                    <Clock className="h-6 w-6 text-primary" />
                   </div>
                   <div>
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
@@ -283,7 +283,7 @@ const AssignmentDetails = () => {
                 }/assignments/${id}/download?token=${encodeURIComponent(
                   localStorage.getItem("token") || ""
                 )}`}
-                className="w-full flex items-center justify-center gap-2 bg-indigo-600 text-white p-5 rounded-3xl font-black text-lg shadow-xl shadow-indigo-600/20 hover:bg-indigo-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full flex items-center justify-center gap-2 bg-primary text-white p-5 rounded-3xl font-black text-lg shadow-xl shadow-primary/20 hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 <Download className="h-6 w-6" />
                 Download Brief
@@ -307,7 +307,7 @@ const AssignmentDetails = () => {
       {isStudent && (
         <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 mb-10">
           <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
-            <Upload className="h-6 w-6 text-indigo-600" />
+            <Upload className="h-6 w-6 text-primary" />
             Submit Your Work
           </h2>
 
@@ -353,8 +353,8 @@ const AssignmentDetails = () => {
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                   disabled={submitting}
                 />
-                <div className="border-2 border-dashed border-gray-200 rounded-[2rem] py-12 text-center group-hover:border-indigo-400 group-hover:bg-indigo-50 transition-all">
-                  <div className="h-16 w-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:text-indigo-600 transition-all">
+                <div className="border-2 border-dashed border-gray-200 rounded-[2rem] py-12 text-center group-hover:border-primary/80 group-hover:bg-primary/10 transition-all">
+                  <div className="h-16 w-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:text-primary transition-all">
                     <Upload className="h-8 w-8 text-gray-400" />
                   </div>
                   <p className="text-lg font-black text-gray-900 mb-1">
@@ -378,7 +378,7 @@ const AssignmentDetails = () => {
               <button
                 type="submit"
                 disabled={!submissionFile || submitting}
-                className="w-full flex justify-center items-center gap-3 py-5 px-10 bg-indigo-600 text-white text-lg font-black rounded-[2rem] shadow-2xl shadow-indigo-600/30 hover:bg-indigo-700 hover:scale-[1.01] transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.99]"
+                className="w-full flex justify-center items-center gap-3 py-5 px-10 bg-primary text-white text-lg font-black rounded-[2rem] shadow-2xl shadow-primary/20 hover:bg-primary/90 hover:scale-[1.01] transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.99]"
               >
                 {submitting ? (
                   <>
@@ -403,7 +403,7 @@ const AssignmentDetails = () => {
         assignment.submissions.length > 0 && (
           <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 mb-10">
             <h2 className="text-2xl font-black text-gray-900 mb-6 flex items-center gap-3">
-              <User className="h-6 w-6 text-indigo-600" />
+              <User className="h-6 w-6 text-primary" />
               Student Submissions
             </h2>
             <div className="space-y-4">
@@ -442,7 +442,7 @@ const AssignmentDetails = () => {
                       }/download?token=${encodeURIComponent(
                         localStorage.getItem("token") || ""
                       )}`}
-                      className="p-3 bg-white text-indigo-600 rounded-xl font-bold shadow-sm hover:bg-indigo-50 border border-gray-100"
+                      className="p-3 bg-white text-primary rounded-xl font-bold shadow-sm hover:bg-primary/10 border border-gray-100"
                       title="Download to Review"
                     >
                       <Download className="h-5 w-5" />
@@ -451,7 +451,7 @@ const AssignmentDetails = () => {
                       <>
                         <button
                           onClick={() => handleApprove(sub.id)}
-                          className="px-4 py-2 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors text-sm"
+                          className="px-4 py-2 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-colors text-sm"
                         >
                           Approve
                         </button>
@@ -470,15 +470,15 @@ const AssignmentDetails = () => {
           </div>
         )}
 
-      <div className="bg-indigo-50 rounded-[2.5rem] p-8 border border-indigo-100 flex items-center gap-6">
-        <div className="h-16 w-16 bg-white rounded-3xl flex items-center justify-center shadow-sm text-indigo-600">
+      <div className="bg-primary/10 rounded-[2.5rem] p-8 border border-primary/20 flex items-center gap-6">
+        <div className="h-16 w-16 bg-white rounded-3xl flex items-center justify-center shadow-sm text-primary">
           <FileText className="h-8 w-8" />
         </div>
         <div>
-          <h3 className="text-xl font-bold text-indigo-900">
+          <h3 className="text-xl font-bold text-[#2A1205]">
             Submission Guidelines
           </h3>
-          <p className="text-indigo-700/70 font-medium">
+          <p className="text-primary/70 font-medium">
             Please follow the instructions above carefully. Submit your work
             before the deadline using the form above.
           </p>

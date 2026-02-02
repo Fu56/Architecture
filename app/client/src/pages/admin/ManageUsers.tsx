@@ -256,10 +256,10 @@ const ManageUsers = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
         <div className="relative">
-          <div className="h-16 w-16 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin" />
-          <Loader2 className="h-8 w-8 text-indigo-600 animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+          <div className="h-16 w-16 border-4 border-[#D9D9C2] border-t-primary rounded-full animate-spin" />
+          <Loader2 className="h-8 w-8 text-primary animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         </div>
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">
+        <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em]">
           Synchronizing Registry...
         </p>
       </div>
@@ -269,28 +269,28 @@ const ManageUsers = () => {
   return (
     <div className="space-y-8">
       {/* Top Controller */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-slate-50 p-6 rounded-[2.5rem] border border-slate-100 shadow-sm">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-[#EFEDED] p-6 rounded-[2.5rem] border border-[#D9D9C2] shadow-sm">
         <div className="relative w-full md:w-96 group">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 group-focus-within:text-primary transition-colors" />
           <input
             type="text"
             placeholder="Search specific user node..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-12 pl-12 pr-6 bg-white border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all"
+            className="w-full h-12 pl-12 pr-6 bg-white border border-[#D9D9C2] rounded-2xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/90 outline-none transition-all"
           />
         </div>
         <div className="flex gap-3 w-full md:w-auto">
           <button
             onClick={() => setIsBroadcastModalOpen(true)}
-            className="flex-1 md:flex-none px-6 py-3 bg-indigo-50 text-indigo-700 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-indigo-600 hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3"
+            className="flex-1 md:flex-none px-6 py-3 bg-primary/10 text-primary/90 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-primary hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3"
           >
             <Zap className="h-4 w-4" />
             Global Broadcast
           </button>
           <button
             onClick={handleOpenCreate}
-            className="flex-1 md:flex-none px-8 py-3 bg-slate-950 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-slate-800 transition-all hover:-translate-y-1 shadow-2xl shadow-slate-950/20 active:scale-95 flex items-center justify-center gap-3"
+            className="flex-1 md:flex-none px-8 py-3 bg-[#2A1205] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#6C3B1C] transition-all hover:-translate-y-1 shadow-2xl shadow-[#2A1205]/20 active:scale-95 flex items-center justify-center gap-3"
           >
             <UserPlus className="h-4 w-4" />
             Initialize Node
@@ -299,11 +299,11 @@ const ManageUsers = () => {
       </div>
 
       {/* User Registry Table */}
-      <div className="bg-white rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-200 overflow-hidden">
+      <div className="bg-white rounded-[3rem] border border-[#D9D9C2] shadow-2xl shadow-slate-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-slate-950">
+              <tr className="bg-[#2A1205]">
                 <th className="px-10 py-6 text-left text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">
                   User Specimen
                 </th>
@@ -330,26 +330,26 @@ const ManageUsers = () => {
                 return (
                   <tr
                     key={user.id}
-                    className="hover:bg-slate-50/50 transition-colors group"
+                    className="hover:bg-[#EFEDED]/50 transition-colors group"
                   >
                     <td className="px-10 py-6 whitespace-nowrap">
                       <div className="flex items-center gap-5">
-                        <div className="h-12 w-12 flex-shrink-0 bg-slate-950 rounded-2xl flex items-center justify-center text-white text-lg font-black shadow-lg group-hover:bg-indigo-600 transition-colors">
+                        <div className="h-12 w-12 flex-shrink-0 bg-[#2A1205] rounded-2xl flex items-center justify-center text-white text-lg font-black shadow-lg group-hover:bg-primary transition-colors">
                           {(user.firstName || user.first_name)?.[0]}
                         </div>
                         <div>
-                          <div className="text-sm font-black text-slate-950">
+                          <div className="text-sm font-black text-[#2A1205]">
                             {user.firstName || user.first_name}{" "}
                             {user.lastName || user.last_name}
                           </div>
-                          <div className="text-xs text-slate-400 font-medium">
+                          <div className="text-xs text-gray-500 font-medium">
                             {user.email}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-8 py-6 whitespace-nowrap">
-                      <span className="text-xs font-mono font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-3 py-1 rounded-lg border border-slate-100">
+                      <span className="text-xs font-mono font-black text-gray-500 uppercase tracking-widest bg-[#EFEDED] px-3 py-1 rounded-lg border border-[#D9D9C2]">
                         {user.university_id ||
                           (user as { universityId?: string }).universityId ||
                           "EXT-NODE"}
@@ -359,10 +359,10 @@ const ManageUsers = () => {
                       <span
                         className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${
                           roleName === "Admin"
-                            ? "bg-purple-50 text-purple-600 border-purple-100"
+                            ? "bg-[#92664A]/5 text-[#5A270F] border-purple-100"
                             : roleName === "Faculty"
-                              ? "bg-indigo-50 text-indigo-600 border-indigo-100"
-                              : "bg-slate-50 text-slate-600 border-slate-100"
+                              ? "bg-primary/10 text-primary border-primary/20"
+                              : "bg-[#EFEDED] text-[#5A270F]/80 border-[#D9D9C2]"
                         }`}
                       >
                         <Shield className="h-3 w-3" />
@@ -374,16 +374,16 @@ const ManageUsers = () => {
                         <div
                           className={`h-1.5 w-1.5 rounded-full ${
                             user.status === "active"
-                              ? "bg-emerald-500 animate-pulse"
+                              ? "bg-[#5A270F] animate-pulse"
                               : user.status === "pending_approval"
-                                ? "bg-amber-500 animate-bounce"
-                                : "bg-rose-500"
+                                ? "bg-[#DF8142] animate-bounce"
+                                : "bg-red-700"
                           }`}
                         />
                         <span
                           className={`text-[10px] font-black uppercase tracking-widest ${
                             user.status === "active"
-                              ? "text-emerald-600"
+                              ? "text-[#2A1205]"
                               : user.status === "pending_approval"
                                 ? "text-amber-600"
                                 : "text-rose-600"
@@ -404,7 +404,7 @@ const ManageUsers = () => {
                             setSelectedUser(user);
                             setIsNotifyModalOpen(true);
                           }}
-                          className="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                          className="p-3 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-xl transition-all"
                           title="Direct Transmission"
                         >
                           <MessageSquare className="h-4 w-4" />
@@ -416,7 +416,7 @@ const ManageUsers = () => {
                             currentRoleName === "SuperAdmin") && (
                             <button
                               onClick={() => handleApprove(user.id)}
-                              className="p-3 text-amber-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all"
+                              className="p-3 text-[#DF8142] hover:text-[#2A1205] hover:bg-[#5A270F]/5 rounded-xl transition-all"
                               title="Authorize Node"
                             >
                               <CheckCircle className="h-4 w-4" />
@@ -431,7 +431,7 @@ const ManageUsers = () => {
                           <>
                             <button
                               onClick={() => handleOpenEdit(user)}
-                              className="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                              className="p-3 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-xl transition-all"
                               title="Configure"
                             >
                               <Edit2 className="h-4 w-4" />
@@ -444,7 +444,7 @@ const ManageUsers = () => {
                             ) && (
                               <button
                                 onClick={() => handleDelete(user.id)}
-                                className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                                className="p-3 text-gray-500 hover:text-rose-600 hover:bg-red-50 rounded-xl transition-all"
                                 title="Terminate"
                               >
                                 <Trash2 className="h-4 w-4" />
@@ -462,10 +462,10 @@ const ManageUsers = () => {
           {filteredUsers.length === 0 && (
             <div className="py-24 text-center">
               <UserIcon className="h-16 w-16 text-slate-100 mx-auto mb-6" />
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">
+              <h3 className="text-xl font-black text-[#5A270F] tracking-tight">
                 No Specimen Detected
               </h3>
-              <p className="text-xs text-slate-400 font-medium mt-2">
+              <p className="text-xs text-gray-500 font-medium mt-2">
                 The registry contains no matching user nodes.
               </p>
             </div>
@@ -477,14 +477,14 @@ const ManageUsers = () => {
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-slate-950/40 backdrop-blur-xl animate-in fade-in duration-500"
+            className="absolute inset-0 bg-[#2A1205]/40 backdrop-blur-xl animate-in fade-in duration-500"
             onClick={() => setIsModalOpen(false)}
           />
           <div className="relative w-full max-w-2xl bg-white rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
-            <div className="bg-slate-950 px-10 py-10 relative overflow-hidden group/modal">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/20 blur-[80px] transition-all group-hover/modal:bg-indigo-600/30" />
+            <div className="bg-[#2A1205] px-10 py-10 relative overflow-hidden group/modal">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[80px] transition-all group-hover/modal:bg-primary/30" />
               <div className="relative z-10">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400 mb-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 mb-2">
                   Registry Update
                 </p>
                 <h3 className="text-3xl font-black text-white leading-tight">
@@ -498,7 +498,7 @@ const ManageUsers = () => {
             <form onSubmit={handleSubmit} className="p-10 space-y-8">
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
                     First Identifier
                   </label>
                   <input
@@ -507,12 +507,12 @@ const ManageUsers = () => {
                     title="First Identifier"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
+                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
                     Last Identifier
                   </label>
                   <input
@@ -521,14 +521,14 @@ const ManageUsers = () => {
                     title="Last Identifier"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
+                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
                     required
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
                   Communication Frequency (Email)
                 </label>
                 <input
@@ -538,14 +538,14 @@ const ManageUsers = () => {
                   title="Communication Frequency (Email)"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
+                  className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
                   required
                 />
               </div>
 
               {modalMode === "create" && (
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
                     Initial Authorization Key
                   </label>
                   <input
@@ -555,7 +555,7 @@ const ManageUsers = () => {
                     title="Initial Authorization Key"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all outline-none"
+                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
                     required={modalMode === "create"}
                   />
                 </div>
@@ -563,7 +563,7 @@ const ManageUsers = () => {
 
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
                     Role Priority
                   </label>
                   <select
@@ -572,7 +572,7 @@ const ManageUsers = () => {
                     title="Role Priority"
                     value={formData.roleName}
                     onChange={handleInputChange}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none"
+                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none appearance-none"
                   >
                     <option value="Student">Student Node</option>
                     <option value="Faculty">Faculty Node</option>
@@ -585,7 +585,7 @@ const ManageUsers = () => {
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
                     Active Status
                   </label>
                   <select
@@ -594,7 +594,7 @@ const ManageUsers = () => {
                     title="Active Status"
                     value={formData.status}
                     onChange={handleInputChange}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none"
+                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none appearance-none"
                   >
                     <option value="active">Protocol: Active</option>
                     <option value="inactive">Protocol: Suspended</option>
@@ -606,14 +606,14 @@ const ManageUsers = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-8 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-slate-950 transition-colors"
+                  className="px-8 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-[#2A1205] transition-colors"
                 >
                   Abort
                 </button>
                 <button
                   type="submit"
                   disabled={processing}
-                  className="px-10 py-3 bg-slate-950 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-indigo-600 transition-all shadow-xl disabled:opacity-50"
+                  className="px-10 py-3 bg-[#2A1205] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-primary transition-all shadow-xl disabled:opacity-50"
                 >
                   {processing ? (
                     <Loader2 className="h-4 w-4 animate-spin mx-auto" />
@@ -633,13 +633,13 @@ const ManageUsers = () => {
       {isNotifyModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-slate-950/40 backdrop-blur-xl animate-in fade-in duration-500"
+            className="absolute inset-0 bg-[#2A1205]/40 backdrop-blur-xl animate-in fade-in duration-500"
             onClick={() => setIsNotifyModalOpen(false)}
           />
           <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
-            <div className="bg-slate-950 px-10 py-8 relative overflow-hidden">
+            <div className="bg-[#2A1205] px-10 py-8 relative overflow-hidden">
               <div className="relative z-10">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400 mb-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 mb-2">
                   Communication Protocol
                 </p>
                 <h3 className="text-2xl font-black text-white leading-tight">
@@ -650,14 +650,14 @@ const ManageUsers = () => {
 
             <form onSubmit={handleNotifySubmit} className="p-10 space-y-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
                   Briefing Headline
                 </label>
                 <input
                   type="text"
                   required
                   placeholder="Intel objective..."
-                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm font-bold outline-none focus:ring-2 focus:ring-primary/20"
                   value={notifyData.title}
                   onChange={(e) =>
                     setNotifyData({ ...notifyData, title: e.target.value })
@@ -666,14 +666,14 @@ const ManageUsers = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
                   Narrative Payload
                 </label>
                 <textarea
                   required
                   rows={4}
                   placeholder="Critical intelligence summary..."
-                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 resize-none"
+                  className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-none"
                   value={notifyData.message}
                   onChange={(e) =>
                     setNotifyData({ ...notifyData, message: e.target.value })
@@ -685,14 +685,14 @@ const ManageUsers = () => {
                 <button
                   type="button"
                   onClick={() => setIsNotifyModalOpen(false)}
-                  className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-950"
+                  className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-[#2A1205]"
                 >
                   Abort
                 </button>
                 <button
                   type="submit"
                   disabled={processing}
-                  className="px-8 py-2.5 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/30 flex items-center gap-2"
+                  className="px-8 py-2.5 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
                 >
                   {processing ? (
                     <Loader2 className="h-3 w-3 animate-spin" />
@@ -713,11 +713,11 @@ const ManageUsers = () => {
       {isBroadcastModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-slate-950/40 backdrop-blur-xl animate-in fade-in duration-500"
+            className="absolute inset-0 bg-[#2A1205]/40 backdrop-blur-xl animate-in fade-in duration-500"
             onClick={() => setIsBroadcastModalOpen(false)}
           />
           <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
-            <div className="bg-indigo-600 px-10 py-8 relative overflow-hidden">
+            <div className="bg-primary px-10 py-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-[50px]" />
               <div className="relative z-10">
                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/60 mb-2">
@@ -731,14 +731,14 @@ const ManageUsers = () => {
 
             <form onSubmit={handleBroadcastSubmit} className="p-10 space-y-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
                   Relay Headline
                 </label>
                 <input
                   type="text"
                   required
                   placeholder="Universal objective..."
-                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm font-bold outline-none focus:ring-2 focus:ring-primary/20"
                   value={notifyData.title}
                   onChange={(e) =>
                     setNotifyData({ ...notifyData, title: e.target.value })
@@ -747,14 +747,14 @@ const ManageUsers = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
                   Broadcast Payload
                 </label>
                 <textarea
                   required
                   rows={4}
                   placeholder="Distribute intelligence to all active nodes..."
-                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500/20 resize-none"
+                  className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-none"
                   value={notifyData.message}
                   onChange={(e) =>
                     setNotifyData({ ...notifyData, message: e.target.value })
@@ -766,14 +766,14 @@ const ManageUsers = () => {
                 <button
                   type="button"
                   onClick={() => setIsBroadcastModalOpen(false)}
-                  className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-950"
+                  className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-[#2A1205]"
                 >
                   Abort
                 </button>
                 <button
                   type="submit"
                   disabled={processing}
-                  className="px-8 py-2.5 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/30 flex items-center gap-2"
+                  className="px-8 py-2.5 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
                 >
                   {processing ? (
                     <Loader2 className="h-3 w-3 animate-spin" />

@@ -68,7 +68,7 @@ const Upload = () => {
   const FieldError = ({ message }: { message?: string }) => {
     if (!message) return null;
     return (
-      <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest mt-2 ml-2 animate-in fade-in slide-in-from-top-1">
+      <p className="text-[10px] font-bold text-red-700 uppercase tracking-widest mt-2 ml-2 animate-in fade-in slide-in-from-top-1">
         {message}
       </p>
     );
@@ -188,10 +188,10 @@ const Upload = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <div className="bg-slate-950 rounded-3xl p-6 sm:p-10 mb-8 text-white relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/10 blur-[60px] -translate-y-1/2 translate-x-1/2" />
+      <div className="bg-[#2A1205] rounded-3xl p-6 sm:p-10 mb-8 text-white relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[60px] -translate-y-1/2 translate-x-1/2" />
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-600/20 border border-indigo-500/30 rounded-full text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/20 border border-primary/30 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary/80 mb-4">
             <Sparkles className="h-3 w-3" /> Digital Archive
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
@@ -203,33 +203,33 @@ const Upload = () => {
         </div>
       </div>
 
-      <div className="bg-white p-6 sm:p-10 rounded-3xl shadow-lg border border-slate-100">
+      <div className="bg-white p-6 sm:p-10 rounded-3xl shadow-lg border border-[#D9D9C2]">
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* File Input */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-slate-900 uppercase tracking-tight flex items-center gap-3">
-              <div className="p-2 bg-slate-950 text-white rounded-lg">01</div>
+            <h3 className="text-lg font-bold text-[#5A270F] uppercase tracking-tight flex items-center gap-3">
+              <div className="p-2 bg-[#2A1205] text-white rounded-lg">01</div>
               Select Core Asset
             </h3>
             <div
               className={`mt-1 flex justify-center px-6 pt-10 pb-10 border-2 ${
                 errors.file
-                  ? "border-rose-300 bg-rose-50/30"
-                  : "border-slate-200"
-              } border-dashed rounded-2xl bg-slate-50 hover:bg-white hover:border-indigo-400 transition-all group relative`}
+                  ? "border-rose-300 bg-red-50/30"
+                  : "border-[#D9D9C2]"
+              } border-dashed rounded-2xl bg-[#EFEDED] hover:bg-white hover:border-primary/80 transition-all group relative`}
             >
               <div className="space-y-2 text-center">
                 <div className="p-4 bg-white rounded-2xl shadow-sm w-fit mx-auto mb-4 group-hover:scale-110 transition-transform">
                   <UploadCloud
                     className={`h-8 w-8 ${
-                      errors.file ? "text-rose-500" : "text-indigo-600"
+                      errors.file ? "text-red-700" : "text-primary"
                     }`}
                   />
                 </div>
-                <div className="flex text-sm text-slate-600 justify-center">
+                <div className="flex text-sm text-[#5A270F]/80 justify-center">
                   <label
                     htmlFor="file-upload"
-                    className="relative cursor-pointer font-black text-indigo-600 hover:text-indigo-700 focus-within:outline-none"
+                    className="relative cursor-pointer font-black text-primary hover:text-primary/90 focus-within:outline-none"
                   >
                     <span>upload File</span>
                     <input
@@ -243,11 +243,11 @@ const Upload = () => {
                   <p className="pl-1 font-medium italic">or drag-and-drop</p>
                 </div>
                 {file ? (
-                  <p className="text-sm text-indigo-600 font-bold mt-2 bg-indigo-50 py-2 px-4 rounded-full inline-block">
+                  <p className="text-sm text-primary font-bold mt-2 bg-primary/10 py-2 px-4 rounded-full inline-block">
                     {file.name}
                   </p>
                 ) : (
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
                     MAX PAYLOAD: 5GB • ARCHITECTURAL SCHEMATICS
                   </p>
                 )}
@@ -258,13 +258,13 @@ const Upload = () => {
 
           {/* Metadata Input */}
           <div className="space-y-6">
-            <h3 className="text-lg font-bold text-slate-900 uppercase tracking-tight flex items-center gap-3">
-              <div className="p-2 bg-slate-950 text-white rounded-lg">02</div>
+            <h3 className="text-lg font-bold text-[#5A270F] uppercase tracking-tight flex items-center gap-3">
+              <div className="p-2 bg-[#2A1205] text-white rounded-lg">02</div>
               Asset Metadata
             </h3>
             <div className="grid grid-cols-1 gap-6">
               <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">
                   Project Title
                 </label>
                 <input
@@ -272,18 +272,18 @@ const Upload = () => {
                   placeholder="e.g. Urban Nexus Schematic"
                   value={metadata.title}
                   onChange={handleMetaChange}
-                  className={`w-full px-6 py-3.5 bg-slate-50 border ${
+                  className={`w-full px-6 py-3.5 bg-[#EFEDED] border ${
                     errors.title
-                      ? "border-rose-400 bg-rose-50/20"
-                      : "border-slate-200"
-                  } rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none`}
+                      ? "border-rose-400 bg-red-50/20"
+                      : "border-[#D9D9C2]"
+                  } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none`}
                 />
                 <FieldError message={errors.title} />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">
                     Author Authority
                   </label>
                   <input
@@ -291,16 +291,16 @@ const Upload = () => {
                     placeholder="Principal Architect"
                     value={metadata.author}
                     onChange={handleMetaChange}
-                    className={`w-full px-6 py-3.5 bg-slate-50 border ${
+                    className={`w-full px-6 py-3.5 bg-[#EFEDED] border ${
                       errors.author
-                        ? "border-rose-400 bg-rose-50/20"
-                        : "border-slate-200"
-                    } rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none`}
+                        ? "border-rose-400 bg-red-50/20"
+                        : "border-[#D9D9C2]"
+                    } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none`}
                   />
                   <FieldError message={errors.author} />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">
                     Search Tags
                   </label>
                   <input
@@ -308,14 +308,14 @@ const Upload = () => {
                     placeholder="Urban, Design, Matrix"
                     value={metadata.keywords}
                     onChange={handleMetaChange}
-                    className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
+                    className="w-full px-6 py-3.5 bg-[#EFEDED] border border-[#D9D9C2] rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">
                     Phase
                   </label>
                   <select
@@ -324,11 +324,11 @@ const Upload = () => {
                     title="Course Type"
                     value={metadata.design_stage_id}
                     onChange={handleMetaChange}
-                    className={`w-full px-6 py-3.5 bg-slate-50 border ${
+                    className={`w-full px-6 py-3.5 bg-[#EFEDED] border ${
                       errors.design_stage_id
-                        ? "border-rose-400 bg-rose-50/20"
-                        : "border-slate-200"
-                    } rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all appearance-none cursor-pointer`}
+                        ? "border-rose-400 bg-red-50/20"
+                        : "border-[#D9D9C2]"
+                    } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all appearance-none cursor-pointer`}
                   >
                     <option value="" disabled>
                       Select Course Type
@@ -347,7 +347,7 @@ const Upload = () => {
 
                 {metadata.design_stage_id === "others" && (
                   <div className="space-y-1 sm:col-span-2 lg:col-span-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">
                       Course Title
                     </label>
                     <input
@@ -355,17 +355,17 @@ const Upload = () => {
                       placeholder="Enter Course name"
                       value={metadata.customStageName}
                       onChange={handleMetaChange}
-                      className={`w-full px-6 py-3.5 bg-indigo-50/50 border ${
+                      className={`w-full px-6 py-3.5 bg-primary/50 border ${
                         errors.customStageName
-                          ? "border-rose-400 bg-rose-50/20"
-                          : "border-indigo-100"
-                      } rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none animate-in fade-in slide-in-from-top-2`}
+                          ? "border-rose-400 bg-red-50/20"
+                          : "border-primary/20"
+                      } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none animate-in fade-in slide-in-from-top-2`}
                     />
                     <FieldError message={errors.customStageName} />
                   </div>
                 )}
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">
                     Target Year
                   </label>
                   <input
@@ -374,16 +374,16 @@ const Upload = () => {
                     placeholder="1-5"
                     value={metadata.forYearStudents}
                     onChange={handleMetaChange}
-                    className={`w-full px-6 py-3.5 bg-slate-50 border ${
+                    className={`w-full px-6 py-3.5 bg-[#EFEDED] border ${
                       errors.forYearStudents
-                        ? "border-rose-400 bg-rose-50/20"
-                        : "border-slate-200"
-                    } rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none`}
+                        ? "border-rose-400 bg-red-50/20"
+                        : "border-[#D9D9C2]"
+                    } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none`}
                   />
                   <FieldError message={errors.forYearStudents} />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">
                     Semester
                   </label>
                   <input
@@ -392,16 +392,16 @@ const Upload = () => {
                     placeholder="1-2"
                     value={metadata.semester}
                     onChange={handleMetaChange}
-                    className={`w-full px-6 py-3.5 bg-slate-50 border ${
+                    className={`w-full px-6 py-3.5 bg-[#EFEDED] border ${
                       errors.semester
-                        ? "border-rose-400 bg-rose-50/20"
-                        : "border-slate-200"
-                    } rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none`}
+                        ? "border-rose-400 bg-red-50/20"
+                        : "border-[#D9D9C2]"
+                    } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none`}
                   />
                   <FieldError message={errors.semester} />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">
                     Batch Node
                   </label>
                   <input
@@ -410,7 +410,7 @@ const Upload = () => {
                     placeholder="Year"
                     value={metadata.batch}
                     onChange={handleMetaChange}
-                    className="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
+                    className="w-full px-6 py-3.5 bg-[#EFEDED] border border-[#D9D9C2] rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none"
                   />
                 </div>
               </div>
@@ -420,26 +420,26 @@ const Upload = () => {
               userRole === "Admin" ||
               userRole === "SuperAdmin" ||
               userRole === "admin") && (
-              <div className="flex items-center gap-4 bg-indigo-50 p-6 rounded-2xl border border-indigo-100 shadow-inner">
+              <div className="flex items-center gap-4 bg-primary/10 p-6 rounded-2xl border border-primary/20 shadow-inner">
                 <input
                   type="checkbox"
                   name="isPriority"
                   checked={metadata.isPriority}
                   onChange={handleMetaChange}
-                  className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-slate-300 rounded cursor-pointer"
+                  className="h-5 w-5 text-primary focus:ring-primary/90 border-slate-300 rounded cursor-pointer"
                   id="priority"
                 />
                 <label
                   htmlFor="priority"
-                  className="font-bold text-indigo-900 cursor-pointer select-none text-sm uppercase tracking-tight"
+                  className="font-bold text-[#2A1205] cursor-pointer select-none text-sm uppercase tracking-tight"
                 >
                   Authorize as Priority Asset
-                  <span className="block text-[10px] text-indigo-600/60 font-bold uppercase tracking-widest mt-1">
+                  <span className="block text-[10px] text-primary/60 font-bold uppercase tracking-widest mt-1">
                     Featured at system peak
                   </span>
                 </label>
                 <div className="ml-auto">
-                  <Shield className="h-6 w-6 text-indigo-400 opacity-30" />
+                  <Shield className="h-6 w-6 text-primary/80 opacity-30" />
                 </div>
               </div>
             )}
@@ -450,7 +450,7 @@ const Upload = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center gap-3 py-4 px-4 bg-slate-950 text-white text-sm font-bold uppercase tracking-widest rounded-xl hover:bg-slate-800 transition-all shadow-lg active:scale-95 disabled:opacity-50"
+              className="w-full flex justify-center items-center gap-3 py-4 px-4 bg-[#2A1205] text-white text-sm font-bold uppercase tracking-widest rounded-xl hover:bg-[#6C3B1C] transition-all shadow-lg active:scale-95 disabled:opacity-50"
             >
               {loading ? (
                 <>
@@ -463,7 +463,7 @@ const Upload = () => {
                 </>
               )}
             </button>
-            <div className="mt-6 flex items-center justify-center gap-2 text-slate-400">
+            <div className="mt-6 flex items-center justify-center gap-2 text-gray-500">
               <Info className="h-4 w-4" />
               <p className="text-[10px] font-bold uppercase tracking-widest italic">
                 All uploads require faculty matrix validation

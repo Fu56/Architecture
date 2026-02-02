@@ -140,11 +140,11 @@ const Layout = () => {
     : "/dashboard/notifications";
 
   return (
-    <div className="min-h-screen flex flex-col font-sans selection:bg-indigo-100 selection:text-indigo-900">
+    <div className="min-h-screen flex flex-col font-sans selection:bg-primary/20 selection:text-[#2A1205]">
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-in-out ${
           isScrolled
-            ? "bg-white/80 backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.06)] border-b border-indigo-50/50 py-3"
+            ? "bg-white/80 backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.06)] border-b border-primary/50 py-3"
             : `${
                 isHomePage
                   ? "bg-transparent py-6"
@@ -160,7 +160,7 @@ const Layout = () => {
                 <div
                   className={`relative p-2.5 rounded-2xl transition-all duration-500 overflow-hidden ${
                     isScrolled || !isHomePage
-                      ? "bg-indigo-600 shadow-[0_12px_24px_-6px_rgba(79,70,229,0.5)]"
+                      ? "bg-primary shadow-[0_12px_24px_-6px_rgba(79,70,229,0.5)]"
                       : "bg-white/10 backdrop-blur-md border border-white/30"
                   }`}
                 >
@@ -173,17 +173,17 @@ const Layout = () => {
                   <span
                     className={`text-2xl font-black tracking-tighter leading-none transition-all duration-500 font-display ${
                       isScrolled || !isHomePage
-                        ? "text-slate-900 group-hover:text-indigo-600"
+                        ? "text-[#5A270F] group-hover:text-primary"
                         : "text-white group-hover:scale-105"
                     }`}
                   >
                     ARCH
-                    <span className="text-indigo-500 ml-0.5">VAULT</span>
+                    <span className="text-primary/90 ml-0.5">VAULT</span>
                   </span>
                   <span
                     className={`text-[9px] font-black tracking-[0.3em] uppercase transition-all duration-500 ${
                       isScrolled || !isHomePage
-                        ? "text-slate-400"
+                        ? "text-gray-500"
                         : "text-white/70"
                     }`}
                   >
@@ -203,10 +203,10 @@ const Layout = () => {
                     `relative px-5 py-2.5 rounded-full text-[13px] font-black uppercase tracking-widest transition-all duration-500 group/nav ${
                       isActive
                         ? isScrolled || !isHomePage
-                          ? "text-indigo-600"
+                          ? "text-primary"
                           : "text-white"
                         : isScrolled || !isHomePage
-                          ? "text-slate-600 hover:text-indigo-600"
+                          ? "text-[#5A270F]/80 hover:text-primary"
                           : "text-white/70 hover:text-white"
                     }`
                   }
@@ -218,13 +218,13 @@ const Layout = () => {
                         <div
                           className={`absolute inset-0 rounded-full -z-0 transition-all duration-500 ${
                             isScrolled || !isHomePage
-                              ? "bg-indigo-50 shadow-inner shadow-indigo-100/50"
+                              ? "bg-primary/10 shadow-inner shadow-primary/50"
                               : "bg-white/20 backdrop-blur-lg"
                           }`}
                         />
                       )}
                       {!isActive && (
-                        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-indigo-500 rounded-full transition-all duration-300 group-hover/nav:w-4 opacity-0 group-hover/nav:opacity-100" />
+                        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary/90 rounded-full transition-all duration-300 group-hover/nav:w-4 opacity-0 group-hover/nav:opacity-100" />
                       )}
                     </>
                   )}
@@ -240,8 +240,8 @@ const Layout = () => {
                   to="/dashboard/upload"
                   className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-105 ${
                     isScrolled || !isHomePage
-                      ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-600/30"
-                      : "bg-white text-indigo-600 hover:bg-gray-50 shadow-lg"
+                      ? "bg-primary text-white hover:bg-primary/90 shadow-lg shadow-primary/20"
+                      : "bg-white text-primary hover:bg-gray-50 shadow-lg"
                   }`}
                 >
                   <Upload className="h-4 w-4" />
@@ -276,12 +276,12 @@ const Layout = () => {
                       onClick={() => setUserMenuOpen(!isUserMenuOpen)}
                       className={`flex items-center gap-2 p-1.5 pr-3 rounded-full border transition-all ${
                         isScrolled || !isHomePage
-                          ? "border-gray-200 hover:border-indigo-300 hover:bg-indigo-50"
+                          ? "border-gray-200 hover:border-primary/60 hover:bg-primary/10"
                           : "border-white/20 hover:border-white/40 hover:bg-white/10"
                       }`}
                     >
-                      <div className="relative h-9 w-9 rounded-full overflow-hidden border-2 border-indigo-500">
-                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-500">
+                      <div className="relative h-9 w-9 rounded-full overflow-hidden border-2 border-primary/90">
+                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/90 to-[#92664A]">
                           <User className="h-5 w-5 text-white" />
                         </div>
                       </div>
@@ -320,12 +320,12 @@ const Layout = () => {
 
                     {/* User Dropdown Menu - Premium Architectural Style */}
                     {isUserMenuOpen && (
-                      <div className="absolute right-0 mt-4 w-72 bg-white/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] border border-white p-3 py-4 animate-in fade-in slide-in-from-top-4 duration-500 z-[100] ring-1 ring-slate-900/5">
+                      <div className="absolute right-0 mt-4 w-72 bg-white/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] border border-white p-3 py-4 animate-in fade-in slide-in-from-top-4 duration-500 z-[100] ring-1 ring-[#5A270F]/5">
                         {/* Menu Header */}
-                        <div className="px-5 py-6 mb-2 mx-2 rounded-[2rem] bg-slate-950 relative overflow-hidden group/header">
-                          <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-600/20 blur-[50px] transition-all group-hover/header:bg-indigo-600/40" />
+                        <div className="px-5 py-6 mb-2 mx-2 rounded-[2rem] bg-[#2A1205] relative overflow-hidden group/header">
+                          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[50px] transition-all group-hover/header:bg-primary/40" />
                           <div className="relative z-10">
-                            <p className="text-xs font-black uppercase tracking-[0.25em] text-indigo-400 mb-2">
+                            <p className="text-xs font-black uppercase tracking-[0.25em] text-primary/80 mb-2">
                               System Access
                             </p>
                             <p className="text-lg font-black text-white leading-none tracking-tight">
@@ -342,9 +342,9 @@ const Layout = () => {
                           <Link
                             to={dashboardPath}
                             onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-slate-600 hover:text-indigo-600 hover:bg-slate-50 rounded-2xl transition-all group/item"
+                            className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F]/80 hover:text-primary hover:bg-[#EFEDED] rounded-2xl transition-all group/item"
                           >
-                            <div className="p-2 bg-slate-50 rounded-xl group-hover/item:bg-indigo-600 group-hover/item:text-white transition-all">
+                            <div className="p-2 bg-[#EFEDED] rounded-xl group-hover/item:bg-primary group-hover/item:text-white transition-all">
                               <LayoutDashboard className="h-4 w-4" />
                             </div>
                             Personal Console
@@ -354,9 +354,9 @@ const Layout = () => {
                             <Link
                               to="/admin"
                               onClick={() => setUserMenuOpen(false)}
-                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-indigo-600 bg-indigo-50/50 hover:bg-indigo-600 hover:text-white rounded-2xl transition-all group/item"
+                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-primary bg-primary/50 hover:bg-primary hover:text-white rounded-2xl transition-all group/item"
                             >
-                              <div className="p-2 bg-white rounded-xl shadow-sm text-indigo-600 group-hover/item:bg-indigo-500 group-hover/item:text-white transition-all">
+                              <div className="p-2 bg-white rounded-xl shadow-sm text-primary group-hover/item:bg-primary/90 group-hover/item:text-white transition-all">
                                 <ShieldCheck className="h-4 w-4" />
                               </div>
                               Admin Command Center
@@ -367,9 +367,9 @@ const Layout = () => {
                             <Link
                               to="/super-admin"
                               onClick={() => setUserMenuOpen(false)}
-                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-purple-600 bg-purple-50/50 hover:bg-purple-600 hover:text-white rounded-2xl transition-all group/item"
+                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F] bg-[#92664A]/5/50 hover:bg-[#5A270F] hover:text-white rounded-2xl transition-all group/item"
                             >
-                              <div className="p-2 bg-white rounded-xl shadow-sm text-purple-600 group-hover/item:bg-purple-500 group-hover/item:text-white transition-all">
+                              <div className="p-2 bg-white rounded-xl shadow-sm text-[#5A270F] group-hover/item:bg-[#92664A] group-hover/item:text-white transition-all">
                                 <ShieldAlert className="h-4 w-4" />
                               </div>
                               Super Architect Console
@@ -379,9 +379,9 @@ const Layout = () => {
                           <Link
                             to="/dashboard/profile"
                             onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-slate-600 hover:text-indigo-600 hover:bg-slate-50 rounded-2xl transition-all group/item"
+                            className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F]/80 hover:text-primary hover:bg-[#EFEDED] rounded-2xl transition-all group/item"
                           >
-                            <div className="p-2 bg-slate-50 rounded-xl group-hover/item:bg-indigo-600 group-hover/item:text-white transition-all">
+                            <div className="p-2 bg-[#EFEDED] rounded-xl group-hover/item:bg-primary group-hover/item:text-white transition-all">
                               <Settings className="h-4 w-4" />
                             </div>
                             System Settings
@@ -407,8 +407,8 @@ const Layout = () => {
                       to="/login"
                       className={`px-6 py-2.5 text-sm font-black tracking-tight rounded-full shadow-lg transition-all duration-300 hover:scale-[1.05] active:scale-[0.95] ${
                         isScrolled || !isHomePage
-                          ? "bg-indigo-600 text-white shadow-indigo-600/30 hover:bg-indigo-700"
-                          : "bg-white text-indigo-600 hover:bg-gray-50 shadow-white/20"
+                          ? "bg-primary text-white shadow-primary/20 hover:bg-primary/90"
+                          : "bg-white text-primary hover:bg-gray-50 shadow-white/20"
                       }`}
                     >
                       Sign In
@@ -445,7 +445,7 @@ const Layout = () => {
           >
             <div className="container mx-auto px-6 py-12 space-y-8">
               <div className="flex flex-col gap-2">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500 px-4">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/90 px-4">
                   Navigation
                 </span>
                 {navLinks.map((link) => (
@@ -456,7 +456,7 @@ const Layout = () => {
                     className={({ isActive }) =>
                       `px-4 py-4 rounded-2xl text-2xl font-black tracking-tight transition-all ${
                         isActive
-                          ? "text-indigo-600 bg-indigo-50"
+                          ? "text-primary bg-primary/10"
                           : "text-gray-900"
                       }`
                     }
@@ -493,7 +493,7 @@ const Layout = () => {
                     <Link
                       to="/login"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="w-full py-5 text-center font-black text-white bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-600/20"
+                      className="w-full py-5 text-center font-black text-white bg-primary rounded-2xl shadow-xl shadow-primary/20"
                     >
                       Sign In
                     </Link>

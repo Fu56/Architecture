@@ -95,14 +95,14 @@ const Resources = () => {
               onClick={() => setShowArchived(!showArchived)}
               className={`px-4 py-2 rounded-xl text-sm font-bold transition-all border ${
                 showArchived
-                  ? "bg-slate-900 text-white border-slate-900"
-                  : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
+                  ? "bg-[#5A270F] text-white border-[#5A270F]"
+                  : "bg-white text-[#5A270F]/80 border-[#D9D9C2] hover:border-slate-300"
               }`}
             >
               {showArchived ? "Show Active" : "Show Archived"}
             </button>
           )}
-          <div className="flex items-center gap-2 px-4 py-2 bg-indigo-50 rounded-xl text-indigo-700 text-sm font-bold border border-indigo-100">
+          <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-xl text-primary/90 text-sm font-bold border border-primary/20">
             <Library className="h-4 w-4" />
             {resources.length}{" "}
             {resources.length === 1 ? "Resource" : "Resources"}
@@ -114,7 +114,7 @@ const Resources = () => {
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20">
-          <Loader2 className="h-10 w-10 animate-spin text-indigo-600 mb-4" />
+          <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
           <p className="text-gray-500 font-medium">
             Fetching library resources...
           </p>
@@ -135,7 +135,7 @@ const Resources = () => {
                   {showArchived ? (
                     <button
                       onClick={() => handleRestore(resource.id)}
-                      className="p-2 bg-emerald-500 text-white rounded-lg shadow-lg hover:bg-emerald-600 transition-colors"
+                      className="p-2 bg-[#5A270F] text-white rounded-lg shadow-lg hover:bg-[#5A270F] transition-colors"
                       title="Restore Resource"
                     >
                       <RotateCcw className="h-4 w-4" />

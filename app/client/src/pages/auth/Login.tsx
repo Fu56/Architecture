@@ -98,7 +98,7 @@ const Login = () => {
       <div className="w-full max-w-md">
         <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
           <div className="text-center mb-10">
-            <div className="mx-auto w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6 text-indigo-600 shadow-inner">
+            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 text-primary shadow-inner">
               <LogIn className="h-8 w-8" />
             </div>
             <h2 className="text-4xl font-black text-gray-900 tracking-tight">
@@ -117,7 +117,7 @@ const Login = () => {
                   type="email"
                   autoComplete="email"
                   required
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 font-bold placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
+                  className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 font-bold placeholder-gray-400 focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none"
                   placeholder="Studio email address"
                   value={form.email}
                   onChange={handleChange}
@@ -130,7 +130,7 @@ const Login = () => {
                   type="password"
                   autoComplete="current-password"
                   required
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 font-bold placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:bg-white transition-all outline-none"
+                  className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 font-bold placeholder-gray-400 focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none"
                   placeholder="Account password"
                   value={form.password}
                   onChange={handleChange}
@@ -142,7 +142,7 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center items-center gap-2 py-5 px-4 bg-slate-950 text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-600 transition-all shadow-xl shadow-slate-900/10 active:scale-95 disabled:opacity-50"
+                className="w-full flex justify-center items-center gap-2 py-5 px-4 bg-[#2A1205] text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-primary transition-all shadow-xl shadow-[#5A270F]/10 active:scale-95 disabled:opacity-50"
               >
                 {loading ? "Authenticating..." : "Establish Access"}
               </button>

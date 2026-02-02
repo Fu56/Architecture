@@ -31,7 +31,7 @@ const Assignments = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
-        <Loader2 className="h-10 w-10 animate-spin text-indigo-600" />
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
       </div>
     );
   }
@@ -50,7 +50,7 @@ const Assignments = () => {
         {(role === "Admin" || role === "Faculty" || role === "SuperAdmin") && (
           <Link
             to={`${basePath}/assignments/new`}
-            className="flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
+            className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/40"
           >
             <Plus className="h-5 w-5" />
             Post Assignment
@@ -77,7 +77,7 @@ const Assignments = () => {
               className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all group"
             >
               <div className="flex items-start justify-between mb-4">
-                <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                <div className="p-3 bg-primary/10 text-primary rounded-2xl group-hover:bg-primary group-hover:text-white transition-colors">
                   <FileText className="h-6 w-6" />
                 </div>
                 {assignment.due_date && (
@@ -90,7 +90,7 @@ const Assignments = () => {
                   </span>
                 )}
               </div>
-              <h2 className="text-xl font-black text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors line-clamp-2">
+              <h2 className="text-xl font-black text-gray-900 mb-2 group-hover:text-primary transition-colors line-clamp-2">
                 {assignment.title}
               </h2>
               <p className="text-gray-500 text-sm line-clamp-3 mb-6 font-medium leading-relaxed">
@@ -111,7 +111,7 @@ const Assignments = () => {
                     </p>
                   </div>
                 </div>
-                <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-indigo-600 transition-colors group-hover:translate-x-1" />
+                <ChevronRight className="h-5 w-5 text-gray-300 group-hover:text-primary transition-colors group-hover:translate-x-1" />
               </div>
             </Link>
           ))}

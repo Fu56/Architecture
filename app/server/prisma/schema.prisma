@@ -39,6 +39,7 @@ model User {
     assignments   Assignment[]
     submissions   Submission[]
     blogs         Blog[]
+    systemLogs    SystemLog[]
 
     @@map("user")
 }
@@ -253,3 +254,17 @@ model News {
 }
 
 
+
+model SystemLog {
+    id          Int      @id @default(autoincrement())
+    action      String
+    entity      String?
+    entityId    String?
+    details     String?
+    actor       User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+    actorId     String?
+    ipAddress   String?
+    createdAt   DateTime @default(now())
+
+    @@map("system_log")
+}

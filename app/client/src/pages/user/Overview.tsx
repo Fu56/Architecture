@@ -9,13 +9,13 @@ const Overview = () => {
 
   return (
     <div className="space-y-8 bg-white/50 p-4 rounded-xl">
-      <h2 className="text-xl font-bold bg-indigo-500 text-white p-2">
+      <h2 className="text-xl font-bold bg-primary/90 text-white p-2">
         DASHBOARD CONTENT IS HERE
       </h2>
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-8 text-white shadow-xl">
+      <div className="bg-gradient-to-r from-primary/90 to-[#5A270F] rounded-2xl p-8 text-white shadow-xl">
         <h2 className="text-3xl font-bold mb-2">Welcome back, {name}!</h2>
-        <p className="text-indigo-100 max-w-xl">
+        <p className="text-primary/20 max-w-xl">
           Track your resource contributions, manage your profile, and stay
           updated with the latest notifications.
         </p>
@@ -25,7 +25,7 @@ const Overview = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 bg-blue-50 text-blue-600 rounded-lg">
+            <div className="p-3 bg-primary/10 text-primary rounded-lg">
               <Upload className="h-6 w-6" />
             </div>
             <div>
@@ -35,7 +35,7 @@ const Overview = () => {
           </div>
           <Link
             to="/dashboard/upload"
-            className="text-blue-600 font-semibold text-sm hover:underline"
+            className="text-primary font-semibold text-sm hover:underline"
           >
             Share a resource &rarr;
           </Link>
@@ -61,7 +61,7 @@ const Overview = () => {
 
         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 bg-purple-50 text-purple-600 rounded-lg">
+            <div className="p-3 bg-[#92664A]/5 text-[#5A270F] rounded-lg">
               <Clock className="h-6 w-6" />
             </div>
             <div>
@@ -71,7 +71,7 @@ const Overview = () => {
           </div>
           <Link
             to="/dashboard/notifications"
-            className="text-purple-600 font-semibold text-sm hover:underline"
+            className="text-[#5A270F] font-semibold text-sm hover:underline"
           >
             Check updates &rarr;
           </Link>

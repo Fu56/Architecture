@@ -90,7 +90,7 @@ const ResourceApprovalCard = ({
             </p>
             <p>
               Design Stage:{" "}
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#EEB38C]/20 text-[#5A270F]">
                 {resource.designStage?.name || "Unspecified"}
               </span>
             </p>
@@ -110,7 +110,7 @@ const ResourceApprovalCard = ({
           placeholder="Add a comment or rejection reason (optional)..."
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          className="w-full text-sm p-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="w-full text-sm p-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/90"
           rows={2}
         />
         <div className="flex justify-end gap-3 mt-3">
@@ -122,7 +122,7 @@ const ResourceApprovalCard = ({
             )}`}
             target="_blank"
             rel="noreferrer"
-            className="px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-50 rounded-md hover:bg-indigo-100 border border-transparent flex items-center gap-1"
+            className="px-4 py-2 text-sm font-medium text-primary/90 bg-primary/10 rounded-md hover:bg-primary/20 border border-transparent flex items-center gap-1"
           >
             Review Resource
           </a>
@@ -134,7 +134,7 @@ const ResourceApprovalCard = ({
           </button>
           <button
             onClick={() => onApprove(resource.id, comment)}
-            className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 shadow-sm"
+            className="px-4 py-2 text-sm font-medium text-white bg-[#2A1205] rounded-md hover:bg-[#2A1205]/90 shadow-sm"
           >
             Approve
           </button>

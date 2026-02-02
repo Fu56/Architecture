@@ -27,6 +27,7 @@ import AdminRoute from "./routes/AdminRoute";
 import SuperAdminRoute from "./routes/SuperAdminRoute";
 import SuperAdminDashboard from "./pages/superadmin/Dashboard";
 import ManageDeptHeads from "./pages/superadmin/ManageDeptHeads";
+import SystemLogs from "./pages/superadmin/SystemLogs";
 import BlogDetails from "./pages/library/BlogDetails";
 import PostBlog from "./pages/library/PostBlog";
 import Privacy from "./pages/Privacy"; // Added
@@ -108,6 +109,7 @@ const App = () => {
               <Route index element={<Navigate to="dept-heads" replace />} />
               <Route path="dept-heads" element={<ManageDeptHeads />} />
               <Route path="analytics" element={<Analytics />} />
+              <Route path="logs" element={<SystemLogs />} />
               <Route path="system-stats" element={<Analytics />} />{" "}
               {/* Placeholder to Analytics */}
             </Route>

@@ -120,7 +120,7 @@ const PostAssignment = () => {
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       <Link
         to={`${basePath}/assignments`}
-        className="inline-flex items-center gap-2 text-gray-400 hover:text-indigo-600 font-bold text-sm uppercase tracking-widest mb-10 transition-colors"
+        className="inline-flex items-center gap-2 text-gray-400 hover:text-primary font-bold text-sm uppercase tracking-widest mb-10 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Assignments
@@ -149,7 +149,7 @@ const PostAssignment = () => {
                   placeholder="e.g. Master Plan Urban Project - Phase 1"
                   value={metadata.title}
                   onChange={handleMetaChange}
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-gray-900 placeholder:text-gray-300"
+                  className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900 placeholder:text-gray-300"
                 />
               </div>
 
@@ -165,7 +165,7 @@ const PostAssignment = () => {
                   title="Due Date & Time"
                   value={metadata.due_date}
                   onChange={handleMetaChange}
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-gray-900"
+                  className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900"
                 />
               </div>
 
@@ -180,7 +180,7 @@ const PostAssignment = () => {
                     title="Target Academic Year"
                     value={metadata.academic_year}
                     onChange={handleMetaChange}
-                    className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-gray-900"
+                    className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900"
                   >
                     <option value="">Year</option>
                     {[1, 2, 3, 4, 5].map((y) => (
@@ -195,7 +195,7 @@ const PostAssignment = () => {
                     title="Academic Semester"
                     value={metadata.semester}
                     onChange={handleMetaChange}
-                    className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-gray-900"
+                    className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900"
                   >
                     <option value="">Semester</option>
                     {[1, 2].map((s) => (
@@ -217,7 +217,7 @@ const PostAssignment = () => {
                   title="Design Stage"
                   value={metadata.design_stage_id}
                   onChange={handleMetaChange}
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-gray-900"
+                  className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900"
                 >
                   <option value="">Select Stage</option>
                   {designStages.map((stage) => (
@@ -240,7 +240,7 @@ const PostAssignment = () => {
                   value={metadata.description}
                   onChange={handleMetaChange}
                   rows={8}
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-gray-900 placeholder:text-gray-300 resize-none"
+                  className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900 placeholder:text-gray-300 resize-none"
                 />
               </div>
             </div>
@@ -258,8 +258,8 @@ const PostAssignment = () => {
                 onChange={handleFileChange}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
               />
-              <div className="border-2 border-dashed border-gray-200 rounded-[2.5rem] py-12 text-center group-hover:border-indigo-400 group-hover:bg-indigo-50 transition-all">
-                <div className="h-16 w-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:text-indigo-600 transition-all">
+              <div className="border-2 border-dashed border-gray-200 rounded-[2.5rem] py-12 text-center group-hover:border-primary/80 group-hover:bg-primary/10 transition-all">
+                <div className="h-16 w-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:text-primary transition-all">
                   <UploadCloud className="h-8 w-8 text-gray-400" />
                 </div>
                 <p className="text-lg font-black text-gray-900 mb-1">
@@ -275,7 +275,7 @@ const PostAssignment = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex justify-center items-center gap-3 py-6 px-10 bg-indigo-600 text-white text-xl font-black rounded-[2rem] shadow-2xl shadow-indigo-600/30 hover:bg-indigo-700 hover:scale-[1.01] transition-all disabled:opacity-50 active:scale-[0.99]"
+            className="w-full flex justify-center items-center gap-3 py-6 px-10 bg-primary text-white text-xl font-black rounded-[2rem] shadow-2xl shadow-primary/20 hover:bg-primary/90 hover:scale-[1.01] transition-all disabled:opacity-50 active:scale-[0.99]"
           >
             {loading ? (
               <Loader2 className="h-8 w-8 animate-spin" />

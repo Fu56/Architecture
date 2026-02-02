@@ -273,15 +273,15 @@ const RegisterFaculty = () => {
 
         {/* Live ID Preview */}
         <div className="lg:col-span-5 sticky top-10">
-          <Card className="bg-slate-950 text-white border-slate-800 shadow-xl overflow-hidden relative">
-            <div className="absolute top-0 right-0 p-24 opacity-10 blur-3xl bg-indigo-500 rounded-full pointer-events-none" />
+          <Card className="bg-[#2A1205] text-white border-[#6C3B1C] shadow-xl overflow-hidden relative">
+            <div className="absolute top-0 right-0 p-24 opacity-10 blur-3xl bg-primary/90 rounded-full pointer-events-none" />
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div className="h-10 w-10 bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center">
-                  <Award className="h-5 w-5 text-indigo-400" />
+                  <Award className="h-5 w-5 text-primary/80" />
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] uppercase tracking-wider text-indigo-400 font-bold">
+                  <p className="text-[10px] uppercase tracking-wider text-primary/80 font-bold">
                     Access Level
                   </p>
                   <p className="text-lg font-bold tracking-widest text-white">
@@ -292,7 +292,7 @@ const RegisterFaculty = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="text-center space-y-2">
-                <div className="h-24 w-24 bg-gradient-to-br from-indigo-500 to-purple-600 mx-auto rounded-xl flex items-center justify-center text-3xl font-bold shadow-lg border-2 border-slate-900">
+                <div className="h-24 w-24 bg-gradient-to-br from-primary/90 to-[#5A270F] mx-auto rounded-xl flex items-center justify-center text-3xl font-bold shadow-lg border-2 border-[#5A270F]">
                   {formData.first_name?.[0] || formData.last_name?.[0] || "?"}
                 </div>
                 <div>
@@ -300,7 +300,7 @@ const RegisterFaculty = () => {
                     {formData.first_name || "Faculty"}{" "}
                     {formData.last_name || "Member"}
                   </h3>
-                  <p className="text-xs text-slate-400 font-mono">
+                  <p className="text-xs text-gray-500 font-mono">
                     {formData.email || "ID: PENDING"}
                   </p>
                 </div>
@@ -308,15 +308,15 @@ const RegisterFaculty = () => {
 
               <div className="space-y-3">
                 <div className="bg-white/5 rounded-lg p-3 border border-white/5">
-                  <p className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+                  <p className="text-[10px] uppercase tracking-wider text-[#5A270F] font-bold">
                     Department
                   </p>
-                  <p className="text-sm font-medium text-indigo-200">
+                  <p className="text-sm font-medium text-primary/40">
                     {formData.department || "N/A"}
                   </p>
                 </div>
                 <div className="bg-white/5 rounded-lg p-3 border border-white/5">
-                  <p className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+                  <p className="text-[10px] uppercase tracking-wider text-[#5A270F] font-bold">
                     Specialization
                   </p>
                   <p className="text-sm font-medium text-purple-200">
@@ -335,15 +335,15 @@ const RegisterFaculty = () => {
             </CardFooter>
           </Card>
 
-          <Card className="mt-6 bg-indigo-50/50 border-indigo-100">
+          <Card className="mt-6 bg-primary/50 border-primary/20">
             <CardContent className="p-6">
               <div className="flex items-start gap-3">
-                <Zap className="h-5 w-5 text-indigo-600 mt-0.5" />
+                <Zap className="h-5 w-5 text-primary mt-0.5" />
                 <div>
-                  <h4 className="text-sm font-semibold text-indigo-900">
+                  <h4 className="text-sm font-semibold text-[#2A1205]">
                     Privileged Access
                   </h4>
-                  <p className="text-xs text-indigo-700 mt-1">
+                  <p className="text-xs text-primary/90 mt-1">
                     Faculty nodes handle assignment creation and resource
                     validation.
                   </p>

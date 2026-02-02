@@ -189,8 +189,8 @@ const ResourceDetails = () => {
   if (loading) {
     return (
       <div className="flex flex-col justify-center items-center py-40 animate-pulse">
-        <Loader2 className="h-16 w-16 animate-spin text-indigo-600 mb-6" />
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">
+        <Loader2 className="h-16 w-16 animate-spin text-primary mb-6" />
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500">
           Synchronizing with Matrix...
         </p>
       </div>
@@ -200,21 +200,21 @@ const ResourceDetails = () => {
   if (error) {
     return (
       <div className={`${isNested ? "" : "container mx-auto px-4"} py-24`}>
-        <div className="bg-slate-950 p-20 rounded-[3rem] text-center border border-white/10 shadow-3xl relative overflow-hidden">
+        <div className="bg-[#2A1205] p-20 rounded-[3rem] text-center border border-white/10 shadow-3xl relative overflow-hidden">
           <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(244,63,94,0.1),transparent_50%)]" />
 
           <div className="relative z-10">
-            <ServerCrash className="h-20 w-20 text-rose-500 mx-auto mb-8 animate-bounce" />
+            <ServerCrash className="h-20 w-20 text-red-700 mx-auto mb-8 animate-bounce" />
             <h2 className="text-3xl font-bold text-white mb-4 tracking-tight uppercase">
               Node Seizure Detected
             </h2>
-            <p className="mt-2 text-slate-400 font-bold uppercase tracking-widest text-xs max-w-md mx-auto leading-relaxed">
+            <p className="mt-2 text-gray-500 font-bold uppercase tracking-widest text-xs max-w-md mx-auto leading-relaxed">
               {error}
             </p>
             <button
               onClick={() => navigate(-1)}
-              className="mt-10 px-8 py-4 bg-white text-slate-950 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-rose-500 hover:text-white transition-all transform active:scale-95 shadow-xl"
+              className="mt-10 px-8 py-4 bg-white text-[#2A1205] rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-red-700 hover:text-white transition-all transform active:scale-95 shadow-xl"
             >
               Emergency Extraction
             </button>
@@ -236,8 +236,8 @@ const ResourceDetails = () => {
         {/* Main Intelligence Content */}
         <div className="lg:col-span-8 space-y-12">
           {/* Header Module */}
-          <div className="bg-white p-6 sm:p-10 rounded-3xl shadow-xl border border-slate-100/50 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-50 rounded-bl-[4rem] -translate-y-8 translate-x-8 group-hover:bg-indigo-100 transition-colors duration-700" />
+          <div className="bg-white p-6 sm:p-10 rounded-3xl shadow-xl border border-[#D9D9C2]/50 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/10 rounded-bl-[4rem] -translate-y-8 translate-x-8 group-hover:bg-primary/20 transition-colors duration-700" />
 
             <div className="relative z-10">
               <div className="flex flex-wrap items-center gap-4 mb-8">
@@ -246,66 +246,66 @@ const ResourceDetails = () => {
                     isNested ? navigate(-1) : navigate("/browse")
                   }
                   title="Go Back"
-                  className="p-2.5 bg-slate-900 text-white rounded-xl hover:bg-indigo-600 transition-all active:scale-90"
+                  className="p-2.5 bg-[#5A270F] text-white rounded-xl hover:bg-primary transition-all active:scale-90"
                 >
                   <ArrowLeft className="h-5 w-5" />
                 </button>
                 <div className="h-px w-8 bg-slate-200" />
-                <span className="text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 bg-slate-950 text-white rounded-full">
+                <span className="text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 bg-[#2A1205] text-white rounded-full">
                   {resource.fileType} Protocol
                 </span>
                 <span
                   className={`text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full flex items-center gap-2 border ${
                     resource.status === "student" ||
                     resource.status === "approved"
-                      ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                      ? "bg-[#5A270F]/5 text-emerald-700 border-emerald-100"
                       : resource.status === "pending"
                         ? "bg-amber-50 text-amber-700 border-amber-100"
-                        : "bg-rose-50 text-rose-700 border-rose-100"
+                        : "bg-red-50 text-rose-700 border-rose-100"
                   }`}
                 >
                   <div
                     className={`h-2 w-2 rounded-full ${
                       resource.status === "student" ||
                       resource.status === "approved"
-                        ? "bg-emerald-500"
+                        ? "bg-[#5A270F]"
                         : resource.status === "pending"
-                          ? "bg-amber-500"
-                          : "bg-rose-500"
+                          ? "bg-[#DF8142]"
+                          : "bg-red-700"
                     } animate-pulse`}
                   />
                   {resource.status === "student" ? "Verified" : resource.status}
                 </span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl font-bold text-slate-950 tracking-tight leading-tight mb-8 max-w-2xl">
+              <h1 className="text-3xl sm:text-4xl font-bold text-[#2A1205] tracking-tight leading-tight mb-8 max-w-2xl">
                 {resource.title}
               </h1>
 
               <div className="flex flex-wrap items-center gap-6">
-                <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-100 hover:border-indigo-200 transition-colors cursor-default">
-                  <div className="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 shadow-sm">
+                <div className="flex items-center gap-4 p-3 bg-[#EFEDED] rounded-2xl border border-[#D9D9C2] hover:border-primary/40 transition-colors cursor-default">
+                  <div className="h-12 w-12 rounded-xl bg-white border border-[#D9D9C2] flex items-center justify-center text-gray-500 shadow-sm">
                     <User className="h-6 w-6" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest leading-none mb-1">
                       Authority Unit
                     </p>
-                    <p className="text-base font-bold text-slate-900 leading-none">
+                    <p className="text-base font-bold text-[#5A270F] leading-none">
                       Architect {resource.author}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                  <div className="h-12 w-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-indigo-500 shadow-sm">
+                <div className="flex items-center gap-4 p-3 bg-[#EFEDED] rounded-2xl border border-[#D9D9C2]">
+                  <div className="h-12 w-12 rounded-xl bg-white border border-[#D9D9C2] flex items-center justify-center text-primary/90 shadow-sm">
                     <Calendar className="h-6 w-6" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest leading-none mb-1">
                       Genesis Date
                     </p>
-                    <p className="text-base font-bold text-slate-900 leading-none">
+                    <p className="text-base font-bold text-[#5A270F] leading-none">
                       {new Date(resource.uploadedAt).toLocaleDateString()}
                     </p>
                   </div>
@@ -315,17 +315,17 @@ const ResourceDetails = () => {
           </div>
 
           {resource.adminComment && (
-            <div className="p-6 bg-slate-950 rounded-3xl text-white relative overflow-hidden shadow-xl ring-1 ring-white/10">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-600/10 blur-[40px] -translate-y-1/2 translate-x-1/2" />
+            <div className="p-6 bg-[#2A1205] rounded-3xl text-white relative overflow-hidden shadow-xl ring-1 ring-white/10">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[40px] -translate-y-1/2 translate-x-1/2" />
               <div className="relative z-10 flex items-start gap-5">
-                <div className="h-12 w-12 shrink-0 bg-white/10 rounded-xl flex items-center justify-center text-indigo-400 border border-white/10">
+                <div className="h-12 w-12 shrink-0 bg-white/10 rounded-xl flex items-center justify-center text-primary/80 border border-white/10">
                   <ShieldAlert className="h-6 w-6" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-2">
+                  <p className="text-[10px] font-bold text-primary/80 uppercase tracking-widest mb-2">
                     Operations Directive
                   </p>
-                  <p className="text-base text-slate-300 italic font-medium leading-relaxed">
+                  <p className="text-base text-gray-400 italic font-medium leading-relaxed">
                     "{resource.adminComment}"
                   </p>
                 </div>
@@ -334,11 +334,11 @@ const ResourceDetails = () => {
           )}
 
           {/* Evaluation Matrix */}
-          <div className="bg-white p-8 rounded-3xl shadow-lg border border-slate-100 flex flex-wrap items-center justify-between gap-8">
+          <div className="bg-white p-8 rounded-3xl shadow-lg border border-[#D9D9C2] flex flex-wrap items-center justify-between gap-8">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-amber-500 fill-amber-500" />
-                <h3 className="text-xs font-bold text-slate-950 uppercase tracking-widest">
+                <Sparkles className="h-4 w-4 text-[#DF8142] fill-amber-500" />
+                <h3 className="text-xs font-bold text-[#2A1205] uppercase tracking-widest">
                   Intel Evaluation
                 </h3>
               </div>
@@ -358,7 +358,7 @@ const ResourceDetails = () => {
                         (hoverRating ||
                           userRating ||
                           Math.round(averageRating)) >= star
-                          ? "text-amber-400 fill-amber-400"
+                          ? "text-[#DF8142] fill-amber-400"
                           : "text-slate-100 group-hover/star:text-amber-200"
                       } transition-colors duration-200`}
                     />
@@ -367,30 +367,30 @@ const ResourceDetails = () => {
               </div>
             </div>
 
-            <div className="h-20 w-px bg-slate-100 hidden sm:block" />
+            <div className="h-20 w-px bg-[#F5F5DC] hidden sm:block" />
 
             <div className="text-right sm:text-left">
               <div className="flex items-baseline gap-1.5 mb-1 justify-end sm:justify-start">
-                <span className="text-4xl font-bold text-slate-950 tracking-tight">
+                <span className="text-4xl font-bold text-[#2A1205] tracking-tight">
                   {averageRating.toFixed(1)}
                 </span>
-                <span className="text-lg font-bold text-slate-300">/ 5.0</span>
+                <span className="text-lg font-bold text-gray-400">/ 5.0</span>
               </div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
                 Verified Valuations: {ratingCount}
               </p>
             </div>
           </div>
 
           {/* Content Description */}
-          <div className="bg-white p-8 rounded-3xl shadow-lg border border-slate-100">
+          <div className="bg-white p-8 rounded-3xl shadow-lg border border-[#D9D9C2]">
             <div className="flex items-center gap-4 mb-6">
-              <div className="h-1 w-10 bg-indigo-600 rounded-full" />
-              <h3 className="text-lg font-bold text-slate-950 uppercase tracking-tight">
+              <div className="h-1 w-10 bg-primary rounded-full" />
+              <h3 className="text-lg font-bold text-[#2A1205] uppercase tracking-tight">
                 Technical Abstract
               </h3>
             </div>
-            <div className="prose prose-slate prose-lg max-w-none prose-p:text-slate-500 prose-p:leading-relaxed prose-p:font-medium italic">
+            <div className="prose prose-slate prose-lg max-w-none prose-p:text-[#5A270F] prose-p:leading-relaxed prose-p:font-medium italic">
               <p>
                 This high-voltage architectural protocol contains verified
                 structural intelligence. Users are advised to inspect the
@@ -403,11 +403,11 @@ const ResourceDetails = () => {
           {/* Nexus of Intelligence (Comments) */}
           <div className="pt-8 space-y-10">
             <div className="flex items-center justify-between">
-              <h2 className="text-3xl font-black text-slate-950 tracking-tighter uppercase flex items-center gap-4">
-                <MessageSquare className="h-8 w-8 text-indigo-600" />
+              <h2 className="text-3xl font-black text-[#2A1205] tracking-tighter uppercase flex items-center gap-4">
+                <MessageSquare className="h-8 w-8 text-primary" />
                 Nexus Intelligence
               </h2>
-              <div className="px-6 py-2 bg-slate-100 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-widest border border-slate-200">
+              <div className="px-6 py-2 bg-[#F5F5DC] rounded-full text-[10px] font-black text-[#5A270F] uppercase tracking-widest border border-[#D9D9C2]">
                 {comments.length} Logged Pulse(s)
               </div>
             </div>
@@ -415,19 +415,19 @@ const ResourceDetails = () => {
             {isAuth ? (
               <form onSubmit={handleSubmitComment} className="flex gap-4 group">
                 <div className="flex-grow relative">
-                  <div className="absolute inset-0 bg-indigo-500/5 blur-xl group-focus-within:bg-indigo-500/10 transition-colors" />
+                  <div className="absolute inset-0 bg-primary/5 blur-xl group-focus-within:bg-primary/10 transition-colors" />
                   <input
                     type="text"
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Input community intelligence..."
-                    className="relative w-full px-8 py-5 bg-white border border-slate-200 rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-slate-900 font-bold placeholder-slate-400"
+                    className="relative w-full px-8 py-5 bg-white border border-[#D9D9C2] rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all text-[#5A270F] font-bold placeholder-slate-400"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={submittingComment || !newComment.trim()}
-                  className="px-8 py-4 bg-slate-950 text-white text-[10px] font-bold uppercase tracking-widest rounded-2xl hover:bg-indigo-600 transition-all shadow-xl active:scale-95 disabled:opacity-50"
+                  className="px-8 py-4 bg-[#2A1205] text-white text-[10px] font-bold uppercase tracking-widest rounded-2xl hover:bg-primary transition-all shadow-xl active:scale-95 disabled:opacity-50"
                 >
                   {submittingComment ? (
                     <Loader2 className="h-4 w-4 animate-spin mx-auto" />
@@ -437,14 +437,14 @@ const ResourceDetails = () => {
                 </button>
               </form>
             ) : (
-              <div className="p-10 bg-slate-50 rounded-[3rem] border border-slate-200 border-dashed text-center">
-                <ShieldAlert className="h-10 w-10 text-slate-300 mx-auto mb-4" />
-                <p className="text-slate-500 font-bold uppercase tracking-widest text-xs mb-6">
+              <div className="p-10 bg-[#EFEDED] rounded-[3rem] border border-[#D9D9C2] border-dashed text-center">
+                <ShieldAlert className="h-10 w-10 text-gray-400 mx-auto mb-4" />
+                <p className="text-[#5A270F] font-bold uppercase tracking-widest text-xs mb-6">
                   Identity Verification Protocol Required for Transmission
                 </p>
                 <Link
                   to="/login"
-                  className="px-8 py-3 bg-indigo-600 text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-slate-950 transition-all shadow-xl shadow-indigo-600/20"
+                  className="px-8 py-3 bg-primary text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-[#2A1205] transition-all shadow-xl shadow-primary/20"
                 >
                   Access Terminal
                 </Link>
@@ -456,24 +456,24 @@ const ResourceDetails = () => {
                 comments.map((comment: CommentModel) => (
                   <div
                     key={comment.id}
-                    className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-lg hover:shadow-xl transition-all flex gap-6 items-start group"
+                    className="bg-white p-8 rounded-[2.5rem] border border-[#D9D9C2] shadow-lg hover:shadow-xl transition-all flex gap-6 items-start group"
                   >
-                    <div className="flex-shrink-0 h-16 w-16 rounded-2xl bg-slate-900 flex items-center justify-center text-white font-black text-xl shadow-xl group-hover:scale-110 transition-transform">
+                    <div className="flex-shrink-0 h-16 w-16 rounded-2xl bg-[#5A270F] flex items-center justify-center text-white font-black text-xl shadow-xl group-hover:scale-110 transition-transform">
                       {(comment.user.first_name || comment.user.firstName)?.[0]}
                     </div>
                     <div className="space-y-3">
                       <div className="flex items-center gap-4">
-                        <p className="font-black text-slate-950 text-lg tracking-tight">
+                        <p className="font-black text-[#2A1205] text-lg tracking-tight">
                           {comment.user.first_name || comment.user.firstName}{" "}
                           {comment.user.last_name || comment.user.lastName}
                         </p>
-                        <span className="h-1.5 w-1.5 bg-indigo-500 rounded-full" />
-                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">
+                        <span className="h-1.5 w-1.5 bg-primary/90 rounded-full" />
+                        <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest">
                           Log:{" "}
                           {new Date(comment.createdAt).toLocaleDateString()}
                         </p>
                       </div>
-                      <p className="text-slate-500 font-medium leading-relaxed text-base">
+                      <p className="text-[#5A270F] font-medium leading-relaxed text-base">
                         {comment.text}
                       </p>
                     </div>
@@ -481,8 +481,8 @@ const ResourceDetails = () => {
                 ))
               ) : (
                 <div className="text-center py-20 opacity-20 select-none">
-                  <Box className="h-16 w-16 mx-auto text-slate-400 mb-4" />
-                  <p className="text-xs font-black uppercase tracking-[0.5em] text-slate-950">
+                  <Box className="h-16 w-16 mx-auto text-gray-500 mb-4" />
+                  <p className="text-xs font-black uppercase tracking-[0.5em] text-[#2A1205]">
                     Awaiting Signal
                   </p>
                 </div>
@@ -493,16 +493,16 @@ const ResourceDetails = () => {
 
         {/* Control Center Sidebar */}
         <div className="lg:col-span-4 space-y-10">
-          <div className="bg-slate-950 p-10 rounded-[4rem] shadow-3xl text-white relative overflow-hidden ring-1 ring-white/10">
+          <div className="bg-[#2A1205] p-10 rounded-[4rem] shadow-3xl text-white relative overflow-hidden ring-1 ring-white/10">
             <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
-            <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
+            <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/90 to-transparent" />
 
             <div className="relative z-10 space-y-8">
               <div className="flex items-center gap-4 mb-4">
-                <div className="h-10 w-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/30">
+                <div className="h-10 w-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
                   <Zap className="h-5 w-5 text-white" />
                 </div>
-                <h3 className="text-sm font-black uppercase tracking-[0.3em] text-indigo-400">
+                <h3 className="text-sm font-black uppercase tracking-[0.3em] text-primary/80">
                   Control Center
                 </h3>
               </div>
@@ -518,7 +518,7 @@ const ResourceDetails = () => {
                   rel="noreferrer"
                   className="w-full h-16 flex justify-center items-center gap-4 bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl text-white hover:bg-white/10 transition-all active:scale-95 group"
                 >
-                  <Eye className="h-5 w-5 text-indigo-400 group-hover:scale-110 transition-transform" />
+                  <Eye className="h-5 w-5 text-primary/80 group-hover:scale-110 transition-transform" />
                   Scan Matrix
                 </a>
 
@@ -530,7 +530,7 @@ const ResourceDetails = () => {
                   )}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full h-16 flex justify-center items-center gap-4 bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-widest rounded-2xl hover:bg-indigo-500 shadow-xl shadow-indigo-600/30 transition-all hover:-translate-y-1 active:scale-95"
+                  className="w-full h-16 flex justify-center items-center gap-4 bg-primary text-white text-[10px] font-bold uppercase tracking-widest rounded-2xl hover:bg-primary/90 shadow-xl shadow-primary/20 transition-all hover:-translate-y-1 active:scale-95"
                 >
                   <Download className="h-6 w-6" />
                   Download Resource
@@ -577,7 +577,7 @@ const ResourceDetails = () => {
                     className="flex justify-between items-center group"
                   >
                     <div className="flex items-center gap-3">
-                      <item.icon className="h-4 w-4 text-white/20 group-hover:text-indigo-400 transition-colors" />
+                      <item.icon className="h-4 w-4 text-white/20 group-hover:text-primary/80 transition-colors" />
                       <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 group-hover:text-white transition-colors">
                         {item.label}
                       </span>
@@ -592,9 +592,9 @@ const ResourceDetails = () => {
           </div>
 
           {/* Temporal Links Cluster */}
-          <div className="bg-white p-10 rounded-[4rem] shadow-xl border border-slate-100">
-            <h3 className="text-xs font-black text-slate-950 uppercase tracking-[0.3em] mb-12 flex items-center gap-4">
-              <Clock className="h-5 w-5 text-indigo-600" />
+          <div className="bg-white p-10 rounded-[4rem] shadow-xl border border-[#D9D9C2]">
+            <h3 className="text-xs font-black text-[#2A1205] uppercase tracking-[0.3em] mb-12 flex items-center gap-4">
+              <Clock className="h-5 w-5 text-primary" />
               Related Artifacts
             </h3>
             <div className="space-y-10">
@@ -613,14 +613,14 @@ const ResourceDetails = () => {
                     }
                     className="flex items-center gap-6 group"
                   >
-                    <div className="h-16 w-16 shrink-0 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-slate-950 group-hover:text-white transition-all transform group-hover:scale-110 border border-slate-100 shadow-sm">
+                    <div className="h-16 w-16 shrink-0 bg-[#EFEDED] rounded-2xl flex items-center justify-center text-gray-500 group-hover:bg-[#2A1205] group-hover:text-white transition-all transform group-hover:scale-110 border border-[#D9D9C2] shadow-sm">
                       <Layers className="h-7 w-7" />
                     </div>
                     <div className="space-y-1">
-                      <h4 className="text-base font-black text-slate-950 group-hover:text-indigo-600 transition-colors line-clamp-1 leading-tight">
+                      <h4 className="text-base font-black text-[#2A1205] group-hover:text-primary transition-colors line-clamp-1 leading-tight">
                         {recent.title}
                       </h4>
-                      <p className="text-[9px] text-slate-400 font-black uppercase tracking-[0.2em]">
+                      <p className="text-[9px] text-gray-500 font-black uppercase tracking-[0.2em]">
                         Registry:{" "}
                         {new Date(recent.uploadedAt).toLocaleDateString()}
                       </p>
@@ -628,7 +628,7 @@ const ResourceDetails = () => {
                   </Link>
                 ))
               ) : (
-                <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest text-center">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">
                   No secondary artifacts localized.
                 </p>
               )}
@@ -639,7 +639,7 @@ const ResourceDetails = () => {
           <div className="text-center pt-4">
             <button
               onClick={() => setReporting(true)}
-              className="inline-flex items-center gap-3 text-[9px] font-black text-slate-300 hover:text-rose-500 transition-all uppercase tracking-[0.4em] py-3 px-10 border border-slate-100 rounded-full hover:border-rose-100 hover:bg-rose-50/50"
+              className="inline-flex items-center gap-3 text-[9px] font-black text-gray-400 hover:text-red-700 transition-all uppercase tracking-[0.4em] py-3 px-10 border border-[#D9D9C2] rounded-full hover:border-rose-100 hover:bg-red-50/50"
             >
               <Flag className="h-3.5 w-3.5" />
               Report Protocol Violation
@@ -650,29 +650,29 @@ const ResourceDetails = () => {
 
       {/* Security Incident Reporting Modal */}
       {reporting && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-950/90 backdrop-blur-xl animate-in fade-in duration-500">
-          <div className="bg-white rounded-[4rem] shadow-3xl p-12 sm:p-20 max-w-2xl w-full border border-slate-100 animate-in zoom-in-95 duration-500 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-3 bg-rose-500" />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[#2A1205]/90 backdrop-blur-xl animate-in fade-in duration-500">
+          <div className="bg-white rounded-[4rem] shadow-3xl p-12 sm:p-20 max-w-2xl w-full border border-[#D9D9C2] animate-in zoom-in-95 duration-500 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-3 bg-red-700" />
 
             {reportSuccess ? (
               <div className="text-center py-10 scale-in-center">
-                <div className="h-32 w-32 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-10 border border-emerald-100 shadow-lg">
+                <div className="h-32 w-32 bg-[#5A270F]/5 text-[#5A270F] rounded-full flex items-center justify-center mx-auto mb-10 border border-emerald-100 shadow-lg">
                   <CheckCircle className="h-14 w-14" />
                 </div>
-                <h3 className="text-4xl font-black text-slate-950 mb-6 tracking-tighter uppercase">
+                <h3 className="text-4xl font-black text-[#2A1205] mb-6 tracking-tighter uppercase">
                   Signal Received
                 </h3>
-                <p className="text-slate-500 font-bold uppercase tracking-[0.2em] text-xs">
+                <p className="text-[#5A270F] font-bold uppercase tracking-[0.2em] text-xs">
                   The moderator nexus has been alerted.
                 </p>
               </div>
             ) : (
               <>
                 <div className="mb-12">
-                  <h3 className="text-4xl font-black text-slate-950 mb-3 tracking-tighter uppercase">
+                  <h3 className="text-4xl font-black text-[#2A1205] mb-3 tracking-tighter uppercase">
                     Isolate Incident
                   </h3>
-                  <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px]">
+                  <p className="text-gray-500 font-bold uppercase tracking-[0.2em] text-[10px]">
                     Detail the nature of the architectural breach.
                   </p>
                 </div>
@@ -682,13 +682,13 @@ const ResourceDetails = () => {
                     value={reportReason}
                     onChange={(e) => setReportReason(e.target.value)}
                     placeholder="e.g. Intellectual property disruption, metadata distortion, unauthorized access..."
-                    className="w-full px-10 py-8 bg-slate-50 border border-slate-200 rounded-[3rem] focus:outline-none focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 transition-all text-slate-900 font-bold placeholder-slate-400 min-h-[220px] outline-none text-lg"
+                    className="w-full px-10 py-8 bg-[#EFEDED] border border-[#D9D9C2] rounded-[3rem] focus:outline-none focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 transition-all text-[#5A270F] font-bold placeholder-slate-400 min-h-[220px] outline-none text-lg"
                   />
                   <div className="flex gap-6">
                     <button
                       type="button"
                       onClick={() => setReporting(false)}
-                      className="flex-1 py-6 px-4 rounded-3xl text-slate-400 text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-colors"
+                      className="flex-1 py-6 px-4 rounded-3xl text-gray-500 text-[10px] font-black uppercase tracking-widest hover:bg-[#EFEDED] transition-colors"
                     >
                       Abort Mission
                     </button>

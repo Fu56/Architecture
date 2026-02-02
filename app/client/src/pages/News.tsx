@@ -50,25 +50,25 @@ const News = () => {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 selection:bg-indigo-100">
+    <div className="min-h-screen bg-[#EFEDED] selection:bg-primary/20">
       {/* Immersive Header */}
-      <section className="relative pt-32 pb-48 overflow-hidden bg-slate-950">
+      <section className="relative pt-32 pb-48 overflow-hidden bg-[#2A1205]">
         <div className="absolute inset-0 z-0">
           <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_20%,rgba(79,70,229,0.2),transparent_50%)]" />
           <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
         </div>
 
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10 text-center">
-          <div className="inline-flex items-center gap-3 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400 mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="inline-flex items-center gap-3 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
             <Megaphone className="h-3 w-3" /> Information Broadcast
           </div>
           <h1 className="text-5xl sm:text-7xl font-black text-white tracking-tighter mb-6 leading-none animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
             CHRONICLES <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary/80 to-purple-400">
               & ANNOUNCEMENTS.
             </span>
           </h1>
-          <p className="max-w-2xl mx-auto text-slate-400 text-lg font-medium leading-relaxed mb-12 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-400">
+          <p className="max-w-2xl mx-auto text-gray-500 text-lg font-medium leading-relaxed mb-12 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-400">
             Synchronize with the latest developments in our architectural nexus.
             From system upgrades to global industry summits.
           </p>
@@ -81,7 +81,7 @@ const News = () => {
                 onClick={() => setFilter(t)}
                 className={`flex-1 py-3 px-6 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
                   filter === t
-                    ? "bg-indigo-600 text-white shadow-xl shadow-indigo-600/30"
+                    ? "bg-primary text-white shadow-xl shadow-primary/20"
                     : "text-white/40 hover:text-white"
                 }`}
               >
@@ -101,26 +101,26 @@ const News = () => {
               [...Array(3)].map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white h-[400px] rounded-[3rem] animate-pulse border border-slate-100"
+                  className="bg-white h-[400px] rounded-[3rem] animate-pulse border border-[#D9D9C2]"
                 />
               ))
             ) : filteredNews.length > 0 ? (
               filteredNews.map((item) => (
                 <article
                   key={item.id}
-                  className="group bg-white rounded-[3rem] border border-slate-100 shadow-xl shadow-slate-200/40 overflow-hidden hover:shadow-2xl hover:shadow-indigo-200/50 transition-all duration-500 flex flex-col sm:flex-row"
+                  className="group bg-white rounded-[3rem] border border-[#D9D9C2] shadow-xl shadow-slate-200/40 overflow-hidden hover:shadow-2xl hover:shadow-primary/50 transition-all duration-500 flex flex-col sm:flex-row"
                 >
-                  <div className="sm:w-1/3 bg-slate-50 p-12 flex flex-col items-center justify-center text-center relative overflow-hidden shrink-0">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-indigo-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left" />
+                  <div className="sm:w-1/3 bg-[#EFEDED] p-12 flex flex-col items-center justify-center text-center relative overflow-hidden shrink-0">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left" />
                     {item.isEvent ? (
                       <>
-                        <Calendar className="h-10 w-10 text-indigo-400 mb-6 group-hover:scale-110 transition-transform" />
-                        <p className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-1">
+                        <Calendar className="h-10 w-10 text-primary/80 mb-6 group-hover:scale-110 transition-transform" />
+                        <p className="text-2xl font-black text-[#5A270F] tracking-tight leading-none mb-1">
                           {item.eventDate
                             ? new Date(item.eventDate).getDate()
                             : "--"}
                         </p>
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">
                           {item.eventDate
                             ? new Date(item.eventDate).toLocaleString(
                                 "default",
@@ -131,11 +131,11 @@ const News = () => {
                       </>
                     ) : (
                       <>
-                        <Zap className="h-10 w-10 text-amber-400 mb-6 group-hover:scale-110 transition-transform" />
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+                        <Zap className="h-10 w-10 text-[#DF8142] mb-6 group-hover:scale-110 transition-transform" />
+                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">
                           Transmission
                         </p>
-                        <p className="text-sm font-black text-slate-900 mt-2">
+                        <p className="text-sm font-black text-[#5A270F] mt-2">
                           Update Node
                         </p>
                       </>
@@ -147,36 +147,36 @@ const News = () => {
                       <span
                         className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${
                           item.isEvent
-                            ? "bg-indigo-50 text-indigo-600"
+                            ? "bg-primary/10 text-primary"
                             : "bg-amber-50 text-amber-600"
                         }`}
                       >
                         {item.isEvent ? "Protocol Event" : "System Alert"}
                       </span>
-                      <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-slate-300">
+                      <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-gray-400">
                         <Clock className="h-3 w-3" /> {item.time}
                       </span>
                     </div>
 
-                    <h2 className="text-3xl font-black text-slate-900 tracking-tighter leading-tight mb-6 group-hover:text-indigo-600 transition-colors">
+                    <h2 className="text-3xl font-black text-[#5A270F] tracking-tighter leading-tight mb-6 group-hover:text-primary transition-colors">
                       {item.title}
                     </h2>
 
-                    <p className="text-slate-500 font-medium leading-relaxed mb-8 line-clamp-3">
+                    <p className="text-[#5A270F] font-medium leading-relaxed mb-8 line-clamp-3">
                       {item.content}
                     </p>
 
                     <div className="mt-auto flex items-center justify-between pt-8 border-t border-slate-50">
                       <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                        <div className="h-8 w-8 rounded-full bg-[#F5F5DC] flex items-center justify-center text-gray-500">
                           <Tag className="h-3.5 w-3.5" />
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">
                           Metadata Source: {item.source || "Nexus Prime"}
                         </span>
                       </div>
 
-                      <button className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
+                      <button className="h-12 w-12 rounded-2xl bg-[#EFEDED] flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white transition-all duration-300">
                         <Share2 className="h-4 w-4" />
                       </button>
                     </div>
@@ -184,14 +184,14 @@ const News = () => {
                 </article>
               ))
             ) : (
-              <div className="py-32 bg-white rounded-[3rem] border border-slate-100 text-center">
-                <div className="h-20 w-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-sm">
-                  <Search className="h-10 w-10 text-slate-300" />
+              <div className="py-32 bg-white rounded-[3rem] border border-[#D9D9C2] text-center">
+                <div className="h-20 w-20 bg-[#EFEDED] rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-sm">
+                  <Search className="h-10 w-10 text-gray-400" />
                 </div>
-                <h3 className="text-2xl font-black text-slate-900 mb-2">
+                <h3 className="text-2xl font-black text-[#5A270F] mb-2">
                   No Signals Found
                 </h3>
-                <p className="text-slate-400 font-medium max-w-xs mx-auto">
+                <p className="text-gray-500 font-medium max-w-xs mx-auto">
                   The news cluster currently has no active transmissions for
                   this filter.
                 </p>
@@ -202,27 +202,27 @@ const News = () => {
           {/* Sidebar Modules */}
           <div className="space-y-12">
             {/* Search Module */}
-            <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-xl shadow-slate-200/20">
-              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-8">
+            <div className="bg-white p-10 rounded-[3rem] border border-[#D9D9C2] shadow-xl shadow-slate-200/20">
+              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-gray-500 mb-8">
                 Signal Scan
               </h3>
               <div className="relative group">
                 <input
                   type="text"
                   placeholder="Search logs..."
-                  className="w-full h-16 bg-slate-50 border border-slate-100 rounded-2xl pl-12 pr-6 text-sm font-bold text-slate-900 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-sans"
+                  className="w-full h-16 bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl pl-12 pr-6 text-sm font-bold text-[#5A270F] outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-sans"
                 />
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-indigo-600 transition-colors" />
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-primary transition-colors" />
               </div>
             </div>
 
             {/* Newsletter Module */}
-            <div className="bg-indigo-600 p-10 rounded-[3rem] shadow-2xl shadow-indigo-600/30 text-white relative overflow-hidden group">
+            <div className="bg-primary p-10 rounded-[3rem] shadow-2xl shadow-primary/20 text-white relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-[5rem] translate-x-12 -translate-y-12 group-hover:translate-x-8 group-hover:-translate-y-8 transition-transform duration-700" />
               <h3 className="text-2xl font-black mb-4 relative z-10 leading-none">
                 THE STUDIO <br /> DIGEST.
               </h3>
-              <p className="text-indigo-100 text-sm font-medium mb-8 relative z-10">
+              <p className="text-primary/20 text-sm font-medium mb-8 relative z-10">
                 Monthly curation of technical benchmarks directly to your studio
                 terminal.
               </p>
@@ -231,26 +231,26 @@ const News = () => {
                 placeholder="Terminal Email..."
                 className="w-full h-14 bg-white/10 border border-white/20 rounded-xl px-5 text-sm font-bold placeholder:text-white/40 mb-4 outline-none focus:bg-white/20 transition-all"
               />
-              <button className="w-full h-14 bg-white text-indigo-600 rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-slate-950 hover:text-white transition-all duration-300 active:scale-95 shadow-lg">
+              <button className="w-full h-14 bg-white text-primary rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-[#2A1205] hover:text-white transition-all duration-300 active:scale-95 shadow-lg">
                 Initialize Transmission
               </button>
             </div>
 
             {/* Support Link */}
-            <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-xl shadow-slate-200/20 text-center">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 rounded-full text-[8px] font-black uppercase tracking-widest text-emerald-600 mb-4">
-                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />{" "}
+            <div className="bg-white p-10 rounded-[3rem] border border-[#D9D9C2] shadow-xl shadow-slate-200/20 text-center">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#5A270F]/5 rounded-full text-[8px] font-black uppercase tracking-widest text-[#2A1205] mb-4">
+                <div className="h-1.5 w-1.5 rounded-full bg-[#5A270F] animate-pulse" />{" "}
                 Live Support
               </div>
-              <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-2">
+              <h3 className="text-sm font-black text-[#5A270F] uppercase tracking-widest mb-2">
                 Need Field Intel?
               </h3>
-              <p className="text-xs text-slate-500 font-medium mb-8">
+              <p className="text-xs text-[#5A270F] font-medium mb-8">
                 Contact our operations node for priority technical support.
               </p>
               <Link
                 to="/about"
-                className="flex items-center justify-center gap-3 text-xs font-black uppercase tracking-widest text-indigo-600 hover:text-slate-950 transition-colors group"
+                className="flex items-center justify-center gap-3 text-xs font-black uppercase tracking-widest text-primary hover:text-[#2A1205] transition-colors group"
               >
                 Reach Control{" "}
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-2 transition-transform" />
