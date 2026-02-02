@@ -119,15 +119,15 @@ const Home = () => {
       <section className="relative min-h-[110vh] flex items-center overflow-hidden pt-20">
         {/* Animated Background */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-[#2A1205]/40 z-10" />
+          <div className="absolute inset-0 bg-[#5A270F]/40 z-10" />
           <img
             src="/assets/hero.png"
             alt="Hero Architectural"
             className="w-full h-full object-cover brightness-[0.7] scale-105 animate-slow-zoom"
           />
           {/* Overlay Gradients */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-[#2A1205] via-[#2A1205]/60 to-transparent z-10" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(79,70,229,0.2),transparent_70%)] z-10" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-[#5A270F] via-[#6C3B1C]/80 to-transparent z-10" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(223,129,66,0.15),transparent_70%)] z-10" />
           {/* Grid Overlay */}
           <div className="absolute inset-0 opacity-[0.05] z-10 blueprint-grid-dark" />
         </div>
@@ -137,28 +137,28 @@ const Home = () => {
             {/* Premium Badge */}
             <div className="inline-flex items-center gap-4 px-6 py-3 mb-10 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.5em] text-white bg-white/5 backdrop-blur-3xl border border-white/10 rounded-full animate-in fade-in slide-in-from-top-12 duration-1000 shadow-2xl group cursor-default">
               <div className="relative flex items-center justify-center">
-                <Sparkles className="h-4 w-4 text-primary/80 animate-pulse relative z-10" />
-                <div className="absolute inset-0 bg-primary/90 blur-xl opacity-40 group-hover:opacity-100 transition-opacity duration-1000" />
+                <Sparkles className="h-4 w-4 text-[#DF8142] animate-pulse relative z-10" />
+                <div className="absolute inset-0 bg-[#DF8142]/90 blur-xl opacity-40 group-hover:opacity-100 transition-opacity duration-1000" />
               </div>
-              <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-white via-white/80 to-primary/40">
+              <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-white via-white/80 to-[#EEB38C]/40">
                 ARCHVAULT: THE PRE-EMINENT ARCHIVE
               </span>
-              <div className="w-1.5 h-1.5 rounded-full bg-[#5A270F] animate-[pulse_2s_infinite]" />
+              <div className="w-1.5 h-1.5 rounded-full bg-[#DF8142] animate-[pulse_2s_infinite]" />
             </div>
 
             <h1 className="text-6xl sm:text-8xl md:text-[8rem] lg:text-[10rem] font-black tracking-tighter text-white mb-8 sm:mb-12 leading-[0.75] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-100 uppercase italic">
               ENGINEER <br />
               <span className="relative inline-block mt-2 not-italic">
-                <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-primary/80 via-purple-300 to-white drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)]">
+                <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#EEB38C] to-white drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)]">
                   LEGACY.
                 </span>
-                <div className="absolute -bottom-4 left-0 w-full h-4 bg-primary/40 blur-3xl -z-0" />
+                <div className="absolute -bottom-4 left-0 w-full h-4 bg-[#DF8142]/40 blur-3xl -z-0" />
               </span>
             </h1>
 
             <div className="flex flex-col md:flex-row md:items-center gap-12 mb-20 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300">
               <div className="max-w-xl space-y-6">
-                <p className="text-xl sm:text-2xl text-white/80 leading-relaxed font-black tracking-tight border-l-4 border-primary/80 pl-10">
+                <p className="text-xl sm:text-2xl text-white/80 leading-relaxed font-black tracking-tight border-l-4 border-[#DF8142]/80 pl-10">
                   Access award-winning thesis papers, verified BIM standards,
                   and architectural artifacts curated for the vanguard.
                 </p>
@@ -186,7 +186,7 @@ const Home = () => {
                       />
                     </div>
                   ))}
-                  <div className="w-14 h-14 rounded-full border-4 border-[#0a0a0b] bg-primary flex items-center justify-center text-[10px] font-black text-white shadow-lg shadow-primary/30">
+                  <div className="w-14 h-14 rounded-full border-4 border-[#0a0a0b] bg-[#DF8142] flex items-center justify-center text-[10px] font-black text-white shadow-lg shadow-[#DF8142]/30">
                     +12K
                   </div>
                 </div>
@@ -195,7 +195,7 @@ const Home = () => {
                     Network Node Members
                   </p>
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#5A270F] animate-pulse shadow-[0_0_10px_rgba(90,39,15,0.3)]" />
+                    <span className="w-2 h-2 rounded-full bg-[#DF8142] animate-pulse shadow-[0_0_10px_rgba(223,129,66,0.3)]" />
                     <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
                       Live Pulse ACTIVE
                     </p>
@@ -209,11 +209,11 @@ const Home = () => {
               className="mb-20 animate-in fade-in slide-in-from-bottom-24 duration-1000 delay-500"
             >
               <div className="relative max-w-4xl group">
-                <div className="absolute -inset-2 bg-gradient-to-r from-primary via-[#5A270F] to-primary rounded-[3rem] blur-2xl opacity-20 group-focus-within:opacity-40 transition duration-1000 group-hover:duration-200" />
+                <div className="absolute -inset-2 bg-gradient-to-r from-[#DF8142] via-[#5A270F] to-[#DF8142] rounded-[3rem] blur-2xl opacity-20 group-focus-within:opacity-40 transition duration-1000 group-hover:duration-200" />
 
-                <div className="relative flex flex-col sm:flex-row items-center bg-white/95 backdrop-blur-3xl rounded-[2.5rem] overflow-hidden shadow-[0_40px_80px_-15px_rgba(0,0,0,0.3)] ring-1 ring-white/20 transition-all duration-700 group-focus-within:ring-primary/50 group-focus-within:scale-[1.01]">
+                <div className="relative flex flex-col sm:flex-row items-center bg-white/95 backdrop-blur-3xl rounded-[2.5rem] overflow-hidden shadow-[0_40px_80px_-15px_rgba(0,0,0,0.3)] ring-1 ring-white/20 transition-all duration-700 group-focus-within:ring-[#DF8142]/50 group-focus-within:scale-[1.01]">
                   <div className="hidden sm:block pl-10">
-                    <Search className="h-7 w-7 text-gray-400 group-focus-within:text-primary transition-all duration-500 group-focus-within:rotate-90" />
+                    <Search className="h-7 w-7 text-gray-400 group-focus-within:text-[#DF8142] transition-all duration-500 group-focus-within:rotate-90" />
                   </div>
                   <input
                     type="text"
@@ -225,11 +225,11 @@ const Home = () => {
                   <div className="w-full sm:w-auto p-3 sm:pr-4">
                     <button
                       type="submit"
-                      className="w-full sm:w-auto whitespace-nowrap px-10 sm:px-14 py-5 sm:py-7 bg-primary hover:bg-[#2A1205] text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-[1.8rem] transition-all duration-700 active:scale-95 shadow-2xl shadow-primary/20 flex items-center justify-center gap-3 group/btn overflow-hidden relative"
+                      className="w-full sm:w-auto whitespace-nowrap px-10 sm:px-14 py-5 sm:py-7 bg-[#DF8142] hover:bg-[#5A270F] text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-[1.8rem] transition-all duration-700 active:scale-95 shadow-2xl shadow-[#DF8142]/20 flex items-center justify-center gap-3 group/btn overflow-hidden relative"
                     >
                       <span className="relative z-10">Initialize Search</span>
                       <ArrowRight className="h-4 w-4 relative z-10 group-hover/btn:translate-x-2 transition-transform duration-500" />
-                      <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-purple-700 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#DF8142]/90 to-[#5A270F] opacity-0 group-hover/btn:opacity-100 transition-opacity" />
                     </button>
                   </div>
                 </div>
@@ -277,13 +277,13 @@ const Home = () => {
               {/* Stat 1 */}
               <div className="flex flex-col items-center text-center space-y-6 lg:px-8 py-8 sm:py-0 group/stat">
                 <div className="relative">
-                  <div className="absolute -inset-6 bg-primary/10 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0" />
-                  <div className="relative p-6 bg-[#2A1205] rounded-2xl shadow-2xl group-hover/stat:bg-primary transition-colors duration-500">
+                  <div className="absolute -inset-6 bg-[#DF8142]/10 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0" />
+                  <div className="relative p-6 bg-[#5A270F] rounded-2xl shadow-2xl group-hover/stat:bg-[#DF8142] transition-colors duration-500">
                     <Layers className="h-8 w-8 text-white group-hover/stat:rotate-12 transition-transform duration-500" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-6xl font-black tracking-tighter text-[#2A1205]">
+                  <p className="text-6xl font-black tracking-tighter text-[#5A270F]">
                     {stats.totalResources > 999
                       ? `${(stats.totalResources / 1000).toFixed(1)}k+`
                       : stats.totalResources}
@@ -292,7 +292,7 @@ const Home = () => {
                     <p className="text-[11px] font-black uppercase tracking-[0.3em] text-gray-500">
                       MASTER RESOURCES
                     </p>
-                    <span className="text-[10px] font-bold text-primary/90 uppercase tracking-widest mt-1 italic">
+                    <span className="text-[10px] font-bold text-[#DF8142] uppercase tracking-widest mt-1 italic">
                       Verified Library
                     </span>
                   </div>
@@ -303,12 +303,12 @@ const Home = () => {
               <div className="flex flex-col items-center text-center space-y-6 lg:px-8 pt-12 lg:pt-0 group/stat">
                 <div className="relative">
                   <div className="absolute -inset-6 bg-[#92664A]/5 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0" />
-                  <div className="relative p-6 bg-[#2A1205] rounded-2xl shadow-2xl group-hover/stat:bg-[#5A270F] transition-colors duration-500">
+                  <div className="relative p-6 bg-[#5A270F] rounded-2xl shadow-2xl group-hover/stat:bg-[#6C3B1C] transition-colors duration-500">
                     <Users className="h-8 w-8 text-white group-hover/stat:scale-110 transition-transform duration-500" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-6xl font-black tracking-tighter text-[#2A1205]">
+                  <p className="text-6xl font-black tracking-tighter text-[#5A270F]">
                     {stats.totalUsers > 999
                       ? `${(stats.totalUsers / 1000).toFixed(1)}k+`
                       : stats.totalUsers}
@@ -317,7 +317,7 @@ const Home = () => {
                     <p className="text-[11px] font-black uppercase tracking-[0.3em] text-gray-500">
                       GLOBAL VISIONARIES
                     </p>
-                    <span className="text-[10px] font-bold text-[#5A270F] uppercase tracking-widest mt-1 italic">
+                    <span className="text-[10px] font-bold text-[#6C3B1C] uppercase tracking-widest mt-1 italic">
                       Growing Community
                     </span>
                   </div>
@@ -327,13 +327,13 @@ const Home = () => {
               {/* Stat 3 */}
               <div className="flex flex-col items-center text-center space-y-6 lg:px-8 pt-12 lg:pt-0 group/stat">
                 <div className="relative">
-                  <div className="absolute -inset-6 bg-primary/10 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0" />
-                  <div className="relative p-6 bg-[#2A1205] rounded-2xl shadow-2xl group-hover/stat:bg-primary transition-colors duration-500">
+                  <div className="absolute -inset-6 bg-[#DF8142]/10 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0" />
+                  <div className="relative p-6 bg-[#5A270F] rounded-2xl shadow-2xl group-hover/stat:bg-[#DF8142] transition-colors duration-500">
                     <Download className="h-8 w-8 text-white group-hover/stat:translate-y-1 transition-transform duration-500" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-6xl font-black tracking-tighter text-[#2A1205]">
+                  <p className="text-6xl font-black tracking-tighter text-[#5A270F]">
                     {stats.totalDownloads > 999
                       ? `${(stats.totalDownloads / 1000).toFixed(1)}k+`
                       : stats.totalDownloads}
@@ -342,7 +342,7 @@ const Home = () => {
                     <p className="text-[11px] font-black uppercase tracking-[0.3em] text-gray-500">
                       STUDIO DEPLOYMENTS
                     </p>
-                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest mt-1 italic">
+                    <span className="text-[10px] font-bold text-[#DF8142] uppercase tracking-widest mt-1 italic">
                       Asset Utilization
                     </span>
                   </div>
@@ -352,20 +352,20 @@ const Home = () => {
               {/* Stat 4 */}
               <div className="flex flex-col items-center text-center space-y-6 lg:px-8 pt-12 lg:pt-0 group/stat">
                 <div className="relative">
-                  <div className="absolute -inset-6 bg-[#5A270F]/5 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0" />
-                  <div className="relative p-6 bg-[#2A1205] rounded-2xl shadow-2xl group-hover/stat:bg-[#5A270F] transition-colors duration-500">
+                  <div className="absolute -inset-6 bg-[#92664A]/5 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0" />
+                  <div className="relative p-6 bg-[#5A270F] rounded-2xl shadow-2xl group-hover/stat:bg-[#92664A] transition-colors duration-500">
                     <Cpu className="h-8 w-8 text-white group-hover/stat:rotate-[-15deg] transition-transform duration-500" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-6xl font-black tracking-tighter text-[#2A1205]">
+                  <p className="text-6xl font-black tracking-tighter text-[#5A270F]">
                     {stats.facultyCount}+
                   </p>
                   <div className="flex flex-col">
                     <p className="text-[11px] font-black uppercase tracking-[0.3em] text-gray-500">
                       VERIFIED FACULTY
                     </p>
-                    <span className="text-[10px] font-bold text-[#2A1205] uppercase tracking-widest mt-1 italic">
+                    <span className="text-[10px] font-bold text-[#92664A] uppercase tracking-widest mt-1 italic">
                       Expert Guidance
                     </span>
                   </div>
@@ -377,7 +377,7 @@ const Home = () => {
             <div className="flex items-center justify-center gap-6 py-4 bg-[#EFEDED]/50 rounded-b-[2.5rem] border-t border-[#D9D9C2] relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80 to-transparent translate-x-[-100%] animate-shimmer" />
               <div className="flex items-center gap-3 relative z-10">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#5A270F] animate-[pulse_1.5s_infinite] shadow-[0_0_10px_rgba(90,39,15,0.3)]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#DF8142] animate-[pulse_1.5s_infinite] shadow-[0_0_10px_rgba(223,129,66,0.3)]" />
                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F]">
                   REAL-TIME NETWORK INDEX
                 </span>
@@ -403,14 +403,14 @@ const Home = () => {
 
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="text-center mb-32">
-            <div className="inline-block p-1 mb-8 rounded-full bg-primary/10 border border-primary/20">
-              <span className="px-5 py-1.5 text-[10px] font-black uppercase tracking-[0.4em] text-primary block">
+            <div className="inline-block p-1 mb-8 rounded-full bg-[#DF8142]/10 border border-[#DF8142]/20">
+              <span className="px-5 py-1.5 text-[10px] font-black uppercase tracking-[0.4em] text-[#DF8142] block">
                 CORE ECOSYSTEM
               </span>
             </div>
-            <h2 className="text-6xl md:text-8xl font-black tracking-tighter text-[#2A1205] uppercase leading-[0.8]">
+            <h2 className="text-6xl md:text-8xl font-black tracking-tighter text-[#5A270F] uppercase leading-[0.8]">
               THE ARCHITECTURAL <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#5A270F] italic">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] to-[#5A270F] italic">
                 STANDARD.
               </span>
             </h2>
@@ -424,10 +424,10 @@ const Home = () => {
               </div>
 
               <div className="relative z-10">
-                <div className="w-20 h-20 bg-primary text-white rounded-[1.5rem] flex items-center justify-center mb-12 shadow-2xl shadow-primary/20 group-hover:scale-110 transition-transform duration-500">
+                <div className="w-20 h-20 bg-[#DF8142] text-white rounded-[1.5rem] flex items-center justify-center mb-12 shadow-2xl shadow-[#DF8142]/20 group-hover:scale-110 transition-transform duration-500">
                   <Trophy className="h-10 w-10" />
                 </div>
-                <h3 className="text-3xl font-black tracking-tight text-[#2A1205] mb-6 uppercase leading-none">
+                <h3 className="text-3xl font-black tracking-tight text-[#5A270F] mb-6 uppercase leading-none">
                   ELITE <br />
                   PROJECTS
                 </h3>
@@ -437,21 +437,21 @@ const Home = () => {
                 </p>
                 <div className="flex flex-col gap-5 mb-14">
                   <div className="flex items-center gap-4">
-                    <div className="w-2 h-2 rounded-full bg-primary/90 shadow-[0_0_8px_rgba(223,129,66,0.3)]" />
-                    <span className="text-xs font-black uppercase tracking-widest text-gray-500">
+                    <div className="w-2 h-2 rounded-full bg-[#DF8142]/90 shadow-[0_0_8px_rgba(223,129,66,0.3)]" />
+                    <span className="text-xs font-black uppercase tracking-widest text-[#92664A]">
                       Peer-Reviewed Standard
                     </span>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="w-2 h-2 rounded-full bg-primary/90 shadow-[0_0_8px_rgba(223,129,66,0.3)]" />
-                    <span className="text-xs font-black uppercase tracking-widest text-gray-500">
+                    <div className="w-2 h-2 rounded-full bg-[#DF8142]/90 shadow-[0_0_8px_rgba(223,129,66,0.3)]" />
+                    <span className="text-xs font-black uppercase tracking-widest text-[#92664A]">
                       Thesis Gold Benchmarks
                     </span>
                   </div>
                 </div>
                 <Link
                   to="/browse?sort=top"
-                  className="inline-flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.3em] text-primary hover:gap-6 transition-all duration-500 group/link"
+                  className="inline-flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.3em] text-[#DF8142] hover:gap-6 transition-all duration-500 group/link"
                 >
                   VIEW FULL ARCHIVE{" "}
                   <ArrowRight className="h-4 w-4 group-hover/link:translate-x-1" />
@@ -466,10 +466,10 @@ const Home = () => {
               </div>
 
               <div className="relative z-10">
-                <div className="w-20 h-20 bg-[#5A270F] text-white rounded-[1.5rem] flex items-center justify-center mb-12 shadow-2xl shadow-[#5A270F]/30 group-hover:scale-110 transition-transform duration-500">
+                <div className="w-20 h-20 bg-[#6C3B1C] text-white rounded-[1.5rem] flex items-center justify-center mb-12 shadow-2xl shadow-[#6C3B1C]/30 group-hover:scale-110 transition-transform duration-500">
                   <Briefcase className="h-10 w-10" />
                 </div>
-                <h3 className="text-3xl font-black tracking-tight text-[#2A1205] mb-6 uppercase leading-none">
+                <h3 className="text-3xl font-black tracking-tight text-[#5A270F] mb-6 uppercase leading-none">
                   FACULTY <br />
                   BENCHMARKS
                 </h3>
@@ -502,12 +502,12 @@ const Home = () => {
             </div>
 
             {/* Verified Platform */}
-            <div className="group relative bg-[#2A1205] p-12 rounded-[4rem] transition-all duration-700 hover:shadow-[0_48px_100px_-24px_rgba(0,0,0,0.4)] hover:-translate-y-4 overflow-hidden">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(79,70,229,0.15),transparent_60%)]" />
+            <div className="group relative bg-[#5A270F] p-12 rounded-[4rem] transition-all duration-700 hover:shadow-[0_48px_100px_-24px_rgba(0,0,0,0.4)] hover:-translate-y-4 overflow-hidden">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(223,129,66,0.2),transparent_60%)]" />
               <div className="absolute inset-0 blueprint-grid-dark opacity-10" />
 
               <div className="relative z-10">
-                <div className="w-20 h-20 bg-white/10 backdrop-blur-3xl text-white rounded-[1.5rem] flex items-center justify-center mb-12 border border-white/20 group-hover:bg-primary group-hover:border-primary/90 transition-all duration-500">
+                <div className="w-20 h-20 bg-white/10 backdrop-blur-3xl text-white rounded-[1.5rem] flex items-center justify-center mb-12 border border-white/20 group-hover:bg-[#DF8142] group-hover:border-[#DF8142]/90 transition-all duration-500">
                   <ShieldCheck className="h-10 w-10" />
                 </div>
                 <h3 className="text-3xl font-black tracking-tight text-white mb-6 uppercase leading-none">
@@ -520,21 +520,21 @@ const Home = () => {
                 </p>
                 <div className="flex flex-col gap-5 mb-14">
                   <div className="flex items-center gap-4">
-                    <div className="w-2 h-2 rounded-full bg-primary/90 shadow-[0_0_12px_rgba(223,129,66,0.6)]" />
-                    <span className="text-xs font-black uppercase tracking-widest text-[#5A270F]">
+                    <div className="w-2 h-2 rounded-full bg-[#DF8142]/90 shadow-[0_0_12px_rgba(223,129,66,0.6)]" />
+                    <span className="text-xs font-black uppercase tracking-widest text-[#EEB38C]/80">
                       IP Protection Protocol
                     </span>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="w-2 h-2 rounded-full bg-primary/90 shadow-[0_0_12px_rgba(223,129,66,0.6)]" />
-                    <span className="text-xs font-black uppercase tracking-widest text-[#5A270F]">
+                    <div className="w-2 h-2 rounded-full bg-[#DF8142]/90 shadow-[0_0_12px_rgba(223,129,66,0.6)]" />
+                    <span className="text-xs font-black uppercase tracking-widest text-[#EEB38C]/80">
                       Zero-Trust Encryption
                     </span>
                   </div>
                 </div>
                 <Link
                   to="/about"
-                  className="inline-flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.3em] text-white hover:text-primary/80 hover:gap-6 transition-all duration-500 group/link"
+                  className="inline-flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.3em] text-white hover:text-[#DF8142]/80 hover:gap-6 transition-all duration-500 group/link"
                 >
                   LEARN MORE{" "}
                   <ArrowRight className="h-4 w-4 group-hover/link:translate-x-1" />
@@ -555,18 +555,18 @@ const Home = () => {
           <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-32 gap-12">
             <div className="max-w-3xl">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-[2px] bg-primary" />
-                <span className="text-[11px] font-black uppercase tracking-[0.5em] text-primary">
+                <div className="w-16 h-[2px] bg-[#DF8142]" />
+                <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#DF8142]">
                   GLOBAL CURATION INDEX
                 </span>
               </div>
-              <h2 className="text-6xl md:text-8xl font-black tracking-tighter text-[#2A1205] leading-[0.8] uppercase">
+              <h2 className="text-6xl md:text-8xl font-black tracking-tighter text-[#5A270F] leading-[0.8] uppercase">
                 SPOTLIGHT <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-[#5A270F] to-primary/90 italic">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] to-[#DF8142]/90 italic">
                   RESOURCES.
                 </span>
               </h2>
-              <p className="text-[#5A270F] mt-10 text-xl font-bold max-w-2xl leading-relaxed">
+              <p className="text-[#6C3B1C] mt-10 text-xl font-bold max-w-2xl leading-relaxed">
                 The most downloaded and peer-reviewed architectural artifacts
                 across the global network this week.
               </p>
@@ -574,7 +574,7 @@ const Home = () => {
 
             <Link
               to="/browse"
-              className="group relative flex items-center gap-6 px-12 py-7 bg-[#2A1205] hover:bg-primary text-white rounded-[2rem] transition-all duration-700 shadow-2xl active:scale-95 overflow-hidden"
+              className="group relative flex items-center gap-6 px-12 py-7 bg-[#5A270F] hover:bg-[#DF8142] text-white rounded-[2rem] transition-all duration-700 shadow-2xl active:scale-95 overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500" />
               <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.3em]">
@@ -619,14 +619,14 @@ const Home = () => {
             <div className="lg:w-2/3">
               <div className="mb-24">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-[2px] bg-[#2A1205]" />
-                  <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#2A1205]">
+                  <div className="w-16 h-[2px] bg-[#5A270F]" />
+                  <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#5A270F]">
                     RESEARCH & PERSPECTIVES
                   </span>
                 </div>
-                <h2 className="text-6xl md:text-9xl font-black tracking-tighter text-[#2A1205] leading-[0.75] uppercase italic">
+                <h2 className="text-6xl md:text-9xl font-black tracking-tighter text-[#5A270F] leading-[0.75] uppercase italic">
                   FACULTY <br />
-                  <span className="text-primary not-italic">INSIGHTS.</span>
+                  <span className="text-[#DF8142] not-italic">INSIGHTS.</span>
                 </h2>
               </div>
 
@@ -668,13 +668,13 @@ const Home = () => {
                         {blog.tags.slice(0, 2).map((tag) => (
                           <span
                             key={tag}
-                            className="text-[9px] font-black uppercase tracking-[0.3em] text-primary bg-primary/10 px-5 py-2 rounded-full"
+                            className="text-[9px] font-black uppercase tracking-[0.3em] text-[#DF8142] bg-[#DF8142]/10 px-5 py-2 rounded-full"
                           >
                             {tag}
                           </span>
                         ))}
                       </div>
-                      <h3 className="text-3xl font-black tracking-tight text-[#2A1205] group-hover:text-primary transition-colors leading-[1.1] uppercase">
+                      <h3 className="text-3xl font-black tracking-tight text-[#5A270F] group-hover:text-[#DF8142] transition-colors leading-[1.1] uppercase">
                         {blog.title}
                       </h3>
                       <p className="text-[#5A270F] line-clamp-2 text-lg font-bold leading-relaxed">
@@ -704,14 +704,14 @@ const Home = () => {
                       Journal
                     </h3>
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-primary/90 animate-pulse" />
+                      <div className="w-2 h-2 rounded-full bg-[#DF8142] animate-pulse" />
                       <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.4em]">
                         Live Updates
                       </p>
                     </div>
                   </div>
-                  <div className="w-16 h-16 bg-white/5 rounded-[1.2rem] border border-white/10 flex items-center justify-center hover:bg-primary hover:border-primary/90 transition-all duration-500">
-                    <Calendar className="h-7 w-7 text-primary/80 group-hover/journal:text-white" />
+                  <div className="w-16 h-16 bg-white/5 rounded-[1.2rem] border border-white/10 flex items-center justify-center hover:bg-[#DF8142] hover:border-[#DF8142]/90 transition-all duration-500">
+                    <Calendar className="h-7 w-7 text-[#DF8142]/80 group-hover/journal:text-white" />
                   </div>
                 </div>
 
@@ -755,7 +755,7 @@ const Home = () => {
                   )}
                 </div>
 
-                <button className="relative z-10 w-full py-7 bg-white text-[#2A1205] hover:bg-primary hover:text-white rounded-[2rem] text-[11px] font-black uppercase tracking-[0.4em] transition-all duration-700 shadow-2xl active:scale-95">
+                <button className="relative z-10 w-full py-7 bg-white text-[#5A270F] hover:bg-[#DF8142] hover:text-white rounded-[2rem] text-[11px] font-black uppercase tracking-[0.4em] transition-all duration-700 shadow-2xl active:scale-95">
                   INITIALIZE JOURNAL
                 </button>
               </div>
@@ -764,59 +764,60 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Newsletter Section - Geometric Glassmorphism */}
+      {/* Newsletter Section - Refined Architectural Terminal */}
       <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[#2A1205] z-0" />
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_35%,rgba(79,70,229,0.2),transparent_50% )]" />
+        <div className="absolute inset-0 bg-[#5A270F] z-0" />
+        <div className="absolute top-0 right-0 w-2/3 h-full bg-[#DF8142]/10 skew-x-12 translate-x-1/4 z-0" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
 
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
-          <div className="bg-white/5 backdrop-blur-3xl rounded-[5rem] p-16 sm:p-24 border border-white/10 flex flex-col lg:flex-row items-center gap-20">
+          <div className="bg-white/5 backdrop-blur-2xl rounded-[4rem] p-12 sm:p-20 border border-white/10 flex flex-col lg:flex-row items-center gap-16">
             <div className="lg:w-1/2 text-white">
-              <div className="inline-flex items-center gap-3 px-5 py-2.5 bg-primary/20 border border-primary/30 rounded-full text-[10px] font-black uppercase tracking-[0.4em] text-primary/80 mb-10">
-                <Sparkles className="h-4 w-4" /> MONTHLY PUBLICATION
+              <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#DF8142]/20 border border-[#DF8142]/30 rounded-full text-[9px] font-black uppercase tracking-[0.4em] text-[#DF8142] mb-8">
+                <Sparkles className="h-3.5 w-3.5" /> THE ARCHITECT'S DIGEST
               </div>
-              <h2 className="text-6xl md:text-8xl font-black tracking-tighter mb-10 leading-[0.8] uppercase">
+              <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-8 leading-[0.9] uppercase">
                 UNBOX <br />
-                <span className="text-primary/90 italic">INNOVATION.</span>
+                <span className="text-[#DF8142] italic">INNOVATION.</span>
               </h2>
-              <p className="text-2xl text-white/40 font-black tracking-tight leading-relaxed max-w-md italic border-l-2 border-primary/50 pl-8">
-                Curated digests of top-tier thesis, BIM families, and technical
-                insights.
+              <p className="text-lg text-white/50 font-medium tracking-tight leading-relaxed max-w-md italic border-l-2 border-[#DF8142]/40 pl-8">
+                Curated digests of top-tier architectural thesis, BIM families,
+                and technical benchmarks.
               </p>
             </div>
 
             <div className="lg:w-1/2 w-full">
               {subscribed ? (
-                <div className="bg-[#5A270F] text-white p-12 sm:p-16 rounded-[4rem] text-center font-black animate-in zoom-in-95 duration-700 shadow-[0_48px_96px_-24px_rgba(16,185,129,0.5)] flex flex-col items-center gap-6">
-                  <ShieldCheck className="h-16 w-16" />
-                  <span className="text-2xl sm:text-4xl uppercase tracking-tighter leading-none">
-                    ACCESS GRANTED
+                <div className="bg-[#DF8142] text-white p-12 rounded-[3.5rem] text-center font-black animate-in zoom-in-95 duration-700 shadow-2xl flex flex-col items-center gap-6">
+                  <ShieldCheck className="h-12 w-12" />
+                  <span className="text-xl sm:text-3xl uppercase tracking-tighter leading-none">
+                    ACCESS REGISTERED
                   </span>
-                  <p className="text-[11px] text-white/70 font-black uppercase tracking-[0.4em]">
-                    Welcome to the Inner Circle.
+                  <p className="text-[10px] text-white/80 font-black uppercase tracking-[0.4em]">
+                    Welcome to the Nexus.
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handleSubscribe} className="space-y-8">
+                <form onSubmit={handleSubscribe} className="space-y-6">
                   <div className="relative group flex flex-col sm:block">
-                    <div className="absolute -inset-2 bg-gradient-to-r from-primary/90 via-purple-500 to-primary/90 rounded-[3rem] blur-2xl opacity-10 group-focus-within:opacity-30 transition-all duration-1000" />
+                    <div className="absolute -inset-2 bg-[#DF8142] rounded-[2.5rem] blur-2xl opacity-0 group-focus-within:opacity-20 transition-all duration-1000" />
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="ENTER STUDIO EMAIL..."
                       required
-                      className="relative w-full h-24 sm:h-32 bg-white/5 border border-white/10 rounded-[2.5rem] sm:rounded-[3rem] pl-10 sm:pl-12 pr-10 sm:pr-48 text-lg sm:text-xl font-black text-white placeholder:text-white/10 outline-none focus:ring-4 focus:ring-primary/10 transition-all duration-700 shadow-2xl tracking-widest"
+                      className="relative w-full h-20 sm:h-24 bg-white/5 border border-white/10 rounded-[2rem] sm:rounded-[2.5rem] pl-10 sm:pl-12 pr-10 sm:pr-44 text-base sm:text-lg font-bold text-white placeholder:text-white/20 outline-none focus:ring-4 focus:ring-[#DF8142]/10 transition-all duration-700 shadow-2xl tracking-widest"
                     />
                     <button
                       type="submit"
-                      className="mt-6 sm:mt-0 relative sm:absolute sm:right-5 sm:top-5 sm:bottom-5 px-12 sm:px-16 py-5 sm:py-0 bg-primary hover:bg-white hover:text-[#2A1205] text-white font-black uppercase tracking-[0.3em] rounded-[2rem] sm:rounded-[2.5rem] transition-all duration-700 shadow-2xl active:scale-95"
+                      className="mt-4 sm:mt-0 relative sm:absolute sm:right-3 sm:top-3 sm:bottom-3 px-10 sm:px-12 py-4 sm:py-0 bg-[#DF8142] hover:bg-white hover:text-[#5A270F] text-white font-black uppercase tracking-[0.3em] rounded-[1.5rem] sm:rounded-[2rem] transition-all duration-700 shadow-2xl active:scale-95"
                     >
-                      SUBSCRIBE
+                      REGISTER
                     </button>
                   </div>
-                  <p className="text-[10px] text-white/20 font-black uppercase tracking-[0.4em] text-center px-12">
-                    ENCRYPTED TRANSMISSION • ZERO SPAM PROTOCOL
+                  <p className="text-[9px] text-white/20 font-black uppercase tracking-[0.3em] text-center px-12 italic">
+                    ENCRYPTED TRANSMISSION • ZERO SPAM PROTOCOL • BIM COMPLIANT
                   </p>
                 </form>
               )}
@@ -859,7 +860,7 @@ const Home = () => {
                         <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">
                           SECTION {String(idx + 1).padStart(2, "0")}
                         </p>
-                        <h4 className="text-xl font-black text-[#2A1205] uppercase tracking-tight">
+                        <h4 className="text-xl font-black text-[#5A270F] uppercase tracking-tight">
                           {cat.name}
                         </h4>
                       </div>

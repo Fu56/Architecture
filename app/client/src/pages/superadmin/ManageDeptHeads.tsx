@@ -14,6 +14,7 @@ import {
   Zap,
   Globe,
   Settings,
+  RefreshCw,
 } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -87,6 +88,17 @@ const ManageDeptHeads = () => {
     setSelectedHeadId(null);
   };
 
+  const generatePassword = () => {
+    const charset =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
+    let password = "";
+    for (let i = 0, n = charset.length; i < 12; ++i) {
+      password += charset.charAt(Math.floor(Math.random() * n));
+    }
+    setFormData((prev) => ({ ...prev, password }));
+    toast.info("Secure Key Generated");
+  };
+
   const handleEdit = (head: User) => {
     setModalMode("edit");
     setSelectedHeadId(head.id);
@@ -138,7 +150,7 @@ const ManageDeptHeads = () => {
   return (
     <div className="space-y-10 animate-in fade-in duration-700">
       {/* Super Header */}
-      <div className="bg-gradient-to-r from-[#2A1205] to-[#5A270F] rounded-[3rem] p-10 text-white relative overflow-hidden group shadow-2xl shadow-[#2A1205]/20">
+      <div className="bg-gradient-to-r from-[#2A1205] to-[#5A270F] rounded-[2.5rem] sm:rounded-[3rem] p-6 sm:p-10 text-white relative overflow-hidden group shadow-2xl shadow-[#2A1205]/20">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#DF8142]/20 blur-[100px] -translate-y-1/2 translate-x-1/2 group-hover:bg-[#DF8142]/30 transition-all duration-1000" />
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
           <div>
@@ -172,7 +184,7 @@ const ManageDeptHeads = () => {
       {/* Control Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white p-8 rounded-[2.5rem] border border-[#D9D9C2] shadow-xl shadow-slate-200/50">
+          <div className="bg-white p-6 sm:p-8 rounded-[2.5rem] border border-[#D9D9C2] shadow-xl shadow-slate-200/50">
             <div className="relative group mb-8">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 group-focus-within:text-primary/90 transition-colors" />
               <input
@@ -190,40 +202,40 @@ const ManageDeptHeads = () => {
                   key={head.id}
                   className="group relative bg-[#faf9f6] border border-[#D9D9C2] rounded-3xl p-6 hover:border-[#DF8142]/40 hover:shadow-2xl hover:shadow-[#DF8142]/5 transition-all duration-500"
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                     <div className="flex items-center gap-6">
-                      <div className="h-16 w-16 bg-[#2A1205] rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-2xl group-hover:bg-primary transition-all duration-500">
+                      <div className="h-16 w-16 shrink-0 bg-[#2A1205] rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-2xl group-hover:bg-primary transition-all duration-500">
                         {(head.first_name || head.firstName)?.[0]}
                       </div>
-                      <div>
-                        <h3 className="text-lg font-black text-[#2A1205] mb-1">
+                      <div className="min-w-0">
+                        <h3 className="text-lg font-black text-[#2A1205] mb-1 truncate">
                           {head.first_name || head.firstName}{" "}
                           {head.last_name || head.lastName}
                         </h3>
-                        <div className="flex items-center gap-3">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] bg-[#EEB38C]/20 px-3 py-1 rounded-full border border-[#EEB38C]/30">
+                        <div className="flex flex-wrap items-center gap-3">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] bg-[#EEB38C]/20 px-3 py-1 rounded-full border border-[#EEB38C]/30 shrink-0">
                             Department Head
                           </span>
-                          <span className="text-[10px] font-bold text-gray-500">
+                          <span className="text-[10px] font-bold text-gray-500 truncate">
                             {head.email}
                           </span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 sm:justify-end">
                       <button
                         onClick={() => handleEdit(head)}
                         title="Recalibrate Credentials"
-                        className="p-4 bg-primary/10 text-primary rounded-2xl hover:bg-primary hover:text-white transition-all shadow-sm active:scale-90"
+                        className="flex-1 sm:flex-none p-4 bg-primary/10 text-primary rounded-2xl hover:bg-primary hover:text-white transition-all shadow-sm active:scale-90"
                       >
-                        <Edit2 className="h-5 w-5" />
+                        <Edit2 className="h-5 w-5 mx-auto" />
                       </button>
                       <button
                         onClick={() => handleDelete(head.id)}
                         title="Revoke Authority"
-                        className="p-4 bg-red-50 text-red-700 rounded-2xl hover:bg-red-700 hover:text-white transition-all shadow-sm active:scale-90"
+                        className="flex-1 sm:flex-none p-4 bg-red-50 text-red-700 rounded-2xl hover:bg-red-700 hover:text-white transition-all shadow-sm active:scale-90"
                       >
-                        <Trash2 className="h-5 w-5" />
+                        <Trash2 className="h-5 w-5 mx-auto" />
                       </button>
                     </div>
                   </div>
@@ -242,7 +254,7 @@ const ManageDeptHeads = () => {
         </div>
 
         <div className="space-y-8">
-          <div className="bg-gradient-to-b from-[#5A270F] to-[#2A1205] p-8 rounded-[2.5rem] border border-[#92664A]/30 shadow-xl shadow-[#2A1205]/20 relative overflow-hidden">
+          <div className="bg-gradient-to-b from-[#5A270F] to-[#2A1205] p-6 sm:p-8 rounded-[2.5rem] border border-[#92664A]/30 shadow-xl shadow-[#2A1205]/20 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/10 blur-[80px]" />
             <h3 className="text-sm font-black uppercase tracking-[0.2em] text-[#EEB38C] mb-6 flex items-center gap-3 relative z-10">
               <Zap className="h-4 w-4 text-[#DF8142]" /> System Stats
@@ -277,7 +289,7 @@ const ManageDeptHeads = () => {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-[#92664A] to-[#6C3B1C] rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-xl shadow-[#6C3B1C]/20">
+          <div className="bg-gradient-to-br from-[#92664A] to-[#6C3B1C] rounded-[2.5rem] p-6 sm:p-8 text-white relative overflow-hidden shadow-xl shadow-[#6C3B1C]/20">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#EEB38C]/10 blur-3xl" />
             <Settings className="h-10 w-10 mb-6 relative z-10 text-[#EEB38C]/80" />
             <h3 className="text-xl font-black mb-2 relative z-10">
@@ -382,18 +394,28 @@ const ManageDeptHeads = () => {
                     ? "(Leave blank to keep current)"
                     : "(Password)"}
                 </label>
-                <input
-                  required={modalMode === "create"}
-                  type="password"
-                  id="password"
-                  title="Access Key"
-                  placeholder="••••••••"
-                  className="w-full h-14 px-6 bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl text-sm font-bold focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 text-[#2A1205]"
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                />
+                <div className="relative">
+                  <input
+                    required={modalMode === "create"}
+                    type="text"
+                    id="password"
+                    title="Access Key"
+                    placeholder="••••••••"
+                    className="w-full h-14 pl-6 pr-14 bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl text-sm font-bold focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 text-[#2A1205]"
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={generatePassword}
+                    title="Auto-Generate Secure Key"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-[#DF8142] hover:bg-[#EEB38C]/20 rounded-xl transition-all active:rotate-180"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                  </button>
+                </div>
                 {modalMode === "create" && (
                   <p className="flex items-center gap-2 pl-2 text-[10px] font-bold text-[#DF8142]">
                     <Shield className="h-3 w-3" />

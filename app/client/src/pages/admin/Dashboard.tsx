@@ -60,17 +60,17 @@ const AdminDashboard = () => {
             <div className="bg-[#2A1205] rounded-3xl p-6 shadow-xl relative overflow-hidden ring-1 ring-white/10 flex flex-col h-[calc(100vh-140px)]">
               {/* Architectural Grid Pattern Overlay */}
               <div className="absolute inset-0 opacity-[0.03] pointer-events-none architectural-dot-grid" />
-              <div className="absolute top-0 right-0 w-48 h-48 bg-primary/10 blur-[60px] -translate-y-1/2 translate-x-1/2" />
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#5A270F]/5 blur-[40px] translate-y-1/2 -translate-x-1/2" />
+              <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/10 blur-[60px] -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#92664A]/5 blur-[40px] translate-y-1/2 -translate-x-1/2" />
 
               <div className="relative z-10 flex flex-col h-full">
                 {/* Profile Module - Re-imagined */}
                 <div className="flex flex-col items-center text-center pb-6 border-b border-white/5 mb-6">
                   {/* ... existing profile code ... */}
-                  <div className="relative group p-1 rounded-2xl bg-gradient-to-br from-primary/30 to-[#92664A]/30">
-                    <div className="absolute inset-0 bg-primary blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-700" />
+                  <div className="relative group p-1 rounded-2xl bg-gradient-to-br from-[#DF8142]/30 to-[#92664A]/30">
+                    <div className="absolute inset-0 bg-[#DF8142] blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-700" />
                     <div className="h-16 w-16 rounded-xl bg-[#5A270F] flex items-center justify-center text-white text-xl font-bold relative z-10 border border-white/10 overflow-hidden transform group-hover:scale-105 transition-transform duration-500">
-                      <div className="absolute inset-0 bg-gradient-to-tr from-primary/40 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-tr from-[#DF8142]/40 to-transparent" />
                       <span className="relative z-10">
                         {user?.first_name?.[0]}
                         {user?.last_name?.[0]}
@@ -83,7 +83,7 @@ const AdminDashboard = () => {
                       {user?.last_name}
                     </span>
                   </h3>
-                  <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary/80">
+                  <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-[#DF8142]/10 border border-[#DF8142]/20 rounded-full text-[10px] font-bold uppercase tracking-widest text-[#DF8142]">
                     <ShieldCheck className="h-3.5 w-3.5" />
                     {typeof user?.role === "string"
                       ? user.role
@@ -125,13 +125,13 @@ const AdminDashboard = () => {
                           <link.icon
                             className={`mr-4 h-5 w-5 transition-all duration-500 ${
                               isActive
-                                ? "text-primary scale-110"
-                                : "text-white/20 group-hover:text-primary/80 group-hover:scale-110"
+                                ? "text-[#DF8142] scale-110"
+                                : "text-white/20 group-hover:text-[#DF8142]/80 group-hover:scale-110"
                             }`}
                           />
                           <span className="relative z-10">{link.name}</span>
                           {isActive && (
-                            <div className="absolute right-4 w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_10px_rgba(79,70,229,1)]" />
+                            <div className="absolute right-4 w-1.5 h-1.5 rounded-full bg-[#DF8142] shadow-[0_0_10px_rgba(223,129,66,1)]" />
                           )}
                         </NavLink>
                       );
@@ -145,7 +145,7 @@ const AdminDashboard = () => {
                     <p className="text-[9px] font-bold text-white/20 uppercase tracking-widest text-[8px]">
                       Registry Node
                     </p>
-                    <p className="text-[9px] font-bold text-primary/80 uppercase tracking-widest">
+                    <p className="text-[9px] font-bold text-[#DF8142]/80 uppercase tracking-widest">
                       01-ADM-MASTER
                     </p>
                   </div>
@@ -161,8 +161,8 @@ const AdminDashboard = () => {
               <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-50 relative z-10">
                 <div className="flex items-center gap-6">
                   <div className="relative group">
-                    <div className="absolute inset-0 bg-primary blur-lg opacity-10 group-hover:opacity-20 transition-opacity" />
-                    <div className="bg-[#2A1205] p-3 rounded-2xl text-white shadow-xl relative z-10 group-hover:scale-110 transition-transform duration-500">
+                    <div className="absolute inset-0 bg-[#DF8142] blur-lg opacity-10 group-hover:opacity-20 transition-opacity" />
+                    <div className="bg-[#5A270F] p-3 rounded-2xl text-white shadow-xl relative z-10 group-hover:scale-110 transition-transform duration-500">
                       {currentLink ? (
                         <currentLink.icon className="h-6 w-6" />
                       ) : (
@@ -172,7 +172,7 @@ const AdminDashboard = () => {
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary/90" />
+                      <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142]/90" />
                       <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
                         Executive Command
                       </p>

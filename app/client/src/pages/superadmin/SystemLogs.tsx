@@ -85,7 +85,7 @@ const SystemLogs = () => {
   return (
     <div className="space-y-10 animate-in fade-in duration-700">
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#5A270F] via-[#6C3B1C] to-[#92664A] rounded-[3rem] p-10 text-white relative overflow-hidden shadow-2xl shadow-[#5A270F]/20">
+      <div className="bg-gradient-to-br from-[#5A270F] via-[#6C3B1C] to-[#92664A] rounded-[2.5rem] sm:rounded-[3rem] p-6 sm:p-10 text-white relative overflow-hidden shadow-2xl shadow-[#5A270F]/20">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#DF8142]/10 blur-[100px] -translate-y-1/2 translate-x-1/2" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EEB38C]/20 border border-[#EEB38C]/30 rounded-full text-[10px] font-black uppercase tracking-widest text-[#EEB38C] mb-6">
@@ -105,7 +105,7 @@ const SystemLogs = () => {
       </div>
 
       {/* Control Bar */}
-      <div className="bg-white p-4 rounded-[2rem] border border-[#D9D9C2] shadow-sm flex items-center gap-4">
+      <div className="bg-white p-4 rounded-[2rem] border border-[#D9D9C2] shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
         <div className="relative flex-1 group">
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-[#DF8142]" />
           <input
@@ -118,7 +118,7 @@ const SystemLogs = () => {
         </div>
         <button
           onClick={handleExport}
-          className="h-12 px-6 bg-[#2A1205] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#5A270F] transition-all flex items-center gap-2"
+          className="h-12 px-6 bg-[#2A1205] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#5A270F] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#2A1205]/20"
         >
           <Download className="h-4 w-4" /> Export CSV
         </button>

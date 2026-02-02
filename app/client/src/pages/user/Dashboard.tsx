@@ -59,14 +59,14 @@ const UserDashboard = () => {
             <div className="bg-[#2A1205] rounded-3xl p-6 shadow-xl relative overflow-hidden ring-1 ring-white/10 flex flex-col min-h-[85vh]">
               {/* Abstract Background pattern */}
               <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#5A270F]/10 blur-[40px] -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/10 blur-[40px] -translate-y-1/2 translate-x-1/2" />
 
               <div className="relative z-10 flex flex-col h-full">
                 {/* Profile Module */}
                 <div className="flex flex-col items-center text-center pb-8 border-b border-white/5 mb-6">
                   <div className="relative group">
                     <div className="absolute inset-0 bg-[#5A270F] blur-xl opacity-10 group-hover:opacity-20 transition-opacity" />
-                    <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary to-[#5A270F] flex items-center justify-center text-white text-2xl font-bold shadow-xl relative z-10 border border-white/20 transform group-hover:scale-105 transition-transform duration-500">
+                    <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#DF8142] to-[#5A270F] flex items-center justify-center text-white text-2xl font-bold shadow-xl relative z-10 border border-white/20 transform group-hover:scale-105 transition-transform duration-500">
                       {user?.first_name?.[0]}
                       {user?.last_name?.[0]}
                     </div>
@@ -74,7 +74,7 @@ const UserDashboard = () => {
                   <h3 className="mt-4 text-lg font-bold text-white leading-tight tracking-tight">
                     {user?.first_name} <br /> {user?.last_name}
                   </h3>
-                  <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-[#92664A]/10 border border-purple-500/20 rounded-full text-[10px] font-bold uppercase tracking-widest text-purple-400">
+                  <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-[#EEB38C]/10 border border-[#DF8142]/20 rounded-full text-[10px] font-bold uppercase tracking-widest text-[#DF8142]">
                     <Shield className="h-3 w-3" /> {userRole}
                   </div>
                 </div>
@@ -116,7 +116,7 @@ const UserDashboard = () => {
                               className={`mr-4 h-5 w-5 transition-transform duration-500 group-hover:scale-110 ${
                                 isActive
                                   ? "text-[#2A1205]"
-                                  : "text-white/20 group-hover:text-purple-400"
+                                  : "text-white/20 group-hover:text-[#DF8142]"
                               }`}
                             />
                             <span>{link.name}</span>

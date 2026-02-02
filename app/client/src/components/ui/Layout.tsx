@@ -16,7 +16,6 @@ import {
   ShieldAlert,
   Upload,
   Bell,
-  Settings,
   LayoutDashboard,
   ChevronDown,
 } from "lucide-react";
@@ -160,7 +159,7 @@ const Layout = () => {
                 <div
                   className={`relative p-2.5 rounded-2xl transition-all duration-500 overflow-hidden ${
                     isScrolled || !isHomePage
-                      ? "bg-primary shadow-[0_12px_24px_-6px_rgba(79,70,229,0.5)]"
+                      ? "bg-[#DF8142] shadow-[0_12px_24px_-6px_rgba(223,129,66,0.5)]"
                       : "bg-white/10 backdrop-blur-md border border-white/30"
                   }`}
                 >
@@ -173,12 +172,12 @@ const Layout = () => {
                   <span
                     className={`text-2xl font-black tracking-tighter leading-none transition-all duration-500 font-display ${
                       isScrolled || !isHomePage
-                        ? "text-[#5A270F] group-hover:text-primary"
+                        ? "text-[#5A270F] group-hover:text-[#DF8142]"
                         : "text-white group-hover:scale-105"
                     }`}
                   >
                     ARCH
-                    <span className="text-primary/90 ml-0.5">VAULT</span>
+                    <span className="text-[#DF8142] ml-0.5">VAULT</span>
                   </span>
                   <span
                     className={`text-[9px] font-black tracking-[0.3em] uppercase transition-all duration-500 ${
@@ -203,10 +202,10 @@ const Layout = () => {
                     `relative px-5 py-2.5 rounded-full text-[13px] font-black uppercase tracking-widest transition-all duration-500 group/nav ${
                       isActive
                         ? isScrolled || !isHomePage
-                          ? "text-primary"
+                          ? "text-[#DF8142]"
                           : "text-white"
                         : isScrolled || !isHomePage
-                          ? "text-[#5A270F]/80 hover:text-primary"
+                          ? "text-[#5A270F]/80 hover:text-[#DF8142]"
                           : "text-white/70 hover:text-white"
                     }`
                   }
@@ -218,13 +217,13 @@ const Layout = () => {
                         <div
                           className={`absolute inset-0 rounded-full -z-0 transition-all duration-500 ${
                             isScrolled || !isHomePage
-                              ? "bg-primary/10 shadow-inner shadow-primary/50"
+                              ? "bg-[#DF8142]/10 shadow-inner shadow-[#DF8142]/50"
                               : "bg-white/20 backdrop-blur-lg"
                           }`}
                         />
                       )}
                       {!isActive && (
-                        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary/90 rounded-full transition-all duration-300 group-hover/nav:w-4 opacity-0 group-hover/nav:opacity-100" />
+                        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[#DF8142]/90 rounded-full transition-all duration-300 group-hover/nav:w-4 opacity-0 group-hover/nav:opacity-100" />
                       )}
                     </>
                   )}
@@ -235,13 +234,13 @@ const Layout = () => {
             {/* Actions Section */}
             <div className="flex items-center gap-3 lg:gap-4 ml-auto">
               {/* Upload Button (Authenticated Users) */}
-              {isAuthenticated && (
+              {isAuthenticated && !isSuperAdmin && (
                 <Link
                   to="/dashboard/upload"
                   className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-105 ${
                     isScrolled || !isHomePage
-                      ? "bg-primary text-white hover:bg-primary/90 shadow-lg shadow-primary/20"
-                      : "bg-white text-primary hover:bg-gray-50 shadow-lg"
+                      ? "bg-[#DF8142] text-white hover:bg-[#DF8142]/90 shadow-lg shadow-[#DF8142]/20"
+                      : "bg-white text-[#DF8142] hover:bg-gray-50 shadow-lg"
                   }`}
                 >
                   <Upload className="h-4 w-4" />
@@ -250,7 +249,7 @@ const Layout = () => {
               )}
 
               {/* Notifications (Authenticated Users) */}
-              {isAuthenticated && (
+              {isAuthenticated && !isSuperAdmin && (
                 <Link
                   to={notificationsPath}
                   className={`relative p-2.5 rounded-full transition-all hover:scale-110 ${
@@ -261,7 +260,7 @@ const Layout = () => {
                 >
                   <Bell className="h-5 w-5" />
                   {notificationCount > 0 && (
-                    <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
+                    <span className="absolute -top-1 -right-1 h-5 w-5 bg-[#DF8142] text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse ring-4 ring-white shadow-lg">
                       {notificationCount}
                     </span>
                   )}
@@ -276,12 +275,12 @@ const Layout = () => {
                       onClick={() => setUserMenuOpen(!isUserMenuOpen)}
                       className={`flex items-center gap-2 p-1.5 pr-3 rounded-full border transition-all ${
                         isScrolled || !isHomePage
-                          ? "border-gray-200 hover:border-primary/60 hover:bg-primary/10"
+                          ? "border-gray-200 hover:border-[#DF8142]/60 hover:bg-[#DF8142]/10"
                           : "border-white/20 hover:border-white/40 hover:bg-white/10"
                       }`}
                     >
-                      <div className="relative h-9 w-9 rounded-full overflow-hidden border-2 border-primary/90">
-                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/90 to-[#92664A]">
+                      <div className="relative h-9 w-9 rounded-full overflow-hidden border-2 border-[#DF8142]/90">
+                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#DF8142]/90 to-[#92664A]">
                           <User className="h-5 w-5 text-white" />
                         </div>
                       </div>
@@ -339,7 +338,7 @@ const Layout = () => {
 
                         {/* Menu Links */}
                         <div className="space-y-1 p-1">
-                          <Link
+                          {/* <Link
                             to={dashboardPath}
                             onClick={() => setUserMenuOpen(false)}
                             className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F]/80 hover:text-primary hover:bg-[#EFEDED] rounded-2xl transition-all group/item"
@@ -348,7 +347,7 @@ const Layout = () => {
                               <LayoutDashboard className="h-4 w-4" />
                             </div>
                             Personal Console
-                          </Link>
+                          </Link> */}
 
                           {isAdmin && (
                             <Link
@@ -376,16 +375,16 @@ const Layout = () => {
                             </Link>
                           )}
 
-                          <Link
+                          {/* <Link
                             to="/dashboard/profile"
                             onClick={() => setUserMenuOpen(false)}
                             className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F]/80 hover:text-primary hover:bg-[#EFEDED] rounded-2xl transition-all group/item"
                           >
                             <div className="p-2 bg-[#EFEDED] rounded-xl group-hover/item:bg-primary group-hover/item:text-white transition-all">
-                              <Settings className="h-4 w-4" />
+                              <User className="h-4 w-4" />
                             </div>
                             System Settings
-                          </Link>
+                          </Link> */}
                         </div>
 
                         {/* Menu Footer */}
@@ -465,7 +464,7 @@ const Layout = () => {
                   </NavLink>
                 ))}
 
-                {isAuthenticated && (
+                {isAuthenticated && !isSuperAdmin && (
                   <>
                     <Link
                       to="/dashboard/upload"
