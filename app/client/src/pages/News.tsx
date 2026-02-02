@@ -33,6 +33,7 @@ const News = () => {
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [subscribing, setSubscribing] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
+  const [newsletterError, setNewsletterError] = useState("");
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -57,17 +58,25 @@ const News = () => {
 
   const handleNewsletterSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newsletterEmail || !newsletterEmail.includes("@")) {
-      toast.error(
-        "Invalid email address. Please enter a valid terminal email.",
-      );
+    setNewsletterError("");
+
+    // Enhanced email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!newsletterEmail.trim()) {
+      setNewsletterError("Email address is required.");
+      return;
+    }
+
+    if (!emailRegex.test(newsletterEmail)) {
+      setNewsletterError("Please enter a valid email address.");
       return;
     }
 
     setSubscribing(true);
     try {
       const { data } = await api.post("/common/subscribe", {
-        email: newsletterEmail,
+        email: newsletterEmail.trim(),
       });
       toast.success(data.message || "Transmission initialized successfully!");
       setSubscribed(true);
@@ -81,7 +90,7 @@ const News = () => {
         };
         message = axiosError.response?.data?.message || message;
       }
-      toast.error(message);
+      setNewsletterError(message);
     } finally {
       setSubscribing(false);
     }
@@ -274,15 +283,30 @@ const News = () => {
                 <input
                   type="email"
                   value={newsletterEmail}
-                  onChange={(e) => setNewsletterEmail(e.target.value)}
+                  onChange={(e) => {
+                    setNewsletterEmail(e.target.value);
+                    if (newsletterError) setNewsletterError("");
+                  }}
                   placeholder="Terminal Email..."
                   disabled={subscribing || subscribed}
-                  className="w-full h-14 bg-white/10 border border-white/20 rounded-xl px-5 text-sm font-bold placeholder:text-white/40 mb-4 outline-none focus:bg-white/20 transition-all disabled:opacity-50"
+                  className={`w-full h-14 bg-white/10 border ${newsletterError ? "border-red-400/50" : "border-white/20"} rounded-xl px-5 text-sm font-bold placeholder:text-white/40 mb-2 outline-none focus:bg-white/20 transition-all disabled:opacity-50`}
                 />
+                {newsletterError && (
+                  <p className="text-xs text-red-200 font-medium mb-3 flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-300">
+                    <span className="inline-block w-1 h-1 rounded-full bg-red-200" />
+                    {newsletterError}
+                  </p>
+                )}
                 <button
                   type="submit"
-                  disabled={subscribing || subscribed}
-                  className="w-full h-14 bg-white text-[#DF8142] rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-[#5A270F] hover:text-white transition-all duration-300 active:scale-95 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  disabled={
+                    subscribing || subscribed || !newsletterEmail.trim()
+                  }
+                  className={`w-full h-14 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 active:scale-95 shadow-lg disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
+                    subscribed
+                      ? "bg-green-500 text-white"
+                      : "bg-white text-[#DF8142] hover:bg-[#5A270F] hover:text-white disabled:opacity-50"
+                  }`}
                 >
                   {subscribing ? (
                     <>
