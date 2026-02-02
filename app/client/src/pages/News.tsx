@@ -9,8 +9,11 @@ import {
   Zap,
   Tag,
   Share2,
+  Loader2,
+  CheckCircle,
 } from "lucide-react";
 import { api } from "../lib/api";
+import { toast } from "react-toastify";
 
 interface NewsItem {
   id: number;
@@ -27,6 +30,9 @@ const News = () => {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "news" | "events">("all");
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [subscribing, setSubscribing] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -48,6 +54,38 @@ const News = () => {
     if (filter === "news") return !item.isEvent;
     return true;
   });
+
+  const handleNewsletterSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail || !newsletterEmail.includes("@")) {
+      toast.error(
+        "Invalid email address. Please enter a valid terminal email.",
+      );
+      return;
+    }
+
+    setSubscribing(true);
+    try {
+      const { data } = await api.post("/common/subscribe", {
+        email: newsletterEmail,
+      });
+      toast.success(data.message || "Transmission initialized successfully!");
+      setSubscribed(true);
+      setNewsletterEmail("");
+      setTimeout(() => setSubscribed(false), 3000);
+    } catch (error: unknown) {
+      let message = "Failed to initialize transmission. Please try again.";
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { message?: string } };
+        };
+        message = axiosError.response?.data?.message || message;
+      }
+      toast.error(message);
+    } finally {
+      setSubscribing(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] selection:bg-[#DF8142]/20">
@@ -229,14 +267,38 @@ const News = () => {
                 Monthly curation of technical benchmarks directly to your studio
                 terminal.
               </p>
-              <input
-                type="email"
-                placeholder="Terminal Email..."
-                className="w-full h-14 bg-white/10 border border-white/20 rounded-xl px-5 text-sm font-bold placeholder:text-white/40 mb-4 outline-none focus:bg-white/20 transition-all"
-              />
-              <button className="w-full h-14 bg-white text-[#DF8142] rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-[#5A270F] hover:text-white transition-all duration-300 active:scale-95 shadow-lg">
-                Initialize Transmission
-              </button>
+              <form
+                onSubmit={handleNewsletterSubscribe}
+                className="relative z-10"
+              >
+                <input
+                  type="email"
+                  value={newsletterEmail}
+                  onChange={(e) => setNewsletterEmail(e.target.value)}
+                  placeholder="Terminal Email..."
+                  disabled={subscribing || subscribed}
+                  className="w-full h-14 bg-white/10 border border-white/20 rounded-xl px-5 text-sm font-bold placeholder:text-white/40 mb-4 outline-none focus:bg-white/20 transition-all disabled:opacity-50"
+                />
+                <button
+                  type="submit"
+                  disabled={subscribing || subscribed}
+                  className="w-full h-14 bg-white text-[#DF8142] rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-[#5A270F] hover:text-white transition-all duration-300 active:scale-95 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {subscribing ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Transmitting...
+                    </>
+                  ) : subscribed ? (
+                    <>
+                      <CheckCircle className="h-4 w-4" />
+                      Transmission Complete
+                    </>
+                  ) : (
+                    "Initialize Transmission"
+                  )}
+                </button>
+              </form>
             </div>
 
             {/* Support Link */}

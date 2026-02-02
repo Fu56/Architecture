@@ -69,3 +69,38 @@ export const getAllNews = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error fetching news" });
   }
 };
+
+export const subscribeNewsletter = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    if (!email || !email.includes("@")) {
+      return res.status(400).json({ message: "Invalid email address" });
+    }
+
+    // Check if already subscribed
+    const existing = await (prisma as any).newsletterSubscription.findUnique({
+      where: { email },
+    });
+
+    if (existing) {
+      return res
+        .status(200)
+        .json({ message: "You are already subscribed to the nexus." });
+    }
+
+    await (prisma as any).newsletterSubscription.create({
+      data: { email },
+    });
+
+    res.json({
+      message: "Transmission initialized. Welcome to the studio digest.",
+    });
+  } catch (error) {
+    console.error("Newsletter Subscription Error:", error);
+    res
+      .status(500)
+      .json({
+        message: "Internal server error. Failed to initialize transmission.",
+      });
+  }
+};

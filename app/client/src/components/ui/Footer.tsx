@@ -20,32 +20,32 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#2A1205] text-gray-500 pt-24 pb-12 overflow-hidden relative">
+    <footer className="bg-[#5A270F] text-gray-400 pt-24 pb-12 overflow-hidden relative">
       {/* Decorative Blueprint Background */}
       <div className="absolute top-0 left-0 w-full h-full blueprint-grid-dark opacity-[0.02] pointer-events-none" />
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/10 to-transparent" />
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#DF8142]/20 to-transparent" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#DF8142]/10 blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 mb-24">
           {/* Brand Identity Module */}
           <div className="lg:col-span-5 space-y-12">
             <Link to="/" className="flex items-center gap-4 group">
-              <div className="relative p-3 bg-primary rounded-2xl shadow-lg transition-all duration-700 group-hover:rotate-12 group-hover:scale-110">
+              <div className="relative p-3 bg-[#DF8142] rounded-2xl shadow-lg shadow-[#DF8142]/20 transition-all duration-700 group-hover:rotate-12 group-hover:scale-110">
                 <BookOpen className="h-7 w-7 text-white relative z-10" />
               </div>
               <div className="flex flex-col">
                 <span className="text-3xl font-bold tracking-tight text-white leading-none uppercase">
                   ARCH
-                  <span className="text-primary/80">VAULT</span>
+                  <span className="text-[#DF8142]">VAULT</span>
                 </span>
-                <span className="text-[9px] font-bold tracking-widest uppercase text-primary/80 mt-1 px-1.5 py-0.5 bg-primary/5 rounded border border-primary/10 inline-block w-fit">
+                <span className="text-[9px] font-bold tracking-widest uppercase text-[#EEB38C] mt-1 px-1.5 py-0.5 bg-[#DF8142]/10 rounded border border-[#DF8142]/20 inline-block w-fit">
                   EST. 2024 / NODE-01
                 </span>
               </div>
             </Link>
 
-            <p className="text-[#5A270F] text-lg leading-relaxed max-w-sm font-medium border-l-2 border-primary/20 pl-6">
+            <p className="text-[#EEB38C]/80 text-lg leading-relaxed max-w-sm font-medium border-l-2 border-[#DF8142]/30 pl-6">
               The digital archive for visionary architects. Accelerating
               evolution through verified intellectual property.
             </p>
@@ -60,7 +60,7 @@ const Footer = () => {
                 <a
                   key={i}
                   href="#"
-                  className="p-4 bg-white/5 border border-white/5 rounded-2xl text-white/30 hover:bg-primary hover:text-white transition-all duration-500 hover:-translate-y-1 group/social"
+                  className="p-4 bg-white/5 border border-white/5 rounded-2xl text-white/30 hover:bg-[#DF8142] hover:text-white hover:border-[#DF8142]/30 transition-all duration-500 hover:-translate-y-1 group/social"
                   aria-label={social.label}
                 >
                   <social.icon className="h-4 w-4" />
@@ -72,7 +72,7 @@ const Footer = () => {
           {/* Navigation Matrix */}
           <div className="lg:col-span-3">
             <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-8 flex items-center gap-3">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary/90" />
+              <div className="w-1.5 h-1.5 rounded-full bg-[#DF8142]" />
               SYSTEM INDEX
             </h3>
             <ul className="space-y-4 text-sm font-bold uppercase tracking-wide">
@@ -86,9 +86,9 @@ const Footer = () => {
                 <li key={link.label}>
                   <Link
                     to={link.to}
-                    className="text-[#5A270F] hover:text-white transition-all flex items-center gap-4 group/link"
+                    className="text-[#EEB38C]/70 hover:text-white transition-all flex items-center gap-4 group/link"
                   >
-                    <div className="w-2 h-[1px] bg-[#6C3B1C] group-hover:w-6 group-hover:bg-primary/90 transition-all" />
+                    <div className="w-2 h-[1px] bg-[#92664A] group-hover/link:w-6 group-hover/link:bg-[#DF8142] transition-all" />
                     {link.label}
                   </Link>
                 </li>
@@ -99,49 +99,49 @@ const Footer = () => {
           {/* Infrastructure Metrics Module */}
           <div className="lg:col-span-4 bg-white/[0.02] p-8 rounded-3xl border border-white/5 relative overflow-hidden group/signup">
             <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover/signup:opacity-[0.08] transition-all duration-1000 group-hover/signup:rotate-12 group-hover/signup:scale-125">
-              <Cpu className="h-48 w-48 text-primary/90" />
+              <Cpu className="h-48 w-48 text-[#DF8142]" />
             </div>
 
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2.5 bg-white/5 rounded-xl border border-white/10">
-                  <Layers className="h-5 w-5 text-primary/80" />
+                  <Layers className="h-5 w-5 text-[#DF8142]" />
                 </div>
                 <h3 className="text-[10px] font-bold uppercase tracking-widest text-white">
                   METRIC SUBSCRIPTION
                 </h3>
               </div>
 
-              <p className="text-base text-[#5A270F] mb-8 font-medium leading-relaxed">
+              <p className="text-base text-[#EEB38C]/80 mb-8 font-medium leading-relaxed">
                 Registration for our monthly technical publication. Zero-Trust
                 verified transmission.
               </p>
 
               <form className="relative group/input mb-8">
-                <div className="absolute -inset-0.5 bg-primary rounded-2xl blur opacity-0 group-focus-within/input:opacity-10 transition" />
+                <div className="absolute -inset-0.5 bg-[#DF8142] rounded-2xl blur opacity-0 group-focus-within/input:opacity-10 transition" />
                 <input
                   type="email"
                   id="footer-subscribe-email"
                   title="Subscription Email"
                   placeholder="Enter your email identifier..."
-                  className="relative w-full bg-[#2A1205] border border-white/10 rounded-xl py-4 pl-6 pr-16 text-xs font-bold text-white outline-none focus:border-primary/90 transition-all placeholder:text-white/10"
+                  className="relative w-full bg-[#6C3B1C]/20 border border-white/10 rounded-xl py-4 pl-6 pr-16 text-xs font-bold text-white outline-none focus:border-[#DF8142] transition-all placeholder:text-white/20"
                 />
                 <button
                   type="button"
                   title="Execute Subscription"
                   aria-label="Subscribe to newsletter"
-                  className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-primary rounded-lg hover:bg-white hover:text-[#2A1205] transition-all duration-300 text-white shadow-lg shadow-primary/20"
+                  className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[#DF8142] rounded-lg hover:bg-white hover:text-[#5A270F] transition-all duration-300 text-white shadow-lg shadow-[#DF8142]/20"
                 >
                   <ArrowRight className="h-5 w-5" />
                 </button>
               </form>
 
-              <div className="flex items-center gap-4 py-4 px-6 bg-[#2A1205]/80 rounded-2xl border border-white/5">
+              <div className="flex items-center gap-4 py-4 px-6 bg-[#6C3B1C]/30 rounded-2xl border border-white/5">
                 <div className="flex -space-x-2">
                   {[1, 2, 3].map((i) => (
                     <div
                       key={i}
-                      className="w-7 h-7 rounded-full border-2 border-[#2A1205] bg-[#6C3B1C] overflow-hidden"
+                      className="w-7 h-7 rounded-full border-2 border-[#5A270F] bg-[#92664A] overflow-hidden"
                     >
                       <img
                         src={`https://i.pravatar.cc/100?u=${i + 60}`}
@@ -155,7 +155,7 @@ const Footer = () => {
                   <span className="text-[8px] font-bold text-white uppercase tracking-widest">
                     ACTIVE SQUAD
                   </span>
-                  <span className="text-[9px] font-medium text-[#5A270F] uppercase tracking-widest">
+                  <span className="text-[9px] font-medium text-[#EEB38C] uppercase tracking-widest">
                     5,281 ARCHITECTS
                   </span>
                 </div>
@@ -167,7 +167,7 @@ const Footer = () => {
         {/* Bottom Bar - Protocol & Legal */}
         <div className="pt-12 border-t border-white/5 flex flex-col lg:flex-row justify-between items-center gap-16">
           <div className="flex flex-col items-center lg:items-start gap-4">
-            <p className="text-[9px] font-medium tracking-widest text-slate-700 uppercase">
+            <p className="text-[9px] font-medium tracking-widest text-[#92664A] uppercase">
               &copy; {currentYear} ARCHVAULT DIGITAL ARCHITECTURAL SYSTEMS.
             </p>
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-10 gap-y-4">
@@ -181,10 +181,10 @@ const Footer = () => {
                 <Link
                   key={item.label}
                   to={item.to}
-                  className="text-[10px] font-bold tracking-widest uppercase text-[#5A270F]/80 hover:text-primary/80 transition-all relative group/footer-link"
+                  className="text-[10px] font-bold tracking-widest uppercase text-[#EEB38C]/70 hover:text-[#DF8142] transition-all relative group/footer-link"
                 >
                   {item.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover/footer-link:w-full rounded-full" />
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#DF8142] transition-all group-hover/footer-link:w-full rounded-full" />
                 </Link>
               ))}
             </div>
@@ -192,8 +192,8 @@ const Footer = () => {
 
           <div className="flex flex-col items-center lg:items-end gap-2">
             <div className="flex items-center gap-4 px-6 py-3 bg-white/5 rounded-full border border-white/5 shadow-xl backdrop-blur-md">
-              <div className="flex items-center gap-3 text-[#5A270F]">
-                <div className="w-2 h-2 rounded-full bg-[#5A270F] animate-pulse shadow-[0_0_8px_rgba(90,39,15,0.3)]" />
+              <div className="flex items-center gap-3 text-[#EEB38C]">
+                <div className="w-2 h-2 rounded-full bg-[#DF8142] animate-pulse shadow-[0_0_8px_rgba(223,129,66,0.4)]" />
                 <Globe className="h-3.5 w-3.5" />
                 <span className="text-[9px] font-bold uppercase tracking-widest">
                   GLOBAL RELAY: ACTIVE
@@ -201,7 +201,7 @@ const Footer = () => {
               </div>
               <div className="h-4 w-px bg-white/10" />
               <div className="flex items-center gap-2">
-                <ShieldCheck className="h-3.5 w-3.5 text-primary/80" />
+                <ShieldCheck className="h-3.5 w-3.5 text-[#DF8142]" />
                 <p className="text-[9px] font-bold text-white/30 uppercase tracking-widest">
                   ENCRYPTED TLS 1.3
                 </p>
