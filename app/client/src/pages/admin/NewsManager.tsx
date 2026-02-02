@@ -68,7 +68,7 @@ const NewsManager = () => {
 
     if (isEvent && !eventDate) {
       toast.warn(
-        "Temporal Error: Event Sequencing requires a valid date marker."
+        "Temporal Error: Event Sequencing requires a valid date marker.",
       );
       return;
     }
@@ -98,7 +98,7 @@ const NewsManager = () => {
   const handleDelete = async (id: number) => {
     if (
       !window.confirm(
-        "Are you sure you want to terminate this announcement node?"
+        "Are you sure you want to terminate this announcement node?",
       )
     )
       return;
@@ -115,10 +115,10 @@ const NewsManager = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
         <div className="relative">
-          <div className="h-16 w-16 border-4 border-[#D9D9C2] border-t-primary rounded-full animate-spin" />
-          <Loader2 className="h-8 w-8 text-primary animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+          <div className="h-16 w-16 border-4 border-[#D9D9C2] border-t-[#DF8142] rounded-full animate-spin" />
+          <Loader2 className="h-8 w-8 text-[#DF8142] animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         </div>
-        <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em]">
+        <p className="text-[10px] font-black text-[#92664A] uppercase tracking-[0.4em]">
           Synchronizing Feed...
         </p>
       </div>
@@ -129,16 +129,16 @@ const NewsManager = () => {
     <div className="space-y-12">
       {/* Header & Toggle */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-[#EFEDED] p-8 rounded-[3rem] border border-[#D9D9C2] shadow-sm relative overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#DF8142]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         <div className="flex items-center gap-6 relative z-10">
-          <div className="h-14 w-14 bg-[#2A1205] rounded-[1.5rem] flex items-center justify-center text-white shadow-2xl">
+          <div className="h-14 w-14 bg-[#5A270F] rounded-[1.5rem] flex items-center justify-center text-white shadow-2xl">
             <Megaphone className="h-6 w-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-black text-[#2A1205] tracking-tighter">
+            <h2 className="text-2xl font-black text-[#5A270F] tracking-tighter">
               Announcement Terminal
             </h2>
-            <p className="text-xs text-gray-500 font-medium tracking-wide uppercase">
+            <p className="text-xs text-[#92664A] font-medium tracking-wide uppercase">
               Broadcasting Global Intelligence
             </p>
           </div>
@@ -147,8 +147,8 @@ const NewsManager = () => {
           onClick={() => setShowForm(!showForm)}
           className={`relative z-10 w-full md:w-auto flex items-center justify-center gap-3 px-10 py-4 rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 ${
             showForm
-              ? "bg-white border-2 border-[#D9D9C2] text-gray-500 hover:text-rose-600 hover:border-rose-100 shadow-lg"
-              : "bg-[#2A1205] text-white shadow-2xl shadow-[#2A1205]/20 hover:-translate-y-1 hover:bg-primary"
+              ? "bg-white border-2 border-[#D9D9C2] text-[#92664A] hover:text-rose-600 hover:border-rose-100 shadow-lg"
+              : "bg-[#5A270F] text-white shadow-2xl shadow-[#5A270F]/20 hover:-translate-y-1 hover:bg-[#6C3B1C]"
           }`}
         >
           {showForm ? (
@@ -172,7 +172,7 @@ const NewsManager = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               <div className="space-y-8">
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-3 ml-1">
+                  <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-[#92664A] mb-3 ml-1">
                     Announcement Headline
                   </label>
                   <input
@@ -181,17 +181,17 @@ const NewsManager = () => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="E.g., Winter Semester Thesis Submissions Open"
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-[1.5rem] px-8 py-5 text-[#2A1205] font-black text-lg outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white transition-all placeholder:text-[#EEB38C]"
+                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-[1.5rem] px-8 py-5 text-[#5A270F] font-black text-lg outline-none focus:ring-4 focus:ring-[#DF8142]/5 focus:bg-white transition-all placeholder:text-[#EEB38C]"
                   />
                 </div>
 
                 <div className="p-8 bg-[#EFEDED] rounded-[2.5rem] border border-[#D9D9C2] space-y-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="text-xs font-black text-[#2A1205] uppercase tracking-widest">
+                      <h4 className="text-xs font-black text-[#5A270F] uppercase tracking-widest">
                         Event Sequencing
                       </h4>
-                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mt-1">
+                      <p className="text-[10px] text-[#92664A] font-bold uppercase tracking-wider mt-1">
                         Enable temporal event scheduling
                       </p>
                     </div>
@@ -200,7 +200,7 @@ const NewsManager = () => {
                       title="Toggle Event Sequencing"
                       onClick={() => setIsEvent(!isEvent)}
                       className={`relative w-14 h-7 rounded-full transition-all duration-500 ${
-                        isEvent ? "bg-primary" : "bg-slate-200"
+                        isEvent ? "bg-[#DF8142]" : "bg-slate-200"
                       }`}
                     >
                       <div
@@ -231,7 +231,7 @@ const NewsManager = () => {
               </div>
 
               <div>
-                <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-3 ml-1">
+                <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-[#92664A] mb-3 ml-1">
                   Message Body
                 </label>
                 <textarea
@@ -249,7 +249,7 @@ const NewsManager = () => {
               <button
                 type="submit"
                 disabled={processing}
-                className="flex items-center gap-4 px-12 py-5 bg-[#2A1205] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-primary transition-all hover:-translate-y-1 shadow-2xl shadow-[#2A1205]/20 disabled:opacity-50"
+                className="flex items-center gap-4 px-12 py-5 bg-[#5A270F] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#6C3B1C] transition-all hover:-translate-y-1 shadow-2xl shadow-[#5A270F]/20 disabled:opacity-50"
               >
                 {processing ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
@@ -268,8 +268,8 @@ const NewsManager = () => {
       {/* Feed Section */}
       <div className="space-y-8">
         <div className="flex items-center gap-4 ml-4">
-          <Clock className="h-4 w-4 text-primary/90" />
-          <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em]">
+          <Clock className="h-4 w-4 text-[#DF8142]/90" />
+          <h3 className="text-[10px] font-black text-[#92664A] uppercase tracking-[0.4em]">
             Journal Archive Transmission
           </h3>
         </div>
@@ -277,7 +277,7 @@ const NewsManager = () => {
         {news.length === 0 ? (
           <div className="p-24 text-center bg-[#EFEDED] rounded-[4rem] border border-dashed border-[#D9D9C2]">
             <Info className="h-16 w-16 text-[#EEB38C] mx-auto mb-6" />
-            <p className="text-gray-500 text-xs font-black uppercase tracking-widest">
+            <p className="text-[#92664A] text-xs font-black uppercase tracking-widest">
               Awaiting Signal: No archives detected.
             </p>
           </div>
@@ -299,7 +299,7 @@ const NewsManager = () => {
                           Temporal Event
                         </span>
                       ) : (
-                        <span className="px-4 py-1.5 bg-primary/10 text-primary text-[9px] font-black uppercase tracking-[0.2em] border border-primary/20 rounded-full flex items-center gap-2">
+                        <span className="px-4 py-1.5 bg-[#DF8142]/10 text-[#DF8142] text-[9px] font-black uppercase tracking-[0.2em] border border-[#DF8142]/20 rounded-full flex items-center gap-2">
                           <Sparkles className="h-3 w-3" />
                           Nexus News
                         </span>
@@ -310,7 +310,7 @@ const NewsManager = () => {
                       </span>
                     </div>
 
-                    <h4 className="text-3xl font-black text-[#2A1205] tracking-tighter leading-none lowercase">
+                    <h4 className="text-3xl font-black text-[#5A270F] tracking-tighter leading-none lowercase">
                       {item.title}
                     </h4>
 
@@ -320,7 +320,7 @@ const NewsManager = () => {
 
                     {item.isEvent && item.eventDate && (
                       <div className="mt-6 flex items-center gap-4 p-5 bg-[#EFEDED] border border-[#D9D9C2] rounded-[1.5rem] w-fit">
-                        <div className="h-8 w-8 bg-primary/90 rounded-lg flex items-center justify-center text-white">
+                        <div className="h-8 w-8 bg-[#DF8142]/90 rounded-lg flex items-center justify-center text-white">
                           <AlertCircle className="h-4 w-4" />
                         </div>
                         <span className="text-xs font-black text-[#6C3B1C] uppercase tracking-widest">

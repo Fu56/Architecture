@@ -238,3 +238,31 @@ export const getAuthorityGrantHtml = (
     </div>
     `;
 };
+
+export const getPasswordResetHtml = (resetUrl: string) => {
+  return `
+    <div ${emailStyle} style="border: 2px solid #eab308;">
+        <div ${headerStyle} style="background: #422006; border-bottom: 4px solid #ca8a04;">
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #fde047; text-transform: uppercase;">Security Protocol Initiated</p>
+            <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px;">RESET ACCESS KEY</h1>
+        </div>
+        <div style="padding: 0 20px;">
+            <p><strong>Identity Verification Required.</strong></p>
+            <p>A request has been logged to reset the access key (password) for your node account. If this request was not initiated by you, ignore this transmission.</p>
+            
+            <div style="padding: 20px; background: #fefce8; border-radius: 12px; border: 1px solid #fef9c3; margin: 30px 0;">
+                <p style="margin: 0; font-size: 13px; color: #854d0e; font-weight: 500;">
+                    <strong>Protocol:</strong> Click the secure link below to proceed with key reconfiguration.
+                </p>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="${resetUrl}" ${buttonStyle} style="background-color: #ca8a04;">Reset Password</a>
+            </div>
+
+            <p style="margin-top: 40px; font-size: 12px; color: #64748b; text-align: center;">Link expires in 1 hour for security purposes.</p>
+            <div ${footerStyle}>Security Matrix Protocol | Level 1 Alert</div>
+        </div>
+    </div>
+    `;
+};

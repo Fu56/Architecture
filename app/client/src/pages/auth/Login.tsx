@@ -148,11 +148,17 @@ const Login = () => {
 
     setResetLoading(true);
     try {
-      // TODO: Implement actual password reset API call
-      // await api.post("/auth/forgot-password", { email: resetEmail });
+      const { error } = await (authClient as any).forgetPassword({
+        email: resetEmail,
+        redirectTo: "/reset-password", // Page to redirect after clicking link in email (if supported)
+      });
 
-      // Simulated success for now
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      if (error) {
+        toast.error(error.message || "Failed to send reset link.");
+        setResetLoading(false);
+        return;
+      }
+
       toast.success("Password reset link sent! Check your email.");
       setShowForgotPassword(false);
       setResetEmail("");

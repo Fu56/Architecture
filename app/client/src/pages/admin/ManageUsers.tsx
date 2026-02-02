@@ -256,10 +256,10 @@ const ManageUsers = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
         <div className="relative">
-          <div className="h-16 w-16 border-4 border-[#D9D9C2] border-t-primary rounded-full animate-spin" />
-          <Loader2 className="h-8 w-8 text-primary animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+          <div className="h-16 w-16 border-4 border-[#D9D9C2] border-t-[#DF8142] rounded-full animate-spin" />
+          <Loader2 className="h-8 w-8 text-[#DF8142] animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         </div>
-        <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em]">
+        <p className="text-[10px] font-black text-[#92664A] uppercase tracking-[0.4em]">
           Synchronizing Registry...
         </p>
       </div>
@@ -271,26 +271,26 @@ const ManageUsers = () => {
       {/* Top Controller */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-[#EFEDED] p-6 rounded-[2.5rem] border border-[#D9D9C2] shadow-sm">
         <div className="relative w-full md:w-96 group">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 group-focus-within:text-primary transition-colors" />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#92664A] group-focus-within:text-[#DF8142] transition-colors" />
           <input
             type="text"
             placeholder="Search specific user node..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-12 pl-12 pr-6 bg-white border border-[#D9D9C2] rounded-2xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/90 outline-none transition-all"
+            className="w-full h-12 pl-12 pr-6 bg-white border border-[#D9D9C2] rounded-2xl text-sm font-bold text-[#5A270F] focus:ring-2 focus:ring-[#DF8142]/20 focus:border-[#DF8142]/90 outline-none transition-all placeholder:text-[#92664A]/50"
           />
         </div>
         <div className="flex gap-3 w-full md:w-auto">
           <button
             onClick={() => setIsBroadcastModalOpen(true)}
-            className="flex-1 md:flex-none px-6 py-3 bg-primary/10 text-primary/90 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-primary hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3"
+            className="flex-1 md:flex-none px-6 py-3 bg-[#DF8142]/10 text-[#DF8142] text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#DF8142] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3"
           >
             <Zap className="h-4 w-4" />
             Global Broadcast
           </button>
           <button
             onClick={handleOpenCreate}
-            className="flex-1 md:flex-none px-8 py-3 bg-[#2A1205] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#6C3B1C] transition-all hover:-translate-y-1 shadow-2xl shadow-[#2A1205]/20 active:scale-95 flex items-center justify-center gap-3"
+            className="flex-1 md:flex-none px-8 py-3 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#6C3B1C] transition-all hover:-translate-y-1 shadow-2xl shadow-[#5A270F]/20 active:scale-95 flex items-center justify-center gap-3"
           >
             <UserPlus className="h-4 w-4" />
             Initialize Node
@@ -303,8 +303,8 @@ const ManageUsers = () => {
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-[#2A1205]">
-                <th className="px-10 py-6 text-left text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">
+              <tr className="bg-[#5A270F]">
+                <th className="px-10 py-6 text-left text-[10px] font-black text-[#EEB38C] uppercase tracking-[0.3em]">
                   User Specimen
                 </th>
                 <th className="px-8 py-6 text-left text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">
@@ -334,15 +334,15 @@ const ManageUsers = () => {
                   >
                     <td className="px-10 py-6 whitespace-nowrap">
                       <div className="flex items-center gap-5">
-                        <div className="h-12 w-12 flex-shrink-0 bg-[#2A1205] rounded-2xl flex items-center justify-center text-white text-lg font-black shadow-lg group-hover:bg-primary transition-colors">
+                        <div className="h-12 w-12 flex-shrink-0 bg-[#5A270F] rounded-2xl flex items-center justify-center text-white text-lg font-black shadow-lg group-hover:bg-[#DF8142] transition-colors">
                           {(user.firstName || user.first_name)?.[0]}
                         </div>
                         <div>
-                          <div className="text-sm font-black text-[#2A1205]">
+                          <div className="text-sm font-black text-[#5A270F]">
                             {user.firstName || user.first_name}{" "}
                             {user.lastName || user.last_name}
                           </div>
-                          <div className="text-xs text-gray-500 font-medium">
+                          <div className="text-xs text-[#92664A] font-medium">
                             {user.email}
                           </div>
                         </div>
@@ -359,9 +359,9 @@ const ManageUsers = () => {
                       <span
                         className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${
                           roleName === "Admin"
-                            ? "bg-[#92664A]/5 text-[#5A270F] border-purple-100"
+                            ? "bg-[#92664A]/10 text-[#5A270F] border-[#92664A]/20"
                             : roleName === "Faculty"
-                              ? "bg-primary/10 text-primary border-primary/20"
+                              ? "bg-[#DF8142]/10 text-[#DF8142] border-[#DF8142]/20"
                               : "bg-[#EFEDED] text-[#5A270F]/80 border-[#D9D9C2]"
                         }`}
                       >
@@ -383,9 +383,9 @@ const ManageUsers = () => {
                         <span
                           className={`text-[10px] font-black uppercase tracking-widest ${
                             user.status === "active"
-                              ? "text-[#2A1205]"
+                              ? "text-[#5A270F]"
                               : user.status === "pending_approval"
-                                ? "text-amber-600"
+                                ? "text-[#DF8142]"
                                 : "text-rose-600"
                           }`}
                         >
@@ -404,7 +404,7 @@ const ManageUsers = () => {
                             setSelectedUser(user);
                             setIsNotifyModalOpen(true);
                           }}
-                          className="p-3 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-xl transition-all"
+                          className="p-3 text-[#92664A] hover:text-[#DF8142] hover:bg-[#DF8142]/10 rounded-xl transition-all"
                           title="Direct Transmission"
                         >
                           <MessageSquare className="h-4 w-4" />
@@ -431,7 +431,7 @@ const ManageUsers = () => {
                           <>
                             <button
                               onClick={() => handleOpenEdit(user)}
-                              className="p-3 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-xl transition-all"
+                              className="p-3 text-[#92664A] hover:text-[#DF8142] hover:bg-[#DF8142]/10 rounded-xl transition-all"
                               title="Configure"
                             >
                               <Edit2 className="h-4 w-4" />
@@ -444,7 +444,7 @@ const ManageUsers = () => {
                             ) && (
                               <button
                                 onClick={() => handleDelete(user.id)}
-                                className="p-3 text-gray-500 hover:text-rose-600 hover:bg-red-50 rounded-xl transition-all"
+                                className="p-3 text-[#92664A] hover:text-rose-600 hover:bg-red-50 rounded-xl transition-all"
                                 title="Terminate"
                               >
                                 <Trash2 className="h-4 w-4" />
@@ -465,7 +465,7 @@ const ManageUsers = () => {
               <h3 className="text-xl font-black text-[#5A270F] tracking-tight">
                 No Specimen Detected
               </h3>
-              <p className="text-xs text-gray-500 font-medium mt-2">
+              <p className="text-xs text-[#92664A] font-medium mt-2">
                 The registry contains no matching user nodes.
               </p>
             </div>
@@ -481,10 +481,10 @@ const ManageUsers = () => {
             onClick={() => setIsModalOpen(false)}
           />
           <div className="relative w-full max-w-2xl bg-white rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
-            <div className="bg-[#2A1205] px-10 py-10 relative overflow-hidden group/modal">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[80px] transition-all group-hover/modal:bg-primary/30" />
+            <div className="bg-[#5A270F] px-10 py-10 relative overflow-hidden group/modal">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/20 blur-[80px] transition-all group-hover/modal:bg-[#DF8142]/30" />
               <div className="relative z-10">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 mb-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-2">
                   Registry Update
                 </p>
                 <h3 className="text-3xl font-black text-white leading-tight">
@@ -606,14 +606,14 @@ const ManageUsers = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-8 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-[#2A1205] transition-colors"
+                  className="px-8 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-[#92664A] hover:text-[#5A270F] transition-colors"
                 >
                   Abort
                 </button>
                 <button
                   type="submit"
                   disabled={processing}
-                  className="px-10 py-3 bg-[#2A1205] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-primary transition-all shadow-xl disabled:opacity-50"
+                  className="px-10 py-3 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#DF8142] transition-all shadow-xl disabled:opacity-50"
                 >
                   {processing ? (
                     <Loader2 className="h-4 w-4 animate-spin mx-auto" />
@@ -637,9 +637,9 @@ const ManageUsers = () => {
             onClick={() => setIsNotifyModalOpen(false)}
           />
           <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
-            <div className="bg-[#2A1205] px-10 py-8 relative overflow-hidden">
+            <div className="bg-[#5A270F] px-10 py-8 relative overflow-hidden">
               <div className="relative z-10">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 mb-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-2">
                   Communication Protocol
                 </p>
                 <h3 className="text-2xl font-black text-white leading-tight">
@@ -685,14 +685,14 @@ const ManageUsers = () => {
                 <button
                   type="button"
                   onClick={() => setIsNotifyModalOpen(false)}
-                  className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-[#2A1205]"
+                  className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-[#92664A] hover:text-[#5A270F]"
                 >
                   Abort
                 </button>
                 <button
                   type="submit"
                   disabled={processing}
-                  className="px-8 py-2.5 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
+                  className="px-8 py-2.5 bg-[#DF8142] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#DF8142]/90 transition-all shadow-lg shadow-[#DF8142]/20 flex items-center gap-2"
                 >
                   {processing ? (
                     <Loader2 className="h-3 w-3 animate-spin" />
@@ -717,10 +717,10 @@ const ManageUsers = () => {
             onClick={() => setIsBroadcastModalOpen(false)}
           />
           <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
-            <div className="bg-primary px-10 py-8 relative overflow-hidden">
+            <div className="bg-[#DF8142] px-10 py-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-[50px]" />
               <div className="relative z-10">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/60 mb-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 mb-2">
                   Emergency Broadcast
                 </p>
                 <h3 className="text-2xl font-black text-white leading-tight">
@@ -766,14 +766,14 @@ const ManageUsers = () => {
                 <button
                   type="button"
                   onClick={() => setIsBroadcastModalOpen(false)}
-                  className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-[#2A1205]"
+                  className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-[#92664A] hover:text-[#5A270F]"
                 >
                   Abort
                 </button>
                 <button
                   type="submit"
                   disabled={processing}
-                  className="px-8 py-2.5 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
+                  className="px-8 py-2.5 bg-[#DF8142] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#DF8142]/90 transition-all shadow-lg shadow-[#DF8142]/20 flex items-center gap-2"
                 >
                   {processing ? (
                     <Loader2 className="h-3 w-3 animate-spin" />

@@ -4,6 +4,7 @@ import { prisma } from "../config/db";
 import { env } from "../config/env";
 import bcrypt from "bcryptjs";
 import { customSession } from "better-auth/plugins";
+import { sendNotificationEmail, getPasswordResetHtml } from "../utils/email";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -42,9 +43,13 @@ export const auth = betterAuth({
         return await bcrypt.compare(password, hash);
       },
     },
-    async sendResetPassword(url, user) {
-      // TODO: Implement email sending for password reset
-      console.log("Password reset URL:", url);
+    async sendResetPassword({ url, user }) {
+      await sendNotificationEmail(
+        user.email,
+        "Reset Your Password",
+        `Click here to reset your password: ${url}`,
+        getPasswordResetHtml(url),
+      );
     },
   },
   user: {
