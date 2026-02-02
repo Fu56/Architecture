@@ -93,7 +93,8 @@ export const approveResource = async (req: Request, res: Response) => {
         html: getApprovalHtml(
           uploader.first_name || "User",
           resource.title,
-          comment
+          resource.id,
+          comment,
         ),
       });
     }
@@ -136,7 +137,7 @@ export const rejectResource = async (req: Request, res: Response) => {
         html: getRejectionHtml(
           uploader.first_name || "User",
           resource.title,
-          reason
+          reason,
         ),
       });
     }
@@ -480,7 +481,7 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
             university_id:
               university_id ||
               `${email.split("@")[0].toUpperCase()}${Math.floor(
-                1000 + Math.random() * 9000
+                1000 + Math.random() * 9000,
               )}`,
           } as any,
         });
@@ -506,7 +507,7 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
           html: getRegistrationHtml(
             `${first_name} ${last_name}`,
             email,
-            password || finalPassword
+            password || finalPassword,
           ),
         });
 
@@ -516,7 +517,7 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
         console.log(
           `Student registered: ${email}, Password: ${
             password ? "[PROVIDED]" : finalPassword
-          }`
+          }`,
         );
       } catch (err: any) {
         console.error(`Failed to register ${student.email}:`, err);
@@ -584,7 +585,7 @@ export const registerFaculty = async (req: Request, res: Response) => {
 
     // Generate unique ID
     const univId = `${first_name.charAt(0)}${last_name.charAt(0)}${Math.floor(
-      1000 + Math.random() * 9000
+      1000 + Math.random() * 9000,
     )}`.toUpperCase();
 
     const user = await prisma.user.create({
@@ -682,6 +683,30 @@ export const createUser = async (req: Request, res: Response) => {
     if (!role)
       return res.status(404).json({ message: "Requested role not localized." });
 
+    // Hierarchy Logic Matrix
+    const requester = (req as any).user;
+    const requesterRole = requester?.role?.toLowerCase();
+
+    if (requesterRole === "departmenthead") {
+      const allowedToCreate = ["admin", "faculty", "student"];
+      if (!allowedToCreate.includes(roleName.toLowerCase())) {
+        return res.status(403).json({
+          message:
+            "Security Protocol: Department Heads can only authorize Admin, Faculty, or Student units.",
+        });
+      }
+    }
+
+    if (requesterRole === "admin") {
+      const allowedToCreate = ["faculty", "student"];
+      if (!allowedToCreate.includes(roleName.toLowerCase())) {
+        return res.status(403).json({
+          message:
+            "Security Protocol: Admin units can only authorize Faculty or Student units.",
+        });
+      }
+    }
+
     const bcrypt = require("bcryptjs");
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -689,8 +714,12 @@ export const createUser = async (req: Request, res: Response) => {
     const finalUnivId =
       universityId ||
       `${firstName.charAt(0)}${lastName.charAt(0)}${Math.floor(
-        1000 + Math.random() * 9000
+        1000 + Math.random() * 9000,
       )}`.toUpperCase();
+
+    // Approval Protocol: Admin-created users require Dept Head authorization
+    const initialStatus =
+      requesterRole === "admin" ? "pending_approval" : "active";
 
     const user = await prisma.user.create({
       data: {
@@ -700,7 +729,7 @@ export const createUser = async (req: Request, res: Response) => {
         email,
         password: hashedPassword,
         role: { connect: { id: role.id } },
-        status: "active",
+        status: initialStatus,
         university_id: finalUnivId,
         batch: batch ? Number(batch) : null,
         year: year ? Number(year) : null,
@@ -776,7 +805,7 @@ export const updateUser = async (req: Request, res: Response) => {
     // However, Prisma updates only what is in 'data'. If keys are undefined, it might error or set null.
     // Let's rely on frontend sending necessary data, but for safety:
     Object.keys(updateData).forEach(
-      (key) => updateData[key] === undefined && delete updateData[key]
+      (key) => updateData[key] === undefined && delete updateData[key],
     );
 
     const user = await prisma.user.update({
@@ -795,18 +824,80 @@ export const updateUser = async (req: Request, res: Response) => {
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    // Potentially check if user has resources/dependencies?
-    // Prisma might throw constraint error. Admin might need to know.
-    // For now, simple delete.
+    const requester = (req as any).user;
+    const requesterRole = requester?.role;
+
+    // 1. Fetch target user to check their role
+    const targetUser = await prisma.user.findUnique({
+      where: { id: id },
+      include: { role: true },
+    });
+
+    if (!targetUser) {
+      return res
+        .status(404)
+        .json({ message: "Target user not found in matrix." });
+    }
+
+    const targetRoleName = (targetUser.role as any)?.name;
+
+    // 2. Hierarchy Protection Logic
+    // Only SuperAdmin can delete another SuperAdmin (or per system rules, maybe no one can delete a SuperAdmin)
+    if (targetRoleName === "SuperAdmin" && requesterRole !== "SuperAdmin") {
+      return res.status(403).json({
+        message:
+          "Security Protocol Breach: You do not have the authority to decommission a Super Admin node.",
+      });
+    }
+
+    // Department Head can't delete SuperAdmin (already covered above)
+    // But let's also ensure Admin can't delete Department Head
+    if (targetRoleName === "DepartmentHead" && requesterRole === "Admin") {
+      return res.status(403).json({
+        message:
+          "Security Protocol Breach: Admin units cannot revoke Department Head authority.",
+      });
+    }
 
     await prisma.user.delete({
       where: { id: id },
     });
 
-    res.json({ message: "User deleted successfully" });
+    res.json({
+      message: "Node successfully decommissioned from system matrix.",
+    });
   } catch (error) {
     console.error("Delete User Error:", error);
-    res.status(500).json({ message: "Failed to delete user" });
+    res.status(500).json({ message: "Failed to excise user node" });
+  }
+};
+
+// Approve User Node
+export const approveUser = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const requester = (req as any).user;
+    const requesterRole = requester?.role;
+
+    if (requesterRole !== "DepartmentHead" && requesterRole !== "SuperAdmin") {
+      return res.status(403).json({
+        message:
+          "Security Protocol: Only Department Head or System Developer can authorize pending nodes.",
+      });
+    }
+
+    const user = await prisma.user.update({
+      where: { id: id },
+      data: { status: "active" },
+    });
+
+    res.json({
+      message: "User node authorized and activated in the matrix.",
+      user,
+    });
+  } catch (error) {
+    console.error("Approve User Error:", error);
+    res.status(500).json({ message: "Failed to authorize user node" });
   }
 };
 // News Management
@@ -832,7 +923,7 @@ export const createNews = async (req: Request, res: Response) => {
     // Notify all users about the news/event
     await notifyAll(
       isEvent ? "New Event Scheduled" : "System Announcement",
-      title
+      title,
     );
 
     res

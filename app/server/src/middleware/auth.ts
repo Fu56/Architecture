@@ -10,7 +10,7 @@ export interface AuthUser {
 export const requireAuth = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     // Get session from Better Auth
@@ -22,11 +22,21 @@ export const requireAuth = async (
       return res.status(401).json({ message: "Unauthorized" });
     }
 
+    const userStatus = (session.user as any).status;
+
+    if (userStatus && userStatus !== "active") {
+      return res.status(403).json({
+        message:
+          "Access Denied: Your account node is not fully authorized or has been suspended.",
+      });
+    }
+
     // Attach user info to request
     (req as any).user = {
       id: session.user.id,
       email: session.user.email,
       role: (session.user as any).role?.name,
+      status: userStatus,
     };
 
     next();

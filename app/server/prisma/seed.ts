@@ -10,7 +10,7 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log("Seeding roles...");
-  const roles = ["Student", "Faculty", "Admin", "SuperAdmin"];
+  const roles = ["Student", "Faculty", "Admin", "DepartmentHead", "SuperAdmin"];
   for (const roleName of roles) {
     await prisma.role.upsert({
       where: { name: roleName },
@@ -55,16 +55,50 @@ async function main() {
     where: { name: "Student" },
   });
 
-  // Create Admin User
-  const adminPassword = await bcrypt.hash("Fuad@ab5659", 10);
+  // Create SuperAdmin User
+  const superAdminRole = await prisma.role.findUnique({
+    where: { name: "SuperAdmin" },
+  });
+  const superAdminPassword = await bcrypt.hash("Fuad@abdela3833", 10);
   await prisma.user.upsert({
     where: { email: "fuadabdela95@gmail.com" },
+    update: {
+      password: superAdminPassword,
+      roleId: superAdminRole?.id,
+    },
+    create: {
+      name: "System Developer",
+      first_name: "Super",
+      last_name: "Admin",
+      email: "fuadabdela95@gmail.com",
+      password: superAdminPassword,
+      roleId: superAdminRole?.id,
+      status: "active",
+      emailVerified: true,
+      accounts: {
+        create: {
+          id: `acc_${Date.now()}_super`,
+          providerId: "credential",
+          accountId: "fuadabdela95@gmail.com",
+          password: superAdminPassword,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      },
+    },
+  });
+
+  // Create Admin User
+  const adminPassword = await bcrypt.hash("Fuad@ab5659", 10);
+
+  await prisma.user.upsert({
+    where: { email: "fuadabdela63@gmail.com" },
     update: {},
     create: {
       name: "Admin User",
       first_name: "Fuad",
       last_name: "Abdela",
-      email: "fuadabdela95@gmail.com",
+      email: "fuadabdela63@gmail.com",
       password: adminPassword,
       roleId: adminRole?.id,
       status: "active",
@@ -214,9 +248,10 @@ async function main() {
 
   console.log("Seed completed successfully.");
   console.log("\n🔐 Sample Login Credentials:");
-  console.log("   Admin:   fuadabdela95@gmail.com / Fuad@ab5659");
-  console.log("   Faculty: faculty@archit.edu / faculty123");
-  console.log("   Student: student@archit.edu / student123");
+  console.log("   SuperAdmin: fuadabdela95@gmail.com / Fuad@abdela3833");
+  console.log("   Admin:      fuadabdela63@gmail.com / Fuad@ab5659");
+  console.log("   Faculty:    faculty@archit.edu / faculty123");
+  console.log("   Student:    student@archit.edu / student123");
 }
 
 main()

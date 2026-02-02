@@ -15,6 +15,7 @@ import notificationRoutes from "./routes/notification.routes";
 import userRoutes from "./routes/user.routes";
 import assignmentRoutes from "./routes/assignment.route";
 import blogRoutes from "./routes/blog.route";
+import superadminRoutes from "./routes/superadmin.routes";
 
 export const app = express();
 
@@ -43,6 +44,7 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/assignments", assignmentRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use("/api/superadmin", superadminRoutes);
 
 // Simple ping
 app.get("/api/health", (_req, res) => {
@@ -55,11 +57,11 @@ app.use(
     err: any,
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction
+    next: express.NextFunction,
   ) => {
     console.error("Global Error:", err);
     res.status(err.status || 500).json({
       message: err.message || "Internal server error",
     });
-  }
+  },
 );

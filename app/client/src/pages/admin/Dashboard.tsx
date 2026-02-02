@@ -80,7 +80,9 @@ const AdminDashboard = () => {
                   </h3>
                   <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-[10px] font-bold uppercase tracking-widest text-indigo-400">
                     <ShieldCheck className="h-3.5 w-3.5" />
-                    SYSTEM_ADMIN_CORE
+                    {typeof user?.role === "string"
+                      ? user.role
+                      : user?.role?.name || "ADMIN_CORE"}
                   </div>
                 </div>
 

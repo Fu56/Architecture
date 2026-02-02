@@ -95,7 +95,7 @@ model Blog {
     image_path  String?
     published   Boolean  @default(false)
     tags        String[]
-    author      User     @relation(fields: [author_id], references: [id])
+    author      User     @relation(fields: [author_id], references: [id], onDelete: Cascade)
     author_id   String
     created_at  DateTime @default(now())
     updated_at  DateTime @updatedAt
@@ -132,7 +132,7 @@ model Resource {
     file_path       String
     file_type       String?
     file_size       Float?
-    uploader        User?         @relation(fields: [uploader_id], references: [id])
+    uploader        User?         @relation(fields: [uploader_id], references: [id], onDelete: SetNull)
     uploader_id     String?
     design_stage    Design_stage? @relation(fields: [design_stage_id], references: [id])
     design_stage_id Int?
@@ -158,18 +158,18 @@ model Comment {
     text        String
     created_at  DateTime @default(now())
     updated_at  DateTime @updatedAt
-    resource    Resource @relation(fields: [resource_id], references: [id])
+    resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
     resource_id Int
-    user        User     @relation(fields: [user_id], references: [id])
+    user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
     user_id     String
 }
 
 model Rating {
     id          Int      @id @default(autoincrement())
     rate        Int
-    user        User     @relation(fields: [user_id], references: [id])
+    user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
     user_id     String
-    resource    Resource @relation(fields: [resource_id], references: [id])
+    resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
     resource_id Int
     created_at  DateTime @default(now())
     updated_at  DateTime @updatedAt
@@ -177,15 +177,15 @@ model Rating {
 
 model Flag {
     id             Int       @id @default(autoincrement())
-    resource       Resource  @relation(fields: [resource_id], references: [id])
+    resource       Resource  @relation(fields: [resource_id], references: [id], onDelete: Cascade)
     resource_id    Int
     reason         String?
     status         String?
     created_at     DateTime  @default(now())
-    reporter       User?     @relation("FlagReportedBy", fields: [reporter_id], references: [id])
+    reporter       User?     @relation("FlagReportedBy", fields: [reporter_id], references: [id], onDelete: SetNull)
     reporter_id    String?
     resolved_at    DateTime?
-    resolved_by    User?     @relation("FlagResolvedBy", fields: [resolved_by_id], references: [id])
+    resolved_by    User?     @relation("FlagResolvedBy", fields: [resolved_by_id], references: [id], onDelete: SetNull)
     resolved_by_id String?
 }
 
@@ -196,11 +196,11 @@ model Notification {
     is_read Boolean? @default(false)
 
     created_at  DateTime  @default(now())
-    resource    Resource? @relation(fields: [resource_id], references: [id])
+    resource    Resource? @relation(fields: [resource_id], references: [id], onDelete: Cascade)
     resource_id Int?
-    assignment  Assignment? @relation(fields: [assignment_id], references: [id])
+    assignment  Assignment? @relation(fields: [assignment_id], references: [id], onDelete: Cascade)
     assignment_id Int?
-    user        User?     @relation(fields: [user_id], references: [id])
+    user        User?     @relation(fields: [user_id], references: [id], onDelete: Cascade)
     user_id     String?
     commentId   Int?
 }
@@ -215,7 +215,7 @@ model Assignment {
     file_path       String?
     file_type       String?
     file_size       Float?
-    creator         User          @relation(fields: [creator_id], references: [id])
+    creator         User          @relation(fields: [creator_id], references: [id], onDelete: Cascade)
     creator_id      String
     design_stage    Design_stage? @relation(fields: [design_stage_id], references: [id])
     design_stage_id Int?
@@ -228,9 +228,9 @@ model Assignment {
 
 model Submission {
     id            Int        @id @default(autoincrement())
-    student       User       @relation(fields: [student_id], references: [id])
+    student       User       @relation(fields: [student_id], references: [id], onDelete: Cascade)
     student_id     String
-    assignment    Assignment @relation(fields: [assignment_id], references: [id])
+    assignment    Assignment @relation(fields: [assignment_id], references: [id], onDelete: Cascade)
     assignment_id  Int
     file_path      String
     file_type      String?

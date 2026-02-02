@@ -18,6 +18,7 @@ import {
   createUser,
   updateUser,
   deleteUser,
+  approveUser,
   createNews,
   deleteNews,
   sendDirectNotification,
@@ -26,7 +27,7 @@ import {
 
 const router = Router();
 
-router.use(requireAuth, requireRole(["Admin", "SuperAdmin"])); // Adjust role names as needed
+router.use(requireAuth, requireRole(["Admin", "SuperAdmin", "DepartmentHead"])); // Adjust role names as needed
 
 router.get("/resources/pending", getPendingResources);
 router.patch("/resources/:id/approve", approveResource);
@@ -41,6 +42,7 @@ router.get("/users", getAllUsers);
 router.post("/users/create", createUser);
 router.patch("/users/:id", updateUser); // Generic update
 router.delete("/users/:id", deleteUser);
+router.patch("/users/:id/approve", approveUser);
 router.patch("/users/:id/role", manageUserRole); // Keep specific if needed, or deprecate
 router.post("/users/bulk-register", bulkRegisterStudents);
 router.post("/users/register-faculty", registerFaculty);

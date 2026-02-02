@@ -10,6 +10,7 @@ interface UserWithRole {
   email: string;
   name?: string;
   role?: { name: string } | string;
+  status?: string;
 }
 
 const Login = () => {
@@ -45,7 +46,8 @@ const Login = () => {
 
       if (result.error) {
         toast.error(
-          result.error.message || "Authentication Failed: Node access rejected."
+          result.error.message ||
+            "Authentication Failed: Node access rejected.",
         );
         return;
       }
@@ -58,6 +60,14 @@ const Login = () => {
       const user = session?.data?.user as UserWithRole | undefined;
 
       if (user) {
+        if (user.status === "pending_approval") {
+          await authClient.signOut();
+          toast.error(
+            "Access Forbidden: Your node authorization is pending Department Head approval.",
+          );
+          setLoading(false);
+          return;
+        }
         toast.success(`Welcome back, ${user.name || user.email}!`);
 
         // Redirect based on role

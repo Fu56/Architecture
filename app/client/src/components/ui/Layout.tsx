@@ -13,6 +13,7 @@ import {
   User,
   LogOut,
   ShieldCheck,
+  ShieldAlert,
   Upload,
   Bell,
   Settings,
@@ -126,8 +127,14 @@ const Layout = () => {
     user && typeof user.role === "object" && user.role !== null
       ? user.role.name
       : user?.role;
-  const isAdmin = role === "Admin" || role === "SuperAdmin" || role === "admin";
-  const dashboardPath = isAdmin ? "/admin" : "/dashboard";
+  const isAdmin =
+    role === "Admin" || role === "admin" || role === "DepartmentHead";
+  const isSuperAdmin = role === "SuperAdmin";
+  const dashboardPath = isSuperAdmin
+    ? "/super-admin"
+    : isAdmin
+      ? "/admin"
+      : "/dashboard";
   const notificationsPath = isAdmin
     ? "/admin/notifications"
     : "/dashboard/notifications";
@@ -353,6 +360,19 @@ const Layout = () => {
                                 <ShieldCheck className="h-4 w-4" />
                               </div>
                               Admin Command Center
+                            </Link>
+                          )}
+
+                          {isSuperAdmin && (
+                            <Link
+                              to="/super-admin"
+                              onClick={() => setUserMenuOpen(false)}
+                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-purple-600 bg-purple-50/50 hover:bg-purple-600 hover:text-white rounded-2xl transition-all group/item"
+                            >
+                              <div className="p-2 bg-white rounded-xl shadow-sm text-purple-600 group-hover/item:bg-purple-500 group-hover/item:text-white transition-all">
+                                <ShieldAlert className="h-4 w-4" />
+                              </div>
+                              Super Architect Console
                             </Link>
                           )}
 

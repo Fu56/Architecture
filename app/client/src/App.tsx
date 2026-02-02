@@ -24,6 +24,9 @@ import AssignmentDetails from "./pages/library/AssignmentDetails";
 import PostAssignment from "./pages/library/PostAssignment";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
+import SuperAdminRoute from "./routes/SuperAdminRoute";
+import SuperAdminDashboard from "./pages/superadmin/Dashboard";
+import ManageDeptHeads from "./pages/superadmin/ManageDeptHeads";
 import BlogDetails from "./pages/library/BlogDetails";
 import PostBlog from "./pages/library/PostBlog";
 import Privacy from "./pages/Privacy"; // Added
@@ -97,6 +100,16 @@ const App = () => {
               <Route path="assignments/:id" element={<AssignmentDetails />} />
               <Route path="assignments/new" element={<PostAssignment />} />
               <Route path="blog/new" element={<PostBlog />} />
+            </Route>
+          </Route>
+          {/* Protected Super Admin Routes */}
+          <Route path="/super-admin" element={<SuperAdminRoute />}>
+            <Route element={<SuperAdminDashboard />}>
+              <Route index element={<Navigate to="dept-heads" replace />} />
+              <Route path="dept-heads" element={<ManageDeptHeads />} />
+              <Route path="analytics" element={<Analytics />} />
+              <Route path="system-stats" element={<Analytics />} />{" "}
+              {/* Placeholder to Analytics */}
             </Route>
           </Route>
           {/* Not Found */}

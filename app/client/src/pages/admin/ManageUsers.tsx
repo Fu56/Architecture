@@ -11,11 +11,26 @@ import {
   Search,
   MessageSquare,
   Zap,
+  CheckCircle,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import { useSession } from "../../lib/auth-client";
+
+interface UserWithRole {
+  id: string | number;
+  email: string;
+  name?: string;
+  role?: { name: string } | string;
+}
 
 const ManageUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const { data: session } = useSession();
+  const currentUser = session?.user as UserWithRole | undefined;
+  const currentRoleName =
+    typeof currentUser?.role === "string"
+      ? currentUser.role
+      : currentUser?.role?.name || "";
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -102,10 +117,21 @@ const ManageUsers = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
+  const handleApprove = async (id: string | number) => {
+    try {
+      await api.patch(`/admin/users/${id}/approve`);
+      toast.success("User node authorized and activated.");
+      fetchUsers();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to authorize user node.");
+    }
+  };
+
+  const handleDelete = async (id: string | number) => {
     if (
       !window.confirm(
-        "Are you sure you want to terminate this user node? This operation is irreversible."
+        "Are you sure you want to terminate this user node? This operation is irreversible.",
       )
     )
       return;
@@ -187,7 +213,11 @@ const ManageUsers = () => {
       if (modalMode === "create") {
         await api.post("/admin/users/create", formData);
         fetchUsers();
-        toast.success("User node initialized successfully");
+        toast.success(
+          currentRoleName === "Admin"
+            ? "User node initialized: Authorization required for activation."
+            : "User node initialized successfully",
+        );
       } else {
         if (selectedUser) {
           await api.patch(`/admin/users/${selectedUser.id}`, formData);
@@ -208,7 +238,7 @@ const ManageUsers = () => {
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -331,8 +361,8 @@ const ManageUsers = () => {
                           roleName === "Admin"
                             ? "bg-purple-50 text-purple-600 border-purple-100"
                             : roleName === "Faculty"
-                            ? "bg-indigo-50 text-indigo-600 border-indigo-100"
-                            : "bg-slate-50 text-slate-600 border-slate-100"
+                              ? "bg-indigo-50 text-indigo-600 border-indigo-100"
+                              : "bg-slate-50 text-slate-600 border-slate-100"
                         }`}
                       >
                         <Shield className="h-3 w-3" />
@@ -345,17 +375,25 @@ const ManageUsers = () => {
                           className={`h-1.5 w-1.5 rounded-full ${
                             user.status === "active"
                               ? "bg-emerald-500 animate-pulse"
-                              : "bg-rose-500"
+                              : user.status === "pending_approval"
+                                ? "bg-amber-500 animate-bounce"
+                                : "bg-rose-500"
                           }`}
                         />
                         <span
                           className={`text-[10px] font-black uppercase tracking-widest ${
                             user.status === "active"
                               ? "text-emerald-600"
-                              : "text-rose-600"
+                              : user.status === "pending_approval"
+                                ? "text-amber-600"
+                                : "text-rose-600"
                           }`}
                         >
-                          {user.status === "active" ? "Active" : "Suspended"}
+                          {user.status === "active"
+                            ? "Active"
+                            : user.status === "pending_approval"
+                              ? "Pending Approval"
+                              : "Suspended"}
                         </span>
                       </div>
                     </td>
@@ -371,20 +409,49 @@ const ManageUsers = () => {
                         >
                           <MessageSquare className="h-4 w-4" />
                         </button>
-                        <button
-                          onClick={() => handleOpenEdit(user)}
-                          className="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
-                          title="Configure"
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(user.id)}
-                          className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
-                          title="Terminate"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+
+                        {/* Approval Action: Only for DeptHead/SuperAdmin and users pending approval */}
+                        {user.status === "pending_approval" &&
+                          (currentRoleName === "DepartmentHead" ||
+                            currentRoleName === "SuperAdmin") && (
+                            <button
+                              onClick={() => handleApprove(user.id)}
+                              className="p-3 text-amber-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all"
+                              title="Authorize Node"
+                            >
+                              <CheckCircle className="h-4 w-4" />
+                            </button>
+                          )}
+
+                        {/* Hierarchy Protection: Hide Edit/Delete for SuperAdmins if not SuperAdmin */}
+                        {!(
+                          roleName === "SuperAdmin" &&
+                          currentRoleName !== "SuperAdmin"
+                        ) && (
+                          <>
+                            <button
+                              onClick={() => handleOpenEdit(user)}
+                              className="p-3 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                              title="Configure"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </button>
+
+                            {/* Further restriction: Admin cannot delete DeptHead */}
+                            {!(
+                              roleName === "DepartmentHead" &&
+                              currentRoleName === "Admin"
+                            ) && (
+                              <button
+                                onClick={() => handleDelete(user.id)}
+                                className="p-3 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                                title="Terminate"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            )}
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -510,6 +577,11 @@ const ManageUsers = () => {
                     <option value="Student">Student Node</option>
                     <option value="Faculty">Faculty Node</option>
                     <option value="Admin">Admin Node</option>
+                    {currentRoleName === "SuperAdmin" && (
+                      <option value="DepartmentHead">
+                        Department Head Node
+                      </option>
+                    )}
                   </select>
                 </div>
                 <div className="space-y-2">
