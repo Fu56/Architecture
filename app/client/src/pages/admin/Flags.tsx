@@ -14,7 +14,7 @@ import {
   Clock,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "../../lib/toast";
 
 const Flags = () => {
   const [flags, setFlags] = useState<FlagModel[]>([]);

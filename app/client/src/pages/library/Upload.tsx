@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { api } from "../../lib/api";
 import { UploadCloud, Loader2, Sparkles, Shield, Info } from "lucide-react";
-import { toast } from "react-toastify";
+import { toast } from "../../lib/toast";
 import type { DesignStage } from "../../models";
 
 const Upload = () => {

@@ -3,7 +3,7 @@ import { getUser, setUser as setAuthUser } from "../../lib/auth";
 import { useNavigate } from "react-router-dom";
 import { User, Shield, Key, LogOut, X, Edit3, Save } from "lucide-react";
 import { api } from "../../lib/api";
-import { toast } from "react-toastify";
+import { toast } from "../../lib/toast";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const Profile = () => {
     // Identity Validation Protocol
     if (!profileForm.first_name.trim() || !profileForm.last_name.trim()) {
       toast.warn(
-        "Transmission Aborted: Legal First and Last identifiers required."
+        "Transmission Aborted: Legal First and Last identifiers required.",
       );
       return;
     }

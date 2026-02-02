@@ -12,7 +12,7 @@ import {
   AtSign,
   GraduationCap,
 } from "lucide-react";
-import { toast } from "react-toastify";
+import { toast } from "../../lib/toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

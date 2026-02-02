@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { authClient } from "../../lib/auth-client";
 import { syncSessionToStorage } from "../../lib/auth";
 import { LogIn } from "lucide-react";
-import { toast } from "react-toastify";
+import { toast } from "../../lib/toast";
 
 interface UserWithRole {
   id: string | number;

@@ -14,7 +14,7 @@ import {
   Briefcase,
   Sparkles,
 } from "lucide-react";
-import { toast } from "react-toastify";
+import { toast } from "../lib/toast";
 import { api } from "../lib/api";
 import type { Resource, Blog } from "../models";
 import ResourceCard from "../components/ui/ResourceCard";

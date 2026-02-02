@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../lib/api";
 import { Loader2, UploadCloud, X, PlusCircle, Save } from "lucide-react";
-import { toast } from "react-toastify";
+import { toast } from "../../lib/toast";
 
 const PostBlog = () => {
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ const PostBlog = () => {
   const navigate = useNavigate();
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value, type } = e.target;
     const val =

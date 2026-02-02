@@ -13,7 +13,7 @@ import {
   Clock,
 } from "lucide-react";
 import { api } from "../../lib/api";
-import { toast } from "react-toastify";
+import { toast } from "../../lib/toast";
 
 interface NewsItem {
   id: number;

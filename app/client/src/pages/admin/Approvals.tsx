@@ -13,7 +13,7 @@ import {
   Zap,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "../../lib/toast";
 
 const Approvals = () => {
   const [resources, setResources] = useState<Resource[]>([]);

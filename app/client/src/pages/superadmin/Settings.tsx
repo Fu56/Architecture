@@ -12,7 +12,7 @@ import {
   CircleCheck,
 } from "lucide-react";
 import { api } from "../../lib/api";
-import { toast } from "react-toastify";
+import { toast } from "../../lib/toast";
 
 const Settings = () => {
   const navigate = useNavigate();

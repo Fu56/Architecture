@@ -24,8 +24,8 @@ import { useSession, authClient } from "../../lib/auth-client";
 import { api } from "../../lib/api";
 import { syncSessionToStorage } from "../../lib/auth";
 import Footer from "./Footer";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Toaster } from "./sonner";
+import { toast } from "../../lib/toast";
 
 interface UserWithRole {
   id: string | number;
@@ -514,7 +514,7 @@ const Layout = () => {
       </main>
 
       <Footer />
-      <ToastContainer position="bottom-right" autoClose={3000} />
+      <Toaster richColors position="bottom-right" expand={false} />
     </div>
   );
 };

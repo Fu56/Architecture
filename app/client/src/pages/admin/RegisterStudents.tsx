@@ -13,7 +13,7 @@ import {
   ArrowRight,
   FileText,
 } from "lucide-react";
-import { toast } from "react-toastify";
+import { toast } from "../../lib/toast";
 
 interface StudentRow {
   first_name: string;

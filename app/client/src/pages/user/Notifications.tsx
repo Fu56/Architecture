@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../lib/api";
-import { toast } from "react-toastify";
+import { toast } from "../../lib/toast";
 import { useSession } from "../../lib/auth-client";
 import type { Notification } from "../../models";
 import { Bell, CheckCircle, XCircle, Info, Zap } from "lucide-react";
@@ -49,7 +49,7 @@ const Notifications = () => {
     if (e) e.stopPropagation();
     // Optimistic update
     setNotifications(
-      notifications.map((n) => (n.id === id ? { ...n, is_read: true } : n))
+      notifications.map((n) => (n.id === id ? { ...n, is_read: true } : n)),
     );
     try {
       await api.patch(`/notifications/${id}/read`);
@@ -57,7 +57,7 @@ const Notifications = () => {
     } catch {
       // Revert on error
       setNotifications(
-        notifications.map((n) => (n.id === id ? { ...n, is_read: false } : n))
+        notifications.map((n) => (n.id === id ? { ...n, is_read: false } : n)),
       );
     }
   };
@@ -142,9 +142,7 @@ const Notifications = () => {
                 <div className="flex items-center gap-3">
                   <p
                     className={`text-xs font-black uppercase tracking-widest ${
-                      !notification.is_read
-                        ? "text-primary"
-                        : "text-gray-500"
+                      !notification.is_read ? "text-primary" : "text-gray-500"
                     }`}
                   >
                     {notification.title}
@@ -155,7 +153,7 @@ const Notifications = () => {
                       {
                         month: "short",
                         day: "numeric",
-                      }
+                      },
                     )}
                   </span>
                 </div>

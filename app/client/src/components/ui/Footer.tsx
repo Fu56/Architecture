@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   BookOpen,
@@ -10,7 +11,11 @@ import {
   ShieldCheck,
   Cpu,
   Layers,
+  Loader2,
+  CheckCircle,
 } from "lucide-react";
+import { toast } from "../../lib/toast";
+import { api } from "../../lib/api";
 
 /**
  * Premium Footer Component
@@ -18,6 +23,42 @@ import {
  */
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const [footerEmail, setFooterEmail] = useState("");
+  const [footerSubscribing, setFooterSubscribing] = useState(false);
+  const [footerSubscribed, setFooterSubscribed] = useState(false);
+  const [footerError, setFooterError] = useState("");
+
+  const handleFooterSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFooterError("");
+
+    if (!footerEmail || !footerEmail.includes("@")) {
+      setFooterError("Invalid email address. Please enter a valid email.");
+      return;
+    }
+
+    setFooterSubscribing(true);
+    try {
+      const { data } = await api.post("/common/subscribe", {
+        email: footerEmail,
+      });
+      toast.success(data.message || "Successfully subscribed to the digest!");
+      setFooterSubscribed(true);
+      setFooterEmail("");
+      setTimeout(() => setFooterSubscribed(false), 3000);
+    } catch (error: unknown) {
+      let message = "Failed to subscribe. Please try again.";
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { message?: string } };
+        };
+        message = axiosError.response?.data?.message || message;
+      }
+      setFooterError(message);
+    } finally {
+      setFooterSubscribing(false);
+    }
+  };
 
   return (
     <footer className="bg-[#5A270F] text-gray-400 pt-24 pb-12 overflow-hidden relative">
@@ -27,7 +68,7 @@ const Footer = () => {
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#DF8142]/10 blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-16 mb-16 lg:mb-24">
           {/* Brand Identity Module */}
           <div className="lg:col-span-5 space-y-12">
             <Link to="/" className="flex items-center gap-4 group">
@@ -50,7 +91,7 @@ const Footer = () => {
               evolution through verified intellectual property.
             </p>
 
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-3 sm:gap-4">
               {[
                 { icon: Facebook, label: "Meta" },
                 { icon: Twitter, label: "X-Network" },
@@ -75,12 +116,12 @@ const Footer = () => {
               <div className="w-1.5 h-1.5 rounded-full bg-[#DF8142]" />
               SYSTEM INDEX
             </h3>
-            <ul className="space-y-4 text-sm font-bold uppercase tracking-wide">
+            <ul className="space-y-3 sm:space-y-4 text-sm font-bold uppercase tracking-wide">
               {[
                 { label: "Collective Archive", to: "/browse" },
                 { label: "Research Journal", to: "/blog" },
-                { label: "Faculty Portal", to: "/login" },
-                { label: "Submit Artifact", to: "/upload" },
+                { label: "Portal", to: "/login" },
+
                 { label: "Design Console", to: "/explore" },
               ].map((link) => (
                 <li key={link.label}>
@@ -117,26 +158,50 @@ const Footer = () => {
                 verified transmission.
               </p>
 
-              <form className="relative group/input mb-8">
+              <form
+                onSubmit={handleFooterSubscribe}
+                className="relative group/input mb-8"
+              >
                 <div className="absolute -inset-0.5 bg-[#DF8142] rounded-2xl blur opacity-0 group-focus-within/input:opacity-10 transition" />
-                <input
-                  type="email"
-                  id="footer-subscribe-email"
-                  title="Subscription Email"
-                  placeholder="Enter your email identifier..."
-                  className="relative w-full bg-[#6C3B1C]/20 border border-white/10 rounded-xl py-4 pl-6 pr-16 text-xs font-bold text-white outline-none focus:border-[#DF8142] transition-all placeholder:text-white/20"
-                />
-                <button
-                  type="button"
-                  title="Execute Subscription"
-                  aria-label="Subscribe to newsletter"
-                  className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[#DF8142] rounded-lg hover:bg-white hover:text-[#5A270F] transition-all duration-300 text-white shadow-lg shadow-[#DF8142]/20"
-                >
-                  <ArrowRight className="h-5 w-5" />
-                </button>
+                <div className="relative">
+                  <input
+                    type="email"
+                    id="footer-subscribe-email"
+                    title="Subscription Email"
+                    value={footerEmail}
+                    onChange={(e) => {
+                      setFooterEmail(e.target.value);
+                      if (footerError) setFooterError("");
+                    }}
+                    disabled={footerSubscribing || footerSubscribed}
+                    placeholder="Enter your email identifier..."
+                    className={`relative w-full bg-[#6C3B1C]/20 border ${footerError ? "border-red-500/50" : "border-white/10"} rounded-xl py-4 pl-6 pr-16 text-xs font-bold text-white outline-none focus:border-[#DF8142] transition-all placeholder:text-white/20 disabled:opacity-50`}
+                  />
+                  <button
+                    type="submit"
+                    disabled={footerSubscribing || footerSubscribed}
+                    title="Execute Subscription"
+                    aria-label="Subscribe to newsletter"
+                    className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[#DF8142] rounded-lg hover:bg-white hover:text-[#5A270F] transition-all duration-300 text-white shadow-lg shadow-[#DF8142]/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {footerSubscribing ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : footerSubscribed ? (
+                      <CheckCircle className="h-5 w-5" />
+                    ) : (
+                      <ArrowRight className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
+                {footerError && (
+                  <p className="mt-2 text-xs text-red-400 font-medium flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-300">
+                    <span className="inline-block w-1 h-1 rounded-full bg-red-400" />
+                    {footerError}
+                  </p>
+                )}
               </form>
 
-              <div className="flex items-center gap-4 py-4 px-6 bg-[#6C3B1C]/30 rounded-2xl border border-white/5">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 py-4 px-4 sm:px-6 bg-[#6C3B1C]/30 rounded-2xl border border-white/5">
                 <div className="flex -space-x-2">
                   {[1, 2, 3].map((i) => (
                     <div
@@ -165,18 +230,15 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar - Protocol & Legal */}
-        <div className="pt-12 border-t border-white/5 flex flex-col lg:flex-row justify-between items-center gap-16">
+        <div className="pt-8 sm:pt-12 border-t border-white/5 flex flex-col lg:flex-row justify-between items-center gap-8 lg:gap-16">
           <div className="flex flex-col items-center lg:items-start gap-4">
             <p className="text-[9px] font-medium tracking-widest text-[#92664A] uppercase">
               &copy; {currentYear} ARCHVAULT DIGITAL ARCHITECTURAL SYSTEMS.
             </p>
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-10 gap-y-4">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 sm:gap-x-10 gap-y-3 sm:gap-y-4">
               {[
                 { label: "PRIVACY PROTOCOL", to: "/privacy" },
                 { label: "SERVICE TERMS", to: "/terms" },
-                { label: "DATA COOKIES", to: "/cookies" },
-                { label: "ETHICAL CORE", to: "/ethics" },
-                { label: "LEGAL REGISTRY", to: "/legal" },
               ].map((item) => (
                 <Link
                   key={item.label}
@@ -190,8 +252,8 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex flex-col items-center lg:items-end gap-2">
-            <div className="flex items-center gap-4 px-6 py-3 bg-white/5 rounded-full border border-white/5 shadow-xl backdrop-blur-md">
+          <div className="flex flex-col items-center lg:items-end gap-2 w-full lg:w-auto">
+            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 bg-white/5 rounded-full border border-white/5 shadow-xl backdrop-blur-md w-full sm:w-auto">
               <div className="flex items-center gap-3 text-[#EEB38C]">
                 <div className="w-2 h-2 rounded-full bg-[#DF8142] animate-pulse shadow-[0_0_8px_rgba(223,129,66,0.4)]" />
                 <Globe className="h-3.5 w-3.5" />
@@ -199,7 +261,7 @@ const Footer = () => {
                   GLOBAL RELAY: ACTIVE
                 </span>
               </div>
-              <div className="h-4 w-px bg-white/10" />
+              <div className="h-4 w-px bg-white/10 hidden sm:block" />
               <div className="flex items-center gap-2">
                 <ShieldCheck className="h-3.5 w-3.5 text-[#DF8142]" />
                 <p className="text-[9px] font-bold text-white/30 uppercase tracking-widest">

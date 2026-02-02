@@ -23,7 +23,7 @@ import {
   Box,
 } from "lucide-react";
 import { isAuthenticated, currentRole } from "../../lib/auth";
-import { toast } from "react-toastify";
+import { toast } from "../../lib/toast";
 
 interface Rating {
   id: number;
