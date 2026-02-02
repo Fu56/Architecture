@@ -18,6 +18,7 @@ import {
   Bell,
   LayoutDashboard,
   ChevronDown,
+  ArrowRight,
 } from "lucide-react";
 import { useSession, authClient } from "../../lib/auth-client";
 import { api } from "../../lib/api";
@@ -139,7 +140,7 @@ const Layout = () => {
     : "/dashboard/notifications";
 
   return (
-    <div className="min-h-screen flex flex-col font-sans selection:bg-primary/20 selection:text-[#2A1205]">
+    <div className="min-h-screen flex flex-col font-sans selection:bg-[#DF8142]/20 selection:text-[#5A270F]">
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-in-out ${
           isScrolled
@@ -321,7 +322,7 @@ const Layout = () => {
                     {isUserMenuOpen && (
                       <div className="absolute right-0 mt-4 w-72 bg-white/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] border border-white p-3 py-4 animate-in fade-in slide-in-from-top-4 duration-500 z-[100] ring-1 ring-[#5A270F]/5">
                         {/* Menu Header */}
-                        <div className="px-5 py-6 mb-2 mx-2 rounded-[2rem] bg-[#2A1205] relative overflow-hidden group/header">
+                        <div className="px-5 py-6 mb-2 mx-2 rounded-[2rem] bg-[#5A270F] relative overflow-hidden group/header">
                           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[50px] transition-all group-hover/header:bg-primary/40" />
                           <div className="relative z-10">
                             <p className="text-xs font-black uppercase tracking-[0.25em] text-primary/80 mb-2">
@@ -404,13 +405,17 @@ const Layout = () => {
                   <div className="flex items-center gap-3">
                     <Link
                       to="/login"
-                      className={`px-6 py-2.5 text-sm font-black tracking-tight rounded-full shadow-lg transition-all duration-300 hover:scale-[1.05] active:scale-[0.95] ${
+                      className={`group relative px-8 py-3 text-sm font-black uppercase tracking-widest rounded-full transition-all duration-500 hover:scale-105 active:scale-95 overflow-hidden ${
                         isScrolled || !isHomePage
-                          ? "bg-primary text-white shadow-primary/20 hover:bg-primary/90"
-                          : "bg-white text-primary hover:bg-gray-50 shadow-white/20"
+                          ? "bg-[#5A270F] text-white shadow-xl shadow-[#5A270F]/20"
+                          : "bg-white text-[#5A270F] shadow-2xl shadow-white/10"
                       }`}
                     >
-                      Sign In
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#DF8142] to-[#EEB38C] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <span className="relative z-10 flex items-center gap-2">
+                        Sign In
+                        <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
+                      </span>
                     </Link>
                   </div>
                 )}
