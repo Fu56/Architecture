@@ -13,9 +13,6 @@ import {
   Calendar,
   Briefcase,
   Sparkles,
-  Globe,
-  Clock,
-  Package,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import { api } from "../lib/api";
@@ -31,15 +28,6 @@ interface NewsItem {
   createdAt: string;
   time: string;
 }
-
-const categories = [
-  { name: "Structural Systems", icon: "🏗️" },
-  { name: "Sustainable Matrix", icon: "🌱" },
-  { name: "Urban Morphologies", icon: "🏙️" },
-  { name: "BIM Protocols", icon: "📂" },
-  { name: "Parametric Logic", icon: "♾️" },
-  { name: "Interior Narratives", icon: "🪑" },
-];
 
 interface Stats {
   totalResources: number;
@@ -826,137 +814,124 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Categories & Global CDN Status */}
-      <section className="py-48 bg-white relative overflow-hidden">
-        <div className="absolute inset-0 blueprint-grid opacity-[0.02] pointer-events-none" />
+      {/* Interdisciplinary Collaboration - The Human Element */}
+      <section className="py-48 bg-[#EFEDED] relative overflow-hidden">
+        <div className="absolute inset-0 blueprint-grid opacity-[0.03] pointer-events-none" />
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#DF8142]/20 to-transparent" />
 
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="flex flex-col lg:flex-row gap-32 items-start">
-            {/* Categories Grid */}
-            <div className="lg:w-1/2">
-              <div className="mb-20">
-                <span className="text-[11px] font-black uppercase tracking-[0.5em] text-primary mb-6 block">
-                  RESOURCE TAXONOMY
-                </span>
-                <h2 className="text-6xl font-black tracking-tighter text-[#2A1205] uppercase leading-none">
-                  ARCHITECTURAL <br />
-                  <span className="italic">MODULES.</span>
-                </h2>
+          <div className="flex flex-col lg:flex-row gap-24 items-center">
+            {/* Visual Narrative */}
+            <div className="lg:w-1/2 relative group">
+              <div className="absolute -inset-6 bg-[#DF8142]/10 rounded-[4rem] blur-3xl scale-95 group-hover:scale-100 transition-transform duration-1000" />
+              <div className="relative rounded-[3.5rem] overflow-hidden border border-[#D9D9C2] shadow-2xl transition-all duration-700 hover:shadow-[#DF8142]/20 group-hover:-translate-y-2">
+                <img
+                  src="/assets/collaborators.png"
+                  className="w-full aspect-[4/5] object-cover grayscale hover:grayscale-0 transition-all duration-[2s] scale-100 group-hover:scale-110"
+                  alt="Architecture and Software Engineering Collaboration"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src =
+                      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#5A270F] via-[#5A270F]/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-1000" />
+
+                {/* Floating Badge */}
+                <div className="absolute bottom-12 left-12 right-12">
+                  <div className="glass-morphism p-8 rounded-[2rem] border border-white/20 backdrop-blur-3xl animate-in slide-in-from-bottom-8 duration-1000">
+                    <div className="flex items-center gap-4 mb-3">
+                      <div className="flex -space-x-3">
+                        <div className="h-8 w-8 rounded-full border-2 border-white bg-[#DF8142] flex items-center justify-center text-[10px] font-black text-white">
+                          ARCH
+                        </div>
+                        <div className="h-8 w-8 rounded-full border-2 border-white bg-[#5A270F] flex items-center justify-center text-[10px] font-black text-white">
+                          SOFT
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">
+                        JOINT VENTURE
+                      </span>
+                    </div>
+                    <p className="text-white/80 text-xs font-bold leading-relaxed">
+                      Bridge of intelligence between physical space and digital
+                      logic.
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-8">
-                {categories.map((cat, idx) => (
-                  <Link
-                    key={cat.name}
-                    to={`/browse?category=${encodeURIComponent(cat.name)}`}
-                    className="group relative h-48 rounded-[2.5rem] bg-[#fafafa] border border-[#D9D9C2] overflow-hidden transition-all duration-700 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                    <div className="p-8 relative z-10 flex flex-col h-full justify-between">
-                      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg group-hover:bg-[#2A1205] group-hover:text-white transition-all duration-500">
-                        <Package className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">
-                          SECTION {String(idx + 1).padStart(2, "0")}
-                        </p>
-                        <h4 className="text-xl font-black text-[#5A270F] uppercase tracking-tight">
-                          {cat.name}
-                        </h4>
-                      </div>
-                    </div>
-                    <div className="absolute bottom-6 right-8 text-slate-100 group-hover:text-primary/20 transition-colors">
-                      <ArrowUpRight className="h-12 w-12" />
-                    </div>
-                  </Link>
-                ))}
-              </div>
+              {/* Decorative Geometric Elements */}
+              <div className="absolute -top-12 -right-12 h-48 w-48 border border-[#DF8142]/20 rounded-full animate-[spin_20s_linear_infinite]" />
+              <div className="absolute -bottom-8 -left-8 h-32 w-32 border-2 border-[#5A270F]/10 rounded-[2rem] rotate-12" />
             </div>
 
-            {/* Global CDN Status Tracker */}
-            <div className="lg:w-1/2 w-full">
-              <div className="bg-[#EFEDED] border border-[#D9D9C2] rounded-[4rem] p-12 sm:p-16 space-y-16 relative overflow-hidden group/cdn">
-                <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-1000 group-hover:rotate-[30deg]">
-                  <Globe className="h-48 w-48" />
+            {/* Strategic Information */}
+            <div className="lg:w-1/2 space-y-12">
+              <div>
+                <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#DF8142]/10 border border-[#DF8142]/20 rounded-full text-[10px] font-black uppercase tracking-[0.4em] text-[#DF8142] mb-8">
+                  <Sparkles className="h-4 w-4" /> THE COLLABORATION
+                </div>
+                <h2 className="text-6xl md:text-8xl font-black tracking-tighter text-[#5A270F] uppercase leading-[0.8] mb-10">
+                  FUSION OF <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] to-[#6C3B1C] italic">
+                    DISCIPLINES.
+                  </span>
+                </h2>
+                <p className="text-xl text-[#6C3B1C] font-bold leading-relaxed max-w-xl">
+                  ARCHVAULT is the product of a high-performance synergy between
+                  the **Department of Architecture** and the **Software
+                  Engineering Department**.
+                </p>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-8">
+                <div className="p-10 bg-white rounded-[2.5rem] border border-[#D9D9C2] shadow-sm hover:border-[#DF8142]/40 transition-all duration-500 hover:-translate-y-1">
+                  <div className="h-12 w-12 bg-[#DF8142]/10 rounded-2xl flex items-center justify-center text-[#DF8142] mb-6">
+                    <Users className="h-6 w-6" />
+                  </div>
+                  <h4 className="text-xl font-black text-[#5A270F] uppercase tracking-tight mb-4">
+                    ARCH_CORE
+                  </h4>
+                  <p className="text-gray-500 text-sm font-bold leading-relaxed">
+                    Architecture students defined the library taxonomy, BIM
+                    standards, and creative vision.
+                  </p>
                 </div>
 
-                <div className="flex items-center justify-between relative z-10">
-                  <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 bg-white rounded-[2rem] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-500 border border-[#D9D9C2]">
-                      <Globe className="h-10 w-10 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="text-3xl font-black text-[#2A1205] uppercase tracking-tight leading-none mb-2">
-                        GLOBAL DELIVERY
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[#5A270F] animate-pulse" />
-                        <span className="text-[10px] font-black text-[#2A1205] uppercase tracking-[0.3em]">
-                          ALL NODES ACTIVE
-                        </span>
-                      </div>
-                    </div>
+                <div className="p-10 bg-white rounded-[2.5rem] border border-[#D9D9C2] shadow-sm hover:border-[#5A270F]/40 transition-all duration-500 hover:-translate-y-1">
+                  <div className="h-12 w-12 bg-[#5A270F]/10 rounded-2xl flex items-center justify-center text-[#5A270F] mb-6">
+                    <Cpu className="h-6 w-6" />
                   </div>
-                  <div className="hidden sm:flex items-center gap-4">
-                    <div className="flex -space-x-3">
-                      {[1, 2, 3].map((i) => (
-                        <div
-                          key={i}
-                          className="w-10 h-10 rounded-full border-2 border-slate-50 bg-slate-200 overflow-hidden"
-                        >
-                          <img
-                            src={`https://i.pravatar.cc/100?u=${i + 50}`}
-                            className="grayscale"
-                            alt="Node"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                    <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">
-                      ACTIVE OPS
-                    </span>
-                  </div>
+                  <h4 className="text-xl font-black text-[#5A270F] uppercase tracking-tight mb-4">
+                    SOFT_LOGIC
+                  </h4>
+                  <p className="text-gray-500 text-sm font-bold leading-relaxed">
+                    Software engineering students engineered the high-speed CDN,
+                    encryption layer, and UX matrix.
+                  </p>
                 </div>
+              </div>
 
-                <div className="grid grid-cols-2 gap-8 relative z-10">
-                  <div className="p-8 bg-white rounded-[2rem] border border-[#D9D9C2] shadow-sm transition-all hover:border-primary/40 group-hover/cdn:-translate-y-1">
-                    <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-3">
-                      LATENCY (AVG)
+              <div className="pt-8 border-t border-[#D9D9C2]">
+                <div className="flex items-center gap-12">
+                  <div>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2">
+                      PROJECT SCALE
                     </p>
-                    <p className="text-3xl font-black text-[#2A1205] tracking-tighter">
-                      124
-                      <span className="text-sm text-primary/90 ml-1">MS</span>
-                    </p>
-                  </div>
-                  <div className="p-8 bg-white rounded-[2rem] border border-[#D9D9C2] shadow-sm transition-all hover:border-primary/40 group-hover/cdn:-translate-y-1">
-                    <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-3">
-                      UPTIME (YTD)
-                    </p>
-                    <p className="text-3xl font-black text-[#2A1205] tracking-tighter">
-                      99.98
-                      <span className="text-sm text-primary/90 ml-1">%</span>
+                    <p className="text-3xl font-black text-[#5A270F] tracking-tighter uppercase">
+                      INTER-DEPT
                     </p>
                   </div>
-                </div>
-
-                <div className="relative z-10 py-10 px-8 bg-[#2A1205] rounded-[2.5rem] flex items-center justify-between group-hover/cdn:bg-primary transition-colors duration-700 overflow-hidden shadow-2xl">
-                  <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.05)_50%,transparent_75%)] bg-[length:250px_250px] animate-[shimmer_5s_infinite_linear]" />
-                  <div className="flex items-center gap-4 relative z-10">
-                    <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
-                      <Clock className="h-5 w-5 text-primary/80 group-hover/cdn:text-white" />
-                    </div>
-                    <div>
-                      <p className="text-[8px] font-black text-white/30 uppercase tracking-[0.3em]">
-                        NEXT CACHE FLUSH
-                      </p>
-                      <p className="text-xs font-black text-white uppercase tracking-widest">
-                        IN 14:02:59
-                      </p>
-                    </div>
+                  <div className="h-12 w-px bg-[#D9D9C2]" />
+                  <div>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2">
+                      SYNERGY NODE
+                    </p>
+                    <p className="text-3xl font-black text-[#DF8142] tracking-tighter uppercase">
+                      ACTIVE
+                    </p>
                   </div>
-                  <button className="px-8 py-3 bg-white/10 hover:bg-white hover:text-[#2A1205] text-white text-[9px] font-black uppercase tracking-[0.3em] rounded-full border border-white/10 transition-all active:scale-95 relative z-10">
-                    STATUS RELAY
-                  </button>
                 </div>
               </div>
             </div>

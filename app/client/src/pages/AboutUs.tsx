@@ -122,6 +122,86 @@ const AboutUs = () => {
         </div>
       </section>
 
+      {/* Collaborative Nexus - Interdisciplinary Engineering */}
+      <section className="py-32 bg-slate-950 relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_20%,rgba(223,129,66,0.1),transparent_50%)]" />
+          <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_80%,rgba(90,39,15,0.15),transparent_50%)]" />
+        </div>
+
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
+          <div className="flex flex-col lg:flex-row-reverse gap-24 items-center">
+            {/* Structural Imagery */}
+            <div className="lg:w-1/2 relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-[#DF8142] to-[#5A270F] rounded-[4rem] blur opacity-20 group-hover:opacity-40 transition duration-1000" />
+              <div className="relative rounded-[3.5rem] overflow-hidden border border-white/10 shadow-3xl">
+                <img
+                  src="/assets/collaborators.png"
+                  className="w-full aspect-square object-cover grayscale hover:grayscale-0 transition-all duration-[2s] scale-105 group-hover:scale-110"
+                  alt="Interdisciplinary Engineering Team"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src =
+                      "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=2070&auto=format&fit=crop";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#2A1205] via-transparent to-transparent opacity-80" />
+
+                <div className="absolute bottom-10 left-10 p-8 glass-morphism rounded-[2.5rem] border border-white/10 backdrop-blur-md">
+                  <p className="text-[#EEB38C] text-xs font-black uppercase tracking-[0.4em] mb-2">
+                    SYNERGY STATUS
+                  </p>
+                  <h3 className="text-white text-2xl font-black uppercase tracking-tight">
+                    FULLY INTEGRATED
+                  </h3>
+                </div>
+              </div>
+            </div>
+
+            {/* Strategic Narrative */}
+            <div className="lg:w-1/2">
+              <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#DF8142]/10 border border-[#DF8142]/20 rounded-full text-[10px] font-black uppercase tracking-[0.4em] text-[#DF8142] mb-8">
+                DEPT COLLABORATION
+              </div>
+              <h2 className="text-5xl sm:text-7xl font-black text-white tracking-tighter mb-10 leading-[0.9]">
+                ENGINEERED BY <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#EEB38C] to-[#DF8142]">
+                  DUAL PERSPECTIVES.
+                </span>
+              </h2>
+              <div className="space-y-8">
+                <p className="text-gray-400 text-lg font-medium leading-relaxed italic border-l-4 border-[#DF8142] pl-8">
+                  "The most powerful architectural tools aren't built in
+                  isolation. They are born at the intersection of spatial
+                  creativity and algorithmic precision."
+                </p>
+                <div className="grid sm:grid-cols-2 gap-8 pt-8">
+                  <div className="space-y-4">
+                    <h4 className="text-[#EEB38C] font-black uppercase tracking-widest text-xs">
+                      Architecture Students
+                    </h4>
+                    <p className="text-gray-500 text-sm leading-relaxed">
+                      Defining the spatial logic, resource criticality, and the
+                      professional benchmarks that drive the library's curation.
+                    </p>
+                  </div>
+                  <div className="space-y-4">
+                    <h4 className="text-[#DF8142] font-black uppercase tracking-widest text-xs">
+                      Software Students
+                    </h4>
+                    <p className="text-gray-500 text-sm leading-relaxed">
+                      Implementing the high-performance architecture, secure
+                      distribution nodes, and the intuitive user experience
+                      layers.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Visionary Section */}
       <section className="py-32 bg-white overflow-hidden">
         <div className="max-w-[7xl] mx-auto px-4 sm:px-6 lg:px-8 text-center">
