@@ -138,6 +138,7 @@ const Layout = () => {
   const notificationsPath = isAdmin
     ? "/admin/notifications"
     : "/dashboard/notifications";
+  const uploadPath = isAdmin ? "/admin/upload" : "/dashboard/upload";
 
   return (
     <div className="min-h-screen flex flex-col font-sans selection:bg-[#DF8142]/20 selection:text-[#5A270F]">
@@ -237,7 +238,7 @@ const Layout = () => {
               {/* Upload Button (Authenticated Users) */}
               {isAuthenticated && !isSuperAdmin && (
                 <Link
-                  to="/dashboard/upload"
+                  to={uploadPath}
                   className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-105 ${
                     isScrolled || !isHomePage
                       ? "bg-[#DF8142] text-white hover:bg-[#DF8142]/90 shadow-lg shadow-[#DF8142]/20"
@@ -472,7 +473,7 @@ const Layout = () => {
                 {isAuthenticated && !isSuperAdmin && (
                   <>
                     <Link
-                      to="/dashboard/upload"
+                      to={uploadPath}
                       onClick={() => setMobileMenuOpen(false)}
                       className="px-4 py-4 rounded-2xl text-2xl font-black tracking-tight text-gray-900 flex items-center gap-3"
                     >

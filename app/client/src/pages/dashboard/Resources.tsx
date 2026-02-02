@@ -28,7 +28,7 @@ const Resources = () => {
         // We specifically want 'student' or 'archived' status resources
         params.append(
           "status",
-          isAdmin && showArchived ? "archived" : "student"
+          isAdmin && showArchived ? "archived" : "student",
         );
 
         const { data } = await api.get(`/resources?${params.toString()}`);
@@ -45,7 +45,7 @@ const Resources = () => {
         setLoading(false);
       }
     },
-    [isAdmin, showArchived]
+    [isAdmin, showArchived],
   );
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const Resources = () => {
   const handleRestore = async (id: number) => {
     if (
       !window.confirm(
-        "Are you sure you want to restore this resource to the active library?"
+        "Are you sure you want to restore this resource to the active library?",
       )
     )
       return;
@@ -84,8 +84,8 @@ const Resources = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Resource Library</h2>
-          <p className="text-sm text-gray-500 font-medium mt-1">
+          <h2 className="text-xl font-bold text-[#5A270F]">Resource Library</h2>
+          <p className="text-sm text-[#6C3B1C] font-medium mt-1">
             Browse and manage all approved academic materials.
           </p>
         </div>
@@ -96,14 +96,14 @@ const Resources = () => {
               className={`px-4 py-2 rounded-xl text-sm font-bold transition-all border ${
                 showArchived
                   ? "bg-[#5A270F] text-white border-[#5A270F]"
-                  : "bg-white text-[#5A270F]/80 border-[#D9D9C2] hover:border-slate-300"
+                  : "bg-white text-[#5A270F]/80 border-[#92664A]/30 hover:border-[#DF8142] hover:text-[#DF8142]"
               }`}
             >
               {showArchived ? "Show Active" : "Show Archived"}
             </button>
           )}
-          <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-xl text-primary/90 text-sm font-bold border border-primary/20">
-            <Library className="h-4 w-4" />
+          <div className="flex items-center gap-2 px-4 py-2 bg-[#DF8142]/10 rounded-xl text-[#5A270F] text-sm font-bold border border-[#DF8142]/20 shadow-sm">
+            <Library className="h-4 w-4 text-[#DF8142]" />
             {resources.length}{" "}
             {resources.length === 1 ? "Resource" : "Resources"}
           </div>
@@ -114,8 +114,8 @@ const Resources = () => {
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20">
-          <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
-          <p className="text-gray-500 font-medium">
+          <Loader2 className="h-10 w-10 animate-spin text-[#DF8142] mb-4" />
+          <p className="text-[#6C3B1C] font-medium">
             Fetching library resources...
           </p>
         </div>
@@ -135,7 +135,7 @@ const Resources = () => {
                   {showArchived ? (
                     <button
                       onClick={() => handleRestore(resource.id)}
-                      className="p-2 bg-[#5A270F] text-white rounded-lg shadow-lg hover:bg-[#5A270F] transition-colors"
+                      className="p-2 bg-[#5A270F] text-white rounded-lg shadow-lg hover:bg-[#6C3B1C] transition-colors shadow-[#5A270F]/20"
                       title="Restore Resource"
                     >
                       <RotateCcw className="h-4 w-4" />
@@ -155,12 +155,12 @@ const Resources = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 bg-white rounded-2xl border-2 border-dashed border-gray-200">
-          <Library className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-base font-bold text-gray-800">
+        <div className="text-center py-20 bg-white rounded-2xl border-2 border-dashed border-[#EEB38C]/30">
+          <Library className="h-12 w-12 text-[#92664A]/30 mx-auto mb-4" />
+          <h3 className="text-base font-bold text-[#5A270F]">
             No Resources Found
           </h3>
-          <p className="text-gray-500 text-xs max-w-xs mx-auto mt-1">
+          <p className="text-[#92664A] text-xs max-w-xs mx-auto mt-1">
             We couldn't find any resources matching your criteria.
           </p>
         </div>

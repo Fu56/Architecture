@@ -97,7 +97,7 @@ const RegisterFaculty = () => {
       const error = err as { response?: { data?: { message?: string } } };
       toast.error(
         error.response?.data?.message ||
-          "Protocol Error: Faculty registration failed"
+          "Protocol Error: Faculty registration failed",
       );
     } finally {
       setLoading(false);
@@ -117,16 +117,16 @@ const RegisterFaculty = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-20">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/80 backdrop-blur-xl p-8 rounded-xl border shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/80 backdrop-blur-xl p-8 rounded-3xl border border-[#EEB38C]/30 shadow-md">
         <div className="flex items-center gap-6">
-          <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+          <div className="h-12 w-12 bg-[#EEB38C]/20 rounded-xl flex items-center justify-center text-[#DF8142]">
             <Shield className="h-6 w-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">
+            <h2 className="text-2xl font-bold tracking-tight text-[#5A270F]">
               Faculty Registration
             </h2>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-[#6C3B1C] text-sm">
               Create new faculty credentials and assign permissions.
             </p>
           </div>
@@ -136,19 +136,24 @@ const RegisterFaculty = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Form Section */}
         <div className="lg:col-span-7">
-          <Card className="shadow-md">
-            <CardHeader>
-              <CardTitle>Core Identity</CardTitle>
-              <CardDescription>
+          <Card className="shadow-2xl shadow-[#5A270F]/5 border-[#EEB38C]/30 rounded-[2.5rem] overflow-hidden">
+            <CardHeader className="bg-[#EFEDED]/50 border-b border-[#EEB38C]/20 p-8">
+              <CardTitle className="text-[#5A270F]">Core Identity</CardTitle>
+              <CardDescription className="text-[#92664A]">
                 Enter the personal and system details for the new faculty
                 member.
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="first_name">First Name</Label>
+                    <Label
+                      htmlFor="first_name"
+                      className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
+                    >
+                      First Name
+                    </Label>
                     <Input
                       id="first_name"
                       name="first_name"
@@ -156,10 +161,16 @@ const RegisterFaculty = () => {
                       value={formData.first_name}
                       onChange={handleChange}
                       required
+                      className="rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="last_name">Last Name</Label>
+                    <Label
+                      htmlFor="last_name"
+                      className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
+                    >
+                      Last Name
+                    </Label>
                     <Input
                       id="last_name"
                       name="last_name"
@@ -167,20 +178,26 @@ const RegisterFaculty = () => {
                       value={formData.last_name}
                       onChange={handleChange}
                       required
+                      className="rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">System Email</Label>
+                  <Label
+                    htmlFor="email"
+                    className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
+                  >
+                    System Email
+                  </Label>
                   <div className="relative">
-                    <AtSign className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <AtSign className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
                     <Input
                       id="email"
                       name="email"
                       type="email"
                       placeholder="faculty@studio-nexus.edu"
-                      className="pl-9"
+                      className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
                       value={formData.email}
                       onChange={handleChange}
                       required
@@ -189,16 +206,21 @@ const RegisterFaculty = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password">Authorization Key</Label>
+                  <Label
+                    htmlFor="password"
+                    className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
+                  >
+                    Authorization Key
+                  </Label>
                   <div className="flex gap-2">
                     <div className="relative flex-1">
-                      <Key className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Key className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
                       <Input
                         id="password"
                         name="password"
                         type="text"
                         placeholder="Secure credential"
-                        className="pl-9 font-mono"
+                        className="pl-9 font-mono rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
                         value={formData.password}
                         onChange={handleChange}
                         required
@@ -208,28 +230,38 @@ const RegisterFaculty = () => {
                       type="button"
                       variant="outline"
                       onClick={generatePassword}
+                      className="rounded-xl border-[#D9D9C2] text-[#6C3B1C] hover:bg-[#EEB38C]/10 transition-all font-bold"
                     >
-                      <Zap className="h-4 w-4 mr-2" />
+                      <Zap className="h-4 w-4 mr-2 text-[#DF8142]" />
                       Auto
                     </Button>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t">
-                  <div className="flex items-center gap-2 mb-4">
-                    <GraduationCap className="h-4 w-4 text-primary" />
-                    <h3 className="text-sm font-medium">Academic Profile</h3>
+                <div className="pt-6 border-t border-[#EEB38C]/20">
+                  <div className="flex items-center gap-2 mb-6">
+                    <div className="p-2 bg-[#EEB38C]/10 rounded-lg">
+                      <GraduationCap className="h-4 w-4 text-[#DF8142]" />
+                    </div>
+                    <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F]">
+                      Academic Profile
+                    </h3>
                   </div>
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     <div className="space-y-2">
-                      <Label htmlFor="department">Department</Label>
+                      <Label
+                        htmlFor="department"
+                        className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
+                      >
+                        Department
+                      </Label>
                       <div className="relative">
-                        <Building2 className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Building2 className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
                         <Input
                           id="department"
                           name="department"
                           placeholder="e.g. Parametric Architecture"
-                          className="pl-9"
+                          className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
                           value={formData.department}
                           onChange={handleChange}
                         />
@@ -237,14 +269,19 @@ const RegisterFaculty = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="specialization">Specialization</Label>
+                      <Label
+                        htmlFor="specialization"
+                        className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
+                      >
+                        Specialization
+                      </Label>
                       <div className="relative">
-                        <Briefcase className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Briefcase className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
                         <Input
                           id="specialization"
                           name="specialization"
                           placeholder="e.g. Kinetic Structures"
-                          className="pl-9"
+                          className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
                           value={formData.specialization}
                           onChange={handleChange}
                         />
@@ -253,7 +290,11 @@ const RegisterFaculty = () => {
                   </div>
                 </div>
 
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button
+                  type="submit"
+                  className="w-full bg-[#5A270F] hover:bg-[#6C3B1C] text-white py-6 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] shadow-xl shadow-[#5A270F]/20 transition-all hover:-translate-y-1 active:scale-95"
+                  disabled={loading}
+                >
                   {loading ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -273,53 +314,54 @@ const RegisterFaculty = () => {
 
         {/* Live ID Preview */}
         <div className="lg:col-span-5 sticky top-10">
-          <Card className="bg-[#2A1205] text-white border-[#6C3B1C] shadow-xl overflow-hidden relative">
-            <div className="absolute top-0 right-0 p-24 opacity-10 blur-3xl bg-primary/90 rounded-full pointer-events-none" />
-            <CardHeader>
+          <Card className="bg-[#5A270F] text-white border-[#EEB38C]/20 shadow-2xl rounded-[3rem] overflow-hidden relative">
+            <div className="absolute top-0 right-0 p-32 opacity-20 blur-3xl bg-[#DF8142] rounded-full pointer-events-none" />
+            <CardHeader className="p-10 pb-6 relative z-10">
               <div className="flex justify-between items-start">
-                <div className="h-10 w-10 bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center">
-                  <Award className="h-5 w-5 text-primary/80" />
+                <div className="h-12 w-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/10">
+                  <Award className="h-6 w-6 text-[#DF8142]" />
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] uppercase tracking-wider text-primary/80 font-bold">
+                  <p className="text-[10px] uppercase font-black tracking-[0.3em] text-[#EEB38C]">
                     Access Level
                   </p>
-                  <p className="text-lg font-bold tracking-widest text-white">
+                  <p className="text-2xl font-black tracking-tighter text-white">
                     FACULTY
                   </p>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="text-center space-y-2">
-                <div className="h-24 w-24 bg-gradient-to-br from-primary/90 to-[#5A270F] mx-auto rounded-xl flex items-center justify-center text-3xl font-bold shadow-lg border-2 border-[#5A270F]">
+            <CardContent className="px-10 space-y-8 relative z-10">
+              <div className="text-center space-y-4">
+                <div className="h-32 w-32 bg-gradient-to-br from-[#DF8142] via-[#6C3B1C] to-[#5A270F] mx-auto rounded-[2rem] flex items-center justify-center text-4xl font-black shadow-2xl border-4 border-[#5A270F] relative group overflow-hidden">
+                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                   {formData.first_name?.[0] || formData.last_name?.[0] || "?"}
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold tracking-tight">
+                <div className="space-y-1">
+                  <h3 className="text-2xl font-black tracking-tight uppercase">
                     {formData.first_name || "Faculty"}{" "}
                     {formData.last_name || "Member"}
                   </h3>
-                  <p className="text-xs text-gray-500 font-mono">
+                  <p className="text-[10px] text-[#EEB38C]/40 font-black uppercase tracking-[0.2em]">
                     {formData.email || "ID: PENDING"}
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <div className="bg-white/5 rounded-lg p-3 border border-white/5">
-                  <p className="text-[10px] uppercase tracking-wider text-[#5A270F] font-bold">
+              <div className="space-y-4">
+                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 group transition-all hover:bg-white/10">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-[#EEB38C]/60 font-black mb-1">
                     Department
                   </p>
-                  <p className="text-sm font-medium text-primary/40">
+                  <p className="text-sm font-bold text-white uppercase tracking-wider">
                     {formData.department || "N/A"}
                   </p>
                 </div>
-                <div className="bg-white/5 rounded-lg p-3 border border-white/5">
-                  <p className="text-[10px] uppercase tracking-wider text-[#5A270F] font-bold">
+                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 group transition-all hover:bg-white/10">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-[#EEB38C]/60 font-black mb-1">
                     Specialization
                   </p>
-                  <p className="text-sm font-medium text-purple-200">
+                  <p className="text-sm font-bold text-[#EEB38C] uppercase tracking-wider">
                     {formData.specialization || "N/A"}
                   </p>
                 </div>
@@ -335,17 +377,20 @@ const RegisterFaculty = () => {
             </CardFooter>
           </Card>
 
-          <Card className="mt-6 bg-primary/50 border-primary/20">
+          <Card className="mt-8 bg-[#EEB38C]/10 border-[#EEB38C]/20 rounded-3xl shadow-sm relative overflow-hidden group">
+            <div className="absolute top-0 left-0 w-1 h-full bg-[#DF8142]" />
             <CardContent className="p-6">
-              <div className="flex items-start gap-3">
-                <Zap className="h-5 w-5 text-primary mt-0.5" />
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-[#DF8142]/10 rounded-xl text-[#DF8142]">
+                  <Zap className="h-5 w-5" />
+                </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-[#2A1205]">
+                  <h4 className="text-base font-black text-[#5A270F] uppercase tracking-tight">
                     Privileged Access
                   </h4>
-                  <p className="text-xs text-primary/90 mt-1">
+                  <p className="text-xs text-[#92664A] font-bold leading-relaxed mt-1">
                     Faculty nodes handle assignment creation and resource
-                    validation.
+                    validation within the system matrix.
                   </p>
                 </div>
               </div>

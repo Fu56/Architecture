@@ -63,7 +63,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
         {/* Search Bar - Premium Style */}
         <div className="relative flex-grow group">
           <div className="absolute -inset-0.5 bg-[#DF8142]/90 rounded-xl blur opacity-10 group-focus-within:opacity-20 transition duration-500" />
-          <div className="relative flex items-center bg-white border border-[#D9D9C2] rounded-xl overflow-hidden shadow-sm group-focus-within:border-[#DF8142]/80 group-focus-within:shadow-[#DF8142]/5 transition-all">
+          <div className="relative flex items-center bg-white border border-[#EEB38C]/30 rounded-xl overflow-hidden shadow-sm group-focus-within:border-[#DF8142]/80 group-focus-within:shadow-[#DF8142]/5 transition-all">
             <Search className="ml-5 h-5 w-5 text-[#92664A]" />
             <input
               type="text"
@@ -71,7 +71,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
               placeholder="Search library matrix..."
               value={filters.search || ""}
               onChange={handleInputChange}
-              className="w-full pl-4 pr-4 py-3.5 text-[#5A270F] placeholder:text-gray-500 font-bold outline-none"
+              className="w-full pl-4 pr-4 py-3.5 text-[#5A270F] placeholder:text-[#92664A]/50 font-bold outline-none"
             />
             {filters.search && (
               <button
@@ -109,7 +109,6 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
         </button>
       </div>
 
-      {/* Expanded Filters - Premium Grid */}
       <div
         className={`grid transition-all duration-500 ease-in-out ${
           showFilters
@@ -118,7 +117,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
         }`}
       >
         <div className="overflow-hidden">
-          <div className="bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl p-6 space-y-6">
+          <div className="bg-[#EEB38C]/10 border border-[#EEB38C]/30 rounded-2xl p-6 space-y-6">
             <div className="flex items-center justify-between">
               <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#92664A]">
                 Parameter Configuration
@@ -141,7 +140,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                   title="File Type Protocol"
                   value={filters.fileType || ""}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-white border border-[#D9D9C2] rounded-lg font-bold text-[#5A270F] focus:ring-2 focus:ring-[#DF8142]/90 outline-none appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 bg-white border border-[#EEB38C]/50 rounded-lg font-bold text-[#5A270F] focus:ring-2 focus:ring-[#DF8142]/90 focus:border-[#DF8142] outline-none appearance-none cursor-pointer placeholder:text-[#92664A]/50"
                 >
                   <option value="">All Formats</option>
                   {fileTypes.map((type) => (
@@ -161,7 +160,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                   title="Design Stage Nexus"
                   value={filters.stage || ""}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-white border border-[#D9D9C2] rounded-lg font-bold text-[#5A270F] focus:ring-2 focus:ring-[#DF8142]/90 outline-none appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 bg-white border border-[#EEB38C]/50 rounded-lg font-bold text-[#5A270F] focus:ring-2 focus:ring-[#DF8142]/90 focus:border-[#DF8142] outline-none appearance-none cursor-pointer"
                 >
                   <option value="">All Development Stages</option>
                   {designStages.map((stage) => (
@@ -181,7 +180,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                   title="Temporal Alignment Sort"
                   value={filters.sort || ""}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-white border border-[#D9D9C2] rounded-lg font-bold text-[#5A270F] focus:ring-2 focus:ring-[#DF8142]/90 outline-none appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 bg-white border border-[#EEB38C]/50 rounded-lg font-bold text-[#5A270F] focus:ring-2 focus:ring-[#DF8142]/90 focus:border-[#DF8142] outline-none appearance-none cursor-pointer"
                 >
                   <option value="">Chronological: Newest First</option>
                   <option value="oldest">Chronological: Archive Access</option>
@@ -199,7 +198,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                     placeholder="Year..."
                     value={filters.year || ""}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white border border-[#D9D9C2] rounded-lg font-bold text-[#5A270F] outline-none focus:ring-2 focus:ring-[#DF8142]/90"
+                    className="w-full px-4 py-3 bg-white border border-[#EEB38C]/50 rounded-lg font-bold text-[#5A270F] outline-none focus:ring-2 focus:ring-[#DF8142]/90 focus:border-[#DF8142] placeholder:text-[#92664A]/50"
                   />
                   <input
                     type="number"
@@ -207,7 +206,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                     placeholder="Sem..."
                     value={filters.semester || ""}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white border border-[#D9D9C2] rounded-lg font-bold text-[#5A270F] outline-none focus:ring-2 focus:ring-[#DF8142]/90"
+                    className="w-full px-4 py-3 bg-white border border-[#EEB38C]/50 rounded-lg font-bold text-[#5A270F] outline-none focus:ring-2 focus:ring-[#DF8142]/90 focus:border-[#DF8142] placeholder:text-[#92664A]/50"
                   />
                 </div>
               </div>

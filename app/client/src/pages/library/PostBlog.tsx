@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../../lib/api";
 import { Loader2, UploadCloud, X, PlusCircle, Save } from "lucide-react";
 import { toast } from "../../lib/toast";
+import { useSession } from "../../lib/auth-client";
 
 const PostBlog = () => {
   const [loading, setLoading] = useState(false);
@@ -17,6 +18,15 @@ const PostBlog = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  interface UserWithRole {
+    role?: {
+      name: string;
+    };
+  }
+
+  const { data: session } = useSession();
+  const user = session?.user as unknown as UserWithRole;
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -41,6 +51,12 @@ const PostBlog = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!session) {
+      toast.error("Session expired. Please log in again.");
+      // Optional state save here?
+      return;
+    }
 
     // Intellectual Property Validation
     if (!formData.title.trim()) {
@@ -68,33 +84,46 @@ const PostBlog = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       toast.success("Blog post created successfully!");
-      navigate("/blog");
-    } catch (err) {
-      console.error("Failed to create blog:", err);
-      toast.error("Failed to create blog post. Please try again.");
+      if (user?.role?.name === "Admin" || user?.role?.name === "SuperAdmin") {
+        navigate("/admin/blog"); // Or wherever the admin list is
+      } else {
+        navigate("/blog");
+      }
+    } catch (err: unknown) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = err as any;
+      console.error("Failed to create blog:", error);
+      if (error.response?.status === 401) {
+        toast.error("Session expired or unauthorized. Please log in.");
+      } else if (error.response?.status === 403) {
+        toast.error("Permission denied. You do not have rights to post blogs.");
+      } else {
+        toast.error("Failed to create blog post. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-5xl">
-      <div className="mb-10 text-center">
-        <h1 className="text-4xl font-extrabold text-[#5A270F] mb-2">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-6xl">
+      <div className="mb-12 text-center space-y-4">
+        <h1 className="text-4xl md:text-5xl font-display font-bold text-[#5A270F] tracking-tight">
           Create New Story
         </h1>
-        <p className="text-[#5A270F]">
-          Share your architectural insights and news with the community.
+        <p className="text-lg text-[#6C3B1C] max-w-2xl mx-auto font-medium">
+          Share your architectural insights, news, and narratives with the
+          community.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-10">
-        <div className="grid lg:grid-cols-3 gap-10">
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="grid lg:grid-cols-3 gap-8">
           {/* Left: Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#D9D9C2] space-y-6">
-              <div>
-                <label className="block text-sm font-black uppercase tracking-widest text-gray-500 mb-2">
+            <div className="premium-card p-8 space-y-8 bg-white/50 backdrop-blur-sm border border-[#92664A]/20 shadow-xl shadow-[#5A270F]/5">
+              <div className="space-y-3">
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#92664A]">
                   Title
                 </label>
                 <input
@@ -103,13 +132,13 @@ const PostBlog = () => {
                   value={formData.title}
                   onChange={handleInputChange}
                   placeholder="Enter a compelling title..."
-                  className="w-full px-6 py-4 bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/90 text-lg font-bold text-[#5A270F]"
+                  className="w-full px-6 py-4 bg-[#f8f5f2] border border-[#d9d9c2] rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#DF8142]/30 focus:border-[#DF8142] transition-all text-xl font-display font-bold text-[#5A270F] placeholder:text-[#92664A]/40"
                   required
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-black uppercase tracking-widest text-gray-500 mb-2">
+              <div className="space-y-3">
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#92664A]">
                   Content
                 </label>
                 <textarea
@@ -117,8 +146,8 @@ const PostBlog = () => {
                   value={formData.content}
                   onChange={handleInputChange}
                   placeholder="Write your story here (Markdown supported)..."
-                  rows={15}
-                  className="w-full px-6 py-4 bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/90 text-[#6C3B1C] leading-relaxed font-medium"
+                  rows={18}
+                  className="w-full px-6 py-4 bg-[#f8f5f2] border border-[#d9d9c2] rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#DF8142]/30 focus:border-[#DF8142] transition-all text-base leading-relaxed text-[#6C3B1C] placeholder:text-[#92664A]/40 resize-none font-medium"
                   required
                 />
               </div>
@@ -128,16 +157,16 @@ const PostBlog = () => {
           {/* Right: Sidebar Metadata */}
           <div className="space-y-8">
             {/* Image Upload */}
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#D9D9C2] space-y-4">
-              <label className="block text-sm font-black uppercase tracking-widest text-gray-500">
+            <div className="premium-card p-6 space-y-4 border border-[#92664A]/20">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#92664A]">
                 Featured Image
               </label>
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className={`relative aspect-video rounded-2xl border-2 border-dashed transition-all cursor-pointer overflow-hidden flex flex-col items-center justify-center ${
+                className={`group relative aspect-video rounded-2xl border-2 border-dashed transition-all duration-300 cursor-pointer overflow-hidden flex flex-col items-center justify-center ${
                   imagePreview
-                    ? "border-primary/90"
-                    : "border-[#D9D9C2] hover:border-primary/80 bg-[#EFEDED]"
+                    ? "border-[#DF8142]/50 bg-[#DF8142]/5"
+                    : "border-[#d9d9c2] hover:border-[#DF8142]/60 hover:bg-[#DF8142]/5 bg-[#f8f5f2]"
                 }`}
               >
                 {imagePreview ? (
@@ -145,8 +174,13 @@ const PostBlog = () => {
                     <img
                       src={imagePreview}
                       alt="Preview"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
+                    <div className="absolute inset-0 bg-[#5A270F]/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <p className="text-white font-medium text-sm bg-[#5A270F]/80 px-4 py-2 rounded-full backdrop-blur-md">
+                        Change Image
+                      </p>
+                    </div>
                     <button
                       type="button"
                       title="Remove Image"
@@ -155,17 +189,24 @@ const PostBlog = () => {
                         setImage(null);
                         setImagePreview(null);
                       }}
-                      className="absolute top-2 right-2 p-1 bg-[#5A270F]/50 text-white rounded-full hover:bg-[#5A270F] transition-colors"
+                      className="absolute top-3 right-3 p-2 bg-white/90 text-[#d32f2f] rounded-full hover:bg-white transition-all shadow-md transform hover:scale-110"
                     >
                       <X className="h-4 w-4" />
                     </button>
                   </>
                 ) : (
-                  <div className="text-center p-6">
-                    <UploadCloud className="h-10 w-10 text-gray-400 mx-auto mb-2" />
-                    <p className="text-xs font-bold text-[#5A270F]">
-                      Click to upload image
-                    </p>
+                  <div className="text-center p-6 space-y-3">
+                    <div className="w-14 h-14 rounded-full bg-[#DF8142]/10 flex items-center justify-center mx-auto text-[#DF8142] group-hover:scale-110 transition-transform duration-300">
+                      <UploadCloud className="h-7 w-7" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-bold text-[#5A270F]">
+                        Click to upload
+                      </p>
+                      <p className="text-xs text-[#92664A]">
+                        SVG, PNG, JPG or GIF
+                      </p>
+                    </div>
                   </div>
                 )}
                 <input
@@ -181,36 +222,54 @@ const PostBlog = () => {
             </div>
 
             {/* Tags & Settings */}
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#D9D9C2] space-y-6">
-              <div>
-                <label className="block text-sm font-black uppercase tracking-widest text-gray-500 mb-2">
+            <div className="premium-card p-6 space-y-6 border border-[#92664A]/20">
+              <div className="space-y-3">
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#92664A]">
                   Tags
                 </label>
-                <div className="relative">
-                  <PlusCircle className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#DF8142]/10 flex items-center justify-center text-[#DF8142] group-focus-within:bg-[#DF8142] group-focus-within:text-white transition-colors duration-300">
+                    <PlusCircle className="h-5 w-5" />
+                  </div>
                   <input
                     type="text"
                     name="tags"
                     value={formData.tags}
                     onChange={handleInputChange}
-                    placeholder="tag1, tag2..."
-                    className="w-full pl-12 pr-4 py-3 bg-[#EFEDED] border border-[#D9D9C2] rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/90 font-bold text-[#5A270F]"
+                    placeholder="architecture, design, news..."
+                    className="w-full pl-14 pr-4 py-3.5 bg-[#f8f5f2] border border-[#d9d9c2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#DF8142]/30 focus:border-[#DF8142] transition-all font-medium text-[#5A270F] placeholder:text-[#92664A]/40"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-4 bg-primary/10 rounded-2xl border border-primary/20">
-                <input
-                  type="checkbox"
-                  name="published"
-                  checked={formData.published}
-                  onChange={handleInputChange}
-                  id="published"
-                  className="h-5 w-5 text-primary focus:ring-primary/90 border-slate-300 rounded"
-                />
+              <div className="flex items-center gap-4 p-4 bg-[#f8f5f2] rounded-xl border border-[#d9d9c2] transition-colors hover:border-[#DF8142]/30">
+                <div className="relative flex items-center">
+                  <input
+                    type="checkbox"
+                    name="published"
+                    checked={formData.published}
+                    onChange={handleInputChange}
+                    id="published"
+                    className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-[#92664A]/40 bg-white transition-all checked:border-[#DF8142] checked:bg-[#DF8142] hover:border-[#DF8142] focus:outline-none focus:ring-2 focus:ring-[#DF8142]/20"
+                  />
+                  <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-3.5 w-3.5"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                </div>
                 <label
                   htmlFor="published"
-                  className="font-bold text-[#2A1205] cursor-pointer select-none"
+                  className="font-bold text-sm text-[#5A270F] cursor-pointer select-none flex-1"
                 >
                   Publish Immediately
                 </label>
@@ -219,10 +278,10 @@ const PostBlog = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-5 bg-primary text-white rounded-[1.5rem] font-black tracking-tight shadow-xl shadow-primary/20 hover:bg-primary/90 transition-all duration-300 flex items-center justify-center gap-3 active:scale-[0.98] disabled:opacity-50"
+                className="w-full py-4 bg-[#DF8142] text-white rounded-xl font-bold tracking-wide shadow-lg shadow-[#DF8142]/25 hover:shadow-[#DF8142]/40 hover:bg-[#c9743a] hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none"
               >
                 {loading ? (
-                  <Loader2 className="h-6 w-6 animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
                   <>
                     <Save className="h-5 w-5" />

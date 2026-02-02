@@ -4,6 +4,7 @@ import { api } from "../../lib/api";
 import { UploadCloud, Loader2, Sparkles, Shield, Info } from "lucide-react";
 import { toast } from "../../lib/toast";
 import type { DesignStage } from "../../models";
+import { useSession } from "../../lib/auth-client";
 
 const Upload = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -22,34 +23,23 @@ const Upload = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const [isReady] = useState(() => {
-    return !!localStorage.getItem("token") && !!localStorage.getItem("user");
-  });
+  interface UserWithRole {
+    role?:
+      | string
+      | {
+          name: string;
+        };
+  }
 
-  const [userRole] = useState(() => {
-    const userStr = localStorage.getItem("user");
-    if (userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        const role = user.role?.name || user.role || "";
-        return role;
-      } catch {
-        return "";
-      }
-    }
-    return "";
-  });
+  const { data: session } = useSession();
+  const user = session?.user as unknown as UserWithRole;
+  const userRole =
+    typeof user?.role === "object" ? user.role.name : user?.role || "";
 
   const navigate = useNavigate();
   const location = useLocation();
 
   const isBaseAdmin = location.pathname.startsWith("/admin");
-
-  useEffect(() => {
-    if (!isReady) {
-      navigate("/login", { replace: true, state: { from: "/upload" } });
-    }
-  }, [isReady, navigate]);
 
   useEffect(() => {
     const fetchStages = async () => {
@@ -62,8 +52,6 @@ const Upload = () => {
     };
     fetchStages();
   }, []);
-
-  if (!isReady) return null;
 
   const FieldError = ({ message }: { message?: string }) => {
     if (!message) return null;

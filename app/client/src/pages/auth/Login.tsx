@@ -148,9 +148,19 @@ const Login = () => {
 
     setResetLoading(true);
     try {
-      const { error } = await (authClient as any).forgetPassword({
+      // Define types for method missing from client definition
+      type AuthClientWithForgot = {
+        forgetPassword: (params: {
+          email: string;
+          redirectTo: string;
+        }) => Promise<{ error: { message: string } | null }>;
+      };
+
+      const { error } = await (
+        authClient as unknown as AuthClientWithForgot
+      ).forgetPassword({
         email: resetEmail,
-        redirectTo: "/reset-password", // Page to redirect after clicking link in email (if supported)
+        redirectTo: "/reset-password", // Page to redirect after clicking link in email
       });
 
       if (error) {
