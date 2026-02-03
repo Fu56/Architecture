@@ -111,7 +111,10 @@ export const createResource = async (req: Request, res: Response) => {
 
 export const listResources = async (req: Request, res: Response) => {
   try {
-    const { search, stage, year, type, status, semester, sort } = req.query;
+    const { search, stage, year, type, status, semester, sort, sortBy, limit } =
+      req.query;
+    const finalSort = sort || sortBy;
+    const finalLimit = limit ? Number(limit) : undefined;
 
     // Build filter
     const where: any = {};
@@ -154,8 +157,12 @@ export const listResources = async (req: Request, res: Response) => {
 
     const orderBy: any[] = [{ priority_tag: "desc" }];
 
-    if (sort === "oldest") {
+    if (finalSort === "oldest") {
       orderBy.push({ uploaded_at: "asc" });
+    } else if (finalSort === "top-rated") {
+      // Handled after fetching because it's a computed field
+    } else if (finalSort === "downloads") {
+      orderBy.push({ download_count: "desc" });
     } else {
       orderBy.push({ uploaded_at: "desc" });
     }
@@ -165,33 +172,50 @@ export const listResources = async (req: Request, res: Response) => {
       include: {
         uploader: { select: { first_name: true, last_name: true, role: true } },
         design_stage: true,
+        ratings: { select: { rate: true } },
       },
       orderBy,
+      take: finalLimit,
     });
 
-    const formattedResources = resources.map((r) => ({
-      id: r.id,
-      title: r.title,
-      author: r.author,
-      keywords: r.keywords,
-      batchYear: r.batch,
-      fileType: r.file_type,
-      fileSize: r.file_size,
-      downloadCount: r.download_count,
-      status: r.status,
-      priority: !!r.priority_tag,
-      uploadedAt: r.uploaded_at,
-      uploader: r.uploader
-        ? {
-            firstName: r.uploader.first_name,
-            lastName: r.uploader.last_name,
-            role: r.uploader.role,
-          }
-        : null,
-      designStage: r.design_stage,
-      semester: r.semester,
-      adminComment: (r as any).admin_comment,
-    }));
+    let formattedResources = resources.map((r) => {
+      const ratings = r.ratings || [];
+      const ratingCount = ratings.length;
+      const averageRating =
+        ratingCount > 0
+          ? ratings.reduce((acc, curr) => acc + curr.rate, 0) / ratingCount
+          : 0;
+
+      return {
+        id: r.id,
+        title: r.title,
+        author: r.author,
+        keywords: r.keywords,
+        batchYear: r.batch,
+        fileType: r.file_type,
+        fileSize: r.file_size,
+        downloadCount: r.download_count,
+        status: r.status,
+        priority: !!r.priority_tag,
+        uploadedAt: r.uploaded_at,
+        uploader: r.uploader
+          ? {
+              firstName: r.uploader.first_name,
+              lastName: r.uploader.last_name,
+              role: r.uploader.role,
+            }
+          : null,
+        designStage: r.design_stage,
+        semester: r.semester,
+        adminComment: (r as any).admin_comment,
+        averageRating,
+        ratingCount,
+      };
+    });
+
+    if (finalSort === "top-rated") {
+      formattedResources.sort((a, b) => b.averageRating - a.averageRating);
+    }
 
     res.json(formattedResources);
   } catch (error) {
@@ -233,6 +257,13 @@ export const getResource = async (req: Request, res: Response) => {
         .json({ message: "Access denied: Resource is archived" });
     }
 
+    const ratings = r.ratings || [];
+    const ratingCount = ratings.length;
+    const averageRating =
+      ratingCount > 0
+        ? ratings.reduce((acc, curr) => acc + curr.rate, 0) / ratingCount
+        : 0;
+
     const formattedResource = {
       id: r.id,
       title: r.title,
@@ -245,6 +276,8 @@ export const getResource = async (req: Request, res: Response) => {
       status: r.status,
       priority: !!r.priority_tag,
       uploadedAt: r.uploaded_at,
+      averageRating,
+      ratingCount,
       uploader: r.uploader
         ? {
             firstName: r.uploader.first_name,
@@ -389,15 +422,66 @@ export const rateResource = async (req: Request, res: Response) => {
     const userId = getUserId(req);
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
-    const rating = await prisma.rating.create({
-      data: {
-        rate: Number(rate),
-        resource_id: Number(id),
-        user_id: userId,
-      },
-    });
+    // Start a transaction to ensure atomic execution
+    const [rating, resource, rater] = await prisma.$transaction([
+      prisma.rating.create({
+        data: {
+          rate: Number(rate),
+          resource_id: Number(id),
+          user_id: userId,
+        },
+      }),
+      prisma.resource.findUnique({
+        where: { id: Number(id) },
+        include: {
+          uploader: {
+            select: {
+              id: true,
+              first_name: true,
+              last_name: true,
+              email: true,
+            },
+          },
+        },
+      }),
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: { first_name: true, last_name: true },
+      }),
+    ]);
+
+    if (resource && resource.uploader && resource.uploader.id !== userId) {
+      const uploader = resource.uploader;
+      const authorName =
+        `${uploader.first_name || ""} ${uploader.last_name || ""}`.trim() ||
+        "Architect";
+      const raterName =
+        `${rater?.first_name || ""} ${rater?.last_name || ""}`.trim() ||
+        "A Peer User";
+      const title = "New Resource Valuation";
+      const message = `${raterName} rated your resource: ${resource.title}`;
+
+      const { getRatingNotificationHtml } = require("../utils/email");
+      const html = getRatingNotificationHtml(
+        authorName,
+        raterName,
+        resource.title,
+        Number(rate),
+        resource.id,
+      );
+
+      await notifyUsers({
+        userIds: [uploader.id],
+        title,
+        message,
+        resourceId: resource.id,
+        html,
+      });
+    }
+
     res.status(201).json(rating);
   } catch (error) {
+    console.error("Rate Resource Error:", error);
     res.status(500).json({ message: "Error rating resource" });
   }
 };

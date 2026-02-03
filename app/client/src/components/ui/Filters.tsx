@@ -184,6 +184,9 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                 >
                   <option value="">Chronological: Newest First</option>
                   <option value="oldest">Chronological: Archive Access</option>
+                  <option value="top-rated">
+                    Evaluation Matrix: Top Rated
+                  </option>
                 </select>
               </div>
 

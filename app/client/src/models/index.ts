@@ -44,6 +44,8 @@ export interface Resource {
   priority: boolean;
   uploadedAt: string;
   adminComment?: string;
+  averageRating?: number;
+  ratingCount?: number;
 }
 
 export interface Comment {

@@ -322,3 +322,52 @@ export const getNewsletterAdminAlertHtml = (subscriberEmail: string) => {
     </div>
     `;
 };
+
+export const getRatingNotificationHtml = (
+  authorName: string,
+  raterName: string,
+  resourceTitle: string,
+  rating: number,
+  resourceId: string | number,
+) => {
+  return `
+    <div ${emailStyle} style="border: 2px solid #DF8142;">
+        <div ${headerStyle} style="background: #5A270F; border-bottom: 4px solid #DF8142;">
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #EEB38C; text-transform: uppercase;">Valuation Matrix Update</p>
+            <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px;">NEW RATING</h1>
+        </div>
+        <div style="padding: 0 20px;">
+            <p>Dear ${authorName},</p>
+            <p>Your architectural contribution "<strong>${resourceTitle}</strong>" has received a new technical valuation.</p>
+            
+            <div style="background: #f8fafc; padding: 25px; border-radius: 12px; margin: 30px 0; border: 1px solid #e2e8f0; text-align: center;">
+                <p style="margin: 0; font-size: 10px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Evaluator</p>
+                <p style="margin: 5px 0 15px 0; font-size: 16px; font-weight: 800; color: #5A270F;">${raterName}</p>
+                
+                <div style="display: flex; justify-content: center; gap: 5px; margin-top: 15px;">
+                    ${Array.from({ length: 5 })
+                      .map(
+                        (_, i) => `
+                        <span style="font-size: 24px; color: ${
+                          i < rating ? "#DF8142" : "#e2e8f0"
+                        };">★</span>
+                    `,
+                      )
+                      .join("")}
+                </div>
+                <p style="margin: 10px 0 0 0; font-size: 11px; font-weight: 900; color: #DF8142; text-transform: uppercase; letter-spacing: 1px;">Valuation: ${rating} Stars</p>
+            </div>
+
+            <p style="font-size: 14px; color: #64748b; font-style: italic; text-align: center;">
+                ${raterName} is rate this resource ${resourceTitle}
+            </p>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="${env.baseUrl}/resources/${resourceId}" ${buttonStyle} style="background-color: #DF8142; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Inspect Asset Metrics</a>
+            </div>
+            
+            <div ${footerStyle}>Automated Valuation Protocol | Level 2 Intelligence</div>
+        </div>
+    </div>
+    `;
+};

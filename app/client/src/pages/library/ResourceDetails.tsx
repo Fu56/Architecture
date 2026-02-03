@@ -48,8 +48,11 @@ const ResourceDetails = () => {
 
   const [reporting, setReporting] = useState(false);
   const [reportReason, setReportReason] = useState("");
+  const [evaluationComment, setEvaluationComment] = useState("");
   const [isSubmittingReport, setIsSubmittingReport] = useState(false);
   const [reportSuccess, setReportSuccess] = useState(false);
+  const [pendingRating, setPendingRating] = useState(0);
+  const [submittingEvaluation, setSubmittingEvaluation] = useState(false);
 
   const [newComment, setNewComment] = useState("");
   const [submittingComment, setSubmittingComment] = useState(false);
@@ -140,16 +143,44 @@ const ResourceDetails = () => {
     }
   };
 
-  const handleRate = async (rateValue: number) => {
+  const handleRatingClick = (rateValue: number) => {
     if (!isAuth) {
       toast.info("Authentication verified required for evaluation protocols");
       return;
     }
-    try {
-      await api.post(`/resources/${id}/rate`, { rate: rateValue });
-      setUserRating(rateValue);
-      toast.success(`Evaluation Confirmed: Asset rated at ${rateValue} stars`);
+    setPendingRating(rateValue);
+  };
 
+  const handleSubmitEvaluation = async () => {
+    if (!isAuth) {
+      toast.info("Authentication verified required for evaluation protocols");
+      return;
+    }
+    if (pendingRating === 0) {
+      toast.error("Evaluation Error: No technical valuation selected");
+      return;
+    }
+
+    setSubmittingEvaluation(true);
+    try {
+      // 1. Submit Numerical Rating
+      await api.post(`/resources/${id}/rate`, { rate: pendingRating });
+      setUserRating(pendingRating);
+
+      // 2. Submit Optional Qualitative Comment
+      if (evaluationComment.trim()) {
+        await api.post(`/resources/${id}/comments`, {
+          text: `[Evaluation Feedback]: ${evaluationComment.trim()}`,
+        });
+
+        // Refresh comments list
+        const { data: updatedResource } = await api.get(`/resources/${id}`);
+        setComments(updatedResource.comments || []);
+      }
+
+      toast.success(`Evaluation Broadcasted: Registry updated`);
+
+      // 3. Refresh Ratings Info
       const { data } = await api.get(`/resources/${id}`);
       if (data.ratings && data.ratings.length > 0) {
         const sum = data.ratings.reduce(
@@ -159,9 +190,15 @@ const ResourceDetails = () => {
         setAverageRating(sum / data.ratings.length);
         setRatingCount(data.ratings.length);
       }
+
+      // Clear compositonal state
+      setEvaluationComment("");
+      setPendingRating(0);
     } catch (error) {
-      console.error("Failed to rate", error);
-      toast.error("Evaluation Error: Ratings matrix failed to update");
+      console.error("Failed to broadcast evaluation", error);
+      toast.error("Global Nexus Error: Evaluation transmission failed");
+    } finally {
+      setSubmittingEvaluation(false);
     }
   };
 
@@ -333,54 +370,123 @@ const ResourceDetails = () => {
             </div>
           )}
 
-          {/* Evaluation Matrix */}
-          <div className="bg-white p-8 rounded-3xl shadow-lg border border-[#D9D9C2] flex flex-wrap items-center justify-between gap-8">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-[#DF8142]" />
-                <h3 className="text-xs font-black text-[#5A270F] uppercase tracking-widest">
-                  Intel Evaluation
-                </h3>
+          {/* Evaluation Matrix or Pending Verification State */}
+          {resource.status === "approved" || resource.status === "student" ? (
+            <div className="bg-[#EEB38C]/5 p-8 sm:p-10 rounded-[2.5rem] shadow-xl shadow-[#5A270F]/5 border border-[#EEB38C]/30 animate-in fade-in slide-in-from-bottom-4 duration-700 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/5 blur-3xl -translate-y-1/2 translate-x-1/2" />
+
+              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-12 pb-10 border-b border-[#EEB38C]/20">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-[#5A270F] rounded-lg shadow-lg">
+                      <Sparkles className="h-3.5 w-3.5 text-white" />
+                    </div>
+                    <h3 className="text-[10px] font-black text-[#5A270F] uppercase tracking-[0.3em]">
+                      Intel Evaluation
+                    </h3>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        disabled={!isAuth || submittingEvaluation}
+                        onMouseEnter={() => setHoverRating(star)}
+                        onMouseLeave={() => setHoverRating(0)}
+                        onClick={() => handleRatingClick(star)}
+                        title={`Evaluate at ${star} stars`}
+                        className="focus:outline-none transition-all hover:scale-125 group/star disabled:opacity-30 disabled:hover:scale-100"
+                      >
+                        <Star
+                          className={`h-10 w-10 ${
+                            (hoverRating ||
+                              pendingRating ||
+                              userRating ||
+                              Math.round(averageRating)) >= star
+                              ? "text-[#DF8142] fill-[#DF8142]"
+                              : "text-[#92664A]/20 group-hover/star:text-[#EEB38C]"
+                          } transition-colors duration-300 drop-shadow-[0_2px_4px_rgba(223,129,66,0.1)]`}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-baseline gap-3">
+                  <div className="text-right">
+                    <div className="flex items-baseline gap-2 mb-1 justify-end">
+                      <span className="text-6xl font-black text-[#5A270F] tracking-tighter leading-none">
+                        {averageRating.toFixed(1)}
+                      </span>
+                      <span className="text-xl font-black text-[#92664A]/60">
+                        / 5.0
+                      </span>
+                    </div>
+                    <p className="text-[9px] font-black text-[#92664A] uppercase tracking-[0.2em] flex items-center gap-2 justify-end">
+                      <div className="w-1 h-1 rounded-full bg-[#DF8142]" />
+                      Verified Valuations: {ratingCount}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-1.5">
-                {[1, 2, 3, 4, 5].map((star) => (
+
+              {/* Enhanced Feedback Module */}
+              <div className="mt-10 relative z-10 space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[9px] font-black text-[#92664A] uppercase tracking-[0.2em] ml-1">
+                    Qualitative Intelligence / Feedback (Optional)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={evaluationComment}
+                    onChange={(e) => setEvaluationComment(e.target.value)}
+                    disabled={submittingEvaluation || !isAuth}
+                    placeholder="Provide technical feedback to the community matrix..."
+                    className="w-full bg-white border border-[#EEB38C]/40 rounded-[1.5rem] p-6 text-sm text-[#5A270F] font-bold focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142]/40 transition-all placeholder:text-[#92664A]/30 resize-none shadow-inner"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between gap-6">
+                  <p className="text-[10px] text-[#92664A] font-bold italic max-w-sm">
+                    Evaluations are verified and logged to the public resource
+                    registry permanently.
+                  </p>
                   <button
-                    key={star}
-                    disabled={!isAuth}
-                    onMouseEnter={() => setHoverRating(star)}
-                    onMouseLeave={() => setHoverRating(0)}
-                    onClick={() => handleRate(star)}
-                    title={`Rate ${star} stars`}
-                    className="focus:outline-none transition-all hover:scale-125 group/star"
+                    onClick={handleSubmitEvaluation}
+                    disabled={
+                      submittingEvaluation || !isAuth || pendingRating === 0
+                    }
+                    className="flex-shrink-0 h-14 px-10 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#6C3B1C] transition-all hover:-translate-y-1 shadow-2xl shadow-[#5A270F]/20 active:scale-95 flex items-center justify-center gap-3 disabled:opacity-30 disabled:hover:translate-y-0"
                   >
-                    <Star
-                      className={`h-8 w-8 ${
-                        (hoverRating ||
-                          userRating ||
-                          Math.round(averageRating)) >= star
-                          ? "text-[#DF8142] fill-[#DF8142]"
-                          : "text-slate-100 group-hover/star:text-[#EEB38C]"
-                      } transition-colors duration-200`}
-                    />
+                    {submittingEvaluation ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <>
+                        <Zap className="h-4 w-4" />
+                        Broadcast Evaluation
+                      </>
+                    )}
                   </button>
-                ))}
+                </div>
               </div>
             </div>
-
-            <div className="h-20 w-px bg-[#F5F5DC] hidden sm:block" />
-
-            <div className="text-right sm:text-left">
-              <div className="flex items-baseline gap-1.5 mb-1 justify-end sm:justify-start">
-                <span className="text-4xl font-black text-[#5A270F] tracking-tight">
-                  {averageRating.toFixed(1)}
-                </span>
-                <span className="text-lg font-black text-gray-400">/ 5.0</span>
+          ) : (
+            <div className="p-8 bg-[#EFEDED]/50 rounded-3xl border border-dashed border-[#EEB38C]/50 flex items-center gap-6 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-[#EEB38C]/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="h-14 w-14 rounded-2xl bg-white border border-[#EEB38C]/30 flex items-center justify-center text-[#92664A] shadow-inner relative z-10">
+                <ShieldAlert className="h-7 w-7" />
               </div>
-              <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                Verified Valuations: {ratingCount}
-              </p>
+              <div className="relative z-10">
+                <h3 className="text-xs font-black text-[#5A270F] uppercase tracking-[0.2em] mb-1">
+                  Evaluation Protocol Locked
+                </h3>
+                <p className="text-[10px] text-[#92664A] font-bold uppercase tracking-widest leading-relaxed">
+                  Valuations are enabled following official{" "}
+                  <span className="text-[#DF8142]">verification</span> and
+                  deployment.
+                </p>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Content Description */}
           <div className="bg-white p-8 rounded-3xl shadow-lg border border-[#D9D9C2]">

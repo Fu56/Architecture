@@ -9,6 +9,7 @@ import {
   Layout,
   Layers,
   Sparkles,
+  Star,
   type LucideIcon,
 } from "lucide-react";
 import type { Resource } from "../../models";
@@ -120,7 +121,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
           className={`absolute inset-0 opacity-40 ${style.bg} blur-[40px] -translate-y-1/2`}
         />
 
-        {/* File Type Badge Overlay */}
+        {/* File Type & Rating Badge Overlay */}
         <div className="absolute top-6 left-6 z-10">
           <div className="flex items-center gap-3">
             <div
@@ -128,9 +129,20 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             >
               <TypeIcon className="h-5 w-5" />
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#EEB38C] bg-[#2A1205]/40 backdrop-blur-sm px-3 py-1 rounded-lg border border-[#EEB38C]/20">
-              {fileType || "Asset"}
-            </span>
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#EEB38C] bg-[#2A1205]/40 backdrop-blur-sm px-3 py-1 rounded-lg border border-[#EEB38C]/20">
+                {fileType || "Asset"}
+              </span>
+              {resource.averageRating !== undefined &&
+                resource.averageRating > 0 && (
+                  <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/10 backdrop-blur-md rounded-lg border border-white/10 w-fit">
+                    <Star className="h-3 w-3 text-[#DF8142] fill-[#DF8142]" />
+                    <span className="text-[10px] font-black text-white">
+                      {resource.averageRating.toFixed(1)}
+                    </span>
+                  </div>
+                )}
+            </div>
           </div>
         </div>
 
