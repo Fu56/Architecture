@@ -19,9 +19,14 @@ export const sendNotificationEmail = async (
 ) => {
   if (!env.smtp.host) {
     console.warn("SMTP host not configured. Email not sent.");
+    // Fallback log for development
+    console.log(`[Email Mock] To: ${to} | Subject: ${subject} | Body: ${text}`);
     return;
   }
   try {
+    // Log for debugging regardless of success
+    console.log(`[Email Attempt] Sending to ${to} | Subject: ${subject}`);
+
     const info = await transporter.sendMail({
       from: env.smtp.from || `"Architectural Vault" <fuadabdela95@gmail.com>`,
       to,
@@ -33,6 +38,10 @@ export const sendNotificationEmail = async (
     console.log(`Email dispatched to ${to}: ${info.messageId}`);
   } catch (error) {
     console.error(`Failed to dispatch email to ${to}:`, error);
+    // Log the content anyway so dev can proceed
+    console.log(
+      `[Email Fallback Log] To: ${to} | Subject: ${subject} | Body: ${text}`,
+    );
   }
 };
 

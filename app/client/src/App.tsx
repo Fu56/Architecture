@@ -5,6 +5,7 @@ import Browse from "./pages/library/Browse";
 import ResourceDetails from "./pages/library/ResourceDetails";
 import Upload from "./pages/library/Upload";
 import Login from "./pages/auth/Login";
+import ResetPassword from "./pages/auth/ResetPassword";
 import UserDashboard from "./pages/user/Dashboard";
 import MyUploads from "./pages/user/MyUploads";
 import Notifications from "./pages/user/Notifications";
@@ -52,6 +53,7 @@ const App = () => {
           <Route path="/browse" element={<Browse />} />
           <Route path="/resources/:id" element={<ResourceDetails />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/blog" element={<Blog />} />

@@ -622,7 +622,7 @@ const Home = () => {
                 {blogs.map((blog) => (
                   <article key={blog.id} className="group cursor-pointer">
                     <Link to={`/blog/${blog.id}`} className="block">
-                      <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden mb-12 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.15)] group-hover:shadow-primary/20 transition-all duration-1000">
+                      <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden mb-12 shadow-[0_40px_80px_-20px_rgba(90,39,15,0.15)] group-hover:shadow-[#DF8142]/20 transition-all duration-1000">
                         <img
                           src={
                             blog.image_path
@@ -637,7 +637,7 @@ const Home = () => {
                         <div className="absolute inset-0 bg-gradient-to-t from-[#2A1205] via-[#2A1205]/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-700" />
 
                         <div className="absolute top-10 left-10">
-                          <div className="px-5 py-2 glass-morphism rounded-full">
+                          <div className="px-5 py-2 glass-morphism rounded-full border border-white/20">
                             <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white">
                               Issue 2024
                             </span>
@@ -645,7 +645,7 @@ const Home = () => {
                         </div>
 
                         <div className="absolute bottom-10 left-10 right-10 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700">
-                          <div className="w-full py-5 bg-white text-[#2A1205] rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.3em] text-center shadow-2xl">
+                          <div className="w-full py-5 bg-white text-[#5A270F] rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.3em] text-center shadow-2xl">
                             Read Full Publication
                           </div>
                         </div>
@@ -656,7 +656,7 @@ const Home = () => {
                         {blog.tags.slice(0, 2).map((tag) => (
                           <span
                             key={tag}
-                            className="text-[9px] font-black uppercase tracking-[0.3em] text-[#DF8142] bg-[#DF8142]/10 px-5 py-2 rounded-full"
+                            className="text-[9px] font-black uppercase tracking-[0.3em] text-[#DF8142] bg-[#DF8142]/10 px-5 py-2 rounded-full border border-[#DF8142]/10"
                           >
                             {tag}
                           </span>
@@ -665,12 +665,12 @@ const Home = () => {
                       <h3 className="text-3xl font-black tracking-tight text-[#5A270F] group-hover:text-[#DF8142] transition-colors leading-[1.1] uppercase">
                         {blog.title}
                       </h3>
-                      <p className="text-[#5A270F] line-clamp-2 text-lg font-bold leading-relaxed">
+                      <p className="text-[#6C3B1C] line-clamp-2 text-lg font-bold leading-relaxed opacity-80">
                         {blog.content.slice(0, 150)}...
                       </p>
                       <Link
                         to={`/blog/${blog.id}`}
-                        className="inline-flex items-center gap-4 text-[11px] font-black uppercase tracking-[0.4em] text-[#2A1205] hover:text-primary border-b-2 border-[#D9D9C2] hover:border-primary pb-2 transition-all"
+                        className="inline-flex items-center gap-4 text-[11px] font-black uppercase tracking-[0.4em] text-[#5A270F] hover:text-[#DF8142] border-b-2 border-[#D9D9C2] hover:border-[#DF8142] pb-2 transition-all"
                       >
                         EXPLORE STORY <ArrowUpRight className="h-5 w-5" />
                       </Link>
@@ -682,9 +682,9 @@ const Home = () => {
 
             {/* News Sidebar - High End Professional Journal */}
             <div className="lg:w-1/3 pt-12">
-              <div className="bg-[#0a0a0b] p-12 sm:p-16 rounded-[4.5rem] text-white space-y-20 shadow-[0_64px_128px_-32px_rgba(0,0,0,0.5)] relative overflow-hidden group/journal">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[150px] -translate-y-1/2 translate-x-1/2 group-hover/journal:bg-primary/20 transition-colors duration-1000" />
-                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-[#5A270F]" />
+              <div className="bg-[#2A1205] p-12 sm:p-16 rounded-[4.5rem] text-white space-y-20 shadow-[0_64px_128px_-32px_rgba(42,18,5,0.5)] relative overflow-hidden group/journal">
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#DF8142]/10 blur-[150px] -translate-y-1/2 translate-x-1/2 group-hover/journal:bg-[#DF8142]/20 transition-colors duration-1000" />
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#DF8142] to-[#5A270F]" />
 
                 <div className="relative z-10 flex items-center justify-between pb-10 border-b border-white/10">
                   <div>
@@ -714,9 +714,9 @@ const Home = () => {
                           <span
                             className={`${
                               item.isEvent
-                                ? "text-[#DF8142] border border-[#DF8142]/30"
-                                : "text-primary/80 border border-primary/30"
-                            } px-4 py-1 rounded-full bg-white/5`}
+                                ? "text-[#DF8142] border border-[#DF8142]/30 bg-[#DF8142]/10"
+                                : "text-[#EEB38C] border border-[#EEB38C]/30 bg-[#EEB38C]/10"
+                            } px-4 py-1 rounded-full`}
                           >
                             {item.isEvent ? "EVENT" : "LIVE"}
                           </span>
@@ -726,7 +726,7 @@ const Home = () => {
                           <span className="text-white/10">/</span>
                           <span className="text-white/30">{item.time}</span>
                         </div>
-                        <h4 className="text-2xl font-black group-hover/news:text-primary/80 transition-colors leading-[1.2] tracking-tight uppercase">
+                        <h4 className="text-2xl font-black group-hover/news:text-[#EEB38C] transition-colors leading-[1.2] tracking-tight uppercase">
                           {item.title}
                         </h4>
                       </div>
@@ -734,7 +734,7 @@ const Home = () => {
                   ) : (
                     <div className="py-20 text-center space-y-6">
                       <div className="w-12 h-12 bg-white/5 rounded-2xl mx-auto flex items-center justify-center border border-white/5">
-                        <Cpu className="h-6 w-6 text-white/10" />
+                        <Cpu className="h-6 w-6 text-[#EEB38C]/20" />
                       </div>
                       <p className="text-white/20 font-black uppercase tracking-[0.4em] text-[10px]">
                         Awaiting Sync
@@ -742,10 +742,6 @@ const Home = () => {
                     </div>
                   )}
                 </div>
-
-                <button className="relative z-10 w-full py-7 bg-white text-[#5A270F] hover:bg-[#DF8142] hover:text-white rounded-[2rem] text-[11px] font-black uppercase tracking-[0.4em] transition-all duration-700 shadow-2xl active:scale-95">
-                  INITIALIZE JOURNAL
-                </button>
               </div>
             </div>
           </div>

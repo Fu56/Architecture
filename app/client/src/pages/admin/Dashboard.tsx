@@ -15,6 +15,8 @@ import {
   Command,
   Bell,
   ArrowLeft,
+  User,
+  LayoutDashboard,
 } from "lucide-react";
 
 import { getUser } from "../../lib/auth";
@@ -35,6 +37,8 @@ const adminNavLinks = [
   { name: "News & Events", href: "/admin/news", icon: Megaphone },
   { name: "Flagged Content", href: "/admin/flags", icon: Flag },
   { name: "Signals", href: "/admin/notifications", icon: Bell },
+  { name: "Personal Console", href: "/dashboard", icon: LayoutDashboard },
+  { name: "System Settings", href: "/dashboard/profile", icon: User },
 ];
 
 const AdminDashboard = () => {

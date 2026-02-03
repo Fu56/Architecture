@@ -859,6 +859,13 @@ export const deleteUser = async (req: Request, res: Response) => {
       });
     }
 
+    if (targetRoleName === "SuperAdmin" && requesterRole === "DepartmentHead") {
+      return res.status(403).json({
+        message:
+          "Security Protocol Breach: Department Head cannot decommission a Super Admin node.",
+      });
+    }
+
     await prisma.user.delete({
       where: { id: id },
     });

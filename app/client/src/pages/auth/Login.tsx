@@ -160,7 +160,7 @@ const Login = () => {
         authClient as unknown as AuthClientWithForgot
       ).forgetPassword({
         email: resetEmail,
-        redirectTo: "/reset-password", // Page to redirect after clicking link in email
+        redirectTo: window.location.origin + "/reset-password", // Page to redirect after clicking link in email
       });
 
       if (error) {

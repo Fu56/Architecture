@@ -16,7 +16,12 @@ import {
 import { getUser } from "../../lib/auth";
 
 const dashboardNavLinks = [
-  { name: "Terminal", href: "/dashboard", icon: LayoutDashboard, exact: true },
+  {
+    name: "Personal Console",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+    exact: true,
+  },
   { name: "Upload New", href: "/dashboard/upload", icon: UploadCloud },
   { name: "Asset Library", href: "/dashboard/resources", icon: Library },
   { name: "Assessments", href: "/dashboard/assignments", icon: BookOpen },
@@ -28,7 +33,7 @@ const dashboardNavLinks = [
     role: "Faculty",
   },
   { name: "Signals", href: "/dashboard/notifications", icon: Bell },
-  { name: "Identity", href: "/dashboard/profile", icon: User },
+  { name: "System Settings", href: "/dashboard/profile", icon: User },
 ];
 
 const UserDashboard = () => {

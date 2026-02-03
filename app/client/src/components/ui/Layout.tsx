@@ -340,24 +340,24 @@ const Layout = () => {
 
                         {/* Menu Links */}
                         <div className="space-y-1 p-1">
-                          {/* <Link
+                          <Link
                             to={dashboardPath}
                             onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F]/80 hover:text-primary hover:bg-[#EFEDED] rounded-2xl transition-all group/item"
+                            className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F]/80 hover:text-[#DF8142] hover:bg-[#EFEDED] rounded-2xl transition-all group/item"
                           >
-                            <div className="p-2 bg-[#EFEDED] rounded-xl group-hover/item:bg-primary group-hover/item:text-white transition-all">
+                            <div className="p-2 bg-[#EFEDED] rounded-xl group-hover/item:bg-[#DF8142] group-hover/item:text-white transition-all">
                               <LayoutDashboard className="h-4 w-4" />
                             </div>
                             Personal Console
-                          </Link> */}
+                          </Link>
 
                           {isAdmin && (
                             <Link
                               to="/admin"
                               onClick={() => setUserMenuOpen(false)}
-                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-primary bg-primary/50 hover:bg-primary hover:text-white rounded-2xl transition-all group/item"
+                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#DF8142] bg-[#DF8142]/10 hover:bg-[#DF8142] hover:text-white rounded-2xl transition-all group/item"
                             >
-                              <div className="p-2 bg-white rounded-xl shadow-sm text-primary group-hover/item:bg-primary/90 group-hover/item:text-white transition-all">
+                              <div className="p-2 bg-white rounded-xl shadow-sm text-[#DF8142] group-hover/item:bg-[#DF8142]/90 group-hover/item:text-white transition-all">
                                 <ShieldCheck className="h-4 w-4" />
                               </div>
                               Admin Command Center
@@ -368,7 +368,7 @@ const Layout = () => {
                             <Link
                               to="/super-admin"
                               onClick={() => setUserMenuOpen(false)}
-                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F] bg-[#92664A]/5/50 hover:bg-[#5A270F] hover:text-white rounded-2xl transition-all group/item"
+                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F] bg-[#92664A]/10 hover:bg-[#5A270F] hover:text-white rounded-2xl transition-all group/item"
                             >
                               <div className="p-2 bg-white rounded-xl shadow-sm text-[#5A270F] group-hover/item:bg-[#92664A] group-hover/item:text-white transition-all">
                                 <ShieldAlert className="h-4 w-4" />
@@ -377,16 +377,16 @@ const Layout = () => {
                             </Link>
                           )}
 
-                          {/* <Link
+                          <Link
                             to="/dashboard/profile"
                             onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F]/80 hover:text-primary hover:bg-[#EFEDED] rounded-2xl transition-all group/item"
+                            className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F]/80 hover:text-[#DF8142] hover:bg-[#EFEDED] rounded-2xl transition-all group/item"
                           >
-                            <div className="p-2 bg-[#EFEDED] rounded-xl group-hover/item:bg-primary group-hover/item:text-white transition-all">
+                            <div className="p-2 bg-[#EFEDED] rounded-xl group-hover/item:bg-[#DF8142] group-hover/item:text-white transition-all">
                               <User className="h-4 w-4" />
                             </div>
                             System Settings
-                          </Link> */}
+                          </Link>
                         </div>
 
                         {/* Menu Footer */}

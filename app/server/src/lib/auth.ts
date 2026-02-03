@@ -30,7 +30,7 @@ export const auth = betterAuth({
   ],
 
   // advanced: { ... }, // Removed custom ID config as we switched to String IDs
-  baseURL: env.baseUrl || "http://localhost:5000",
+  baseURL: (env.baseUrl || "http://localhost:5000") + "/api/auth",
   secret: env.jwtSecret, // Using existing JWT secret for Better Auth
   trustedOrigins: ["http://localhost:5173", "http://localhost:3000"],
   emailAndPassword: {

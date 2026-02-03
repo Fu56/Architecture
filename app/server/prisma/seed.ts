@@ -60,13 +60,13 @@ async function main() {
     where: { name: "SuperAdmin" },
   });
   const superAdminPassword = await bcrypt.hash("Fuad@abdela3833", 10);
-  await prisma.user.upsert({
+  // Delete existing SuperAdmin to ensure clean credentials
+  await prisma.user.deleteMany({
     where: { email: "fuadabdela95@gmail.com" },
-    update: {
-      password: superAdminPassword,
-      roleId: superAdminRole?.id,
-    },
-    create: {
+  });
+
+  await prisma.user.create({
+    data: {
       name: "System Developer",
       first_name: "Super",
       last_name: "Admin",
