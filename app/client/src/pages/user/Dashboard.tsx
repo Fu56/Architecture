@@ -54,6 +54,7 @@ const UserDashboard = () => {
   const userRole =
     typeof user?.role === "object" ? user.role.name : user?.role || "Member";
   const isSuperAdmin = userRole === "SuperAdmin";
+  const isDeptHead = userRole === "DepartmentHead";
 
   return (
     <div className="min-h-screen bg-[#EFEDED] selection:bg-primary/20 selection:text-[#2A1205]">
@@ -91,6 +92,16 @@ const UserDashboard = () => {
                   >
                     <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" />
                     Back to Central Command
+                  </Link>
+                )}
+
+                {isDeptHead && (
+                  <Link
+                    to="/admin"
+                    className="mb-6 mx-2 flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[10px] font-bold uppercase tracking-widest text-[#EEB38C] hover:text-white transition-all group"
+                  >
+                    <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" />
+                    Back to Department Command
                   </Link>
                 )}
 

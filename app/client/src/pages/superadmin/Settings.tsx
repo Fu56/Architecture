@@ -88,7 +88,10 @@ const Settings = () => {
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EEB38C]/20 border border-[#EEB38C]/30 rounded-full text-[10px] font-black uppercase tracking-widest text-[#EEB38C] mb-4">
               <SettingsIcon className="h-3 w-3" /> Core Configuration
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+            <h1
+              onClick={() => navigate("/super-admin")}
+              className="text-2xl sm:text-3xl font-black tracking-tight cursor-pointer"
+            >
               System{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] to-[#EEB38C]">
                 Settings

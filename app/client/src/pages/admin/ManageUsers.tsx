@@ -12,6 +12,7 @@ import {
   MessageSquare,
   Zap,
   CheckCircle,
+  RefreshCw,
 } from "lucide-react";
 import { toast } from "../../lib/toast";
 import { useSession } from "../../lib/auth-client";
@@ -244,6 +245,14 @@ const ManageUsers = () => {
   };
 
   const filteredUsers = users.filter((user) => {
+    const userRoleName =
+      typeof user.role === "string" ? user.role : user.role?.name || "";
+
+    // Security Protocol: DeptHead cannot see SuperAdmin
+    if (currentRoleName === "DepartmentHead" && userRoleName === "SuperAdmin") {
+      return false;
+    }
+
     const fullName = `${user.firstName || user.first_name || ""} ${
       user.lastName || user.last_name || ""
     }`.toLowerCase();
@@ -424,9 +433,12 @@ const ManageUsers = () => {
                           )}
 
                         {/* Hierarchy Protection: Hide Edit/Delete for SuperAdmins if not SuperAdmin */}
+                        {/* Also hide if DeptHead is viewing another DeptHead */}
                         {!(
-                          roleName === "SuperAdmin" &&
-                          currentRoleName !== "SuperAdmin"
+                          (roleName === "SuperAdmin" &&
+                            currentRoleName !== "SuperAdmin") ||
+                          (roleName === "DepartmentHead" &&
+                            currentRoleName === "DepartmentHead")
                         ) && (
                           <>
                             <button

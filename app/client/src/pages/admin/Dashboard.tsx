@@ -41,6 +41,8 @@ const adminNavLinks = [
   { name: "System Settings", href: "/dashboard/profile", icon: User },
 ];
 
+import DeptHeadDashboard from "./DeptHeadDashboard";
+
 const AdminDashboard = () => {
   const location = useLocation();
   const user = getUser();
@@ -50,6 +52,10 @@ const AdminDashboard = () => {
 
   const role = typeof user?.role === "object" ? user.role.name : user?.role;
   const isSuperAdmin = role === "SuperAdmin";
+
+  if (role === "DepartmentHead") {
+    return <DeptHeadDashboard />;
+  }
 
   const getTitle = () => {
     return currentLink?.name || "Admin Dashboard";
