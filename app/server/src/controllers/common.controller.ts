@@ -41,13 +41,37 @@ export const getPublicStats = async (req: Request, res: Response) => {
       where: { role: { name: "Faculty" } },
     });
 
+    const newsletterCount = await (
+      prisma as any
+    ).newsletterSubscription.count();
+
+    // Fetch latest for the "Active Squad" visuals
+    const latestUsers = await prisma.user.findMany({
+      take: 5,
+      orderBy: { createdAt: "desc" },
+      select: { email: true, image: true },
+    });
+
+    const latestSubs = await (prisma as any).newsletterSubscription.findMany({
+      take: 5,
+      orderBy: { createdAt: "desc" },
+    });
+
+    const activeSquad = [
+      ...latestUsers.map((u) => ({ email: u.email, image: u.image })),
+      ...latestSubs.map((s: any) => ({ email: s.email, image: null })),
+    ].slice(0, 10);
+
     res.json({
       totalResources,
       totalUsers,
       totalDownloads: downloads._sum.download_count || 0,
       facultyCount,
+      newsletterCount,
+      activeSquad,
     });
   } catch (error) {
+    console.error("Public Stats Error:", error);
     res.status(500).json({ message: "Error fetching stats" });
   }
 };

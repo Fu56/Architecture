@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
   BookOpen,
@@ -17,6 +17,12 @@ import {
 import { toast } from "../../lib/toast";
 import { api } from "../../lib/api";
 
+interface Stats {
+  totalUsers: number;
+  newsletterCount: number;
+  activeSquad: { email: string; image: string | null }[];
+}
+
 /**
  * Premium Footer Component
  * Designed with high-fidelity architectural aesthetics and digital intelligence theme.
@@ -27,6 +33,30 @@ const Footer = () => {
   const [footerSubscribing, setFooterSubscribing] = useState(false);
   const [footerSubscribed, setFooterSubscribed] = useState(false);
   const [footerError, setFooterError] = useState("");
+  const [stats, setStats] = useState<Stats>({
+    totalUsers: 0,
+    newsletterCount: 0,
+    activeSquad: [],
+  });
+
+  const fetchStats = useCallback(async () => {
+    try {
+      const { data } = await api.get("/common/stats");
+      if (data) {
+        setStats({
+          totalUsers: data.totalUsers || 0,
+          newsletterCount: data.newsletterCount || 0,
+          activeSquad: data.activeSquad || [],
+        });
+      }
+    } catch (err) {
+      console.error("Failed to fetch footer stats:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
 
   const handleFooterSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +75,10 @@ const Footer = () => {
       toast.success(data.message || "Successfully subscribed to the digest!");
       setFooterSubscribed(true);
       setFooterEmail("");
+
+      // Refresh real-time stats
+      fetchStats();
+
       setTimeout(() => setFooterSubscribed(false), 3000);
     } catch (error: unknown) {
       let message = "Failed to subscribe. Please try again.";
@@ -181,7 +215,7 @@ const Footer = () => {
                     type="submit"
                     disabled={footerSubscribing || footerSubscribed}
                     title="Execute Subscription"
-                    aria-label="Subscribe to newsletter"
+                    aria-label="Initialize Footer Transmission"
                     className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[#DF8142] rounded-lg hover:bg-white hover:text-[#5A270F] transition-all duration-300 text-white shadow-lg shadow-[#DF8142]/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {footerSubscribing ? (
@@ -203,25 +237,35 @@ const Footer = () => {
 
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 py-4 px-4 sm:px-6 bg-[#6C3B1C]/30 rounded-2xl border border-white/5">
                 <div className="flex -space-x-2">
-                  {[1, 2, 3].map((i) => (
+                  {(stats.activeSquad && stats.activeSquad.length > 0
+                    ? stats.activeSquad.slice(0, 3)
+                    : [1, 2, 3]
+                  ).map((item, i) => (
                     <div
                       key={i}
-                      className="w-7 h-7 rounded-full border-2 border-[#5A270F] bg-[#92664A] overflow-hidden"
+                      className="w-7 h-7 rounded-full border-2 border-[#5A270F] bg-[#92664A] overflow-hidden group/avatar"
                     >
                       <img
-                        src={`https://i.pravatar.cc/100?u=${i + 60}`}
-                        className="grayscale"
-                        alt="Subscriber"
+                        src={
+                          typeof item === "object" && item.image
+                            ? `${import.meta.env.VITE_API_URL}/${item.image}`
+                            : `https://ui-avatars.com/api/?name=${typeof item === "object" ? item.email : i}&background=5A270F&color=fff&bold=true`
+                        }
+                        className="grayscale group-hover/avatar:grayscale-0 transition-all duration-500 w-full h-full object-cover"
+                        alt="Node Member"
                       />
                     </div>
                   ))}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[8px] font-bold text-white uppercase tracking-widest">
+                  <span className="text-[8px] font-black text-white/40 uppercase tracking-[0.3em]">
                     ACTIVE SQUAD
                   </span>
-                  <span className="text-[9px] font-medium text-[#EEB38C] uppercase tracking-widest">
-                    5,281 ARCHITECTS
+                  <span className="text-[10px] font-black text-[#EEB38C] uppercase tracking-widest">
+                    {(
+                      stats.totalUsers + stats.newsletterCount
+                    ).toLocaleString()}{" "}
+                    ARCHITECTS
                   </span>
                 </div>
               </div>

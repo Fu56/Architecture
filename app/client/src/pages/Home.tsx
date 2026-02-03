@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
@@ -14,7 +14,6 @@ import {
   Briefcase,
   Sparkles,
 } from "lucide-react";
-import { toast } from "../lib/toast";
 import { api } from "../lib/api";
 import type { Resource, Blog } from "../models";
 import ResourceCard from "../components/ui/ResourceCard";
@@ -47,39 +46,46 @@ const Home = () => {
   });
   const [realNews, setRealNews] = useState<NewsItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
   const navigate = useNavigate();
 
+  const fetchHomeData = useCallback(async () => {
+    try {
+      const [topRes, , statsRes, blogRes, newsRes] = await Promise.all([
+        api.get("/resources?sortBy=downloads&limit=4"),
+        api.get("/resources?sortBy=recent&limit=3"),
+        api.get("/common/stats"),
+        api.get("/blogs?published=true&limit=2"),
+        api.get("/common/news"),
+      ]);
+
+      const topData = topRes.data;
+      const statsData = statsRes.data;
+      const blogData = blogRes.data;
+      const newsData = newsRes.data;
+
+      if (Array.isArray(topData)) setTopResources(topData);
+      else if (topData && topData.resources) setTopResources(topData.resources);
+
+      if (statsData) setStats(statsData);
+      if (Array.isArray(blogData)) setBlogs(blogData);
+      if (Array.isArray(newsData)) setRealNews(newsData.slice(0, 3));
+    } catch (err) {
+      console.error("Failed to fetch data:", err);
+    }
+  }, []);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [topRes, , statsRes, blogRes, newsRes] = await Promise.all([
-          api.get("/resources?sortBy=downloads&limit=4"),
-          api.get("/resources?sortBy=recent&limit=3"),
-          api.get("/common/stats"),
-          api.get("/blogs?published=true&limit=2"),
-          api.get("/common/news"),
-        ]);
-
-        const topData = topRes.data;
-        const statsData = statsRes.data;
-        const blogData = blogRes.data;
-        const newsData = newsRes.data;
-
-        if (Array.isArray(topData)) setTopResources(topData);
-        else if (topData && topData.resources)
-          setTopResources(topData.resources);
-
-        if (statsData) setStats(statsData);
-        if (Array.isArray(blogData)) setBlogs(blogData);
-        if (Array.isArray(newsData)) setRealNews(newsData.slice(0, 3));
-      } catch (err) {
-        console.error("Failed to fetch data:", err);
+    let isMounted = true;
+    const loadData = async () => {
+      if (isMounted) {
+        await fetchHomeData();
       }
     };
-    fetchData();
-  }, []);
+    loadData();
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchHomeData]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,23 +94,11 @@ const Home = () => {
     }
   };
 
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email.trim()) {
-      setSubscribed(true);
-      toast.success("Newsletter subscription activated.");
-      setTimeout(() => {
-        setSubscribed(false);
-        setEmail("");
-      }, 5000);
-    }
-  };
-
   return (
     <div className="flex flex-col min-h-screen selection:bg-primary/20 bg-white">
       {/* Hero Section */}
       {/* Hero Section */}
-      <section className="relative min-h-[110vh] flex items-center overflow-hidden pt-20">
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden pt-16">
         {/* Animated Background */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[#5A270F]/40 z-10" />
@@ -120,10 +114,10 @@ const Home = () => {
           <div className="absolute inset-0 opacity-[0.05] z-10 blueprint-grid-dark" />
         </div>
 
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-20 w-full mt-10">
-          <div className="max-w-6xl">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-20 w-full mt-6">
+          <div className="max-w-5xl">
             {/* Premium Badge */}
-            <div className="inline-flex items-center gap-4 px-6 py-3 mb-10 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.5em] text-white bg-white/5 backdrop-blur-3xl border border-white/10 rounded-full animate-in fade-in slide-in-from-top-12 duration-1000 shadow-2xl group cursor-default">
+            <div className="inline-flex items-center gap-4 px-4 py-2 mb-8 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.5em] text-white bg-white/5 backdrop-blur-3xl border border-white/10 rounded-full animate-in fade-in slide-in-from-top-12 duration-1000 shadow-2xl group cursor-default">
               <div className="relative flex items-center justify-center">
                 <Sparkles className="h-4 w-4 text-[#DF8142] animate-pulse relative z-10" />
                 <div className="absolute inset-0 bg-[#DF8142]/90 blur-xl opacity-40 group-hover:opacity-100 transition-opacity duration-1000" />
@@ -134,7 +128,7 @@ const Home = () => {
               <div className="w-1.5 h-1.5 rounded-full bg-[#DF8142] animate-[pulse_2s_infinite]" />
             </div>
 
-            <h1 className="text-6xl sm:text-8xl md:text-[8rem] lg:text-[10rem] font-black tracking-tighter text-white mb-8 sm:mb-12 leading-[0.75] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-100 uppercase italic">
+            <h1 className="text-5xl sm:text-7xl md:text-[6.5rem] lg:text-[8.5rem] font-black tracking-tighter text-white mb-6 sm:mb-8 leading-[0.75] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-100 uppercase italic">
               ENGINEER <br />
               <span className="relative inline-block mt-2 not-italic">
                 <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#EEB38C] to-white drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)]">
@@ -144,9 +138,9 @@ const Home = () => {
               </span>
             </h1>
 
-            <div className="flex flex-col md:flex-row md:items-center gap-12 mb-20 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300">
+            <div className="flex flex-col md:flex-row md:items-center gap-8 mb-16 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300">
               <div className="max-w-xl space-y-6">
-                <p className="text-xl sm:text-2xl text-white/80 leading-relaxed font-black tracking-tight border-l-4 border-[#DF8142]/80 pl-10">
+                <p className="text-lg sm:text-xl text-white/80 leading-relaxed font-black tracking-tight border-l-4 border-[#DF8142]/80 pl-8">
                   Access award-winning thesis papers, verified BIM standards,
                   and architectural artifacts curated for the vanguard.
                 </p>
@@ -159,42 +153,11 @@ const Home = () => {
                   </p>
                 </div>
               </div>
-
-              <div className="hidden lg:flex items-center gap-8 p-8 bg-white/[0.03] backdrop-blur-3xl rounded-[2.5rem] border border-white/10 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] transition-transform hover:scale-105 duration-700">
-                <div className="flex -space-x-5">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className="w-14 h-14 rounded-full border-4 border-[#0a0a0b] bg-[#5A270F] overflow-hidden ring-1 ring-white/10"
-                    >
-                      <img
-                        src={`https://i.pravatar.cc/150?u=${i + 100}`}
-                        alt="Active Member"
-                        className="grayscale hover:grayscale-0 transition-all duration-700"
-                      />
-                    </div>
-                  ))}
-                  <div className="w-14 h-14 rounded-full border-4 border-[#0a0a0b] bg-[#DF8142] flex items-center justify-center text-[10px] font-black text-white shadow-lg shadow-[#DF8142]/30">
-                    +12K
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-black text-white leading-none tracking-tight uppercase">
-                    Network Node Members
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#DF8142] animate-pulse shadow-[0_0_10px_rgba(223,129,66,0.3)]" />
-                    <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
-                      Live Pulse ACTIVE
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <form
               onSubmit={handleSearch}
-              className="mb-20 animate-in fade-in slide-in-from-bottom-24 duration-1000 delay-500"
+              className="mb-12 animate-in fade-in slide-in-from-bottom-24 duration-1000 delay-500"
             >
               <div className="relative max-w-4xl group">
                 <div className="absolute -inset-2 bg-gradient-to-r from-[#DF8142] via-[#5A270F] to-[#DF8142] rounded-[3rem] blur-2xl opacity-20 group-focus-within:opacity-40 transition duration-1000 group-hover:duration-200" />
@@ -208,12 +171,12 @@ const Home = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Enter resource ID, authority, or artifact keyword..."
-                    className="w-full pl-8 sm:pl-8 pr-6 py-8 sm:py-10 bg-transparent text-[#2A1205] placeholder:text-gray-500 text-lg sm:text-xl font-black focus:outline-none tracking-tight"
+                    className="w-full pl-8 sm:pl-8 pr-6 py-6 sm:py-8 bg-transparent text-[#2A1205] placeholder:text-gray-500 text-base sm:text-lg font-black focus:outline-none tracking-tight"
                   />
-                  <div className="w-full sm:w-auto p-3 sm:pr-4">
+                  <div className="w-full sm:w-auto p-2 sm:pr-3">
                     <button
                       type="submit"
-                      className="w-full sm:w-auto whitespace-nowrap px-10 sm:px-14 py-5 sm:py-7 bg-[#DF8142] hover:bg-[#5A270F] text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-[1.8rem] transition-all duration-700 active:scale-95 shadow-2xl shadow-[#DF8142]/20 flex items-center justify-center gap-3 group/btn overflow-hidden relative"
+                      className="w-full sm:w-auto whitespace-nowrap px-8 sm:px-10 py-4 sm:py-5 bg-[#DF8142] hover:bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-[1.5rem] transition-all duration-700 active:scale-95 shadow-2xl shadow-[#DF8142]/20 flex items-center justify-center gap-3 group/btn overflow-hidden relative"
                     >
                       <span className="relative z-10">Initialize Search</span>
                       <ArrowRight className="h-4 w-4 relative z-10 group-hover/btn:translate-x-2 transition-transform duration-500" />
@@ -258,12 +221,12 @@ const Home = () => {
       </section>
 
       {/* Stats Section - Strategic Precision */}
-      <section className="relative z-30 py-12 -mt-32 sm:-mt-40">
+      <section className="relative z-30 py-8 -mt-24 sm:-mt-32">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="bg-white/80 backdrop-blur-3xl rounded-[3.5rem] p-3 sm:p-5 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.25)] border border-white ring-1 ring-[#2A1205]/5 overflow-hidden group">
-            <div className="bg-white rounded-[2.5rem] sm:rounded-[3rem] p-8 sm:p-12 lg:p-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-0 divide-y sm:divide-y-0 lg:divide-x divide-slate-100">
+            <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 lg:p-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 divide-y sm:divide-y-0 lg:divide-x divide-slate-100">
               {/* Stat 1 */}
-              <div className="flex flex-col items-center text-center space-y-6 lg:px-8 py-8 sm:py-0 group/stat">
+              <div className="flex flex-col items-center text-center space-y-4 lg:px-6 py-6 sm:py-0 group/stat">
                 <div className="relative">
                   <div className="absolute -inset-6 bg-[#DF8142]/10 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0" />
                   <div className="relative p-6 bg-[#5A270F] rounded-2xl shadow-2xl group-hover/stat:bg-[#DF8142] transition-colors duration-500">
@@ -271,7 +234,7 @@ const Home = () => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-6xl font-black tracking-tighter text-[#5A270F]">
+                  <p className="text-5xl font-black tracking-tighter text-[#5A270F]">
                     {stats.totalResources > 999
                       ? `${(stats.totalResources / 1000).toFixed(1)}k+`
                       : stats.totalResources}
@@ -385,18 +348,18 @@ const Home = () => {
       </section>
 
       {/* Explore Platform Sections - Architectural Ecosystem */}
-      <section className="py-48 bg-white relative overflow-hidden">
+      <section className="py-32 bg-white relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
         <div className="absolute inset-0 blueprint-grid opacity-[0.03] pointer-events-none" />
 
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="text-center mb-32">
+          <div className="text-center mb-24">
             <div className="inline-block p-1 mb-8 rounded-full bg-[#DF8142]/10 border border-[#DF8142]/20">
               <span className="px-5 py-1.5 text-[10px] font-black uppercase tracking-[0.4em] text-[#DF8142] block">
                 CORE ECOSYSTEM
               </span>
             </div>
-            <h2 className="text-6xl md:text-8xl font-black tracking-tighter text-[#5A270F] uppercase leading-[0.8]">
+            <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-[#5A270F] uppercase leading-[0.8]">
               THE ARCHITECTURAL <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] to-[#5A270F] italic">
                 STANDARD.
@@ -404,9 +367,9 @@ const Home = () => {
             </h2>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-12 lg:gap-8">
+          <div className="grid lg:grid-cols-3 gap-8 lg:gap-6">
             {/* Elite Projects */}
-            <div className="group relative bg-[#fafafa] p-12 rounded-[4rem] border border-[#D9D9C2] transition-all duration-700 hover:bg-white hover:shadow-[0_48px_100px_-24px_rgba(79,70,229,0.12)] hover:-translate-y-4 overflow-hidden">
+            <div className="group relative bg-[#fafafa] p-8 rounded-[3rem] border border-[#D9D9C2] transition-all duration-700 hover:bg-white hover:shadow-[0_48px_100px_-24px_rgba(79,70,229,0.12)] hover:-translate-y-4 overflow-hidden">
               <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:opacity-[0.07] transition-all duration-1000 group-hover:rotate-12 group-hover:scale-150">
                 <Trophy className="h-48 w-48" />
               </div>
@@ -415,15 +378,15 @@ const Home = () => {
                 <div className="w-20 h-20 bg-[#DF8142] text-white rounded-[1.5rem] flex items-center justify-center mb-12 shadow-2xl shadow-[#DF8142]/20 group-hover:scale-110 transition-transform duration-500">
                   <Trophy className="h-10 w-10" />
                 </div>
-                <h3 className="text-3xl font-black tracking-tight text-[#5A270F] mb-6 uppercase leading-none">
+                <h3 className="text-2xl font-black tracking-tight text-[#5A270F] mb-4 uppercase leading-none">
                   ELITE <br />
                   PROJECTS
                 </h3>
-                <p className="text-[#5A270F] leading-relaxed font-bold mb-12 text-lg">
+                <p className="text-[#5A270F] leading-relaxed font-bold mb-8 text-base">
                   Access award-winning thesis papers and research from the
                   world's leading architectural minds.
                 </p>
-                <div className="flex flex-col gap-5 mb-14">
+                <div className="flex flex-col gap-4 mb-8">
                   <div className="flex items-center gap-4">
                     <div className="w-2 h-2 rounded-full bg-[#DF8142]/90 shadow-[0_0_8px_rgba(223,129,66,0.3)]" />
                     <span className="text-xs font-black uppercase tracking-widest text-[#92664A]">
@@ -534,13 +497,13 @@ const Home = () => {
       </section>
 
       {/* Spotlight Resources - Curated Gallery */}
-      <section className="py-48 bg-[#EFEDED] relative overflow-hidden">
+      <section className="py-32 bg-[#EFEDED] relative overflow-hidden">
         {/* Decorative architectural lines */}
         <div className="absolute top-0 right-0 w-1/2 h-full bg-white -skew-x-12 translate-x-1/2 z-0" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 blur-[120px] rounded-full" />
 
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-32 gap-12">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-24 gap-12">
             <div className="max-w-3xl">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-16 h-[2px] bg-[#DF8142]" />
@@ -548,13 +511,13 @@ const Home = () => {
                   GLOBAL CURATION INDEX
                 </span>
               </div>
-              <h2 className="text-6xl md:text-8xl font-black tracking-tighter text-[#5A270F] leading-[0.8] uppercase">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-[#5A270F] leading-[0.8] uppercase">
                 SPOTLIGHT <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] to-[#DF8142]/90 italic">
                   RESOURCES.
                 </span>
               </h2>
-              <p className="text-[#6C3B1C] mt-10 text-xl font-bold max-w-2xl leading-relaxed">
+              <p className="text-[#6C3B1C] mt-6 text-lg font-bold max-w-2xl leading-relaxed">
                 The most downloaded and peer-reviewed architectural artifacts
                 across the global network this week.
               </p>
@@ -562,7 +525,7 @@ const Home = () => {
 
             <Link
               to="/browse"
-              className="group relative flex items-center gap-6 px-12 py-7 bg-[#5A270F] hover:bg-[#DF8142] text-white rounded-[2rem] transition-all duration-700 shadow-2xl active:scale-95 overflow-hidden"
+              className="group relative flex items-center gap-6 px-8 py-5 bg-[#5A270F] hover:bg-[#DF8142] text-white rounded-[1.5rem] transition-all duration-700 shadow-2xl active:scale-95 overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500" />
               <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.3em]">
@@ -573,7 +536,7 @@ const Home = () => {
           </div>
 
           {topResources.length > 0 ? (
-            <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
               {topResources.map((resource) => (
                 <div
                   key={resource.id}
@@ -600,29 +563,29 @@ const Home = () => {
       </section>
 
       {/* Faculty Insights & Professional Journal */}
-      <section className="py-48 bg-white overflow-hidden">
+      <section className="py-32 bg-white overflow-hidden">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="flex flex-col lg:flex-row gap-32">
+          <div className="flex flex-col lg:flex-row gap-20">
             {/* Blogs - Research Wing */}
             <div className="lg:w-2/3">
-              <div className="mb-24">
+              <div className="mb-16">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-16 h-[2px] bg-[#5A270F]" />
                   <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#5A270F]">
                     RESEARCH & PERSPECTIVES
                   </span>
                 </div>
-                <h2 className="text-6xl md:text-9xl font-black tracking-tighter text-[#5A270F] leading-[0.75] uppercase italic">
+                <h2 className="text-4xl md:text-7xl font-black tracking-tighter text-[#5A270F] leading-[0.75] uppercase italic">
                   FACULTY <br />
                   <span className="text-[#DF8142] not-italic">INSIGHTS.</span>
                 </h2>
               </div>
 
-              <div className="grid gap-20 sm:grid-cols-2">
+              <div className="grid gap-12 sm:grid-cols-2">
                 {blogs.map((blog) => (
                   <article key={blog.id} className="group cursor-pointer">
                     <Link to={`/blog/${blog.id}`} className="block">
-                      <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden mb-12 shadow-[0_40px_80px_-20px_rgba(90,39,15,0.15)] group-hover:shadow-[#DF8142]/20 transition-all duration-1000">
+                      <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-8 shadow-[0_40px_80px_-20px_rgba(90,39,15,0.15)] group-hover:shadow-[#DF8142]/20 transition-all duration-1000">
                         <img
                           src={
                             blog.image_path
@@ -662,10 +625,10 @@ const Home = () => {
                           </span>
                         ))}
                       </div>
-                      <h3 className="text-3xl font-black tracking-tight text-[#5A270F] group-hover:text-[#DF8142] transition-colors leading-[1.1] uppercase">
+                      <h3 className="text-2xl font-black tracking-tight text-[#5A270F] group-hover:text-[#DF8142] transition-colors leading-[1.1] uppercase">
                         {blog.title}
                       </h3>
-                      <p className="text-[#6C3B1C] line-clamp-2 text-lg font-bold leading-relaxed opacity-80">
+                      <p className="text-[#6C3B1C] line-clamp-2 text-base font-bold leading-relaxed opacity-80">
                         {blog.content.slice(0, 150)}...
                       </p>
                       <Link
@@ -682,13 +645,13 @@ const Home = () => {
 
             {/* News Sidebar - High End Professional Journal */}
             <div className="lg:w-1/3 pt-12">
-              <div className="bg-[#2A1205] p-12 sm:p-16 rounded-[4.5rem] text-white space-y-20 shadow-[0_64px_128px_-32px_rgba(42,18,5,0.5)] relative overflow-hidden group/journal">
+              <div className="bg-[#2A1205] p-8 sm:p-12 rounded-[3.5rem] text-white space-y-12 shadow-[0_64px_128px_-32px_rgba(42,18,5,0.5)] relative overflow-hidden group/journal">
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#DF8142]/10 blur-[150px] -translate-y-1/2 translate-x-1/2 group-hover/journal:bg-[#DF8142]/20 transition-colors duration-1000" />
                 <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#DF8142] to-[#5A270F]" />
 
                 <div className="relative z-10 flex items-center justify-between pb-10 border-b border-white/10">
                   <div>
-                    <h3 className="text-4xl font-black uppercase tracking-[-0.05em] mb-2 italic">
+                    <h3 className="text-2xl font-black uppercase tracking-[-0.05em] mb-2 italic">
                       Journal
                     </h3>
                     <div className="flex items-center gap-3">
@@ -703,7 +666,7 @@ const Home = () => {
                   </div>
                 </div>
 
-                <div className="relative z-10 space-y-16 py-4">
+                <div className="relative z-10 space-y-10 py-4">
                   {realNews.length > 0 ? (
                     realNews.map((item) => (
                       <div
@@ -748,75 +711,13 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Newsletter Section - Refined Architectural Terminal */}
-      <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[#5A270F] z-0" />
-        <div className="absolute top-0 right-0 w-2/3 h-full bg-[#DF8142]/10 skew-x-12 translate-x-1/4 z-0" />
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
-
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
-          <div className="bg-white/5 backdrop-blur-2xl rounded-[4rem] p-12 sm:p-20 border border-white/10 flex flex-col lg:flex-row items-center gap-16">
-            <div className="lg:w-1/2 text-white">
-              <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#DF8142]/20 border border-[#DF8142]/30 rounded-full text-[9px] font-black uppercase tracking-[0.4em] text-[#DF8142] mb-8">
-                <Sparkles className="h-3.5 w-3.5" /> THE ARCHITECT'S DIGEST
-              </div>
-              <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-8 leading-[0.9] uppercase">
-                UNBOX <br />
-                <span className="text-[#DF8142] italic">INNOVATION.</span>
-              </h2>
-              <p className="text-lg text-white/50 font-medium tracking-tight leading-relaxed max-w-md italic border-l-2 border-[#DF8142]/40 pl-8">
-                Curated digests of top-tier architectural thesis, BIM families,
-                and technical benchmarks.
-              </p>
-            </div>
-
-            <div className="lg:w-1/2 w-full">
-              {subscribed ? (
-                <div className="bg-[#DF8142] text-white p-12 rounded-[3.5rem] text-center font-black animate-in zoom-in-95 duration-700 shadow-2xl flex flex-col items-center gap-6">
-                  <ShieldCheck className="h-12 w-12" />
-                  <span className="text-xl sm:text-3xl uppercase tracking-tighter leading-none">
-                    ACCESS REGISTERED
-                  </span>
-                  <p className="text-[10px] text-white/80 font-black uppercase tracking-[0.4em]">
-                    Welcome to the Nexus.
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={handleSubscribe} className="space-y-6">
-                  <div className="relative group flex flex-col sm:block">
-                    <div className="absolute -inset-2 bg-[#DF8142] rounded-[2.5rem] blur-2xl opacity-0 group-focus-within:opacity-20 transition-all duration-1000" />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="ENTER STUDIO EMAIL..."
-                      required
-                      className="relative w-full h-20 sm:h-24 bg-white/5 border border-white/10 rounded-[2rem] sm:rounded-[2.5rem] pl-10 sm:pl-12 pr-10 sm:pr-44 text-base sm:text-lg font-bold text-white placeholder:text-white/20 outline-none focus:ring-4 focus:ring-[#DF8142]/10 transition-all duration-700 shadow-2xl tracking-widest"
-                    />
-                    <button
-                      type="submit"
-                      className="mt-4 sm:mt-0 relative sm:absolute sm:right-3 sm:top-3 sm:bottom-3 px-10 sm:px-12 py-4 sm:py-0 bg-[#DF8142] hover:bg-white hover:text-[#5A270F] text-white font-black uppercase tracking-[0.3em] rounded-[1.5rem] sm:rounded-[2rem] transition-all duration-700 shadow-2xl active:scale-95"
-                    >
-                      REGISTER
-                    </button>
-                  </div>
-                  <p className="text-[9px] text-white/20 font-black uppercase tracking-[0.3em] text-center px-12 italic">
-                    ENCRYPTED TRANSMISSION • ZERO SPAM PROTOCOL • BIM COMPLIANT
-                  </p>
-                </form>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Interdisciplinary Collaboration - The Human Element */}
-      <section className="py-48 bg-[#EFEDED] relative overflow-hidden">
+      <section className="py-32 bg-[#EFEDED] relative overflow-hidden">
         <div className="absolute inset-0 blueprint-grid opacity-[0.03] pointer-events-none" />
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#DF8142]/20 to-transparent" />
 
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="flex flex-col lg:flex-row gap-24 items-center">
+          <div className="flex flex-col lg:flex-row gap-16 items-center">
             {/* Visual Narrative */}
             <div className="lg:w-1/2 relative group">
               <div className="absolute -inset-6 bg-[#DF8142]/10 rounded-[4rem] blur-3xl scale-95 group-hover:scale-100 transition-transform duration-1000" />
@@ -863,30 +764,30 @@ const Home = () => {
             </div>
 
             {/* Strategic Information */}
-            <div className="lg:w-1/2 space-y-12">
+            <div className="lg:w-1/2 space-y-8">
               <div>
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#DF8142]/10 border border-[#DF8142]/20 rounded-full text-[10px] font-black uppercase tracking-[0.4em] text-[#DF8142] mb-8">
                   <Sparkles className="h-4 w-4" /> THE COLLABORATION
                 </div>
-                <h2 className="text-6xl md:text-8xl font-black tracking-tighter text-[#5A270F] uppercase leading-[0.8] mb-10">
+                <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-[#5A270F] uppercase leading-[0.8] mb-10">
                   FUSION OF <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] to-[#6C3B1C] italic">
                     DISCIPLINES.
                   </span>
                 </h2>
-                <p className="text-xl text-[#6C3B1C] font-bold leading-relaxed max-w-xl">
+                <p className="text-lg text-[#6C3B1C] font-bold leading-relaxed max-w-xl">
                   ARCHVAULT is the product of a high-performance synergy between
                   the **Department of Architecture** and the **Software
                   Engineering Department**.
                 </p>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-8">
-                <div className="p-10 bg-white rounded-[2.5rem] border border-[#D9D9C2] shadow-sm hover:border-[#DF8142]/40 transition-all duration-500 hover:-translate-y-1">
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div className="p-6 bg-white rounded-[2rem] border border-[#D9D9C2] shadow-sm hover:border-[#DF8142]/40 transition-all duration-500 hover:-translate-y-1">
                   <div className="h-12 w-12 bg-[#DF8142]/10 rounded-2xl flex items-center justify-center text-[#DF8142] mb-6">
                     <Users className="h-6 w-6" />
                   </div>
-                  <h4 className="text-xl font-black text-[#5A270F] uppercase tracking-tight mb-4">
+                  <h4 className="text-lg font-black text-[#5A270F] uppercase tracking-tight mb-4">
                     ARCH_CORE
                   </h4>
                   <p className="text-gray-500 text-sm font-bold leading-relaxed">
@@ -915,7 +816,7 @@ const Home = () => {
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2">
                       PROJECT SCALE
                     </p>
-                    <p className="text-3xl font-black text-[#5A270F] tracking-tighter uppercase">
+                    <p className="text-2xl font-black text-[#5A270F] tracking-tighter uppercase">
                       INTER-DEPT
                     </p>
                   </div>
@@ -924,7 +825,7 @@ const Home = () => {
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2">
                       SYNERGY NODE
                     </p>
-                    <p className="text-3xl font-black text-[#DF8142] tracking-tighter uppercase">
+                    <p className="text-2xl font-black text-[#DF8142] tracking-tighter uppercase">
                       ACTIVE
                     </p>
                   </div>
