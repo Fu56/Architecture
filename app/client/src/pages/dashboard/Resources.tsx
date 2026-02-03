@@ -11,7 +11,12 @@ const Resources = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const role = currentRole();
-  const isAdmin = role === "Admin" || role === "SuperAdmin" || role === "admin";
+  const isAdmin =
+    role === "Admin" ||
+    role === "SuperAdmin" ||
+    role === "admin" ||
+    role === "DepartmentHead";
+  const isHighAdmin = role === "SuperAdmin" || role === "DepartmentHead";
   const [showArchived, setShowArchived] = useState(false);
 
   const fetchResources = useCallback(
@@ -80,6 +85,22 @@ const Resources = () => {
     }
   };
 
+  const handlePermanentDelete = async (id: number) => {
+    if (
+      !window.confirm(
+        "CRITICAL ACTION: Are you sure you want to PERMANENTLY DELETE this resource and its associated file? This cannot be undone.",
+      )
+    )
+      return;
+    try {
+      await api.delete(`/admin/resources/${id}/permanent`);
+      setResources((prev) => prev.filter((r) => r.id !== id));
+    } catch (err) {
+      console.error("Failed to permanently delete resource:", err);
+      alert("Unauthorized: Protocol Restricted to higher authority nodes.");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -131,19 +152,30 @@ const Resources = () => {
               <ResourceCard resource={resource} />
 
               {isAdmin && (
-                <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
                   {showArchived ? (
-                    <button
-                      onClick={() => handleRestore(resource.id)}
-                      className="p-2 bg-[#5A270F] text-white rounded-lg shadow-lg hover:bg-[#6C3B1C] transition-colors shadow-[#5A270F]/20"
-                      title="Restore Resource"
-                    >
-                      <RotateCcw className="h-4 w-4" />
-                    </button>
+                    <>
+                      <button
+                        onClick={() => handleRestore(resource.id)}
+                        className="p-2 bg-[#5A270F] text-white rounded-lg shadow-lg hover:bg-[#6C3B1C] transition-colors shadow-[#5A270F]/20"
+                        title="Restore Resource"
+                      >
+                        <RotateCcw className="h-4 w-4" />
+                      </button>
+                      {isHighAdmin && (
+                        <button
+                          onClick={() => handlePermanentDelete(resource.id)}
+                          className="p-2 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 transition-colors"
+                          title="Permanently Delete"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
+                    </>
                   ) : (
                     <button
                       onClick={() => handleDelete(resource.id)}
-                      className="p-2 bg-red-500 text-white rounded-lg shadow-lg hover:bg-red-600 transition-colors"
+                      className="p-2 bg-slate-700 text-white rounded-lg shadow-lg hover:bg-slate-800 transition-colors"
                       title="Archive Resource"
                     >
                       <Trash2 className="h-4 w-4" />

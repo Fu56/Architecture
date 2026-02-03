@@ -6,11 +6,22 @@ export const requireRole =
     const user = (req as any).user;
     if (!user) return res.status(401).json({ message: "Unauthorized" });
 
-    // precise match or loose match? Let's do case-insensitive match
-    const userRole = user.role?.toLowerCase();
+    // Gather all user roles (Primary + Secondary)
+    const primaryRole =
+      user.role?.name || (typeof user.role === "string" ? user.role : "");
+    const secondaryRoles = Array.isArray(user.secondaryRoles)
+      ? user.secondaryRoles.map((r: any) => r.name)
+      : [];
+
+    const allUserRoles = [primaryRole, ...secondaryRoles]
+      .filter(Boolean)
+      .map((r) => r.toLowerCase());
+
     const allowed = allowedRoles.map((r) => r.toLowerCase());
 
-    if (!userRole || !allowed.includes(userRole)) {
+    const hasPermission = allUserRoles.some((role) => allowed.includes(role));
+
+    if (!hasPermission) {
       return res.status(403).json({ message: "Forbidden" });
     }
     next();

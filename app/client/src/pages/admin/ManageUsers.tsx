@@ -44,7 +44,7 @@ const ManageUsers = () => {
     lastName: "",
     email: "",
     password: "",
-    roleName: "Student",
+    roleNames: ["Student"],
     universityId: "",
     batch: "",
     year: "",
@@ -78,7 +78,7 @@ const ManageUsers = () => {
       lastName: "",
       email: "",
       password: "",
-      roleName: "Student",
+      roleNames: ["Student"],
       universityId: "",
       batch: "",
       year: "",
@@ -96,15 +96,15 @@ const ManageUsers = () => {
 
   const handleOpenEdit = (user: User) => {
     setSelectedUser(user);
+    const existingRole =
+      typeof user.role === "string" ? user.role : user.role?.name || "Student";
+
     setFormData({
       firstName: user.firstName || user.first_name || "",
       lastName: user.lastName || user.last_name || "",
       email: user.email,
       password: "",
-      roleName:
-        typeof user.role === "string"
-          ? user.role
-          : user.role?.name || "Student",
+      roleNames: [existingRole],
       universityId:
         (user as { university_id?: string }).university_id ||
         (user as { universityId?: string }).universityId ||
@@ -144,6 +144,16 @@ const ManageUsers = () => {
       console.error("Delete error", err);
       toast.error("Protocol Breach: Failed to terminate user node");
     }
+  };
+
+  const generatePassword = () => {
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+    let pass = "";
+    for (let i = 0; i < 12; i++) {
+      pass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setFormData((prev) => ({ ...prev, password: pass }));
   };
 
   const [isNotifyModalOpen, setIsNotifyModalOpen] = useState(false);
@@ -192,7 +202,6 @@ const ManageUsers = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Registry Validation Protocol
     if (!formData.firstName.trim() || !formData.lastName.trim()) {
       toast.warn("Registry Denial: Legal Identity identifiers required.");
       return;
@@ -209,10 +218,18 @@ const ManageUsers = () => {
       return;
     }
 
+    if (formData.roleNames.length === 0) {
+      toast.warn("Authorization Error: At least one role must be designated.");
+      return;
+    }
+
     setProcessing(true);
     try {
       if (modalMode === "create") {
-        await api.post("/admin/users/create", formData);
+        await api.post("/admin/users/create", {
+          ...formData,
+          roleName: formData.roleNames[0],
+        });
         fetchUsers();
         toast.success(
           currentRoleName === "Admin"
@@ -221,7 +238,10 @@ const ManageUsers = () => {
         );
       } else {
         if (selectedUser) {
-          await api.patch(`/admin/users/${selectedUser.id}`, formData);
+          await api.patch(`/admin/users/${selectedUser.id}`, {
+            ...formData,
+            roleName: formData.roleNames[0],
+          });
           fetchUsers();
           toast.success("User configuration updated");
         }
@@ -248,7 +268,6 @@ const ManageUsers = () => {
     const userRoleName =
       typeof user.role === "string" ? user.role : user.role?.name || "";
 
-    // Security Protocol: DeptHead cannot see SuperAdmin
     if (currentRoleName === "DepartmentHead" && userRoleName === "SuperAdmin") {
       return false;
     }
@@ -419,7 +438,6 @@ const ManageUsers = () => {
                           <MessageSquare className="h-4 w-4" />
                         </button>
 
-                        {/* Approval Action: Only for DeptHead/SuperAdmin and users pending approval */}
                         {user.status === "pending_approval" &&
                           (currentRoleName === "DepartmentHead" ||
                             currentRoleName === "SuperAdmin") && (
@@ -432,8 +450,6 @@ const ManageUsers = () => {
                             </button>
                           )}
 
-                        {/* Hierarchy Protection: Hide Edit/Delete for SuperAdmins if not SuperAdmin */}
-                        {/* Also hide if DeptHead is viewing another DeptHead */}
                         {!(
                           (roleName === "SuperAdmin" &&
                             currentRoleName !== "SuperAdmin") ||
@@ -449,7 +465,6 @@ const ManageUsers = () => {
                               <Edit2 className="h-4 w-4" />
                             </button>
 
-                            {/* Further restriction: Admin cannot delete DeptHead */}
                             {!(
                               roleName === "DepartmentHead" &&
                               currentRoleName === "Admin"
@@ -492,14 +507,14 @@ const ManageUsers = () => {
             className="absolute inset-0 bg-[#2A1205]/40 backdrop-blur-xl animate-in fade-in duration-500"
             onClick={() => setIsModalOpen(false)}
           />
-          <div className="relative w-full max-w-2xl bg-white rounded-[3rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
-            <div className="bg-[#5A270F] px-10 py-10 relative overflow-hidden group/modal">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/20 blur-[80px] transition-all group-hover/modal:bg-[#DF8142]/30" />
+          <div className="relative w-full max-w-lg bg-white rounded-[2rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
+            <div className="bg-[#5A270F] px-8 py-6 relative overflow-hidden group/modal">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/20 blur-[60px] transition-all group-hover/modal:bg-[#DF8142]/30" />
               <div className="relative z-10">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-2">
+                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-1">
                   Registry Update
                 </p>
-                <h3 className="text-3xl font-black text-white leading-tight">
+                <h3 className="text-2xl font-black text-white leading-tight">
                   {modalMode === "create"
                     ? "Initialize User Node"
                     : "Configure Specimen"}
@@ -507,10 +522,10 @@ const ManageUsers = () => {
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-10 space-y-8">
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
+            <form onSubmit={handleSubmit} className="p-8 space-y-5">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
                     First Identifier
                   </label>
                   <input
@@ -519,12 +534,12 @@ const ManageUsers = () => {
                     title="First Identifier"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
+                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
                     required
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
                     Last Identifier
                   </label>
                   <input
@@ -533,14 +548,14 @@ const ManageUsers = () => {
                     title="Last Identifier"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
+                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
                     required
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
                   Communication Frequency (Email)
                 </label>
                 <input
@@ -550,54 +565,88 @@ const ManageUsers = () => {
                   title="Communication Frequency (Email)"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
+                  className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
                   required
                 />
               </div>
 
               {modalMode === "create" && (
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
                     Initial Authorization Key
                   </label>
-                  <input
-                    id="password"
-                    type="password"
-                    name="password"
-                    title="Initial Authorization Key"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
-                    required={modalMode === "create"}
-                  />
+                  <div className="relative flex items-center">
+                    <input
+                      id="password"
+                      type="text"
+                      name="password"
+                      title="Initial Authorization Key"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl pl-4 pr-10 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
+                      required={modalMode === "create"}
+                    />
+                    <button
+                      type="button"
+                      onClick={generatePassword}
+                      className="absolute right-2 p-1.5 hover:bg-[#DF8142]/10 rounded-lg text-[#92664A] hover:text-[#DF8142] transition-colors"
+                      title="Auto-Generate Secure Key"
+                    >
+                      <RefreshCw className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
-                    Role Priority
+                  <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                    Role Designation (Multi-Select)
                   </label>
-                  <select
-                    id="roleName"
-                    name="roleName"
-                    title="Role Priority"
-                    value={formData.roleName}
-                    onChange={handleInputChange}
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none appearance-none"
-                  >
-                    <option value="Student">Student Node</option>
-                    <option value="Faculty">Faculty Node</option>
-                    <option value="Admin">Admin Node</option>
-                    {currentRoleName === "SuperAdmin" && (
-                      <option value="DepartmentHead">
-                        Department Head Node
-                      </option>
-                    )}
-                  </select>
+                  <div className="grid grid-cols-2 gap-3">
+                    {["Student", "Faculty", "Admin", "DepartmentHead"]
+                      .filter(
+                        (role) =>
+                          role !== "DepartmentHead" ||
+                          currentRoleName === "SuperAdmin",
+                      )
+                      .map((role) => {
+                        const isSelected = formData.roleNames.includes(role);
+                        return (
+                          <div
+                            key={role}
+                            onClick={() => {
+                              const newRoles = isSelected
+                                ? formData.roleNames.filter((r) => r !== role)
+                                : [...formData.roleNames, role];
+                              setFormData({ ...formData, roleNames: newRoles });
+                            }}
+                            className={`cursor-pointer px-3 py-2.5 rounded-xl border transition-all ${
+                              isSelected
+                                ? "bg-[#5A270F] border-[#5A270F] text-white shadow-md scale-[1.02]"
+                                : "bg-white border-[#D9D9C2] text-[#5A270F] hover:border-[#DF8142]"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <div
+                                className={`h-2.5 w-2.5 rounded-full border-2 ${
+                                  isSelected
+                                    ? "border-white bg-[#DF8142]"
+                                    : "border-[#D9D9C2]"
+                                }`}
+                              />
+                              <span className="text-[10px] font-black uppercase tracking-widest">
+                                {role.replace(/([A-Z])/g, " $1").trim()}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
+
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
                     Active Status
                   </label>
                   <select
@@ -606,7 +655,7 @@ const ManageUsers = () => {
                     title="Active Status"
                     value={formData.status}
                     onChange={handleInputChange}
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none appearance-none"
+                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none appearance-none"
                   >
                     <option value="active">Protocol: Active</option>
                     <option value="inactive">Protocol: Suspended</option>
@@ -614,21 +663,21 @@ const ManageUsers = () => {
                 </div>
               </div>
 
-              <div className="pt-8 flex justify-end gap-4 border-t border-slate-50">
+              <div className="pt-6 flex justify-end gap-3 border-t border-slate-50">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-8 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-[#92664A] hover:text-[#5A270F] transition-colors"
+                  className="px-6 py-2.5 text-[9px] font-black uppercase tracking-[0.2em] text-[#92664A] hover:text-[#5A270F] transition-colors"
                 >
                   Abort
                 </button>
                 <button
                   type="submit"
                   disabled={processing}
-                  className="px-10 py-3 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#DF8142] transition-all shadow-xl disabled:opacity-50"
+                  className="px-8 py-2.5 bg-[#5A270F] text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-[#DF8142] transition-all shadow-lg disabled:opacity-50"
                 >
                   {processing ? (
-                    <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                    <Loader2 className="h-3 w-3 animate-spin mx-auto" />
                   ) : modalMode === "create" ? (
                     "Initialize"
                   ) : (

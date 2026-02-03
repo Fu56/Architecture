@@ -651,14 +651,26 @@ export const createUser = async (req: Request, res: Response) => {
       email,
       password,
       roleName,
+      roleNames, // New: Array support
       universityId,
       batch,
       year,
       semester,
     } = req.body;
 
-    if (!firstName || !lastName || !email || !password || !roleName) {
-      return res.status(400).json({ message: "Missing required fields" });
+    // Normalize roles to array
+    const rolesToAssign: string[] = roleNames || (roleName ? [roleName] : []);
+
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !password ||
+      rolesToAssign.length === 0
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Missing required fields or roles" });
     }
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -679,31 +691,42 @@ export const createUser = async (req: Request, res: Response) => {
       }
     }
 
-    const role = await prisma.role.findUnique({ where: { name: roleName } });
-    if (!role)
-      return res.status(404).json({ message: "Requested role not localized." });
+    // Fetch valid roles
+    const validRoles = await prisma.role.findMany({
+      where: { name: { in: rolesToAssign } },
+    });
+
+    if (validRoles.length !== rolesToAssign.length) {
+      return res
+        .status(404)
+        .json({ message: "One or more requested roles not localized." });
+    }
 
     // Hierarchy Logic Matrix
     const requester = (req as any).user;
     const requesterRole = requester?.role?.toLowerCase();
 
-    if (requesterRole === "departmenthead") {
-      const allowedToCreate = ["admin", "faculty", "student"];
-      if (!allowedToCreate.includes(roleName.toLowerCase())) {
-        return res.status(403).json({
-          message:
-            "Security Protocol: Department Heads can only authorize Admin, Faculty, or Student units.",
-        });
+    // Check permissions for ALL roles
+    for (const r of rolesToAssign) {
+      const rLower = r.toLowerCase();
+      if (requesterRole === "departmenthead") {
+        const allowedToCreate = ["admin", "faculty", "student"];
+        if (!allowedToCreate.includes(rLower)) {
+          return res.status(403).json({
+            message:
+              "Security Protocol: Department Heads can only authorize Admin, Faculty, or Student units.",
+          });
+        }
       }
-    }
 
-    if (requesterRole === "admin") {
-      const allowedToCreate = ["faculty", "student"];
-      if (!allowedToCreate.includes(roleName.toLowerCase())) {
-        return res.status(403).json({
-          message:
-            "Security Protocol: Admin units can only authorize Faculty or Student units.",
-        });
+      if (requesterRole === "admin") {
+        const allowedToCreate = ["faculty", "student"];
+        if (!allowedToCreate.includes(rLower)) {
+          return res.status(403).json({
+            message:
+              "Security Protocol: Admin units can only authorize Faculty or Student units.",
+          });
+        }
       }
     }
 
@@ -721,6 +744,14 @@ export const createUser = async (req: Request, res: Response) => {
     const initialStatus =
       requesterRole === "admin" ? "pending_approval" : "active";
 
+    // Primary Role is the first one selected
+    const primaryRole = validRoles.find((r) => r.name === rolesToAssign[0]);
+    const secondaryRolesToConnect = validRoles
+      .filter((r) => r.name !== rolesToAssign[0])
+      .map((r) => ({ id: r.id }));
+
+    if (!primaryRole) throw new Error("Primary Role resolution failed");
+
     const user = await prisma.user.create({
       data: {
         name: `${firstName} ${lastName}`,
@@ -728,7 +759,8 @@ export const createUser = async (req: Request, res: Response) => {
         last_name: lastName,
         email,
         password: hashedPassword,
-        role: { connect: { id: role.id } },
+        role: { connect: { id: primaryRole.id } }, // Connect Primary
+        secondaryRoles: { connect: secondaryRolesToConnect }, // Connect Secondary
         status: initialStatus,
         university_id: finalUnivId,
         batch: batch ? Number(batch) : null,
@@ -774,6 +806,7 @@ export const updateUser = async (req: Request, res: Response) => {
       lastName,
       email,
       roleName,
+      roleNames, // Support multi-role update
       status,
       universityId,
       batch,
@@ -781,39 +814,85 @@ export const updateUser = async (req: Request, res: Response) => {
       semester,
     } = req.body;
 
-    // Optional: Check existence
+    const requester = (req as any).user;
+    const requesterRole = (
+      requester?.role?.name ||
+      requester?.role ||
+      ""
+    ).toLowerCase();
+
+    // Fetch Target User
+    const targetUser = await prisma.user.findUnique({
+      where: { id },
+      include: { role: true },
+    });
+
+    if (!targetUser) {
+      return res.status(404).json({ message: "Target user not found" });
+    }
 
     let updateData: any = {
       first_name: firstName,
       last_name: lastName,
+      name: firstName && lastName ? `${firstName} ${lastName}` : undefined,
       email,
       status,
       university_id: universityId,
-      batch: batch ? Number(batch) : null,
-      year: year ? Number(year) : null,
-      semester: semester ? Number(semester) : null,
+      batch: batch ? Number(batch) : undefined,
+      year: year ? Number(year) : undefined,
+      semester: semester ? Number(semester) : undefined,
     };
 
-    if (roleName) {
-      const role = await prisma.role.findUnique({ where: { name: roleName } });
-      if (role) updateData.role = { connect: { id: role.id } }; // Use assignment for relation
+    // Role Update Logic
+    const rolesToAssign: string[] = roleNames || (roleName ? [roleName] : []);
+    if (rolesToAssign.length > 0) {
+      // Permission Checks for Roles
+      for (const r of rolesToAssign) {
+        const rLower = r.toLowerCase();
+        if (requesterRole === "departmenthead") {
+          if (!["admin", "faculty", "student"].includes(rLower)) {
+            return res
+              .status(403)
+              .json({ message: "Forbidden role assignment" });
+          }
+        }
+        if (requesterRole === "admin") {
+          if (!["faculty", "student"].includes(rLower)) {
+            return res
+              .status(403)
+              .json({ message: "Forbidden role assignment" });
+          }
+        }
+      }
+
+      const validRoles = await prisma.role.findMany({
+        where: { name: { in: rolesToAssign } },
+      });
+
+      if (validRoles.length > 0) {
+        const primaryRole = validRoles.find((r) => r.name === rolesToAssign[0]);
+        const secondaryRoleIds = validRoles
+          .filter((r) => r.name !== rolesToAssign[0])
+          .map((r) => ({ id: r.id }));
+
+        if (primaryRole) {
+          updateData.role = { connect: { id: primaryRole.id } };
+          updateData.secondaryRoles = { set: secondaryRoleIds }; // 'set' replaces existing secondary roles
+        }
+      }
     }
 
-    // Filter out undefined keys if any (though typical put sends all, patch sends partial. let's assume partial is ok or full)
-    // Actually simpler to just update what is passed if using PATCH.
-    // We'll use PATCH logic: only update defined fields.
-    // However, Prisma updates only what is in 'data'. If keys are undefined, it might error or set null.
-    // Let's rely on frontend sending necessary data, but for safety:
+    // Clean undefined fields
     Object.keys(updateData).forEach(
       (key) => updateData[key] === undefined && delete updateData[key],
     );
 
-    const user = await prisma.user.update({
-      where: { id: id },
+    const updatedUser = await prisma.user.update({
+      where: { id },
       data: updateData,
     });
 
-    res.json({ message: "User updated successfully", user });
+    res.json({ message: "User updated successfully", user: updatedUser });
   } catch (error) {
     console.error("Update User Error:", error);
     res.status(500).json({ message: "Failed to update user" });
@@ -825,7 +904,7 @@ export const deleteUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const requester = (req as any).user;
-    const requesterRole = requester?.role;
+    const requesterRole = requester?.role?.name || requester?.role;
 
     // 1. Fetch target user to check their role
     const targetUser = await prisma.user.findUnique({
@@ -842,7 +921,6 @@ export const deleteUser = async (req: Request, res: Response) => {
     const targetRoleName = (targetUser.role as any)?.name;
 
     // 2. Hierarchy Protection Logic
-    // Only SuperAdmin can delete another SuperAdmin (or per system rules, maybe no one can delete a SuperAdmin)
     if (targetRoleName === "SuperAdmin" && requesterRole !== "SuperAdmin") {
       return res.status(403).json({
         message:
@@ -850,8 +928,6 @@ export const deleteUser = async (req: Request, res: Response) => {
       });
     }
 
-    // Department Head can't delete SuperAdmin (already covered above)
-    // But let's also ensure Admin can't delete Department Head
     if (targetRoleName === "DepartmentHead" && requesterRole === "Admin") {
       return res.status(403).json({
         message:
@@ -884,7 +960,7 @@ export const approveUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const requester = (req as any).user;
-    const requesterRole = requester?.role;
+    const requesterRole = requester?.role?.name || requester?.role;
 
     if (requesterRole !== "DepartmentHead" && requesterRole !== "SuperAdmin") {
       return res.status(403).json({
@@ -988,5 +1064,88 @@ export const broadcastNotification = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Broadcast Error:", error);
     res.status(500).json({ message: "Failed to transmit global broadcast" });
+  }
+};
+
+export const deleteResource = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const resourceId = Number(id);
+
+    const resource = await prisma.resource.findUnique({
+      where: { id: resourceId },
+    });
+
+    if (!resource) {
+      return res.status(404).json({ message: "Resource not found" });
+    }
+
+    // Delete file from disk if it exists
+    if (resource.file_path && fs.existsSync(resource.file_path)) {
+      try {
+        fs.unlinkSync(resource.file_path);
+      } catch (fileError) {
+        console.error("Failed to delete file from disk:", fileError);
+      }
+    }
+
+    await prisma.resource.delete({
+      where: { id: resourceId },
+    });
+
+    res.json({ message: "Resource permanently deleted from system matrix." });
+  } catch (error) {
+    console.error("Permanent Delete Error:", error);
+    res.status(500).json({ message: "Error deleting resource permanently" });
+  }
+};
+
+export const getArchivedResources = async (req: Request, res: Response) => {
+  try {
+    const resources = await prisma.resource.findMany({
+      where: { status: "archived" },
+      include: {
+        uploader: {
+          select: {
+            id: true,
+            email: true,
+            first_name: true,
+            last_name: true,
+            role: true,
+          },
+        },
+        design_stage: true,
+      },
+      orderBy: { archived_at: "desc" },
+    });
+
+    const formattedResources = resources.map((resource) => ({
+      id: resource.id,
+      title: resource.title,
+      author: resource.author,
+      keywords: resource.keywords,
+      batchYear: resource.batch,
+      filePath: resource.file_path,
+      fileType: resource.file_type,
+      fileSize: resource.file_size,
+      uploader: {
+        id: resource.uploader?.id,
+        firstName: resource.uploader?.first_name,
+        lastName: resource.uploader?.last_name,
+        email: resource.uploader?.email,
+        role: resource.uploader?.role,
+      },
+      designStage: resource.design_stage,
+      status: resource.status,
+      downloadCount: resource.download_count,
+      isArchived: true,
+      uploadedAt: resource.uploaded_at,
+      archivedAt: (resource as any).archived_at,
+    }));
+
+    res.json(formattedResources);
+  } catch (error) {
+    console.error("Fetch Archived Error:", error);
+    res.status(500).json({ message: "Error fetching archived resources" });
   }
 };

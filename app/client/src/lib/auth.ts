@@ -19,6 +19,7 @@ export type Role =
   | "admin"
   | "Admin"
   | "SuperAdmin"
+  | "DepartmentHead"
   | "Student"
   | "Faculty";
 

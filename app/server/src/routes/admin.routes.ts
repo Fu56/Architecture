@@ -23,6 +23,8 @@ import {
   deleteNews,
   sendDirectNotification,
   broadcastNotification,
+  deleteResource,
+  getArchivedResources,
 } from "../controllers/admin.controller";
 
 const router = Router();
@@ -34,6 +36,12 @@ router.patch("/resources/:id/approve", approveResource);
 router.patch("/resources/:id/reject", rejectResource);
 router.patch("/resources/:id/archive", archiveResource);
 router.patch("/resources/:id/restore", restoreResource);
+router.delete(
+  "/resources/:id/permanent",
+  requireRole(["SuperAdmin", "DepartmentHead"]),
+  deleteResource,
+);
+router.get("/resources/archived", getArchivedResources);
 
 router.get("/flags", getFlags);
 router.patch("/flags/:id/resolve", resolveFlag);

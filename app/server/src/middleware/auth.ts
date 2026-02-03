@@ -35,7 +35,8 @@ export const requireAuth = async (
     (req as any).user = {
       id: session.user.id,
       email: session.user.email,
-      role: (session.user as any).role?.name,
+      role: (session.user as any).role, // Pass full role object/string
+      secondaryRoles: (session.user as any).secondaryRoles, // Attach secondary roles
       status: userStatus,
     };
 

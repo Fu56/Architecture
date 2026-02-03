@@ -21,6 +21,7 @@ model User {
     password      String?
     role          Role?    @relation(fields: [roleId], references: [id])
     roleId        Int?
+    secondaryRoles Role[]  @relation("UserSecondaryRoles") // New: Support for multiple roles
     batch         Int?
     year          Int?
     semester      Int?
@@ -108,7 +109,8 @@ model Role {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
-    users User[]
+    users User[] // Primary relation
+    secondaryRoleUsers User[] @relation("UserSecondaryRoles") // Secondary relation
 }
 
 model Design_stage {

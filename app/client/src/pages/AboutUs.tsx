@@ -202,6 +202,89 @@ const AboutUs = () => {
         </div>
       </section>
 
+      {/* Wollo University Legacy Milestone */}
+      <section className="py-32 bg-[#EFEDED]">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="flex flex-col items-center text-center mb-20">
+            <div className="inline-flex items-center gap-3 px-4 py-2 bg-white border border-[#D9D9C2] rounded-full text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F] mb-8">
+              <Award className="h-3 w-3 text-[#DF8142]" /> Specialized Milestone
+            </div>
+            <h2 className="text-5xl sm:text-7xl font-black text-[#5A270F] tracking-tighter leading-[0.9] mb-8">
+              THE WOLLO <br /> UNIVERSITY{" "}
+              <span className="text-[#DF8142]">LEGACY.</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="bg-white p-10 rounded-[3rem] border border-[#D9D9C2] shadow-sm transform hover:-translate-y-2 transition-transform duration-500 group">
+              <p className="text-[10px] font-black text-[#DF8142] uppercase tracking-[0.3em] mb-4">
+                Historical Origin
+              </p>
+              <h3 className="text-2xl font-black text-[#5A270F] mb-6 uppercase tracking-tight">
+                Prototype Genesis
+              </h3>
+              <p className="text-gray-500 font-medium text-sm leading-relaxed mb-8">
+                The foundational matrix was conceptualized and prototyped during
+                the collaborative research phase of the 2025 graduating class.
+              </p>
+              <div className="flex items-center gap-4 text-[#5A270F]">
+                <Map className="h-5 w-5" />
+                <span className="font-bold tracking-widest text-xs uppercase">
+                  March 2025
+                </span>
+              </div>
+            </div>
+
+            <div className="lg:col-span-1 bg-[#5A270F] p-10 rounded-[3.5rem] shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/20 blur-[60px]" />
+              <p className="text-[10px] font-black text-[#EEB38C] uppercase tracking-[0.3em] mb-4">
+                Core Collaboration
+              </p>
+              <h3 className="text-2xl font-black text-white mb-6 uppercase tracking-tight">
+                Interdisciplinary Alpha
+              </h3>
+              <p className="text-white/70 font-medium text-sm leading-relaxed mb-8">
+                Architecture and Software Engineering students from Wollo
+                University achieved full synchronization, merging spatial design
+                with digital scalability.
+              </p>
+              <div className="flex items-center gap-4 text-[#EEB38C]">
+                <Users className="h-5 w-5" />
+                <span className="font-black tracking-[0.2em] text-[10px] uppercase">
+                  Class of 2025 Collaboration
+                </span>
+              </div>
+            </div>
+
+            <div className="bg-white p-10 rounded-[3rem] border border-[#D9D9C2] shadow-sm transform hover:-translate-y-2 transition-transform duration-500 group">
+              <p className="text-[10px] font-black text-[#DF8142] uppercase tracking-[0.3em] mb-4">
+                Final Deployment
+              </p>
+              <h3 className="text-2xl font-black text-[#5A270F] mb-6 uppercase tracking-tight">
+                Global Integration
+              </h3>
+              <p className="text-gray-500 font-medium text-sm leading-relaxed mb-8">
+                The platform's transition from academic prototype to the fully
+                functional Architectural Matrix currently serving the university
+                node.
+              </p>
+              <div className="flex items-center gap-4 text-[#5A270F]">
+                <Globe className="h-5 w-5" />
+                <span className="font-bold tracking-widest text-xs uppercase">
+                  February 2026
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-16 text-center">
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.5em]">
+              Powered by the Pioneering Synergy of Wollo University
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Visionary Section */}
       <section className="py-32 bg-white overflow-hidden">
         <div className="max-w-[7xl] mx-auto px-4 sm:px-6 lg:px-8 text-center">
