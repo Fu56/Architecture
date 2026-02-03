@@ -44,8 +44,8 @@ export const notifyUsers = async ({
           html ||
             getGenericHtml(
               title,
-              `Dear ${user.first_name || "User"},\n\n${message}`
-            )
+              `Dear ${user.first_name || "User"},\n\n${message}`,
+            ),
         );
       }
     }
@@ -54,10 +54,35 @@ export const notifyUsers = async ({
   }
 };
 
+export const notifyNewsletterSubscribers = async (
+  title: string,
+  message: string,
+  html?: string,
+) => {
+  try {
+    const subscribers = await (prisma as any).newsletterSubscription.findMany({
+      select: { email: true },
+    });
+
+    for (const sub of subscribers) {
+      if (sub.email) {
+        await sendNotificationEmail(
+          sub.email,
+          title,
+          message,
+          html || getGenericHtml(title, message),
+        );
+      }
+    }
+  } catch (error) {
+    console.error("Failed to notify newsletter subscribers:", error);
+  }
+};
+
 export const notifyAllByRole = async (
   roleName: string,
   title: string,
-  message: string
+  message: string,
 ) => {
   try {
     const users = await prisma.user.findMany({
@@ -77,8 +102,14 @@ export const notifyAllByRole = async (
   }
 };
 
-export const notifyAll = async (title: string, message: string) => {
+// Global Broadcast: Both registered users and newsletter subscribers
+export const notifyAll = async (
+  title: string,
+  message: string,
+  html?: string,
+) => {
   try {
+    // 1. Notify Registered Users (Internal + Email)
     const users = await prisma.user.findMany({
       select: { id: true },
     });
@@ -88,8 +119,12 @@ export const notifyAll = async (title: string, message: string) => {
         userIds: users.map((u) => u.id),
         title,
         message,
+        html,
       });
     }
+
+    // 2. Notify Newsletter Subscribers (Email Only)
+    await notifyNewsletterSubscribers(title, message, html);
   } catch (error) {
     console.error("Failed to send global notifications:", error);
   }

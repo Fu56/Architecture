@@ -1,5 +1,10 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/db";
+import {
+  sendNotificationEmail,
+  getNewsletterSubscriptionHtml,
+  getNewsletterAdminAlertHtml,
+} from "../utils/email";
 
 export const getRoles = async (req: Request, res: Response) => {
   try {
@@ -9,6 +14,8 @@ export const getRoles = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error fetching roles" });
   }
 };
+
+// ... (getDesignStages, getPublicStats, getAllNews - unchanged)
 
 export const getDesignStages = async (req: Request, res: Response) => {
   try {
@@ -92,15 +99,42 @@ export const subscribeNewsletter = async (req: Request, res: Response) => {
       data: { email },
     });
 
+    // 1. Notify Subscriber with Thank You Message
+    await sendNotificationEmail(
+      email,
+      "Welcome to the Architectural Matrix",
+      "Thank you for subscribing to the Architectural Matrix newsletter.",
+      getNewsletterSubscriptionHtml(email),
+    );
+
+    // 2. Notify SuperAdmins and Dept Heads
+    const admins = await prisma.user.findMany({
+      where: {
+        role: {
+          name: { in: ["SuperAdmin", "DepartmentHead"] },
+        },
+      },
+      select: { email: true },
+    });
+
+    for (const admin of admins) {
+      if (admin.email) {
+        await sendNotificationEmail(
+          admin.email,
+          "New Registry Subscription",
+          `A new entity (${email}) has subscribed to the network.`,
+          getNewsletterAdminAlertHtml(email),
+        );
+      }
+    }
+
     res.json({
       message: "Transmission initialized. Welcome to the studio digest.",
     });
   } catch (error) {
     console.error("Newsletter Subscription Error:", error);
-    res
-      .status(500)
-      .json({
-        message: "Internal server error. Failed to initialize transmission.",
-      });
+    res.status(500).json({
+      message: "Internal server error. Failed to initialize transmission.",
+    });
   }
 };

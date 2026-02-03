@@ -120,13 +120,16 @@ export const listResources = async (req: Request, res: Response) => {
     // If user is Admin, they might want 'pending'.
     // Let's assume this is the public/student list.
     if (status) {
-      // Security Check: Only admins can view archived resources
-      if (
-        status === "archived" &&
-        getUserRole(req) !== "Admin" &&
-        getUserRole(req) !== "admin" &&
-        getUserRole(req) !== "SuperAdmin"
-      ) {
+      // Security Check: Only admins/dept heads can view archived resources
+      const userRole = getUserRole(req);
+      const isPrivileged = [
+        "Admin",
+        "admin",
+        "SuperAdmin",
+        "DepartmentHead",
+      ].includes(userRole || "");
+
+      if (status === "archived" && !isPrivileged) {
         where.status = "student"; // Force back to public view
       } else {
         where.status = String(status);
@@ -219,9 +222,12 @@ export const getResource = async (req: Request, res: Response) => {
 
     // Security Check: If archived, only admins can view details
     const role = getUserRole(req);
-    const isAdmin =
-      role === "Admin" || role === "admin" || role === "SuperAdmin";
-    if (r.status === "archived" && !isAdmin) {
+    const isPrivileged =
+      role === "Admin" ||
+      role === "admin" ||
+      role === "SuperAdmin" ||
+      role === "DepartmentHead";
+    if (r.status === "archived" && !isPrivileged) {
       return res
         .status(403)
         .json({ message: "Access denied: Resource is archived" });
@@ -280,9 +286,12 @@ export const downloadResource = async (req: Request, res: Response) => {
 
     // Security Check: Archived resources only for admins
     const role = getUserRole(req);
-    const isAdmin =
-      role === "Admin" || role === "admin" || role === "SuperAdmin";
-    if (resource.status === "archived" && !isAdmin) {
+    const isPrivileged =
+      role === "Admin" ||
+      role === "admin" ||
+      role === "SuperAdmin" ||
+      role === "DepartmentHead";
+    if (resource.status === "archived" && !isPrivileged) {
       return res
         .status(403)
         .json({ message: "Access denied: Resource is archived" });
@@ -314,9 +323,12 @@ export const viewResource = async (req: Request, res: Response) => {
 
     // Security Check: Archived resources only for admins
     const role = getUserRole(req);
-    const isAdmin =
-      role === "Admin" || role === "admin" || role === "SuperAdmin";
-    if (resource.status === "archived" && !isAdmin) {
+    const isPrivileged =
+      role === "Admin" ||
+      role === "admin" ||
+      role === "SuperAdmin" ||
+      role === "DepartmentHead";
+    if (resource.status === "archived" && !isPrivileged) {
       return res
         .status(403)
         .json({ message: "Access denied: Resource is archived" });

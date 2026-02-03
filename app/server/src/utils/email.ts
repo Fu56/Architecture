@@ -275,3 +275,50 @@ export const getPasswordResetHtml = (resetUrl: string) => {
     </div>
     `;
 };
+
+export const getNewsletterSubscriptionHtml = (email: string) => {
+  return `
+    <div ${emailStyle} style="border: 2px solid #DF8142;">
+        <div ${headerStyle} style="background: #5A270F; border-bottom: 4px solid #DF8142;">
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #EEB38C; text-transform: uppercase;">Nexus Transmission Verified</p>
+            <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px;">WELCOME TO THE STUDIO</h1>
+        </div>
+        <div style="padding: 0 20px;">
+            <p><strong>Intelligence Feed Initialized.</strong></p>
+            <p>Your node address <strong>${email}</strong> has been successfully integrated into our architectural matrix. You will now receive high-fidelity updates on project milestones, resource drops, and technical briefings.</p>
+            
+            <div style="padding: 20px; background: #EFEDED; border-radius: 12px; border: 1px solid #D9D9C2; margin: 30px 0;">
+                <p style="margin: 0; font-size: 13px; color: #5A270F; font-weight: 500;">
+                    <strong>Thank You:</strong> We appreciate your dedication to architectural synergy. Your presence strengthens the global vault.
+                </p>
+            </div>
+
+            <p style="margin-top: 40px; font-size: 12px; color: #64748b; text-align: center;">You can unsubscribe from the matrix at any time through your terminal settings.</p>
+            <div ${footerStyle}>Studio Digest Protocol | Level 1 Intelligence</div>
+        </div>
+    </div>
+    `;
+};
+
+export const getNewsletterAdminAlertHtml = (subscriberEmail: string) => {
+  return `
+    <div ${emailStyle} style="border: 2px solid #5A270F;">
+        <div ${headerStyle} style="background: #2A1205;">
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #DF8142; text-transform: uppercase;">Registry Growth Detected</p>
+            <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px;">NEW SUBSCRIBER</h1>
+        </div>
+        <div style="padding: 0 20px;">
+            <p>An external entity has joined the architectural network.</p>
+            
+            <div style="background: #f8fafc; padding: 25px; border-radius: 12px; margin: 30px 0; border: 1px solid #e2e8f0; text-align: center;">
+                <p style="margin: 0; font-size: 10px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Node Identifier</p>
+                <p style="margin: 10px 0 0 0; font-size: 20px; font-weight: 900; color: #5A270F;">${subscriberEmail}</p>
+            </div>
+
+            <p>Authorization is not required for this node level, but the registry has been updated to include this communication frequency.</p>
+            
+            <div ${footerStyle}>Registry Protocol | Admin Intelligence Layer</div>
+        </div>
+    </div>
+    `;
+};

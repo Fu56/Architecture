@@ -97,6 +97,12 @@ export const approveResource = async (req: Request, res: Response) => {
           comment,
         ),
       });
+
+      // Global Broadcast: Notify everyone about the new asset
+      await notifyAll(
+        "New Resource Verified",
+        `A new architectural artifact "${resource.title}" by ${uploader.first_name || "a verified architect"} is now live in the matrix.`,
+      );
     }
 
     res.json({ message: "Resource approved", resource });
@@ -1003,10 +1009,10 @@ export const createNews = async (req: Request, res: Response) => {
       },
     });
 
-    // Notify all users about the news/event
+    // Notify all entities (Users + Subscribers)
     await notifyAll(
-      isEvent ? "New Event Scheduled" : "System Announcement",
-      title,
+      isEvent ? "Protocol Event: New Schedule" : "System Announcement",
+      `A new update "${title}" has been published to the matrix.\n\n${content}`,
     );
 
     res
