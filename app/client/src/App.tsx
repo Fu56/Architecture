@@ -94,6 +94,7 @@ const App = () => {
               <Route path="analytics" element={<Analytics />} />
               <Route path="users" element={<ManageUsers />} />
               <Route path="resources" element={<Resources />} />
+              <Route path="favorites" element={<Favorites />} />
               <Route path="resources/:id" element={<ResourceDetails />} />
               <Route path="upload" element={<Upload />} />
               <Route path="register-students" element={<RegisterStudents />} />

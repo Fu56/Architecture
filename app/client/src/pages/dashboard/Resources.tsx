@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { api } from "../../lib/api";
+import { toast } from "sonner";
 import type { Resource } from "../../models";
 import ResourceCard from "../../components/ui/ResourceCard";
 import Filters, { type FilterState } from "../../components/ui/Filters";
@@ -11,12 +12,8 @@ const Resources = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const role = currentRole();
-  const isAdmin =
-    role === "Admin" ||
-    role === "SuperAdmin" ||
-    role === "admin" ||
-    role === "DepartmentHead";
-  const isHighAdmin = role === "SuperAdmin" || role === "DepartmentHead";
+  const isAdmin = role === "Admin" || role === "SuperAdmin" || role === "admin";
+  const isHighAdmin = role === "SuperAdmin";
   const [showArchived, setShowArchived] = useState(false);
 
   const fetchResources = useCallback(
@@ -57,48 +54,66 @@ const Resources = () => {
     fetchResources({});
   }, [fetchResources, showArchived]);
 
-  const handleDelete = async (id: number) => {
-    if (!window.confirm("Are you sure you want to archive this resource?"))
-      return;
-    try {
-      await api.patch(`/admin/resources/${id}/archive`);
-      setResources((prev) => prev.filter((r) => r.id !== id));
-    } catch (err) {
-      console.error("Failed to archive resource:", err);
-      alert("Failed to archive resource");
-    }
+  const handleDelete = (id: number) => {
+    toast("Archive this resource?", {
+      description:
+        "This will move the resource to the archive. It will no longer be visible to students.",
+      action: {
+        label: "Archive",
+        onClick: async () => {
+          try {
+            await api.patch(`/admin/resources/${id}/archive`);
+            setResources((prev) => prev.filter((r) => r.id !== id));
+            toast.success("Resource archived");
+          } catch (err) {
+            console.error("Failed to archive resource:", err);
+            toast.error("Failed to archive resource");
+          }
+        },
+      },
+      cancel: { label: "Cancel", onClick: () => {} },
+    });
   };
 
-  const handleRestore = async (id: number) => {
-    if (
-      !window.confirm(
-        "Are you sure you want to restore this resource to the active library?",
-      )
-    )
-      return;
-    try {
-      await api.patch(`/admin/resources/${id}/restore`);
-      setResources((prev) => prev.filter((r) => r.id !== id));
-    } catch (err) {
-      console.error("Failed to restore resource:", err);
-      alert("Failed to restore resource");
-    }
+  const handleRestore = (id: number) => {
+    toast("Restore this resource?", {
+      description: "This will restore the resource to the active library.",
+      action: {
+        label: "Restore",
+        onClick: async () => {
+          try {
+            await api.patch(`/admin/resources/${id}/restore`);
+            setResources((prev) => prev.filter((r) => r.id !== id));
+            toast.success("Resource restored");
+          } catch (err) {
+            console.error("Failed to restore resource:", err);
+            toast.error("Failed to restore resource");
+          }
+        },
+      },
+      cancel: { label: "Cancel", onClick: () => {} },
+    });
   };
 
-  const handlePermanentDelete = async (id: number) => {
-    if (
-      !window.confirm(
-        "CRITICAL ACTION: Are you sure you want to PERMANENTLY DELETE this resource and its associated file? This cannot be undone.",
-      )
-    )
-      return;
-    try {
-      await api.delete(`/admin/resources/${id}/permanent`);
-      setResources((prev) => prev.filter((r) => r.id !== id));
-    } catch (err) {
-      console.error("Failed to permanently delete resource:", err);
-      alert("Unauthorized: Protocol Restricted to higher authority nodes.");
-    }
+  const handlePermanentDelete = (id: number) => {
+    toast("PERMANENTLY DELETE resource?", {
+      description:
+        "This action cannot be undone. The file and record will be erased forever.",
+      action: {
+        label: "DELETE",
+        onClick: async () => {
+          try {
+            await api.delete(`/admin/resources/${id}/permanent`);
+            setResources((prev) => prev.filter((r) => r.id !== id));
+            toast.success("Resource deleted permanently");
+          } catch (err) {
+            console.error("Failed to permanently delete resource:", err);
+            toast.error("Unauthorized action");
+          }
+        },
+      },
+      cancel: { label: "Cancel", onClick: () => {} },
+    });
   };
 
   return (

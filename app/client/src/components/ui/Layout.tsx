@@ -140,6 +140,7 @@ const Layout = () => {
     ? "/admin/notifications"
     : "/dashboard/notifications";
   const uploadPath = isAdmin ? "/admin/upload" : "/dashboard/upload";
+  const favoritesPath = isAdmin ? "/admin/favorites" : "/dashboard/favorites";
 
   return (
     <div className="min-h-screen flex flex-col font-sans selection:bg-[#DF8142]/20 selection:text-[#5A270F]">
@@ -379,7 +380,7 @@ const Layout = () => {
                           )}
 
                           <Link
-                            to="/dashboard/favorites"
+                            to={favoritesPath}
                             onClick={() => setUserMenuOpen(false)}
                             className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F]/80 hover:text-[#DF8142] hover:bg-[#EFEDED] rounded-2xl transition-all group/item"
                           >
