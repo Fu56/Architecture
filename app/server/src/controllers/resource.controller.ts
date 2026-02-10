@@ -111,6 +111,7 @@ export const createResource = async (req: Request, res: Response) => {
 
 export const listResources = async (req: Request, res: Response) => {
   try {
+    const userId = getUserId(req);
     const { search, stage, year, type, status, semester, sort, sortBy, limit } =
       req.query;
     const finalSort = sort || sortBy;
@@ -173,6 +174,7 @@ export const listResources = async (req: Request, res: Response) => {
         uploader: { select: { first_name: true, last_name: true, role: true } },
         design_stage: true,
         ratings: { select: { rate: true } },
+        favorites: userId ? { where: { userId } } : false,
       },
       orderBy,
       take: finalLimit,
@@ -208,6 +210,7 @@ export const listResources = async (req: Request, res: Response) => {
         designStage: r.design_stage,
         semester: r.semester,
         adminComment: (r as any).admin_comment,
+        isFavorite: (r as any).favorites?.length > 0,
         averageRating,
         ratingCount,
       };
@@ -227,6 +230,7 @@ export const listResources = async (req: Request, res: Response) => {
 export const getResource = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const userId = getUserId(req);
     const r = await prisma.resource.findUnique({
       where: { id: Number(id) },
       include: {
@@ -239,6 +243,7 @@ export const getResource = async (req: Request, res: Response) => {
           orderBy: { created_at: "desc" },
         },
         ratings: true,
+        favorites: userId ? { where: { userId } } : false,
       },
     });
 
@@ -288,6 +293,7 @@ export const getResource = async (req: Request, res: Response) => {
       designStage: r.design_stage,
       semester: r.semester,
       adminComment: (r as any).admin_comment,
+      isFavorite: (r as any).favorites?.length > 0,
       comments: r.comments.map((c) => ({
         id: c.id,
         text: c.text,
@@ -510,5 +516,42 @@ export const flagResource = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Resource flagged" });
   } catch (error) {
     res.status(500).json({ message: "Error flagging resource" });
+  }
+};
+
+export const toggleFavorite = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const userId = getUserId(req);
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+    const resourceId = Number(id);
+
+    const existingFavorite = await prisma.favorite.findUnique({
+      where: {
+        userId_resourceId: {
+          userId,
+          resourceId,
+        },
+      },
+    });
+
+    if (existingFavorite) {
+      await prisma.favorite.delete({
+        where: { id: existingFavorite.id },
+      });
+      return res.status(200).json({ isFavorite: false });
+    } else {
+      await prisma.favorite.create({
+        data: {
+          userId,
+          resourceId,
+        },
+      });
+      return res.status(201).json({ isFavorite: true });
+    }
+  } catch (error) {
+    console.error("Toggle Favorite Error:", error);
+    res.status(500).json({ message: "Error toggling favorite" });
   }
 };

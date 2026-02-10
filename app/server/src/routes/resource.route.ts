@@ -11,6 +11,7 @@ import {
   flagResource,
   addComment,
   rateResource,
+  toggleFavorite,
 } from "../controllers/resource.controller";
 
 const router = Router();
@@ -24,5 +25,6 @@ router.post("/", requireAuth, upload.single("file"), createResource);
 router.post("/:id/flag", requireAuth, flagResource);
 router.post("/:id/comments", requireAuth, addComment);
 router.post("/:id/rate", requireAuth, rateResource);
+router.post("/:id/favorite", requireAuth, toggleFavorite);
 
 export default router;

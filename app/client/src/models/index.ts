@@ -46,6 +46,7 @@ export interface Resource {
   adminComment?: string;
   averageRating?: number;
   ratingCount?: number;
+  isFavorite?: boolean;
 }
 
 export interface Comment {

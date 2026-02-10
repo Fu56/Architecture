@@ -12,6 +12,7 @@ import {
   Activity,
   Terminal,
   ArrowLeft,
+  Heart,
 } from "lucide-react";
 import { getUser } from "../../lib/auth";
 
@@ -21,8 +22,10 @@ const dashboardNavLinks = [
     href: "/dashboard",
     icon: LayoutDashboard,
     exact: true,
+    hideForAdmin: true,
   },
   { name: "Upload New", href: "/dashboard/upload", icon: UploadCloud },
+  { name: "Saved Resources", href: "/dashboard/favorites", icon: Heart },
   { name: "Asset Library", href: "/dashboard/resources", icon: Library },
   { name: "Assessments", href: "/dashboard/assignments", icon: BookOpen },
   { name: "My Archives", href: "/dashboard/uploads", icon: Upload },
@@ -55,6 +58,8 @@ const UserDashboard = () => {
     typeof user?.role === "object" ? user.role.name : user?.role || "Member";
   const isSuperAdmin = userRole === "SuperAdmin";
   const isDeptHead = userRole === "DepartmentHead";
+  const isAdmin =
+    userRole === "Admin" || userRole === "admin" || isSuperAdmin || isDeptHead;
 
   return (
     <div className="min-h-screen bg-[#EFEDED] selection:bg-primary/20 selection:text-[#2A1205]">
@@ -113,6 +118,9 @@ const UserDashboard = () => {
                   <div className="space-y-1.5">
                     {dashboardNavLinks
                       .filter((link) => !link.role || userRole === link.role)
+                      .filter(
+                        (link) => !(isAdmin && (link as any).hideForAdmin),
+                      )
                       .map((link) => {
                         const isActive = link.exact
                           ? location.pathname === link.href

@@ -10,8 +10,12 @@ import {
   Layers,
   Sparkles,
   Star,
+  Heart,
   type LucideIcon,
 } from "lucide-react";
+import { useState } from "react";
+import { api } from "../../lib/api";
+import { toast } from "sonner";
 import type { Resource } from "../../models";
 import { isAuthenticated, currentRole } from "../../lib/auth";
 
@@ -96,7 +100,28 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
     priority,
     uploader,
     uploadedAt,
+    isFavorite: initialIsFavorite,
   } = resource;
+
+  const [isFavorite, setIsFavorite] = useState(initialIsFavorite || false);
+
+  const toggleFavorite = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Optimistic update
+    const newValue = !isFavorite;
+    setIsFavorite(newValue);
+
+    try {
+      await api.post(`/resources/${id}/favorite`);
+      toast.success(newValue ? "Added to favorites" : "Removed from favorites");
+    } catch (error) {
+      console.error("Favorite toggle error:", error);
+      setIsFavorite(!newValue); // Revert
+      toast.error("Failed to update favorite status");
+    }
+  };
 
   const style =
     (fileType && fileTypeStyles[fileType.toLowerCase()]) ||
@@ -146,8 +171,30 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
           </div>
         </div>
 
+        {/* Favorite Button for Approved/Student Resources */}
+        {(resource.status === "approved" || resource.status === "student") && (
+          <button
+            onClick={toggleFavorite}
+            title={isFavorite ? "Remove from favorites" : "Add to favorites"}
+            aria-label={
+              isFavorite ? "Remove from favorites" : "Add to favorites"
+            }
+            className="absolute top-6 right-6 z-20 p-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg hover:bg-white/20 transition-all active:scale-95 group/fav"
+          >
+            <Heart
+              className={`h-4 w-4 transition-all duration-300 ${
+                isFavorite
+                  ? "fill-[#DF8142] text-[#DF8142]"
+                  : "text-white group-hover/fav:text-[#DF8142]"
+              }`}
+            />
+          </button>
+        )}
+
         {priority && (
-          <div className="absolute top-6 right-6 z-10 flex items-center gap-2 px-3 py-1.5 bg-[#DF8142] text-white rounded-lg shadow-lg shadow-[#DF8142]/20 transform group-hover:scale-105 transition-transform">
+          <div
+            className={`absolute top-6 ${resource.status === "approved" || resource.status === "student" ? "right-16" : "right-6"} z-10 flex items-center gap-2 px-3 py-1.5 bg-[#DF8142] text-white rounded-lg shadow-lg shadow-[#DF8142]/20 transform group-hover:scale-105 transition-transform`}
+          >
             <Sparkles className="h-3 w-3 fill-white" />
             <span className="text-[9px] font-bold uppercase tracking-widest">
               High-Fidelity

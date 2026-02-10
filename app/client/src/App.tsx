@@ -20,6 +20,7 @@ import RegisterStudents from "./pages/admin/RegisterStudents";
 import RegisterFaculty from "./pages/admin/RegisterFaculty";
 import NewsManager from "./pages/admin/NewsManager";
 import Resources from "./pages/dashboard/Resources";
+import Favorites from "./pages/dashboard/Favorites";
 import Assignments from "./pages/library/Assignments";
 import AssignmentDetails from "./pages/library/AssignmentDetails";
 import PostAssignment from "./pages/library/PostAssignment";
@@ -75,6 +76,7 @@ const App = () => {
               <Route path="upload" element={<Upload />} />
               <Route path="uploads" element={<MyUploads />} />
               <Route path="resources" element={<Resources />} />
+              <Route path="favorites" element={<Favorites />} />
               <Route path="resources/:id" element={<ResourceDetails />} />
               <Route path="notifications" element={<Notifications />} />
               <Route path="profile" element={<Profile />} />

@@ -152,7 +152,7 @@ const Resources = () => {
               <ResourceCard resource={resource} />
 
               {isAdmin && (
-                <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                <div className="absolute top-16 right-6 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
                   {showArchived ? (
                     <>
                       <button

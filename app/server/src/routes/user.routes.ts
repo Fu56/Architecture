@@ -1,7 +1,11 @@
 import { Router } from "express";
 import { requireAuth } from "../middleware/auth";
 import { prisma } from "../config/db";
-import { updateProfile, changePassword } from "../controllers/user.controller";
+import {
+  updateProfile,
+  changePassword,
+  getFavorites,
+} from "../controllers/user.controller";
 
 const router = Router();
 
@@ -49,5 +53,6 @@ router.get("/resources", requireAuth, async (req, res) => {
 
 router.patch("/profile", requireAuth, updateProfile);
 router.patch("/change-password", requireAuth, changePassword);
+router.get("/favorites", requireAuth, getFavorites);
 
 export default router;

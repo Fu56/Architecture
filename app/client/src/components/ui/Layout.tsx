@@ -19,6 +19,7 @@ import {
   LayoutDashboard,
   ChevronDown,
   ArrowRight,
+  Heart,
 } from "lucide-react";
 import { useSession, authClient } from "../../lib/auth-client";
 import { api } from "../../lib/api";
@@ -376,6 +377,17 @@ const Layout = () => {
                               Super Architect Console
                             </Link>
                           )}
+
+                          <Link
+                            to="/dashboard/favorites"
+                            onClick={() => setUserMenuOpen(false)}
+                            className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F]/80 hover:text-[#DF8142] hover:bg-[#EFEDED] rounded-2xl transition-all group/item"
+                          >
+                            <div className="p-2 bg-[#EFEDED] rounded-xl group-hover/item:bg-[#DF8142] group-hover/item:text-white transition-all">
+                              <Heart className="h-4 w-4" />
+                            </div>
+                            Saved Resources
+                          </Link>
 
                           <Link
                             to="/dashboard/profile"

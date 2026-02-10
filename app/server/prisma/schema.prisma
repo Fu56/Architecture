@@ -41,6 +41,7 @@ model User {
     submissions   Submission[]
     blogs         Blog[]
     systemLogs    SystemLog[]
+    favorites     Favorite[]
 
     @@map("user")
 }
@@ -154,6 +155,7 @@ model Resource {
     ratings       Rating[]
     flags         Flag[]
     notifications Notification[]
+    favorites     Favorite[]
 }
 
 model Comment {
@@ -275,4 +277,15 @@ model NewsletterSubscription {
     id        Int      @id @default(autoincrement())
     email     String   @unique
     createdAt DateTime @default(now())
+}
+
+model Favorite {
+    id          Int      @id @default(autoincrement())
+    user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId      String
+    resource    Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+    resourceId  Int
+    createdAt   DateTime @default(now())
+
+    @@unique([userId, resourceId])
 }
