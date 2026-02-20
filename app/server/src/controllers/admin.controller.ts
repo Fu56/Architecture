@@ -424,6 +424,17 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
       return res.status(500).json({ message: "Student role not found" });
     }
 
+    const requester = (req as any).user;
+    const requesterRole = (
+      requester?.role?.name ||
+      requester?.role ||
+      ""
+    ).toLowerCase();
+
+    // Approval Protocol: Admin-created users require Dept Head authorization
+    const initialStatus =
+      requesterRole === "admin" ? "pending_approval" : "active";
+
     let successCount = 0;
     let failedCount = 0;
     const errors: string[] = [];
@@ -447,6 +458,20 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
           password,
           university_id,
         } = student;
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          failedCount++;
+          errors.push(`${email}: Invalid email format`);
+          results.push({
+            email,
+            password: "",
+            status: "failed",
+            error: "Invalid email format",
+          });
+          continue;
+        }
 
         // Check if user already exists
         const existingUser = await prisma.user.findUnique({
@@ -480,7 +505,7 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
             email,
             password: hashedPassword,
             role: { connect: { id: studentRole.id } },
-            status: "active",
+            status: initialStatus,
             batch: batch ? Number(batch) : null,
             year: year ? Number(year) : null,
             semester: semester ? Number(semester) : null,
@@ -568,6 +593,14 @@ export const registerFaculty = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res
+        .status(400)
+        .json({ message: "Protocol Breach: Invalid email syntax detected." });
+    }
+
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -586,6 +619,17 @@ export const registerFaculty = async (req: Request, res: Response) => {
       return res.status(500).json({ message: "Faculty role not found" });
     }
 
+    const requester = (req as any).user;
+    const requesterRole = (
+      requester?.role?.name ||
+      requester?.role ||
+      ""
+    ).toLowerCase();
+
+    // Approval Protocol: Admin-created users require Dept Head authorization
+    const initialStatus =
+      requesterRole === "admin" ? "pending_approval" : "active";
+
     const bcrypt = require("bcryptjs");
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -602,7 +646,7 @@ export const registerFaculty = async (req: Request, res: Response) => {
         email,
         password: hashedPassword,
         role: { connect: { id: facultyRole.id } },
-        status: "active",
+        status: initialStatus,
         university_id: univId,
       },
       include: {
@@ -679,6 +723,14 @@ export const createUser = async (req: Request, res: Response) => {
         .json({ message: "Missing required fields or roles" });
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res
+        .status(400)
+        .json({ message: "Protocol Breach: Invalid email syntax detected." });
+    }
+
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser)
       return res
@@ -710,7 +762,11 @@ export const createUser = async (req: Request, res: Response) => {
 
     // Hierarchy Logic Matrix
     const requester = (req as any).user;
-    const requesterRole = requester?.role?.toLowerCase();
+    const requesterRole = (
+      requester?.role?.name ||
+      requester?.role ||
+      ""
+    ).toLowerCase();
 
     // Check permissions for ALL roles
     for (const r of rolesToAssign) {

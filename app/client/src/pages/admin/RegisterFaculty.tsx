@@ -13,6 +13,7 @@ import {
   GraduationCap,
 } from "lucide-react";
 import { toast } from "../../lib/toast";
+import { useSession } from "../../lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,6 +26,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+interface UserWithRole {
+  id: string | number;
+  email: string;
+  name?: string;
+  role?: { name: string } | string;
+}
+
 interface FacultyFormData {
   first_name: string;
   last_name: string;
@@ -35,6 +43,14 @@ interface FacultyFormData {
 }
 
 const RegisterFaculty = () => {
+  const { data: session } = useSession();
+  const requester = session?.user as UserWithRole | undefined;
+  const requesterRole = (
+    requester?.role?.name ||
+    requester?.role ||
+    ""
+  ).toLowerCase();
+
   const [formData, setFormData] = useState<FacultyFormData>({
     first_name: "",
     last_name: "",
@@ -84,7 +100,13 @@ const RegisterFaculty = () => {
         ...formData,
         role: "Faculty",
       });
-      toast.success("Faculty Node initialized successfully.");
+
+      const message =
+        requesterRole === "admin"
+          ? "Faculty Node initialized: Authorization required by Department Head."
+          : "Faculty Node initialized and activated successfully.";
+
+      toast.success(message);
       setFormData({
         first_name: "",
         last_name: "",

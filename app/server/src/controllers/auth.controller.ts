@@ -12,16 +12,22 @@ export const register = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res
+        .status(400)
+        .json({ message: "Invalid email format detected." });
+    }
+
     // Domain validation if needed
     if (
       env.allowedEmailDomain &&
       !email.endsWith(`@${env.allowedEmailDomain}`)
     ) {
-      return res
-        .status(400)
-        .json({
-          message: `Please use a @${env.allowedEmailDomain} email address.`,
-        });
+      return res.status(400).json({
+        message: `Please use a @${env.allowedEmailDomain} email address.`,
+      });
     }
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -46,6 +52,7 @@ export const register = async (req: Request, res: Response) => {
 
     const user = await prisma.user.create({
       data: {
+        name: `${first_name} ${last_name}`,
         first_name,
         last_name,
         email,
@@ -59,9 +66,9 @@ export const register = async (req: Request, res: Response) => {
     });
 
     const token = jwt.sign(
-      { id: user.id, role: user.role?.name, email: user.email },
+      { id: user.id, role: (user as any).role?.name, email: user.email },
       env.jwtSecret,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     res.status(201).json({
@@ -71,7 +78,7 @@ export const register = async (req: Request, res: Response) => {
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
-        role: user.role?.name,
+        role: (user as any).role?.name,
       },
     });
   } catch (error) {
@@ -91,14 +98,14 @@ export const login = async (req: Request, res: Response) => {
 
     if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password || "");
     if (!isMatch)
       return res.status(401).json({ message: "Invalid credentials" });
 
     const token = jwt.sign(
-      { id: user.id, role: user.role?.name, email: user.email },
+      { id: user.id, role: (user as any).role?.name, email: user.email },
       env.jwtSecret,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     res.json({
@@ -108,7 +115,7 @@ export const login = async (req: Request, res: Response) => {
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
-        role: user.role?.name,
+        role: (user as any).role?.name,
       },
     });
   } catch (error) {

@@ -14,6 +14,14 @@ import {
   FileText,
 } from "lucide-react";
 import { toast } from "../../lib/toast";
+import { useSession } from "../../lib/auth-client";
+
+interface UserWithRole {
+  id: string | number;
+  email: string;
+  name?: string;
+  role?: { name: string } | string;
+}
 
 interface StudentRow {
   first_name: string;
@@ -40,6 +48,14 @@ interface RegistrationResult {
 }
 
 const RegisterStudents = () => {
+  const { data: session } = useSession();
+  const requester = session?.user as UserWithRole | undefined;
+  const requesterRole = (
+    requester?.role?.name ||
+    requester?.role ||
+    ""
+  ).toLowerCase();
+
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<StudentRow[]>([]);
   const [loading, setLoading] = useState(false);
@@ -152,9 +168,12 @@ const RegisterStudents = () => {
         results: response.data.results,
       });
       if (response.data.success > 0) {
-        toast.success(
-          `Broadcasting update: ${response.data.success} nodes successfully integrated`,
-        );
+        const message =
+          requesterRole === "admin"
+            ? `Broadcasting update: ${response.data.success} nodes integrated. Authorization required for activation.`
+            : `Broadcasting update: ${response.data.success} nodes successfully integrated`;
+
+        toast.success(message);
         setFile(null);
         setPreview([]);
         setValidationResult(null);

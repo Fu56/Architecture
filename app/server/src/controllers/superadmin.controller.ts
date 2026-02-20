@@ -27,6 +27,14 @@ export const createDepartmentHead = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res
+        .status(400)
+        .json({ message: "Protocol Breach: Invalid email syntax detected." });
+    }
+
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser)
       return res.status(409).json({ message: "Email already exists" });
