@@ -128,7 +128,7 @@ const Home = () => {
               <div className="w-1.5 h-1.5 rounded-full bg-[#DF8142] animate-[pulse_2s_infinite]" />
             </div>
 
-            <h1 className="text-5xl sm:text-7xl md:text-[6.5rem] lg:text-[8.5rem] font-black tracking-tighter text-white mb-6 sm:mb-8 leading-[0.75] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-100 uppercase italic">
+            <h1 className="text-4xl sm:text-7xl md:text-[6.5rem] lg:text-[8.5rem] font-black tracking-tighter text-white mb-6 sm:mb-8 leading-[0.75] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-100 uppercase italic">
               ENGINEER <br />
               <span className="relative inline-block mt-2 not-italic">
                 <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#EEB38C] to-white drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)]">

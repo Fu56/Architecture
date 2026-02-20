@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { NavLink, Outlet, useLocation, Link } from "react-router-dom";
 import {
   Upload,
@@ -9,10 +10,11 @@ import {
   BookOpen,
   PenTool,
   Shield,
-  Activity,
   Terminal,
   ArrowLeft,
   Heart,
+  Menu,
+  X,
 } from "lucide-react";
 import { getUser } from "../../lib/auth";
 
@@ -42,6 +44,17 @@ const dashboardNavLinks = [
 const UserDashboard = () => {
   const location = useLocation();
   const user = getUser();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [prevPath, setPrevPath] = useState(location.pathname);
+
+  // Close sidebar on mobile when navigating
+  if (location.pathname !== prevPath) {
+    setPrevPath(location.pathname);
+    if (isSidebarOpen) {
+      setIsSidebarOpen(false);
+    }
+  }
+
   const currentLink = [...dashboardNavLinks]
     .reverse()
     .find((l) =>
@@ -62,12 +75,34 @@ const UserDashboard = () => {
     userRole === "Admin" || userRole === "admin" || isSuperAdmin || isDeptHead;
 
   return (
-    <div className="min-h-screen bg-[#EFEDED] selection:bg-primary/20 selection:text-[#2A1205]">
+    <div className="min-h-screen bg-[#EFEDED] selection:bg-primary/20 selection:text-[#2A1205] relative">
+      {/* Mobile Menu Toggle */}
+      <button
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        className="lg:hidden fixed bottom-8 right-8 z-[60] h-16 w-16 bg-[#2A1205] text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform hover:bg-[#5A270F] border-4 border-white/20"
+      >
+        {isSidebarOpen ? (
+          <X className="h-6 w-6 animate-in spin-in-90 duration-300" />
+        ) : (
+          <Menu className="h-6 w-6 animate-in zoom-in duration-300" />
+        )}
+      </button>
+
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
+          {/* Mobile Overlay */}
+          {isSidebarOpen && (
+            <div
+              className="lg:hidden fixed inset-0 bg-[#2A1205]/60 backdrop-blur-md z-40 animate-in fade-in duration-300"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
+
           {/* Immersive User Sidebar */}
-          <aside className="w-full lg:w-[280px] lg:sticky lg:top-24 z-30">
-            <div className="bg-[#2A1205] rounded-3xl p-6 shadow-xl relative overflow-hidden ring-1 ring-white/10 flex flex-col min-h-[85vh]">
+          <aside
+            className={`fixed lg:sticky lg:top-24 inset-y-0 left-0 z-50 lg:z-auto w-full max-w-[300px] lg:w-[280px] bg-[#2A1205] lg:bg-transparent transform transition-transform duration-500 ease-in-out lg:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+          >
+            <div className="bg-[#2A1205] rounded-3xl lg:rounded-3xl p-6 shadow-xl relative overflow-hidden ring-1 ring-white/10 flex flex-col h-[calc(100vh-80px)] lg:min-h-[85vh]">
               {/* Abstract Background pattern */}
               <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/10 blur-[40px] -translate-y-1/2 translate-x-1/2" />
@@ -96,7 +131,7 @@ const UserDashboard = () => {
                     className="mb-6 mx-2 flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[10px] font-bold uppercase tracking-widest text-[#EEB38C] hover:text-white transition-all group"
                   >
                     <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" />
-                    Back to Central Command
+                    Back to Command
                   </Link>
                 )}
 
@@ -106,12 +141,12 @@ const UserDashboard = () => {
                     className="mb-6 mx-2 flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[10px] font-bold uppercase tracking-widest text-[#EEB38C] hover:text-white transition-all group"
                   >
                     <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" />
-                    Back to Department Command
+                    Back to Dept
                   </Link>
                 )}
 
                 {/* Navigation Terminal */}
-                <nav className="space-y-2 flex-grow">
+                <nav className="space-y-2 flex-grow overflow-y-auto scrollbar-none">
                   <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-4 px-2 flex items-center gap-3">
                     <Terminal className="h-3 w-3" /> Personal Nexus
                   </p>
@@ -119,7 +154,12 @@ const UserDashboard = () => {
                     {dashboardNavLinks
                       .filter((link) => !link.role || userRole === link.role)
                       .filter(
-                        (link) => !(isAdmin && (link as any).hideForAdmin),
+                        (link) =>
+                          !(
+                            isAdmin &&
+                            "hideForAdmin" in link &&
+                            link.hideForAdmin
+                          ),
                       )
                       .map((link) => {
                         const isActive = link.exact
@@ -149,25 +189,12 @@ const UserDashboard = () => {
                       })}
                   </div>
                 </nav>
-
-                {/* Status Indicator */}
-                <div className="mt-auto pt-8 border-t border-white/5">
-                  <div className="flex items-center justify-between px-4">
-                    <div className="flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-[#5A270F] animate-pulse" />
-                      <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest">
-                        Node Online
-                      </span>
-                    </div>
-                    <Activity className="h-3 w-3 text-white/10" />
-                  </div>
-                </div>
               </div>
             </div>
           </aside>
 
           {/* Main Integrated Workspace */}
-          <main className="flex-grow w-full lg:max-w-[calc(100%-312px)]">
+          <main className="flex-grow w-full lg:max-w-[calc(100%-312px)] min-w-0">
             <div className="bg-white p-6 sm:p-10 rounded-3xl shadow-sm border border-[#D9D9C2] min-h-[85vh] relative overflow-hidden">
               <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12 pb-8 border-b border-slate-50">
                 <div className="flex items-center gap-6">

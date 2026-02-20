@@ -268,16 +268,35 @@ const ManageUsers = () => {
     const userRoleName =
       typeof user.role === "string" ? user.role : user.role?.name || "";
 
+    // Security filter: Department Heads cannot see/manage SuperAdmins
     if (currentRoleName === "DepartmentHead" && userRoleName === "SuperAdmin") {
       return false;
     }
 
-    const fullName = `${user.firstName || user.first_name || ""} ${
-      user.lastName || user.last_name || ""
-    }`.toLowerCase();
-    const email = user.email.toLowerCase();
     const search = searchQuery.toLowerCase();
-    return fullName.includes(search) || email.includes(search);
+    const firstName = (user.firstName || user.first_name || "").toLowerCase();
+    const lastName = (user.lastName || user.last_name || "").toLowerCase();
+    const fullName = `${firstName} ${lastName}`;
+    const email = user.email.toLowerCase();
+    const universityId = (
+      user.university_id ||
+      (user as any).universityId ||
+      ""
+    )
+      .toString()
+      .toLowerCase();
+    const userId = user.id.toString().toLowerCase();
+    const status = (user.status || "").toLowerCase();
+    const role = userRoleName.toLowerCase();
+
+    return (
+      fullName.includes(search) ||
+      email.includes(search) ||
+      universityId.includes(search) ||
+      userId.includes(search) ||
+      status.includes(search) ||
+      role.includes(search)
+    );
   });
 
   if (loading) {
