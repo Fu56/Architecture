@@ -14,6 +14,7 @@ export interface User {
   last_name?: string;
   email: string;
   university_id?: string;
+  universityId?: string;
   role: Role | string;
   status: string;
   batch?: number;

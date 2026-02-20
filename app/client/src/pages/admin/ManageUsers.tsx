@@ -278,16 +278,14 @@ const ManageUsers = () => {
     const lastName = (user.lastName || user.last_name || "").toLowerCase();
     const fullName = `${firstName} ${lastName}`;
     const email = user.email.toLowerCase();
-    const universityId = (
-      user.university_id ||
-      (user as any).universityId ||
-      ""
-    )
+    const universityId = (user.university_id || user.universityId || "")
       .toString()
       .toLowerCase();
     const userId = user.id.toString().toLowerCase();
     const status = (user.status || "").toLowerCase();
     const role = userRoleName.toLowerCase();
+    const batch = (user.batch || "").toString();
+    const year = (user.year || "").toString();
 
     return (
       fullName.includes(search) ||
@@ -295,7 +293,9 @@ const ManageUsers = () => {
       universityId.includes(search) ||
       userId.includes(search) ||
       status.includes(search) ||
-      role.includes(search)
+      role.includes(search) ||
+      batch.includes(search) ||
+      year.includes(search)
     );
   });
 
