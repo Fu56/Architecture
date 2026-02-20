@@ -14,6 +14,7 @@ import {
   Zap,
   Filter,
 } from "lucide-react";
+import { isAuthenticated, currentRole } from "../lib/auth";
 
 const Blog = () => {
   const [blogs, setBlogs] = useState<BlogType[]>([]);
@@ -289,7 +290,23 @@ const Blog = () => {
             minds.
           </p>
           <Link
-            to="/login"
+            to={(() => {
+              if (!isAuthenticated()) return "/login";
+              const role = currentRole();
+
+              if (
+                role === "Admin" ||
+                role === "SuperAdmin" ||
+                role === "admin" ||
+                role === "DepartmentHead"
+              ) {
+                return "/admin/blog/new";
+              }
+              if (role === "Faculty") {
+                return "/dashboard/blog/new";
+              }
+              return "/login";
+            })()}
             className="px-12 py-5 bg-white text-[#5A270F] rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#DF8142] hover:text-white transition-all duration-500 shadow-2xl active:scale-95 flex items-center gap-3 mx-auto w-fit"
           >
             Create New Narrative <ArrowRight className="h-4 w-4" />
