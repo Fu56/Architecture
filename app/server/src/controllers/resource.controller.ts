@@ -152,7 +152,13 @@ export const listResources = async (req: Request, res: Response) => {
       where.OR = [
         { title: { contains: String(search), mode: "insensitive" } },
         { author: { contains: String(search), mode: "insensitive" } },
-        { keywords: { has: String(search) } }, // Postgres array filter
+        { keywords: { has: String(search) } },
+        {
+          design_stage: {
+            name: { contains: String(search), mode: "insensitive" },
+          },
+        },
+        { file_type: { contains: String(search), mode: "insensitive" } },
       ];
     }
 

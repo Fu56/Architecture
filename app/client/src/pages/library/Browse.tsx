@@ -1,10 +1,16 @@
 import { useState, useEffect, useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { api } from "../../lib/api";
 import Filters, { type FilterState } from "../../components/ui/Filters";
 import ResourceCard from "../../components/ui/ResourceCard";
 import type { Resource } from "../../models";
-import { ServerCrash, Library, SearchX, Sparkles } from "lucide-react";
+import {
+  ServerCrash,
+  Library,
+  SearchX,
+  Sparkles,
+  ArrowLeft,
+} from "lucide-react";
 
 const Browse = () => {
   const [searchParams] = useSearchParams();
@@ -86,6 +92,32 @@ const Browse = () => {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          <div className="flex justify-between items-center mb-8">
+            <button
+              onClick={() => window.history.back()}
+              className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-[#EEB38C] hover:text-white transition-all group"
+            >
+              <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" />
+              Back
+            </button>
+            {searchParams.get("search") && (
+              <Link
+                to="/"
+                className="flex items-center gap-2 px-4 py-2 bg-[#DF8142]/20 hover:bg-[#DF8142]/30 border border-[#DF8142]/20 rounded-xl text-[10px] font-black uppercase tracking-widest text-white transition-all"
+              >
+                Return to Home
+              </Link>
+            )}
+            {searchParams.get("stage") && (
+              <Link
+                to="/explore"
+                className="flex items-center gap-2 px-4 py-2 bg-[#DF8142]/20 hover:bg-[#DF8142]/30 border border-[#DF8142]/20 rounded-xl text-[10px] font-black uppercase tracking-widest text-white transition-all"
+              >
+                Return to Explore
+              </Link>
+            )}
+          </div>
+
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#DF8142]/10 border border-[#DF8142]/20 rounded-full text-[10px] font-bold uppercase tracking-widest text-[#DF8142] mb-6 animate-in fade-in slide-in-from-top-4 duration-700">
             <Library className="h-3 w-3" /> Universal Asset Repository
           </div>
@@ -188,6 +220,14 @@ const Browse = () => {
               >
                 Reset Search Protocols
               </button>
+              <div className="mt-8">
+                <button
+                  onClick={() => window.history.back()}
+                  className="px-6 py-2.5 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#DF8142] transition-colors active:scale-95"
+                >
+                  Return to Nexus Origin
+                </button>
+              </div>
             </div>
           )}
         </div>

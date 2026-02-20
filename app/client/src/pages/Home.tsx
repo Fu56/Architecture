@@ -13,6 +13,10 @@ import {
   Calendar,
   Briefcase,
   Sparkles,
+  Loader2,
+  FileText,
+  Clock,
+  ArrowLeft,
 } from "lucide-react";
 import { api } from "../lib/api";
 import type { Resource, Blog } from "../models";
@@ -46,6 +50,9 @@ const Home = () => {
   });
   const [realNews, setRealNews] = useState<NewsItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [liveResults, setLiveResults] = useState<Resource[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
 
   const fetchHomeData = useCallback(async () => {
@@ -87,9 +94,44 @@ const Home = () => {
     };
   }, [fetchHomeData]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!(event.target as HTMLElement).closest(".search-container")) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (searchQuery.trim().length > 1) {
+        setIsSearching(true);
+        try {
+          const { data } = await api.get(
+            `/resources?search=${encodeURIComponent(searchQuery)}&limit=5`,
+          );
+          setLiveResults(Array.isArray(data) ? data : []);
+          setShowDropdown(true);
+        } catch (err) {
+          console.error("Home live search error:", err);
+        } finally {
+          setIsSearching(false);
+        }
+      } else {
+        setLiveResults([]);
+        setShowDropdown(false);
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      setShowDropdown(false);
       navigate(`/browse?search=${encodeURIComponent(searchQuery)}`);
     }
   };
@@ -157,18 +199,38 @@ const Home = () => {
 
             <form
               onSubmit={handleSearch}
-              className="mb-12 animate-in fade-in slide-in-from-bottom-24 duration-1000 delay-500"
+              className="mb-12 animate-in fade-in slide-in-from-bottom-24 duration-1000 delay-500 relative"
             >
-              <div className="relative max-w-4xl group">
+              <div className="relative max-w-4xl group search-container">
                 <div className="absolute -inset-2 bg-gradient-to-r from-[#DF8142] via-[#5A270F] to-[#DF8142] rounded-[3rem] blur-2xl opacity-20 group-focus-within:opacity-40 transition duration-1000 group-hover:duration-200" />
 
                 <div className="relative flex flex-col sm:flex-row items-center bg-white/95 backdrop-blur-3xl rounded-[2.5rem] overflow-hidden shadow-[0_40px_80px_-15px_rgba(0,0,0,0.3)] ring-1 ring-white/20 transition-all duration-700 group-focus-within:ring-[#DF8142]/50 group-focus-within:scale-[1.01]">
                   <div className="hidden sm:block pl-10">
-                    <Search className="h-7 w-7 text-gray-400 group-focus-within:text-[#DF8142] transition-all duration-500 group-focus-within:rotate-90" />
+                    {searchQuery.length > 0 ? (
+                      <button
+                        type="button"
+                        title="Clear Search"
+                        aria-label="Clear Search"
+                        onClick={() => {
+                          setSearchQuery("");
+                          setShowDropdown(false);
+                        }}
+                        className="p-1 hover:bg-[#DF8142]/10 rounded-full transition-colors group/back"
+                      >
+                        <ArrowLeft className="h-7 w-7 text-[#DF8142] group-hover/back:-translate-x-1 transition-transform" />
+                      </button>
+                    ) : isSearching ? (
+                      <Loader2 className="h-7 w-7 text-[#DF8142] animate-spin" />
+                    ) : (
+                      <Search className="h-7 w-7 text-gray-400 group-focus-within:text-[#DF8142] transition-all duration-500 group-focus-within:rotate-90" />
+                    )}
                   </div>
                   <input
                     type="text"
                     value={searchQuery}
+                    onFocus={() =>
+                      searchQuery.length > 1 && setShowDropdown(true)
+                    }
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Enter resource ID, authority, or artifact keyword..."
                     className="w-full pl-8 sm:pl-8 pr-6 py-6 sm:py-8 bg-transparent text-[#2A1205] placeholder:text-gray-500 text-base sm:text-lg font-black focus:outline-none tracking-tight"
@@ -184,6 +246,74 @@ const Home = () => {
                     </button>
                   </div>
                 </div>
+
+                {/* Live Search Results Dropdown */}
+                {showDropdown && (liveResults.length > 0 || isSearching) && (
+                  <div className="absolute top-full left-0 right-0 mt-4 bg-white/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)] border border-white/20 overflow-hidden z-[100] animate-in fade-in slide-in-from-top-4 duration-500">
+                    <div className="p-4 bg-[#5A270F] border-b border-white/10">
+                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#EEB38C] flex items-center gap-3">
+                        <Sparkles className="h-3 w-3" /> Search Intelligence
+                      </p>
+                    </div>
+                    <div className="max-h-[400px] overflow-y-auto py-4 scrollbar-none">
+                      {liveResults.length > 0
+                        ? liveResults.map((resource) => (
+                            <button
+                              key={resource.id}
+                              type="button"
+                              onClick={() =>
+                                navigate(`/resources/${resource.id}`)
+                              }
+                              className="w-full px-8 py-5 hover:bg-[#EFEDED] transition-colors flex items-center gap-6 group text-left border-b border-slate-50 last:border-0"
+                            >
+                              <div className="h-14 w-14 bg-[#5A270F] rounded-2xl flex items-center justify-center text-white shadow-lg group-hover:bg-[#DF8142] transition-colors overflow-hidden">
+                                {resource.fileType.includes("pdf") ? (
+                                  <FileText className="h-6 w-6" />
+                                ) : (
+                                  <div className="text-sm font-black uppercase tracking-tighter">
+                                    {resource.fileType
+                                      .split("/")[1]
+                                      ?.slice(0, 3)}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex-grow">
+                                <h4 className="text-sm font-bold text-[#5A270F] group-hover:text-[#DF8142] transition-colors line-clamp-1 uppercase tracking-tight">
+                                  {resource.title}
+                                </h4>
+                                <div className="flex items-center gap-4 mt-1">
+                                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#92664A] flex items-center gap-1.5">
+                                    <Users className="h-3 w-3" />{" "}
+                                    {resource.author}
+                                  </span>
+                                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#92664A] flex items-center gap-1.5">
+                                    <Clock className="h-3 w-3" />{" "}
+                                    {new Date(
+                                      resource.uploadedAt,
+                                    ).toLocaleDateString()}
+                                  </span>
+                                </div>
+                              </div>
+                              <ArrowUpRight className="h-5 w-5 text-[#92664A] opacity-0 group-hover:opacity-100 transition-all translate-y-1 group-hover:translate-y-0" />
+                            </button>
+                          ))
+                        : !isSearching && (
+                            <div className="px-8 py-10 text-center">
+                              <p className="text-sm font-bold text-[#5A270F]">
+                                No matches found in the design matrix.
+                              </p>
+                            </div>
+                          )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleSearch}
+                      className="w-full py-5 bg-[#EFEDED] hover:bg-[#D9D9C2] transition-colors text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] border-t border-[#D9D9C2]"
+                    >
+                      View All Spectral matches
+                    </button>
+                  </div>
+                )}
               </div>
             </form>
 
