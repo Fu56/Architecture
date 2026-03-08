@@ -50,11 +50,11 @@ interface RegistrationResult {
 const RegisterStudents = () => {
   const { data: session } = useSession();
   const requester = session?.user as UserWithRole | undefined;
-  const requesterRole = (
-    requester?.role?.name ||
-    requester?.role ||
-    ""
-  ).toLowerCase();
+  const roleName =
+    typeof requester?.role === "string"
+      ? requester.role
+      : (requester?.role as { name?: string })?.name;
+  const requesterRole = (roleName || "").toLowerCase();
 
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<StudentRow[]>([]);

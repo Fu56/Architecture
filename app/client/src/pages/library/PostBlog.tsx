@@ -90,7 +90,6 @@ const PostBlog = () => {
         navigate("/blog");
       }
     } catch (err: unknown) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const error = err as any;
       console.error("Failed to create blog:", error);
       if (error.response?.status === 401) {

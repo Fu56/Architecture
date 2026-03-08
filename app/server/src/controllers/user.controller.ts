@@ -44,6 +44,10 @@ export const changePassword = async (req: Request, res: Response) => {
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) return res.status(404).json({ message: "User not found" });
 
+    if (!user.password) {
+      return res.status(400).json({ message: "Account does not have a password configured" });
+    }
+
     const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch)
       return res.status(401).json({ message: "Incorrect current password" });
