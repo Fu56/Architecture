@@ -646,16 +646,16 @@ const ResourceDetails = () => {
               <div className="pt-8 space-y-6 border-t border-white/10">
                 {[
                   {
-                    label: "Transmission Count",
+                    label: "Transmission Nodes",
                     value: resource.downloadCount.toLocaleString(),
                     icon: Download,
                   },
                   {
                     label: "Data Mass",
                     value:
-                      resource.fileSize > 1024
-                        ? `${(resource.fileSize / 1024).toFixed(2)} MB`
-                        : `${resource.fileSize.toFixed(2)} KB`,
+                      resource.fileSize > 1048576
+                        ? `${(resource.fileSize / 1048576).toFixed(2)} MB`
+                        : `${(resource.fileSize / 1024).toFixed(2)} KB`,
                     icon: Layers,
                   },
                   {
@@ -677,10 +677,23 @@ const ResourceDetails = () => {
                       : "Open Access",
                     icon: User,
                   },
+                  {
+                    label: "Keyword Signals",
+                    value:
+                      resource.keywords.length > 0
+                        ? resource.keywords.join(", ")
+                        : "No Tags",
+                    icon: Sparkles,
+                  },
+                  {
+                    label: "Authority Unit",
+                    value: resource.author,
+                    icon: User,
+                  },
                 ].map((item, i) => (
                   <div
                     key={i}
-                    className="flex justify-between items-center group"
+                    className="flex justify-between items-center group py-1"
                   >
                     <div className="flex items-center gap-3">
                       <item.icon className="h-4 w-4 text-white/20 group-hover:text-[#DF8142]/80 transition-colors" />
@@ -688,7 +701,10 @@ const ResourceDetails = () => {
                         {item.label}
                       </span>
                     </div>
-                    <span className="font-black text-white text-xs">
+                    <span
+                      className="font-black text-white text-[11px] text-right ml-4 max-w-[150px] truncate"
+                      title={item.value}
+                    >
                       {item.value}
                     </span>
                   </div>
