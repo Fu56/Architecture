@@ -17,6 +17,7 @@ import ManageUsers from "./pages/admin/ManageUsers";
 import Approvals from "./pages/admin/Approvals";
 import Flags from "./pages/admin/Flags";
 import RegisterStudents from "./pages/admin/RegisterStudents";
+import RegisterStudent from "./pages/admin/RegisterStudent";
 import RegisterFaculty from "./pages/admin/RegisterFaculty";
 import NewsManager from "./pages/admin/NewsManager";
 import Resources from "./pages/dashboard/Resources";
@@ -98,6 +99,7 @@ const App = () => {
               <Route path="resources/:id" element={<ResourceDetails />} />
               <Route path="upload" element={<Upload />} />
               <Route path="register-students" element={<RegisterStudents />} />
+              <Route path="register-student" element={<RegisterStudent />} />
               <Route path="register-faculty" element={<RegisterFaculty />} />
               <Route path="approvals" element={<Approvals />} />
               <Route path="news" element={<NewsManager />} />

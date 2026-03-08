@@ -50,6 +50,9 @@ const ManageUsers = () => {
     year: "",
     semester: "",
     status: "active",
+    specialization: "",
+    department: "",
+    workerId: "",
   });
   const [processing, setProcessing] = useState(false);
 
@@ -84,6 +87,9 @@ const ManageUsers = () => {
       year: "",
       semester: "",
       status: "active",
+      specialization: "",
+      department: "",
+      workerId: "",
     });
     setSelectedUser(null);
   };
@@ -113,6 +119,9 @@ const ManageUsers = () => {
       year: user.year?.toString() || "",
       semester: "",
       status: user.status,
+      specialization: user.specialization || "",
+      department: user.department || "",
+      workerId: user.workerId || user.worker_id || "",
     });
     setModalMode("edit");
     setIsModalOpen(true);
@@ -273,6 +282,14 @@ const ManageUsers = () => {
       return false;
     }
 
+    // Security filter: Admins cannot see/manage DepartmentHeads or SuperAdmins
+    if (
+      currentRoleName === "Admin" &&
+      (userRoleName === "DepartmentHead" || userRoleName === "SuperAdmin")
+    ) {
+      return false;
+    }
+
     const search = searchQuery.toLowerCase();
     const firstName = (user.firstName || user.first_name || "").toLowerCase();
     const lastName = (user.lastName || user.last_name || "").toLowerCase();
@@ -392,6 +409,13 @@ const ManageUsers = () => {
                           <div className="text-xs text-[#92664A] font-medium">
                             {user.email}
                           </div>
+                          {(user.department || user.specialization) && (
+                            <div className="text-[10px] text-[#DF8142] font-black uppercase tracking-widest mt-0.5">
+                              {user.department}{" "}
+                              {user.specialization &&
+                                `• ${user.specialization}`}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </td>
@@ -470,11 +494,10 @@ const ManageUsers = () => {
                           )}
 
                         {!(
-                          (roleName === "SuperAdmin" &&
-                            currentRoleName !== "SuperAdmin") ||
-                          (roleName === "DepartmentHead" &&
-                            currentRoleName === "DepartmentHead")
-                        ) && (
+                          roleName === "SuperAdmin" &&
+                          currentRoleName !== "SuperAdmin" &&
+                          currentRoleName !== "DepartmentHead"
+                        ) && currentRoleName !== "Admin" && (
                           <>
                             <button
                               onClick={() => handleOpenEdit(user)}
@@ -542,51 +565,69 @@ const ManageUsers = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="p-8 space-y-5">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
                   <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
-                    First Identifier
+                    First Name
                   </label>
                   <input
                     id="firstName"
                     name="firstName"
-                    title="First Identifier"
+                    title="First Name"
+                    placeholder="Enter first name"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
+                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
                     required
                   />
                 </div>
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
-                    Last Identifier
+                    Last Name
                   </label>
                   <input
                     id="lastName"
                     name="lastName"
-                    title="Last Identifier"
+                    title="Last Name"
+                    placeholder="Enter last name"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
+                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
                     required
                   />
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
-                  Communication Frequency (Email)
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  title="Communication Frequency (Email)"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
-                  required
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                    University ID
+                  </label>
+                  <input
+                    id="universityId"
+                    name="universityId"
+                    value={formData.universityId}
+                    onChange={handleInputChange}
+                    placeholder="e.g. U-ARCH-2024"
+                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                    Email Address
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    title="Email Address"
+                    placeholder="example@nexus.edu"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
+                    required
+                  />
+                </div>
               </div>
 
               {modalMode === "create" && (
@@ -602,7 +643,7 @@ const ManageUsers = () => {
                       title="Initial Authorization Key"
                       value={formData.password}
                       onChange={handleInputChange}
-                      className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl pl-4 pr-10 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
+                      className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl pl-3 pr-8 py-2 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
                       required={modalMode === "create"}
                     />
                     <button
@@ -674,12 +715,123 @@ const ManageUsers = () => {
                     title="Active Status"
                     value={formData.status}
                     onChange={handleInputChange}
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none appearance-none"
+                    disabled={
+                      currentRoleName !== "DepartmentHead" &&
+                      currentRoleName !== "SuperAdmin"
+                    }
+                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <option value="active">Protocol: Active</option>
                     <option value="inactive">Protocol: Suspended</option>
                   </select>
                 </div>
+
+                {/* Staff/Faculty/Admin Profile Signals */}
+                {formData.roleNames.some((r) =>
+                  ["Faculty", "Admin", "DepartmentHead", "SuperAdmin"].includes(
+                    r,
+                  ),
+                ) && (
+                  <div className="space-y-4 pt-4 border-t border-[#EFEDED] animate-in slide-in-from-top-2 duration-300">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                          Department
+                        </label>
+                        <input
+                          id="department"
+                          name="department"
+                          title="Department"
+                          value={formData.department}
+                          onChange={handleInputChange}
+                          placeholder="e.g. Design Studio"
+                          className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                          Specialization
+                        </label>
+                        <input
+                          id="specialization"
+                          name="specialization"
+                          title="Specialization"
+                          value={formData.specialization}
+                          onChange={handleInputChange}
+                          placeholder="e.g. Parametric"
+                          className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                        Worker ID
+                      </label>
+                      <input
+                        id="workerId"
+                        name="workerId"
+                        title="Worker ID"
+                        value={formData.workerId}
+                        onChange={handleInputChange}
+                        placeholder="e.g. F-AX-001"
+                        className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Student Academic Signals */}
+                {formData.roleNames.includes("Student") && (
+                  <div className="space-y-4 pt-4 border-t border-[#EFEDED] animate-in slide-in-from-top-2 duration-300">
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                          Batch
+                        </label>
+                        <input
+                          id="batch"
+                          name="batch"
+                          type="number"
+                          title="Batch"
+                          value={formData.batch}
+                          onChange={handleInputChange}
+                          placeholder="2024"
+                          className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                          Year
+                        </label>
+                        <input
+                          id="year"
+                          name="year"
+                          type="number"
+                          title="Year"
+                          value={formData.year}
+                          onChange={handleInputChange}
+                          placeholder="1"
+                          className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                          Semester
+                        </label>
+                        <input
+                          id="semester"
+                          name="semester"
+                          type="number"
+                          title="Semester"
+                          value={formData.semester}
+                          onChange={handleInputChange}
+                          placeholder="1"
+                          className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="pt-6 flex justify-end gap-3 border-t border-slate-50">

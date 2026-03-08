@@ -3,14 +3,14 @@ import { api } from "../../lib/api";
 import {
   UserPlus,
   Loader2,
-  Shield,
   Key,
-  Briefcase,
+  GraduationCap,
   Award,
   Zap,
-  Building2,
   AtSign,
-  GraduationCap,
+  Calendar,
+  Layers,
+  Hash,
 } from "lucide-react";
 import { toast } from "../../lib/toast";
 import { useSession } from "../../lib/auth-client";
@@ -33,17 +33,18 @@ interface UserWithRole {
   role?: { name: string } | string;
 }
 
-interface FacultyFormData {
+interface StudentFormData {
   first_name: string;
   last_name: string;
   email: string;
   password: string;
-  department?: string;
-  specialization?: string;
-  worker_id?: string;
+  university_id: string;
+  batch: string;
+  year: string;
+  semester: string;
 }
 
-const RegisterFaculty = () => {
+const RegisterStudent = () => {
   const { data: session } = useSession();
   const requester = session?.user as UserWithRole | undefined;
   const requesterRole = (
@@ -52,14 +53,15 @@ const RegisterFaculty = () => {
       : requester?.role) || ""
   ).toLowerCase();
 
-  const [formData, setFormData] = useState<FacultyFormData>({
+  const [formData, setFormData] = useState<StudentFormData>({
     first_name: "",
     last_name: "",
     email: "",
     password: "",
-    department: "",
-    specialization: "",
-    worker_id: "",
+    university_id: "",
+    batch: "",
+    year: "",
+    semester: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -98,15 +100,22 @@ const RegisterFaculty = () => {
     setLoading(true);
 
     try {
-      await api.post("/admin/users/register-faculty", {
-        ...formData,
-        role: "Faculty",
+      await api.post("/admin/users/create", {
+        firstName: formData.first_name,
+        lastName: formData.last_name,
+        email: formData.email,
+        password: formData.password,
+        universityId: formData.university_id,
+        batch: formData.batch,
+        year: formData.year,
+        semester: formData.semester,
+        roleName: "Student",
       });
 
       const message =
         requesterRole === "admin"
-          ? "Faculty Node initialized: Authorization required by Department Head."
-          : "Faculty Node initialized and activated successfully.";
+          ? "Student Node initialized: Authorization required by Department Head."
+          : "Student Node initialized and activated successfully.";
 
       toast.success(message);
       setFormData({
@@ -114,14 +123,16 @@ const RegisterFaculty = () => {
         last_name: "",
         email: "",
         password: "",
-        department: "",
-        specialization: "",
+        university_id: "",
+        batch: "",
+        year: "",
+        semester: "",
       });
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       toast.error(
         error.response?.data?.message ||
-          "Protocol Error: Faculty registration failed",
+          "Protocol Error: Student registration failed",
       );
     } finally {
       setLoading(false);
@@ -144,14 +155,14 @@ const RegisterFaculty = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/80 backdrop-blur-xl p-8 rounded-3xl border border-[#EEB38C]/30 shadow-md">
         <div className="flex items-center gap-6">
           <div className="h-12 w-12 bg-[#EEB38C]/20 rounded-xl flex items-center justify-center text-[#DF8142]">
-            <Shield className="h-6 w-6" />
+            <GraduationCap className="h-6 w-6" />
           </div>
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-[#5A270F]">
-              Faculty Registration
+              Student Registration
             </h2>
             <p className="text-[#6C3B1C] text-sm">
-              Create new faculty credentials and assign permissions.
+              Initialize a new student node within the system registry.
             </p>
           </div>
         </div>
@@ -164,8 +175,7 @@ const RegisterFaculty = () => {
             <CardHeader className="bg-[#EFEDED]/50 border-b border-[#EEB38C]/20 p-8">
               <CardTitle className="text-[#5A270F]">Core Identity</CardTitle>
               <CardDescription className="text-[#92664A]">
-                Enter the personal and system details for the new faculty
-                member.
+                Enter personal and academic identifiers for the student.
               </CardDescription>
             </CardHeader>
             <CardContent className="p-8">
@@ -207,25 +217,47 @@ const RegisterFaculty = () => {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="email"
-                    className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
-                  >
-                    System Email
-                  </Label>
-                  <div className="relative">
-                    <AtSign className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="faculty@studio-nexus.edu"
-                      className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                    />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="university_id"
+                      className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
+                    >
+                      University ID
+                    </Label>
+                    <div className="relative">
+                      <Hash className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
+                      <Input
+                        id="university_id"
+                        name="university_id"
+                        placeholder="U-ARCH-001"
+                        className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                        value={formData.university_id}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="email"
+                      className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
+                    >
+                      System Email
+                    </Label>
+                    <div className="relative">
+                      <AtSign className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="student@nexus.edu"
+                        className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -265,71 +297,66 @@ const RegisterFaculty = () => {
                 <div className="pt-6 border-t border-[#EEB38C]/20">
                   <div className="flex items-center gap-2 mb-6">
                     <div className="p-2 bg-[#EEB38C]/10 rounded-lg">
-                      <GraduationCap className="h-4 w-4 text-[#DF8142]" />
+                      <Calendar className="h-4 w-4 text-[#DF8142]" />
                     </div>
                     <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F]">
-                      Academic Profile
+                      Academic Period
                     </h3>
                   </div>
-                  <div className="space-y-6">
+                  <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label
-                        htmlFor="worker_id"
+                        htmlFor="batch"
                         className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
                       >
-                        Worker ID
+                        Batch
                       </Label>
                       <div className="relative">
-                        <Shield className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
+                        <Layers className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
                         <Input
-                          id="worker_id"
-                          name="worker_id"
-                          placeholder="e.g. F-7728-ARCH"
+                          id="batch"
+                          name="batch"
+                          type="number"
+                          placeholder="2024"
                           className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
-                          value={formData.worker_id}
+                          value={formData.batch}
                           onChange={handleChange}
                         />
                       </div>
                     </div>
-
                     <div className="space-y-2">
                       <Label
-                        htmlFor="department"
+                        htmlFor="year"
                         className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
                       >
-                        Department
+                        Year
                       </Label>
-                      <div className="relative">
-                        <Building2 className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
-                        <Input
-                          id="department"
-                          name="department"
-                          placeholder="e.g. Parametric Architecture"
-                          className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
-                          value={formData.department}
-                          onChange={handleChange}
-                        />
-                      </div>
+                      <Input
+                        id="year"
+                        name="year"
+                        type="number"
+                        placeholder="1"
+                        className="rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                        value={formData.year}
+                        onChange={handleChange}
+                      />
                     </div>
-
                     <div className="space-y-2">
                       <Label
-                        htmlFor="specialization"
+                        htmlFor="semester"
                         className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
                       >
-                        Specialization
+                        Semester
                       </Label>
-                      <div className="relative">
-                        <Briefcase className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
-                        <Input
-                          id="specialization"
-                          name="specialization"
-                          placeholder="e.g. Kinetic Structures"
-                          className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
-                          value={formData.specialization}
-                          onChange={handleChange}
-                        />
-                      </div>
+                      <Input
+                        id="semester"
+                        name="semester"
+                        type="number"
+                        placeholder="1"
+                        className="rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                        value={formData.semester}
+                        onChange={handleChange}
+                      />
                     </div>
                   </div>
                 </div>
@@ -347,7 +374,7 @@ const RegisterFaculty = () => {
                   ) : (
                     <>
                       <UserPlus className="h-4 w-4 mr-2" />
-                      Initialize Faculty Member
+                      Initialize Student Node
                     </>
                   )}
                 </Button>
@@ -370,7 +397,7 @@ const RegisterFaculty = () => {
                     Access Level
                   </p>
                   <p className="text-2xl font-black tracking-tighter text-white">
-                    FACULTY
+                    STUDENT
                   </p>
                 </div>
               </div>
@@ -383,7 +410,7 @@ const RegisterFaculty = () => {
                 </div>
                 <div className="space-y-1">
                   <h3 className="text-2xl font-black tracking-tight uppercase">
-                    {formData.first_name || "Faculty"}{" "}
+                    {formData.first_name || "Student"}{" "}
                     {formData.last_name || "Member"}
                   </h3>
                   <p className="text-[10px] text-[#EEB38C]/40 font-black uppercase tracking-[0.2em]">
@@ -395,27 +422,29 @@ const RegisterFaculty = () => {
               <div className="space-y-4">
                 <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 group transition-all hover:bg-white/10">
                   <p className="text-[10px] uppercase tracking-[0.2em] text-[#EEB38C]/60 font-black mb-1">
-                    Department
+                    University ID
                   </p>
                   <p className="text-sm font-bold text-white uppercase tracking-wider">
-                    {formData.department || "N/A"}
+                    {formData.university_id || "NOT ASSIGNED"}
                   </p>
                 </div>
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 group transition-all hover:bg-white/10">
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-[#EEB38C]/60 font-black mb-1">
-                    Specialization
-                  </p>
-                  <p className="text-sm font-bold text-[#EEB38C] uppercase tracking-wider">
-                    {formData.specialization || "N/A"}
-                  </p>
-                </div>
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 group transition-all hover:bg-white/10">
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-[#EEB38C]/60 font-black mb-1">
-                    Worker ID
-                  </p>
-                  <p className="text-sm font-bold text-white uppercase tracking-wider">
-                    {formData.worker_id || "NOT ASSIGNED"}
-                  </p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 group transition-all hover:bg-white/10">
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-[#EEB38C]/60 font-black mb-1">
+                      Batch
+                    </p>
+                    <p className="text-sm font-bold text-[#EEB38C] uppercase tracking-wider">
+                      {formData.batch || "N/A"}
+                    </p>
+                  </div>
+                  <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 group transition-all hover:bg-white/10">
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-[#EEB38C]/60 font-black mb-1">
+                      Year / Sem
+                    </p>
+                    <p className="text-sm font-bold text-[#EEB38C] uppercase tracking-wider">
+                      {formData.year || "?"} / {formData.semester || "?"}
+                    </p>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -438,11 +467,11 @@ const RegisterFaculty = () => {
                 </div>
                 <div>
                   <h4 className="text-base font-black text-[#5A270F] uppercase tracking-tight">
-                    Privileged Access
+                    Registry Inclusion
                   </h4>
                   <p className="text-xs text-[#92664A] font-bold leading-relaxed mt-1">
-                    Faculty nodes handle assignment creation and resource
-                    validation within the system matrix.
+                    Student nodes are granted access to the library,
+                    assignments, and architectural design resources.
                   </p>
                 </div>
               </div>
@@ -454,4 +483,4 @@ const RegisterFaculty = () => {
   );
 };
 
-export default RegisterFaculty;
+export default RegisterStudent;

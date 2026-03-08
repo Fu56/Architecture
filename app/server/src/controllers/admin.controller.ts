@@ -176,6 +176,9 @@ export const getAllUsers = async (req: Request, res: Response) => {
         batch: u.batch,
         year: u.year,
         semester: u.semester,
+        specialization: u.specialization,
+        department: u.department,
+        workerId: u.worker_id,
         createdAt: user.createdAt,
       };
     });
@@ -587,6 +590,7 @@ export const registerFaculty = async (req: Request, res: Response) => {
       password,
       department,
       specialization,
+      worker_id,
     } = req.body;
 
     if (!first_name || !last_name || !email || !password) {
@@ -648,6 +652,11 @@ export const registerFaculty = async (req: Request, res: Response) => {
         role: { connect: { id: facultyRole.id } },
         status: initialStatus,
         university_id: univId,
+        department: department || null,
+        specialization: specialization || null,
+        worker_id:
+          worker_id ||
+          `W${univId.slice(2)}${Math.floor(10 + Math.random() * 89)}`,
       },
       include: {
         role: true,
@@ -685,6 +694,9 @@ export const registerFaculty = async (req: Request, res: Response) => {
         last_name: user.last_name,
         email: user.email,
         role: user.role?.name,
+        department: user.department,
+        specialization: user.specialization,
+        worker_id: user.worker_id,
       },
     });
   } catch (error) {
@@ -706,6 +718,9 @@ export const createUser = async (req: Request, res: Response) => {
       batch,
       year,
       semester,
+      specialization,
+      department,
+      workerId,
     } = req.body;
 
     // Normalize roles to array
@@ -772,11 +787,17 @@ export const createUser = async (req: Request, res: Response) => {
     for (const r of rolesToAssign) {
       const rLower = r.toLowerCase();
       if (requesterRole === "departmenthead") {
-        const allowedToCreate = ["admin", "faculty", "student"];
+        const allowedToCreate = [
+          "admin",
+          "faculty",
+          "student",
+          "departmenthead",
+          "superadmin",
+        ];
         if (!allowedToCreate.includes(rLower)) {
           return res.status(403).json({
             message:
-              "Security Protocol: Department Heads can only authorize Admin, Faculty, or Student units.",
+              "Security Protocol: Department Heads can only authorize regular or administrative units.",
           });
         }
       }
@@ -828,6 +849,9 @@ export const createUser = async (req: Request, res: Response) => {
         batch: batch ? Number(batch) : null,
         year: year ? Number(year) : null,
         semester: semester ? Number(semester) : null,
+        specialization: specialization || null,
+        department: department || null,
+        worker_id: workerId || null,
       } as any,
     });
 
@@ -874,6 +898,9 @@ export const updateUser = async (req: Request, res: Response) => {
       batch,
       year,
       semester,
+      specialization,
+      department,
+      workerId,
     } = req.body;
 
     const requester = (req as any).user;
@@ -903,7 +930,23 @@ export const updateUser = async (req: Request, res: Response) => {
       batch: batch ? Number(batch) : undefined,
       year: year ? Number(year) : undefined,
       semester: semester ? Number(semester) : undefined,
+      specialization: specialization || undefined,
+      department: department || undefined,
+      worker_id: workerId || undefined,
     };
+
+    // Status Change Authorization Protocol
+    if (status && status !== targetUser.status) {
+      if (
+        requesterRole !== "departmenthead" &&
+        requesterRole !== "superadmin"
+      ) {
+        return res.status(403).json({
+          message:
+            "Security Protocol: Status transition commands are reserved for Department Head or Super Admin authority.",
+        });
+      }
+    }
 
     // Role Update Logic
     const rolesToAssign: string[] = roleNames || (roleName ? [roleName] : []);
@@ -912,7 +955,15 @@ export const updateUser = async (req: Request, res: Response) => {
       for (const r of rolesToAssign) {
         const rLower = r.toLowerCase();
         if (requesterRole === "departmenthead") {
-          if (!["admin", "faculty", "student"].includes(rLower)) {
+          if (
+            ![
+              "admin",
+              "faculty",
+              "student",
+              "departmenthead",
+              "superadmin",
+            ].includes(rLower)
+          ) {
             return res
               .status(403)
               .json({ message: "Forbidden role assignment" });
@@ -954,6 +1005,23 @@ export const updateUser = async (req: Request, res: Response) => {
       data: updateData,
     });
 
+    // Notify User about the update
+    await notifyUsers({
+      userIds: [updatedUser.id],
+      title: "Profile Configuration Update",
+      message: `Your system node configuration has been updated by the ${
+        requesterRole === "departmenthead" ? "Department Head" : "Administrator"
+      }.`,
+      html: getGenericHtml(
+        "Registry Update Protocol",
+        `Greetings ${updatedUser.first_name || "User"},<br/><br/>The architectural registry for your sector has been updated. Your system credentials and profile configurations have been synchronized by the ${
+          requesterRole === "departmenthead"
+            ? "Department Head"
+            : "Administrator"
+        }.`,
+      ),
+    });
+
     res.json({ message: "User updated successfully", user: updatedUser });
   } catch (error) {
     console.error("Update User Error:", error);
@@ -983,7 +1051,11 @@ export const deleteUser = async (req: Request, res: Response) => {
     const targetRoleName = (targetUser.role as any)?.name;
 
     // 2. Hierarchy Protection Logic
-    if (targetRoleName === "SuperAdmin" && requesterRole !== "SuperAdmin") {
+    if (
+      targetRoleName === "SuperAdmin" &&
+      requesterRole !== "SuperAdmin" &&
+      requesterRole !== "DepartmentHead"
+    ) {
       return res.status(403).json({
         message:
           "Security Protocol Breach: You do not have the authority to decommission a Super Admin node.",

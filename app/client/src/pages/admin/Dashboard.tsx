@@ -29,6 +29,11 @@ const adminNavLinks = [
   { name: "Analytics", href: "/admin/analytics", icon: BarChart2 },
   { name: "Manage Users", href: "/admin/users", icon: Users },
   {
+    name: "Register Student",
+    href: "/admin/register-student",
+    icon: UserPlus,
+  },
+  {
     name: "Register Students",
     href: "/admin/register-students",
     icon: FileSpreadsheet,

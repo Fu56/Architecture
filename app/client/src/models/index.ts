@@ -19,6 +19,10 @@ export interface User {
   status: string;
   batch?: number;
   year?: number;
+  specialization?: string;
+  department?: string;
+  worker_id?: string;
+  workerId?: string;
   createdAt?: string;
 }
 
