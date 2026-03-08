@@ -930,9 +930,9 @@ export const updateUser = async (req: Request, res: Response) => {
       batch: batch ? Number(batch) : undefined,
       year: year ? Number(year) : undefined,
       semester: semester ? Number(semester) : undefined,
-      specialization: specialization || undefined,
-      department: department || undefined,
-      worker_id: workerId || undefined,
+      specialization: specialization === "" ? null : (specialization || undefined),
+      department: department === "" ? null : (department || undefined),
+      worker_id: workerId === "" ? null : (workerId || undefined),
     };
 
     // Status Change Authorization Protocol

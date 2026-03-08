@@ -13,9 +13,14 @@ import {
   Zap,
   CheckCircle,
   RefreshCw,
+  Download,
+  ChevronDown,
 } from "lucide-react";
 import { toast } from "../../lib/toast";
 import { useSession } from "../../lib/auth-client";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 interface UserWithRole {
   id: string | number;
@@ -55,6 +60,9 @@ const ManageUsers = () => {
     workerId: "",
   });
   const [processing, setProcessing] = useState(false);
+  
+  // Download Format Dropdown State
+  const [isDownloadFormatOpen, setIsDownloadFormatOpen] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -316,6 +324,61 @@ const ManageUsers = () => {
     );
   });
 
+  const handleDownload = (format: "csv" | "excel" | "pdf") => {
+    setIsDownloadFormatOpen(false);
+
+    const dataToDownload = filteredUsers.map((user) => {
+      const roleName =
+        typeof user.role === "string" ? user.role : user.role?.name || "N/A";
+      return {
+        "First Name": user.firstName || user.first_name || "",
+        "Last Name": user.lastName || user.last_name || "",
+        Email: user.email,
+        "University ID": user.university_id || (user as { universityId?: string }).universityId || "",
+        Role: roleName,
+        Status: user.status,
+        Department: user.department || "",
+        Specialization: roleName === "Faculty" ? (user.specialization || "") : "N/A",
+      };
+    });
+
+    if (format === "pdf") {
+      const doc = new jsPDF({ orientation: "landscape" });
+      doc.text("User Directory", 14, 15);
+      
+      const tableColumn = ["First Name", "Last Name", "Email", "University ID", "Role", "Status", "Department", "Specialization"];
+      const tableRows = dataToDownload.map(row => [
+        row["First Name"],
+        row["Last Name"],
+        row["Email"],
+        row["University ID"],
+        row["Role"],
+        row["Status"],
+        row["Department"],
+        row["Specialization"]
+      ]);
+      
+      autoTable(doc, {
+        head: [tableColumn],
+        body: tableRows,
+        startY: 20,
+      });
+      
+      doc.save("users_export.pdf");
+      return;
+    }
+
+    const worksheet = XLSX.utils.json_to_sheet(dataToDownload);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Users");
+
+    if (format === "csv") {
+      XLSX.writeFile(workbook, "users_export.csv");
+    } else if (format === "excel") {
+      XLSX.writeFile(workbook, "users_export.xlsx");
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
@@ -345,6 +408,40 @@ const ManageUsers = () => {
           />
         </div>
         <div className="flex gap-3 w-full md:w-auto">
+          <div className="relative">
+            <button
+              onClick={() => setIsDownloadFormatOpen(!isDownloadFormatOpen)}
+              className="px-6 py-3 bg-[#EEB38C]/10 text-[#5A270F] text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#EEB38C] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 border border-[#D9D9C2]"
+            >
+              <Download className="h-4 w-4" />
+              Download
+              <ChevronDown
+                className={`h-3 w-3 transition-transform ${isDownloadFormatOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+            {isDownloadFormatOpen && (
+              <div className="absolute top-14 right-0 w-40 bg-white border border-[#D9D9C2] rounded-xl shadow-xl overflow-hidden z-20">
+                <button
+                  onClick={() => handleDownload("csv")}
+                  className="w-full px-4 py-3 text-left text-xs font-bold text-[#5A270F] hover:bg-[#EFEDED] transition-colors"
+                >
+                  Export as CSV
+                </button>
+                <button
+                  onClick={() => handleDownload("excel")}
+                  className="w-full px-4 py-3 text-left text-xs font-bold text-[#5A270F] hover:bg-[#EFEDED] transition-colors border-t border-[#EFEDED]"
+                >
+                  Export as Excel
+                </button>
+                <button
+                  onClick={() => handleDownload("pdf")}
+                  className="w-full px-4 py-3 text-left text-xs font-bold text-[#5A270F] hover:bg-[#EFEDED] transition-colors border-t border-[#EFEDED]"
+                >
+                  Export as PDF
+                </button>
+              </div>
+            )}
+          </div>
           <button
             onClick={() => setIsBroadcastModalOpen(true)}
             className="flex-1 md:flex-none px-6 py-3 bg-[#DF8142]/10 text-[#DF8142] text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#DF8142] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3"
@@ -409,10 +506,10 @@ const ManageUsers = () => {
                           <div className="text-xs text-[#92664A] font-medium">
                             {user.email}
                           </div>
-                          {(user.department || user.specialization) && (
+                          {(user.department || (user.specialization && roleName === "Faculty")) && (
                             <div className="text-[10px] text-[#DF8142] font-black uppercase tracking-widest mt-0.5">
                               {user.department}{" "}
-                              {user.specialization &&
+                              {user.specialization && roleName === "Faculty" &&
                                 `• ${user.specialization}`}
                             </div>
                           )}
@@ -726,32 +823,38 @@ const ManageUsers = () => {
                   </select>
                 </div>
 
+                {/* Department Field - All Users */}
+                <div className="space-y-4 pt-4 border-t border-[#EFEDED] animate-in slide-in-from-top-2 duration-300">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                      Department
+                    </label>
+                    <input
+                      id="department"
+                      name="department"
+                      title="Department"
+                      value={formData.department}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Design Studio"
+                      className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
+                    />
+                  </div>
+                </div>
+
                 {/* Staff/Faculty/Admin Profile Signals */}
                 {formData.roleNames.some((r) =>
                   ["Faculty", "Admin", "DepartmentHead", "SuperAdmin"].includes(
                     r,
                   ),
                 ) && (
-                  <div className="space-y-4 pt-4 border-t border-[#EFEDED] animate-in slide-in-from-top-2 duration-300">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
-                          Department
-                        </label>
-                        <input
-                          id="department"
-                          name="department"
-                          title="Department"
-                          value={formData.department}
-                          onChange={handleInputChange}
-                          placeholder="e.g. Design Studio"
-                          className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
-                          Specialization
-                        </label>
+                  <div className="space-y-4 pt-2 animate-in slide-in-from-top-2 duration-300">
+                    {/* Faculty-only signals */}
+                    {formData.roleNames.includes("Faculty") && (
+                      <div className="grid grid-cols-1 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                            Specialization
+                          </label>
                         <input
                           id="specialization"
                           name="specialization"
@@ -763,6 +866,7 @@ const ManageUsers = () => {
                         />
                       </div>
                     </div>
+                    )}
                     <div className="space-y-1.5">
                       <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
                         Worker ID
