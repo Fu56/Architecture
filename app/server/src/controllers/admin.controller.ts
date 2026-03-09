@@ -1136,6 +1136,17 @@ export const approveUser = async (req: Request, res: Response) => {
       data: { status: "active" },
     });
 
+    // Notify User about authorization
+    await notifyUsers({
+      userIds: [user.id],
+      title: "Account Authorized",
+      message: `Your system node has been authorized by the Department Head. You can now access the Nexus.`,
+      html: getRegistrationHtml(
+        `${user.first_name} ${user.last_name}`,
+        user.email,
+      ),
+    });
+
     res.json({
       message: "User node authorized and activated in the matrix.",
       user,

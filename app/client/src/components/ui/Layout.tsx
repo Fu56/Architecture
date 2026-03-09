@@ -16,10 +16,9 @@ import {
   ShieldAlert,
   Upload,
   Bell,
-  LayoutDashboard,
-  ChevronDown,
   ArrowRight,
-  Heart,
+  ChevronDown,
+  LayoutDashboard,
 } from "lucide-react";
 import { useSession, authClient } from "../../lib/auth-client";
 import { api } from "../../lib/api";
@@ -140,7 +139,6 @@ const Layout = () => {
     ? "/admin/notifications"
     : "/dashboard/notifications";
   const uploadPath = isAdmin ? "/admin/upload" : "/dashboard/upload";
-  const favoritesPath = isAdmin ? "/admin/favorites" : "/dashboard/favorites";
 
   return (
     <div className="min-h-screen flex flex-col font-sans selection:bg-[#DF8142]/20 selection:text-[#5A270F]">
@@ -342,16 +340,7 @@ const Layout = () => {
 
                         {/* Menu Links */}
                         <div className="space-y-1 p-1">
-                          <Link
-                            to={dashboardPath}
-                            onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F]/80 hover:text-[#DF8142] hover:bg-[#EFEDED] rounded-2xl transition-all group/item"
-                          >
-                            <div className="p-2 bg-[#EFEDED] rounded-xl group-hover/item:bg-[#DF8142] group-hover/item:text-white transition-all">
-                              <LayoutDashboard className="h-4 w-4" />
-                            </div>
-                            Personal Console
-                          </Link>
+                          {/* Personal Console removed for UI optimization */}
 
                           {isAdmin && (
                             <Link
@@ -379,27 +368,7 @@ const Layout = () => {
                             </Link>
                           )}
 
-                          <Link
-                            to={favoritesPath}
-                            onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F]/80 hover:text-[#DF8142] hover:bg-[#EFEDED] rounded-2xl transition-all group/item"
-                          >
-                            <div className="p-2 bg-[#EFEDED] rounded-xl group-hover/item:bg-[#DF8142] group-hover/item:text-white transition-all">
-                              <Heart className="h-4 w-4" />
-                            </div>
-                            Saved Resources
-                          </Link>
-
-                          <Link
-                            to="/dashboard/profile"
-                            onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F]/80 hover:text-[#DF8142] hover:bg-[#EFEDED] rounded-2xl transition-all group/item"
-                          >
-                            <div className="p-2 bg-[#EFEDED] rounded-xl group-hover/item:bg-[#DF8142] group-hover/item:text-white transition-all">
-                              <User className="h-4 w-4" />
-                            </div>
-                            System Settings
-                          </Link>
+                          {/* Saved Resources and System Settings removed for UI optimization */}
                         </div>
 
                         {/* Menu Footer */}
