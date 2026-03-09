@@ -65,6 +65,7 @@ const RegisterFaculty = () => {
     agreedToTerms: false,
   });
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -72,36 +73,50 @@ const RegisterFaculty = () => {
       ...prev,
       [name]: value,
     }));
+    // Clear error for this field
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.first_name.trim())
+      newErrors.first_name = "First name required.";
+    if (!formData.last_name.trim()) newErrors.last_name = "Last name required.";
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim()) {
+      newErrors.email = "Email identifier required.";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Invalid protocol: Improper email syntax.";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Authorization key required.";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Security breach: Key too short (min 6 chars).";
+    }
+
+    if (!formData.worker_id?.trim())
+      newErrors.worker_id = "Personnel identification required.";
+    if (!formData.department?.trim())
+      newErrors.department = "Departmental sector required.";
+    if (!formData.specialization?.trim())
+      newErrors.specialization = "Academic specialization required.";
+
+    if (!formData.agreedToTerms)
+      newErrors.agreedToTerms = "You must accept the terms.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (
-      !formData.first_name ||
-      !formData.last_name ||
-      !formData.email ||
-      !formData.password
-    ) {
-      toast.warning("Missing required identity protocols.");
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      toast.warn("Protocol Breach: Invalid email syntax detected.");
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      toast.warning("Security breach: Password insufficient length.");
-      return;
-    }
-
-    if (!formData.agreedToTerms) {
-      toast.warning(
-        "You must accept the terms and safety protocols before initializing the node.",
-      );
+    if (!validateForm()) {
+      toast.warning("Validation Failed: Check highlighted fields.");
       return;
     }
 
@@ -126,8 +141,10 @@ const RegisterFaculty = () => {
         password: "",
         department: "",
         specialization: "",
+        worker_id: "",
         agreedToTerms: false,
       });
+      setErrors({});
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       toast.error(
@@ -195,9 +212,13 @@ const RegisterFaculty = () => {
                       placeholder="Julian"
                       value={formData.first_name}
                       onChange={handleChange}
-                      required
-                      className="rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                      className={`rounded-xl border ${errors.first_name ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20 text-red-900 placeholder:text-red-300" : "border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F]"} font-bold transition-all`}
                     />
+                    {errors.first_name && (
+                      <p className="text-red-500 text-[10px] uppercase font-bold tracking-wider ml-1 animate-in slide-in-from-top-1">
+                        {errors.first_name}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label
@@ -212,9 +233,13 @@ const RegisterFaculty = () => {
                       placeholder="Wright"
                       value={formData.last_name}
                       onChange={handleChange}
-                      required
-                      className="rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                      className={`rounded-xl border ${errors.last_name ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20 text-red-900 placeholder:text-red-300" : "border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F]"} font-bold transition-all`}
                     />
+                    {errors.last_name && (
+                      <p className="text-red-500 text-[10px] uppercase font-bold tracking-wider ml-1 animate-in slide-in-from-top-1">
+                        {errors.last_name}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -226,18 +251,24 @@ const RegisterFaculty = () => {
                     System Email
                   </Label>
                   <div className="relative">
-                    <AtSign className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
+                    <AtSign
+                      className={`absolute left-3 top-2.5 h-4 w-4 ${errors.email ? "text-red-400" : "text-[#92664A]"}`}
+                    />
                     <Input
                       id="email"
                       name="email"
-                      type="email"
+                      type="text"
                       placeholder="faculty@studio-nexus.edu"
-                      className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                      className={`pl-9 rounded-xl border ${errors.email ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20 text-red-900 placeholder:text-red-300" : "border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F]"} font-bold transition-all`}
                       value={formData.email}
                       onChange={handleChange}
-                      required
                     />
                   </div>
+                  {errors.email && (
+                    <p className="text-red-500 text-[10px] uppercase font-bold tracking-wider ml-1 animate-in slide-in-from-top-1">
+                      {errors.email}
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -249,28 +280,38 @@ const RegisterFaculty = () => {
                   </Label>
                   <div className="flex gap-2">
                     <div className="relative flex-1">
-                      <Key className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
+                      <Key
+                        className={`absolute left-3 top-2.5 h-4 w-4 ${errors.password ? "text-red-400" : "text-[#92664A]"}`}
+                      />
                       <Input
                         id="password"
                         name="password"
                         type="text"
                         placeholder="Secure credential"
-                        className="pl-9 font-mono rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                        className={`pl-9 font-mono rounded-xl border ${errors.password ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20 text-red-900 placeholder:text-red-300" : "border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F]"} font-bold transition-all`}
                         value={formData.password}
                         onChange={handleChange}
-                        required
                       />
                     </div>
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={generatePassword}
+                      onClick={() => {
+                        generatePassword();
+                        if (errors.password)
+                          setErrors((prev) => ({ ...prev, password: "" }));
+                      }}
                       className="rounded-xl border-[#D9D9C2] text-[#6C3B1C] hover:bg-[#EEB38C]/10 transition-all font-bold"
                     >
                       <Zap className="h-4 w-4 mr-2 text-[#DF8142]" />
                       Auto
                     </Button>
                   </div>
+                  {errors.password && (
+                    <p className="text-red-500 text-[10px] uppercase font-bold tracking-wider ml-1 animate-in slide-in-from-top-1">
+                      {errors.password}
+                    </p>
+                  )}
                 </div>
 
                 <div className="pt-6 border-t border-[#EEB38C]/20">
@@ -291,17 +332,23 @@ const RegisterFaculty = () => {
                         Worker ID
                       </Label>
                       <div className="relative">
-                        <Shield className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
+                        <Shield
+                          className={`absolute left-3 top-2.5 h-4 w-4 ${errors.worker_id ? "text-red-400" : "text-[#92664A]"}`}
+                        />
                         <Input
                           id="worker_id"
                           name="worker_id"
                           placeholder="e.g. F-7728-ARCH"
-                          className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                          className={`pl-9 rounded-xl border ${errors.worker_id ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20 text-red-900 placeholder:text-red-300" : "border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F]"} font-bold transition-all`}
                           value={formData.worker_id}
                           onChange={handleChange}
-                          required
                         />
                       </div>
+                      {errors.worker_id && (
+                        <p className="text-red-500 text-[10px] uppercase font-bold tracking-wider ml-1 animate-in slide-in-from-top-1">
+                          {errors.worker_id}
+                        </p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -312,17 +359,23 @@ const RegisterFaculty = () => {
                         Department
                       </Label>
                       <div className="relative">
-                        <Building2 className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
+                        <Building2
+                          className={`absolute left-3 top-2.5 h-4 w-4 ${errors.department ? "text-red-400" : "text-[#92664A]"}`}
+                        />
                         <Input
                           id="department"
                           name="department"
                           placeholder="e.g. Parametric Architecture"
-                          className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                          className={`pl-9 rounded-xl border ${errors.department ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20 text-red-900 placeholder:text-red-300" : "border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F]"} font-bold transition-all`}
                           value={formData.department}
                           onChange={handleChange}
-                          required
                         />
                       </div>
+                      {errors.department && (
+                        <p className="text-red-500 text-[10px] uppercase font-bold tracking-wider ml-1 animate-in slide-in-from-top-1">
+                          {errors.department}
+                        </p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -333,48 +386,67 @@ const RegisterFaculty = () => {
                         Specialization
                       </Label>
                       <div className="relative">
-                        <Briefcase className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
+                        <Briefcase
+                          className={`absolute left-3 top-2.5 h-4 w-4 ${errors.specialization ? "text-red-400" : "text-[#92664A]"}`}
+                        />
                         <Input
                           id="specialization"
                           name="specialization"
                           placeholder="e.g. Kinetic Structures"
-                          className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                          className={`pl-9 rounded-xl border ${errors.specialization ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20 text-red-900 placeholder:text-red-300" : "border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F]"} font-bold transition-all`}
                           value={formData.specialization}
                           onChange={handleChange}
-                          required
                         />
                       </div>
+                      {errors.specialization && (
+                        <p className="text-red-500 text-[10px] uppercase font-bold tracking-wider ml-1 animate-in slide-in-from-top-1">
+                          {errors.specialization}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-[#EFEDED]/50 p-6 rounded-2xl border border-[#D9D9C2] space-y-4">
+                <div
+                  className={`bg-[#EFEDED]/50 p-6 rounded-2xl border ${errors.agreedToTerms ? "border-red-500 bg-red-50/50" : "border-[#D9D9C2]"} space-y-4 transition-all`}
+                >
                   <div className="flex items-start gap-4 group/terms">
                     <div className="relative flex items-center h-6 pt-0.5">
                       <input
                         id="agreedToTerms"
                         name="agreedToTerms"
                         type="checkbox"
-                        className="h-5 w-5 rounded-lg border-2 border-[#D9D9C2] text-[#DF8142] focus:ring-[#DF8142]/20 cursor-pointer accent-[#DF8142]"
+                        className={`h-5 w-5 rounded-lg border-2 ${errors.agreedToTerms ? "border-red-500 outline-none ring-2 ring-red-500/20" : "border-[#D9D9C2] text-[#DF8142] focus:ring-[#DF8142]/20"} cursor-pointer accent-[#DF8142]`}
                         checked={formData.agreedToTerms}
-                        onChange={(e) =>
+                        onChange={(e) => {
                           setFormData((prev: FacultyFormData) => ({
                             ...prev,
                             agreedToTerms: e.target.checked,
-                          }))
-                        }
+                          }));
+                          if (errors.agreedToTerms) {
+                            setErrors((prev) => ({
+                              ...prev,
+                              agreedToTerms: "",
+                            }));
+                          }
+                        }}
                       />
                     </div>
                     <div className="flex flex-col gap-1">
                       <label
                         htmlFor="agreedToTerms"
-                        className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] leading-snug cursor-pointer"
+                        className={`text-[10px] font-black uppercase tracking-widest ${errors.agreedToTerms ? "text-red-700" : "text-[#5A270F]"} leading-snug cursor-pointer`}
                       >
                         Accept Operational Protocols
                       </label>
-                      <p className="text-[10px] text-[#92664A] font-medium leading-relaxed">
+                      <p
+                        className={`text-[10px] ${errors.agreedToTerms ? "text-red-600" : "text-[#92664A]"} font-medium leading-relaxed`}
+                      >
                         By initializing this node, you agree to the{" "}
-                        <Link to="/terms" className="text-[#DF8142] underline">
+                        <Link
+                          to="/terms"
+                          className={`${errors.agreedToTerms ? "text-red-800" : "text-[#DF8142]"} underline`}
+                        >
                           Terms of Operation
                         </Link>
                         . This includes strict prohibition of biased data,
