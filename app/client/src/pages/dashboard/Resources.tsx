@@ -12,8 +12,8 @@ const Resources = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const role = currentRole();
-  const isAdmin = role === "Admin" || role === "SuperAdmin" || role === "admin";
-  const isHighAdmin = role === "SuperAdmin";
+  const isAuthorizedManager =
+    role === "DepartmentHead" || role === "SuperAdmin";
   const [showArchived, setShowArchived] = useState(false);
 
   const fetchResources = useCallback(
@@ -30,7 +30,7 @@ const Resources = () => {
         // We specifically want 'student' or 'archived' status resources
         params.append(
           "status",
-          isAdmin && showArchived ? "archived" : "student",
+          isAuthorizedManager && showArchived ? "archived" : "student",
         );
 
         const { data } = await api.get(`/resources?${params.toString()}`);
@@ -47,7 +47,7 @@ const Resources = () => {
         setLoading(false);
       }
     },
-    [isAdmin, showArchived],
+    [isAuthorizedManager, showArchived],
   );
 
   useEffect(() => {
@@ -120,24 +120,36 @@ const Resources = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-[#5A270F]">Resource Library</h2>
-          <p className="text-sm text-[#6C3B1C] font-medium mt-1">
-            Browse and manage all approved academic materials.
+          <h2 className="text-xl font-black text-[#5A270F] uppercase tracking-tight">
+            {showArchived
+              ? "System Archive Matrix"
+              : "Academic Resource Library"}
+          </h2>
+          <p className="text-[10px] text-[#92664A] font-bold uppercase tracking-widest mt-1">
+            {showArchived
+              ? "Managing decommissioned nodes and dormant records."
+              : "Browse and manage the primary academic intelligence registry."}
           </p>
         </div>
         <div className="flex items-center gap-4">
-          {isAdmin && (
-            <button
-              onClick={() => setShowArchived(!showArchived)}
-              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all border ${
-                showArchived
-                  ? "bg-[#5A270F] text-white border-[#5A270F]"
-                  : "bg-white text-[#5A270F]/80 border-[#92664A]/30 hover:border-[#DF8142] hover:text-[#DF8142]"
-              }`}
-            >
-              {showArchived ? "Show Active" : "Show Archived"}
-            </button>
-          )}
+          {isAuthorizedManager &&
+            (showArchived ? (
+              <button
+                onClick={() => setShowArchived(false)}
+                className="flex items-center gap-2 px-6 py-3 bg-white text-[#5A270F] border-2 border-[#5A270F] rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:bg-[#5A270F] hover:text-white shadow-lg active:scale-95 group"
+              >
+                <RotateCcw className="h-4 w-4 group-hover:-rotate-90 transition-transform" />
+                Back to Library
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowArchived(true)}
+                className="flex items-center gap-2 px-6 py-3 bg-[#EFEDED] text-[#5A270F]/60 border border-[#D9D9C2] rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:bg-[#92664A]/10 hover:text-[#5A270F] active:scale-95"
+              >
+                <Trash2 className="h-4 w-4" />
+                Access Archive
+              </button>
+            ))}
           <div className="flex items-center gap-2 px-4 py-2 bg-[#DF8142]/10 rounded-xl text-[#5A270F] text-sm font-bold border border-[#DF8142]/20 shadow-sm">
             <Library className="h-4 w-4 text-[#DF8142]" />
             {resources.length}{" "}
@@ -166,7 +178,7 @@ const Resources = () => {
             <div key={resource.id} className="relative group">
               <ResourceCard resource={resource} />
 
-              {isAdmin && (
+              {isAuthorizedManager && (
                 <div className="absolute top-16 right-6 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
                   {showArchived ? (
                     <>
@@ -177,15 +189,13 @@ const Resources = () => {
                       >
                         <RotateCcw className="h-4 w-4" />
                       </button>
-                      {isHighAdmin && (
-                        <button
-                          onClick={() => handlePermanentDelete(resource.id)}
-                          className="p-2 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 transition-colors"
-                          title="Permanently Delete"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      )}
+                      <button
+                        onClick={() => handlePermanentDelete(resource.id)}
+                        className="p-2 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 transition-colors"
+                        title="Permanently Delete"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     </>
                   ) : (
                     <button

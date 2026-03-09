@@ -43,7 +43,7 @@ export interface Resource {
   fileSize: number;
   uploader: User;
   designStage: DesignStage;
-  status: "pending" | "approved" | "rejected" | "student";
+  status: "pending" | "approved" | "rejected" | "student" | "archived";
   downloadCount: number;
   isArchived: boolean;
   priority: boolean;

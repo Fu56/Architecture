@@ -21,6 +21,8 @@ import {
   ArrowLeft,
   MessageSquare,
   Box,
+  RotateCcw,
+  Trash2,
 } from "lucide-react";
 import { isAuthenticated, currentRole } from "../../lib/auth";
 import { toast } from "../../lib/toast";
@@ -58,6 +60,8 @@ const ResourceDetails = () => {
   const [submittingComment, setSubmittingComment] = useState(false);
 
   const role = currentRole();
+  const isAuthorizedManager =
+    role === "DepartmentHead" || role === "SuperAdmin";
   const isAuth = isAuthenticated();
   const isNested =
     location.pathname.startsWith("/dashboard") ||
@@ -223,6 +227,35 @@ const ResourceDetails = () => {
     }
   };
 
+  const handleArchive = async () => {
+    if (
+      !window.confirm(
+        "Are you sure you want to archive this resource? It will be hidden from students.",
+      )
+    )
+      return;
+    try {
+      await api.patch(`/admin/resources/${id}/archive`);
+      toast.success("Resource archived in the system matrix");
+      const { data } = await api.get(`/resources/${id}`);
+      setResource(data);
+    } catch {
+      toast.error("Protocol Error: Failed to archive node");
+    }
+  };
+
+  const handleRestore = async () => {
+    if (!window.confirm("Restore this resource to the active library?")) return;
+    try {
+      await api.patch(`/admin/resources/${id}/restore`);
+      toast.success("Resource restored to the active library");
+      const { data } = await api.get(`/resources/${id}`);
+      setResource(data);
+    } catch {
+      toast.error("Protocol Error: Failed to restore node");
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col justify-center items-center py-40 animate-pulse">
@@ -283,9 +316,14 @@ const ResourceDetails = () => {
                     isNested ? navigate(-1) : navigate("/browse")
                   }
                   title="Go Back"
-                  className="p-2.5 bg-[#5A270F] text-white rounded-xl hover:bg-[#DF8142] transition-all active:scale-90"
+                  className="flex items-center gap-2 pr-6 py-2.5 bg-[#5A270F] text-white rounded-xl hover:bg-[#DF8142] transition-all active:scale-90"
                 >
-                  <ArrowLeft className="h-5 w-5" />
+                  <ArrowLeft className="h-5 w-5 ml-2.5" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">
+                    {resource.status === "archived"
+                      ? "Back to Archive"
+                      : "Back to Library"}
+                  </span>
                 </button>
                 <div className="h-px w-8 bg-slate-200" />
                 <span className="text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 bg-[#2A1205] text-white rounded-full">
@@ -641,6 +679,32 @@ const ResourceDetails = () => {
                   <Download className="h-6 w-6" />
                   Download Resource
                 </a>
+
+                {isAuthorizedManager && (
+                  <div className="pt-4 space-y-3">
+                    <div className="h-px bg-white/10 w-full mb-4" />
+                    <p className="text-[9px] font-black text-[#DF8142]/60 uppercase tracking-[0.3em] mb-2 px-1">
+                      Management Directives
+                    </p>
+                    {resource.status === "archived" ? (
+                      <button
+                        onClick={handleRestore}
+                        className="w-full h-14 flex justify-center items-center gap-3 bg-emerald-600/10 border border-emerald-500/30 text-[9px] font-black uppercase tracking-[0.2em] rounded-xl text-emerald-400 hover:bg-emerald-600/20 transition-all"
+                      >
+                        <RotateCcw className="h-3.5 w-3.5" />
+                        Restore node
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleArchive}
+                        className="w-full h-14 flex justify-center items-center gap-3 bg-rose-600/10 border border-rose-500/30 text-[9px] font-black uppercase tracking-[0.2em] rounded-xl text-rose-400 hover:bg-rose-600/20 transition-all"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        Archive Node
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="pt-8 space-y-6 border-t border-white/10">

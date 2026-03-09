@@ -59,7 +59,7 @@ router.patch(
 );
 router.delete(
   "/resources/:id/permanent",
-  requireRole(["SuperAdmin"]),
+  requireRole(["DepartmentHead", "SuperAdmin"]),
   deleteResource,
 );
 router.get(
