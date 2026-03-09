@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { api } from "../../lib/api";
 import {
   UserPlus,
@@ -41,6 +42,7 @@ interface FacultyFormData {
   department?: string;
   specialization?: string;
   worker_id?: string;
+  agreedToTerms: boolean;
 }
 
 const RegisterFaculty = () => {
@@ -60,12 +62,13 @@ const RegisterFaculty = () => {
     department: "",
     specialization: "",
     worker_id: "",
+    agreedToTerms: false,
   });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData((prev: FacultyFormData) => ({
       ...prev,
       [name]: value,
     }));
@@ -95,6 +98,13 @@ const RegisterFaculty = () => {
       return;
     }
 
+    if (!formData.agreedToTerms) {
+      toast.warning(
+        "You must accept the terms and safety protocols before initializing the node.",
+      );
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -116,6 +126,7 @@ const RegisterFaculty = () => {
         password: "",
         department: "",
         specialization: "",
+        agreedToTerms: false,
       });
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
@@ -135,7 +146,7 @@ const RegisterFaculty = () => {
     for (let i = 0; i < 12; i++) {
       password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    setFormData((prev) => ({ ...prev, password }));
+    setFormData((prev: FacultyFormData) => ({ ...prev, password }));
   };
 
   return (
@@ -333,6 +344,42 @@ const RegisterFaculty = () => {
                           required
                         />
                       </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-[#EFEDED]/50 p-6 rounded-2xl border border-[#D9D9C2] space-y-4">
+                  <div className="flex items-start gap-4 group/terms">
+                    <div className="relative flex items-center h-6 pt-0.5">
+                      <input
+                        id="agreedToTerms"
+                        name="agreedToTerms"
+                        type="checkbox"
+                        className="h-5 w-5 rounded-lg border-2 border-[#D9D9C2] text-[#DF8142] focus:ring-[#DF8142]/20 cursor-pointer accent-[#DF8142]"
+                        checked={formData.agreedToTerms}
+                        onChange={(e) =>
+                          setFormData((prev: FacultyFormData) => ({
+                            ...prev,
+                            agreedToTerms: e.target.checked,
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label
+                        htmlFor="agreedToTerms"
+                        className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] leading-snug cursor-pointer"
+                      >
+                        Accept Operational Protocols
+                      </label>
+                      <p className="text-[10px] text-[#92664A] font-medium leading-relaxed">
+                        By initializing this node, you agree to the{" "}
+                        <Link to="/terms" className="text-[#DF8142] underline">
+                          Terms of Operation
+                        </Link>
+                        . This includes strict prohibition of biased data,
+                        sexual content, and psychological manipulation.
+                      </p>
                     </div>
                   </div>
                 </div>

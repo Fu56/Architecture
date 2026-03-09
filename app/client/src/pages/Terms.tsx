@@ -77,14 +77,39 @@ const TermsOfService = () => {
             <section className="mb-16">
               <h2 className="text-3xl uppercase tracking-tighter mb-8 flex items-center gap-4">
                 <span className="h-1.5 w-12 bg-primary rounded-full" />
-                03. Conduct Benchmarks
+                03. Conduct Benchmarks & Content Safety
               </h2>
-              <p>
-                Users must not upload malicious code, unauthorized proprietary
-                content, or assets that violate the integrity of architectural
-                standards. Every transmission is logged and subject to community
-                flag protocols.
-              </p>
+              <div className="space-y-6">
+                <p>
+                  Users must not upload malicious code, unauthorized proprietary
+                  content, or assets that violate the integrity of architectural
+                  standards. Every transmission is logged and subject to
+                  community flag protocols.
+                </p>
+                <div className="bg-red-50/50 border-l-4 border-red-500 p-6 rounded-r-2xl my-6">
+                  <p className="font-black text-red-900 uppercase tracking-tight mb-2">
+                    Prohibited Material Protocol:
+                  </p>
+                  <p className="text-red-800/80 text-sm leading-relaxed">
+                    The release of <strong>biased data</strong>, or unwanted
+                    resources including but not limited to
+                    <strong>
+                      {" "}
+                      sexual videos, images, or explicit adult content
+                    </strong>{" "}
+                    is strictly prohibited. Violation will result in immediate
+                    permanent expulsion from the node.
+                  </p>
+                </div>
+                <p>
+                  For all interactions, resources, and commentary: messages must
+                  remain professional and legal. Users are strictly forbidden
+                  from engaging in behavior that targets or negatively impacts
+                  <strong> human psychology and personality</strong>. We
+                  maintain a zero-tolerance policy against psychological
+                  manipulation or harassment.
+                </p>
+              </div>
             </section>
 
             <section className="mb-16">

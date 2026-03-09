@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { authClient } from "../../lib/auth-client";
 import { syncSessionToStorage } from "../../lib/auth";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, ShieldCheck } from "lucide-react";
@@ -17,6 +17,7 @@ const Login = () => {
   const [form, setForm] = useState({
     email: "",
     password: "",
+    agreedToTerms: false,
   });
 
   const [loading, setLoading] = useState(false);
@@ -30,13 +31,19 @@ const Login = () => {
     email: "",
     password: "",
     resetEmail: "",
+    agreedToTerms: "",
   });
 
   const navigate = useNavigate();
 
   // Validation function
   const validateForm = () => {
-    const newErrors = { email: "", password: "", resetEmail: "" };
+    const newErrors = {
+      email: "",
+      password: "",
+      resetEmail: "",
+      agreedToTerms: "",
+    };
     let isValid = true;
 
     // Email validation
@@ -57,6 +64,12 @@ const Login = () => {
       isValid = false;
     } else if (form.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters.";
+      isValid = false;
+    }
+
+    // Terms validation
+    if (!form.agreedToTerms) {
+      newErrors.agreedToTerms = "You must agree to the Terms and Conditions.";
       isValid = false;
     }
 
@@ -286,6 +299,46 @@ const Login = () => {
                 >
                   Forgot Password?
                 </button>
+              </div>
+
+              {/* Terms and Conditions Checkbox */}
+              <div className="space-y-3">
+                <div className="flex items-start gap-3 group/terms">
+                  <div className="relative flex items-center h-5">
+                    <input
+                      id="agreedToTerms"
+                      name="agreedToTerms"
+                      type="checkbox"
+                      className="h-5 w-5 rounded-lg border-2 border-[#D9D9C2] text-[#DF8142] focus:ring-[#DF8142]/20 cursor-pointer accent-[#DF8142] transition-all"
+                      checked={form.agreedToTerms}
+                      onChange={(e) => {
+                        setForm({ ...form, agreedToTerms: e.target.checked });
+                        if (errors.agreedToTerms) {
+                          setErrors({ ...errors, agreedToTerms: "" });
+                        }
+                      }}
+                    />
+                  </div>
+                  <label
+                    htmlFor="agreedToTerms"
+                    className="text-xs font-bold text-[#5A270F]/70 leading-relaxed cursor-pointer group-hover/terms:text-[#5A270F] transition-colors"
+                  >
+                    I acknowledge and agree to the{" "}
+                    <Link
+                      to="/terms"
+                      className="text-[#DF8142] underline decoration-dotted underline-offset-4 hover:decoration-solid"
+                    >
+                      Terms of Operation
+                    </Link>{" "}
+                    and Content Safety Protocols.
+                  </label>
+                </div>
+                {errors.agreedToTerms && (
+                  <p className="text-xs text-red-600 font-medium flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-300">
+                    <span className="inline-block w-1 h-1 rounded-full bg-red-600" />
+                    {errors.agreedToTerms}
+                  </p>
+                )}
               </div>
 
               {/* Submit Button */}
