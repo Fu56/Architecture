@@ -78,7 +78,7 @@ export const getPublicStats = async (req: Request, res: Response) => {
 
 export const getAllNews = async (req: Request, res: Response) => {
   try {
-    const news = await prisma.news.findMany({
+    const news = await (prisma as any).news.findMany({
       where: { published: true },
       orderBy: { created_at: "desc" },
       include: {
@@ -119,11 +119,9 @@ export const getAllNews = async (req: Request, res: Response) => {
     res.json(formattedNews);
   } catch (error) {
     console.error("Fetch News Error:", error);
-    res
-      .status(500)
-      .json({
-        message: "Protocol Error: Failed to synchronize announcement feed",
-      });
+    res.status(500).json({
+      message: "Protocol Error: Failed to synchronize announcement feed",
+    });
   }
 };
 

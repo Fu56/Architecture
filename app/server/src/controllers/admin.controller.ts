@@ -1168,7 +1168,7 @@ export const createNews = async (req: Request, res: Response) => {
         .json({ message: "Title and content are required" });
     }
 
-    const news = await prisma.news.create({
+    const news = await (prisma as any).news.create({
       data: {
         title,
         content,
@@ -1184,12 +1184,10 @@ export const createNews = async (req: Request, res: Response) => {
       `A new update "${title}" has been published to the matrix.\n\n${content}`,
     );
 
-    res
-      .status(201)
-      .json({
-        message: "Intelligence transmission successfully deployed",
-        news,
-      });
+    res.status(201).json({
+      message: "Intelligence transmission successfully deployed",
+      news,
+    });
   } catch (error) {
     console.error("Create News Error:", error);
     res

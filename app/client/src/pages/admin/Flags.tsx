@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "../../lib/toast";
+import { useSession } from "../../lib/auth-client";
 
 const Flags = () => {
   const [flags, setFlags] = useState<FlagModel[]>([]);
@@ -23,6 +24,12 @@ const Flags = () => {
   useEffect(() => {
     fetchFlags();
   }, []);
+
+  const { data: session } = useSession();
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const user = session?.user as any;
+  const role = typeof user?.role === "object" ? user.role.name : user?.role;
+  const isAuthorized = role === "DepartmentHead" || role === "SuperAdmin";
 
   const fetchFlags = async () => {
     setLoading(true);
@@ -167,20 +174,24 @@ const Flags = () => {
                     >
                       <Eye className="h-4 w-4" /> Inspect
                     </Link>
-                    <button
-                      onClick={() =>
-                        handleArchiveResource(flag.resourceId, flag.id)
-                      }
-                      className="h-14 flex items-center gap-4 px-8 bg-white border-2 border-amber-100 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl text-amber-600 hover:bg-amber-50 transition-all active:scale-95 shadow-lg shadow-amber-50"
-                    >
-                      <Archive className="h-4 w-4" /> Quarantine
-                    </button>
-                    <button
-                      onClick={() => handleResolveFlag(flag.id)}
-                      className="h-14 flex items-center gap-4 px-8 bg-[#2A1205] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#5A270F] transition-all hover:-translate-y-1 shadow-2xl shadow-[#2A1205]/20 active:scale-95"
-                    >
-                      <ShieldCheck className="h-4 w-4" /> Dismiss Report
-                    </button>
+                    {isAuthorized && (
+                      <>
+                        <button
+                          onClick={() =>
+                            handleArchiveResource(flag.resourceId, flag.id)
+                          }
+                          className="h-14 flex items-center gap-4 px-8 bg-white border-2 border-amber-100 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl text-amber-600 hover:bg-amber-50 transition-all active:scale-95 shadow-lg shadow-amber-50"
+                        >
+                          <Archive className="h-4 w-4" /> Quarantine
+                        </button>
+                        <button
+                          onClick={() => handleResolveFlag(flag.id)}
+                          className="h-14 flex items-center gap-4 px-8 bg-[#2A1205] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#5A270F] transition-all hover:-translate-y-1 shadow-2xl shadow-[#2A1205]/20 active:scale-95"
+                        >
+                          <ShieldCheck className="h-4 w-4" /> Dismiss Report
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -190,8 +201,7 @@ const Flags = () => {
                   </div>
                   <div className="relative z-10">
                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4 flex items-center gap-2">
-                      <Zap className="h-3 w-3 text-red-700" /> Evidence
-                      Abstract
+                      <Zap className="h-3 w-3 text-red-700" /> Evidence Abstract
                     </p>
                     <p className="text-lg font-medium text-[#5A270F] leading-relaxed italic">
                       "

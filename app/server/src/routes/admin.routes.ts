@@ -69,7 +69,11 @@ router.get(
 );
 
 router.get("/flags", getFlags);
-router.patch("/flags/:id/resolve", resolveFlag);
+router.patch(
+  "/flags/:id/resolve",
+  requireRole(["DepartmentHead", "SuperAdmin"]),
+  resolveFlag,
+);
 
 router.get("/users", getAllUsers);
 router.post("/users/create", createUser);
@@ -88,8 +92,12 @@ router.post("/users/register-faculty", registerFaculty);
 router.get("/stats", getStats);
 
 // News management
-router.post("/news", createNews);
-router.delete("/news/:id", deleteNews);
+router.post("/news", requireRole(["DepartmentHead", "SuperAdmin"]), createNews);
+router.delete(
+  "/news/:id",
+  requireRole(["DepartmentHead", "SuperAdmin"]),
+  deleteNews,
+);
 router.post("/notifications/send", sendDirectNotification);
 // Global Broadcast — restricted to DepartmentHead and SuperAdmin only
 router.post(
