@@ -15,6 +15,7 @@ const PostBlog = () => {
     tags: "",
     published: true,
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -35,6 +36,19 @@ const PostBlog = () => {
     const val =
       type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
     setFormData((prev) => ({ ...prev, [name]: val }));
+    // Clear error for this field
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const FieldError = ({ message }: { message?: string }) => {
+    if (!message) return null;
+    return (
+      <p className="text-[11px] font-black text-rose-600 uppercase tracking-[0.05em] mt-2 ml-1 animate-in fade-in slide-in-from-top-1 drop-shadow-sm">
+        {message}
+      </p>
+    );
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +60,7 @@ const PostBlog = () => {
         setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
+      setErrors((prev) => ({ ...prev, image: "" }));
     }
   };
 
@@ -58,14 +73,32 @@ const PostBlog = () => {
       return;
     }
 
+    const newErrors: Record<string, string> = {};
+
     // Intellectual Property Validation
     if (!formData.title.trim()) {
-      toast.warn("Transmission Aborted: Compelling story title required.");
-      return;
+      newErrors.title =
+        "Transmission Aborted: Compelling story title required.";
     }
 
     if (!formData.content.trim()) {
-      toast.warn("Transmission Aborted: Narrative content body missing.");
+      newErrors.content =
+        "Transmission Aborted: Narrative content body missing.";
+    }
+
+    if (!formData.tags.trim()) {
+      newErrors.tags =
+        "Transmission Aborted: Information Matrix Tags are required.";
+    }
+
+    if (!image) {
+      newErrors.image =
+        "Transmission Aborted: High-fidelity featured image required.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast.error("Validation failed: Please define story metadata.");
       return;
     }
 
@@ -105,12 +138,12 @@ const PostBlog = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-6xl">
-      <div className="mb-12 text-center space-y-4">
-        <h1 className="text-4xl md:text-5xl font-display font-bold text-[#5A270F] tracking-tight">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-5xl">
+      <div className="mb-8 text-center space-y-3">
+        <h1 className="text-3xl md:text-4xl font-display font-bold text-[#5A270F] tracking-tight">
           Create New Story
         </h1>
-        <p className="text-lg text-[#6C3B1C] max-w-2xl mx-auto font-medium">
+        <p className="text-base text-[#6C3B1C] max-w-xl mx-auto font-medium">
           Share your architectural insights, news, and narratives with the
           community.
         </p>
@@ -119,8 +152,8 @@ const PostBlog = () => {
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left: Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            <div className="premium-card p-8 space-y-8 bg-white/50 backdrop-blur-sm border border-[#92664A]/20 shadow-xl shadow-[#5A270F]/5">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="premium-card p-6 space-y-6 bg-white/50 backdrop-blur-sm border border-[#92664A]/20 shadow-xl shadow-[#5A270F]/5">
               <div className="space-y-3">
                 <label className="block text-xs font-bold uppercase tracking-wider text-[#92664A]">
                   Title
@@ -131,9 +164,13 @@ const PostBlog = () => {
                   value={formData.title}
                   onChange={handleInputChange}
                   placeholder="Enter a compelling title..."
-                  className="w-full px-6 py-4 bg-[#f8f5f2] border border-[#d9d9c2] rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#DF8142]/30 focus:border-[#DF8142] transition-all text-xl font-display font-bold text-[#5A270F] placeholder:text-[#92664A]/40"
-                  required
+                  className={`w-full px-5 py-3 bg-[#f8f5f2] border ${
+                    errors.title
+                      ? "border-rose-400 bg-red-50/20"
+                      : "border-[#d9d9c2]"
+                  } rounded-xl focus:outline-none focus:ring-2 focus:ring-[#DF8142]/30 focus:border-[#DF8142] transition-all text-lg font-display font-bold text-[#5A270F] placeholder:text-[#92664A]/40`}
                 />
+                <FieldError message={errors.title} />
               </div>
 
               <div className="space-y-3">
@@ -145,10 +182,14 @@ const PostBlog = () => {
                   value={formData.content}
                   onChange={handleInputChange}
                   placeholder="Write your story here (Markdown supported)..."
-                  rows={18}
-                  className="w-full px-6 py-4 bg-[#f8f5f2] border border-[#d9d9c2] rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#DF8142]/30 focus:border-[#DF8142] transition-all text-base leading-relaxed text-[#6C3B1C] placeholder:text-[#92664A]/40 resize-none font-medium"
-                  required
+                  rows={15}
+                  className={`w-full px-5 py-3 bg-[#f8f5f2] border ${
+                    errors.content
+                      ? "border-rose-400 bg-red-50/20"
+                      : "border-[#d9d9c2]"
+                  } rounded-xl focus:outline-none focus:ring-2 focus:ring-[#DF8142]/30 focus:border-[#DF8142] transition-all text-sm leading-relaxed text-[#6C3B1C] placeholder:text-[#92664A]/40 resize-none font-medium`}
                 />
+                <FieldError message={errors.content} />
               </div>
             </div>
           </div>
@@ -156,7 +197,7 @@ const PostBlog = () => {
           {/* Right: Sidebar Metadata */}
           <div className="space-y-8">
             {/* Image Upload */}
-            <div className="premium-card p-6 space-y-4 border border-[#92664A]/20">
+            <div className="premium-card p-5 space-y-4 border border-[#92664A]/20">
               <label className="block text-xs font-bold uppercase tracking-wider text-[#92664A]">
                 Featured Image
               </label>
@@ -165,7 +206,9 @@ const PostBlog = () => {
                 className={`group relative aspect-video rounded-2xl border-2 border-dashed transition-all duration-300 cursor-pointer overflow-hidden flex flex-col items-center justify-center ${
                   imagePreview
                     ? "border-[#DF8142]/50 bg-[#DF8142]/5"
-                    : "border-[#d9d9c2] hover:border-[#DF8142]/60 hover:bg-[#DF8142]/5 bg-[#f8f5f2]"
+                    : errors.image
+                      ? "border-rose-400 bg-red-50/20"
+                      : "border-[#d9d9c2] hover:border-[#DF8142]/60 hover:bg-[#DF8142]/5 bg-[#f8f5f2]"
                 }`}
               >
                 {imagePreview ? (
@@ -218,10 +261,11 @@ const PostBlog = () => {
                   className="hidden"
                 />
               </div>
+              <FieldError message={errors.image} />
             </div>
 
             {/* Tags & Settings */}
-            <div className="premium-card p-6 space-y-6 border border-[#92664A]/20">
+            <div className="premium-card p-5 space-y-5 border border-[#92664A]/20">
               <div className="space-y-3">
                 <label className="block text-xs font-bold uppercase tracking-wider text-[#92664A]">
                   Tags
@@ -236,9 +280,14 @@ const PostBlog = () => {
                     value={formData.tags}
                     onChange={handleInputChange}
                     placeholder="architecture, design, news..."
-                    className="w-full pl-14 pr-4 py-3.5 bg-[#f8f5f2] border border-[#d9d9c2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#DF8142]/30 focus:border-[#DF8142] transition-all font-medium text-[#5A270F] placeholder:text-[#92664A]/40"
+                    className={`w-full pl-14 pr-4 py-3.5 bg-[#f8f5f2] border ${
+                      errors.tags
+                        ? "border-rose-400 bg-red-50/20"
+                        : "border-[#d9d9c2]"
+                    } rounded-xl focus:outline-none focus:ring-2 focus:ring-[#DF8142]/30 focus:border-[#DF8142] transition-all font-medium text-[#5A270F] placeholder:text-[#92664A]/40`}
                   />
                 </div>
+                <FieldError message={errors.tags} />
               </div>
 
               <div className="flex items-center gap-4 p-4 bg-[#f8f5f2] rounded-xl border border-[#d9d9c2] transition-colors hover:border-[#DF8142]/30">
