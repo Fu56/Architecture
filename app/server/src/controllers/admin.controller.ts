@@ -1160,6 +1160,7 @@ export const approveUser = async (req: Request, res: Response) => {
 export const createNews = async (req: Request, res: Response) => {
   try {
     const { title, content, isEvent, eventDate } = req.body;
+    const authorId = (req as any).user.id;
 
     if (!title || !content) {
       return res
@@ -1173,6 +1174,7 @@ export const createNews = async (req: Request, res: Response) => {
         content,
         is_event: !!isEvent,
         event_date: eventDate ? new Date(eventDate) : null,
+        author_id: authorId,
       },
     });
 
@@ -1184,10 +1186,15 @@ export const createNews = async (req: Request, res: Response) => {
 
     res
       .status(201)
-      .json({ message: "News/Event published successfully", news });
+      .json({
+        message: "Intelligence transmission successfully deployed",
+        news,
+      });
   } catch (error) {
     console.error("Create News Error:", error);
-    res.status(500).json({ message: "Failed to create news" });
+    res
+      .status(500)
+      .json({ message: "Protocol Breach: Failed to deploy announcement node" });
   }
 };
 

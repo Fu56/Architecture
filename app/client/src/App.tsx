@@ -109,8 +109,8 @@ const App = () => {
               <Route path="register-faculty" element={<RegisterFaculty />} />
               <Route element={<DeptHeadAboveRoute />}>
                 <Route path="approvals" element={<Approvals />} />
+                <Route path="news" element={<NewsManager />} />
               </Route>
-              <Route path="news" element={<NewsManager />} />
               <Route path="flags" element={<Flags />} />
               <Route path="notifications" element={<Notifications />} />
               <Route path="assignments" element={<Assignments />} />

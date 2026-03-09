@@ -160,7 +160,10 @@ const AdminDashboard = () => {
                   <div className="space-y-2">
                     {adminNavLinks
                       .filter((link) => {
-                        if (link.name === "Resource Approvals") {
+                        if (
+                          link.name === "Resource Approvals" ||
+                          link.name === "News & Events"
+                        ) {
                           return isSuperAdmin;
                         }
                         return true;

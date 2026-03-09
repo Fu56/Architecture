@@ -43,6 +43,7 @@ model User {
     assignments   Assignment[]
     submissions   Submission[]
     blogs         Blog[]
+    news          News[]         @relation("NewsAuthor")
     systemLogs    SystemLog[]
     favorites     Favorite[]
 
@@ -256,6 +257,8 @@ model News {
     is_event    Boolean  @default(false)
     event_date  DateTime?
     published   Boolean  @default(true)
+    author      User?    @relation("NewsAuthor", fields: [author_id], references: [id], onDelete: SetNull)
+    author_id   String?
     created_at  DateTime @default(now())
     updated_at  DateTime @updatedAt
 }

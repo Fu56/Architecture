@@ -19,6 +19,7 @@ interface NewsItem {
   id: number;
   title: string;
   content: string;
+  source?: string;
   isEvent: boolean;
   eventDate: string | null;
   createdAt: string;
@@ -35,6 +36,16 @@ const NewsManager = () => {
   const [isEvent, setIsEvent] = useState(false);
   const [eventDate, setEventDate] = useState("");
   const [processing, setProcessing] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const FieldError = ({ message }: { message?: string }) => {
+    if (!message) return null;
+    return (
+      <p className="text-[11px] font-black text-rose-600 uppercase tracking-[0.05em] mt-2 ml-1 animate-in fade-in slide-in-from-top-1 drop-shadow-sm">
+        {message}
+      </p>
+    );
+  };
 
   const fetchNews = async () => {
     try {
@@ -55,21 +66,26 @@ const NewsManager = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const newErrors: Record<string, string> = {};
+
     // Broadcast Validation Protocols
     if (!title.trim()) {
-      toast.warn("Transmission Aborted: Announcement Headline required.");
-      return;
+      newErrors.title = "Transmission Aborted: Announcement Headline required.";
     }
 
     if (!content.trim()) {
-      toast.warn("Transmission Aborted: Intelligence Body Narrative missing.");
-      return;
+      newErrors.content =
+        "Transmission Aborted: Intelligence Body Narrative missing.";
     }
 
     if (isEvent && !eventDate) {
-      toast.warn(
-        "Temporal Error: Event Sequencing requires a valid date marker.",
-      );
+      newErrors.eventDate =
+        "Temporal Error: Event Sequencing requires a valid date marker.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast.error("Validation failed: Please correct the highlighted errors.");
       return;
     }
 
@@ -177,12 +193,20 @@ const NewsManager = () => {
                   </label>
                   <input
                     type="text"
-                    required
                     value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    onChange={(e) => {
+                      setTitle(e.target.value);
+                      if (errors.title)
+                        setErrors((prev) => ({ ...prev, title: "" }));
+                    }}
                     placeholder="E.g., Winter Semester Thesis Submissions Open"
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-[1.5rem] px-8 py-5 text-[#5A270F] font-black text-lg outline-none focus:ring-4 focus:ring-[#DF8142]/5 focus:bg-white transition-all placeholder:text-[#EEB38C]"
+                    className={`w-full bg-[#EFEDED] border ${
+                      errors.title
+                        ? "border-rose-400 bg-red-50/20"
+                        : "border-[#D9D9C2]"
+                    } rounded-[1.5rem] px-8 py-5 text-[#5A270F] font-black text-lg outline-none focus:ring-4 focus:ring-[#DF8142]/5 focus:bg-white transition-all placeholder:text-[#EEB38C]`}
                   />
+                  <FieldError message={errors.title} />
                 </div>
 
                 <div className="p-8 bg-[#EFEDED] rounded-[2.5rem] border border-[#D9D9C2] space-y-6">
@@ -220,11 +244,19 @@ const NewsManager = () => {
                         id="eventDate"
                         type="datetime-local"
                         title="Temporal Markers (Date & Time)"
-                        required={isEvent}
                         value={eventDate}
-                        onChange={(e) => setEventDate(e.target.value)}
-                        className="w-full bg-white border border-[#D9D9C2] rounded-2xl px-6 py-4 text-sm font-black text-[#2A1205] outline-none focus:ring-4 focus:ring-primary/10 transition-all"
+                        onChange={(e) => {
+                          setEventDate(e.target.value);
+                          if (errors.eventDate)
+                            setErrors((prev) => ({ ...prev, eventDate: "" }));
+                        }}
+                        className={`w-full bg-white border ${
+                          errors.eventDate
+                            ? "border-rose-400 bg-red-50/20"
+                            : "border-[#D9D9C2]"
+                        } rounded-2xl px-6 py-4 text-sm font-black text-[#2A1205] outline-none focus:ring-4 focus:ring-primary/10 transition-all`}
                       />
+                      <FieldError message={errors.eventDate} />
                     </div>
                   )}
                 </div>
@@ -235,13 +267,21 @@ const NewsManager = () => {
                   Message Body
                 </label>
                 <textarea
-                  required
                   rows={8}
                   value={content}
-                  onChange={(e) => setContent(e.target.value)}
+                  onChange={(e) => {
+                    setContent(e.target.value);
+                    if (errors.content)
+                      setErrors((prev) => ({ ...prev, content: "" }));
+                  }}
                   placeholder="Draft your intelligence transmission here..."
-                  className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-[2rem] px-8 py-6 text-[#5A270F] font-medium text-base outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white transition-all resize-none min-h-[280px]"
+                  className={`w-full bg-[#EFEDED] border ${
+                    errors.content
+                      ? "border-rose-400 bg-red-50/20"
+                      : "border-[#D9D9C2]"
+                  } rounded-[2rem] px-8 py-6 text-[#5A270F] font-medium text-base outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white transition-all resize-none min-h-[280px]`}
                 />
+                <FieldError message={errors.content} />
               </div>
             </div>
 
@@ -308,6 +348,11 @@ const NewsManager = () => {
                         <Clock className="h-3 w-3" />
                         {new Date(item.createdAt).toLocaleDateString()}
                       </span>
+                      {item.source && (
+                        <span className="text-[10px] font-black text-[#DF8142] uppercase tracking-widest flex items-center gap-2 px-3 py-1 bg-[#DF8142]/5 border border-[#DF8142]/10 rounded-lg">
+                          Auth: {item.source}
+                        </span>
+                      )}
                     </div>
 
                     <h4 className="text-3xl font-black text-[#5A270F] tracking-tighter leading-none lowercase">

@@ -81,23 +81,49 @@ export const getAllNews = async (req: Request, res: Response) => {
     const news = await prisma.news.findMany({
       where: { published: true },
       orderBy: { created_at: "desc" },
+      include: {
+        author: {
+          select: {
+            name: true,
+            first_name: true,
+            last_name: true,
+          },
+        },
+      },
     });
 
     // Format for frontend
-    const formattedNews = news.map((item) => ({
-      id: item.id,
-      title: item.title,
-      content: item.content,
-      source: item.source,
-      isEvent: item.is_event,
-      eventDate: item.event_date,
-      createdAt: item.created_at,
-      time: new Date(item.created_at).toLocaleDateString(), // Simplistic for now
-    }));
+    const formattedNews = news.map((item) => {
+      const authorName = item.author
+        ? item.author.first_name && item.author.last_name
+          ? `${item.author.first_name} ${item.author.last_name}`
+          : item.author.name
+        : item.source || "Nexus Prime";
+
+      return {
+        id: item.id,
+        title: item.title,
+        content: item.content,
+        source: authorName,
+        isEvent: item.is_event,
+        eventDate: item.event_date,
+        createdAt: item.created_at,
+        time: new Date(item.created_at).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }),
+      };
+    });
 
     res.json(formattedNews);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching news" });
+    console.error("Fetch News Error:", error);
+    res
+      .status(500)
+      .json({
+        message: "Protocol Error: Failed to synchronize announcement feed",
+      });
   }
 };
 
