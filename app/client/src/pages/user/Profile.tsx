@@ -222,6 +222,7 @@ const Profile = () => {
                         })
                       }
                       placeholder="Enter ID..."
+                      required
                     />
                   </div>
                 </div>

@@ -288,6 +288,7 @@ const RegisterFaculty = () => {
                           className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
                           value={formData.worker_id}
                           onChange={handleChange}
+                          required
                         />
                       </div>
                     </div>
@@ -308,6 +309,7 @@ const RegisterFaculty = () => {
                           className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
                           value={formData.department}
                           onChange={handleChange}
+                          required
                         />
                       </div>
                     </div>
@@ -328,6 +330,7 @@ const RegisterFaculty = () => {
                           className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
                           value={formData.specialization}
                           onChange={handleChange}
+                          required
                         />
                       </div>
                     </div>

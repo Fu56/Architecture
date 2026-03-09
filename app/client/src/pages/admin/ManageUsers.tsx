@@ -60,7 +60,7 @@ const ManageUsers = () => {
     workerId: "",
   });
   const [processing, setProcessing] = useState(false);
-  
+
   // Download Format Dropdown State
   const [isDownloadFormatOpen, setIsDownloadFormatOpen] = useState(false);
 
@@ -334,20 +334,33 @@ const ManageUsers = () => {
         "First Name": user.firstName || user.first_name || "",
         "Last Name": user.lastName || user.last_name || "",
         Email: user.email,
-        "University ID": user.university_id || (user as { universityId?: string }).universityId || "",
+        "University ID":
+          user.university_id ||
+          (user as { universityId?: string }).universityId ||
+          "",
         Role: roleName,
         Status: user.status,
-        Department: user.department || "",
-        Specialization: roleName === "Faculty" ? (user.specialization || "") : "N/A",
+        Department: user.department || "Architecture",
+        Specialization:
+          roleName === "Faculty" ? user.specialization || "" : "N/A",
       };
     });
 
     if (format === "pdf") {
       const doc = new jsPDF({ orientation: "landscape" });
       doc.text("User Directory", 14, 15);
-      
-      const tableColumn = ["First Name", "Last Name", "Email", "University ID", "Role", "Status", "Department", "Specialization"];
-      const tableRows = dataToDownload.map(row => [
+
+      const tableColumn = [
+        "First Name",
+        "Last Name",
+        "Email",
+        "University ID",
+        "Role",
+        "Status",
+        "Department",
+        "Specialization",
+      ];
+      const tableRows = dataToDownload.map((row) => [
         row["First Name"],
         row["Last Name"],
         row["Email"],
@@ -355,15 +368,15 @@ const ManageUsers = () => {
         row["Role"],
         row["Status"],
         row["Department"],
-        row["Specialization"]
+        row["Specialization"],
       ]);
-      
+
       autoTable(doc, {
         head: [tableColumn],
         body: tableRows,
         startY: 20,
       });
-      
+
       doc.save("users_export.pdf");
       return;
     }
@@ -506,13 +519,12 @@ const ManageUsers = () => {
                           <div className="text-xs text-[#92664A] font-medium">
                             {user.email}
                           </div>
-                          {(user.department || (user.specialization && roleName === "Faculty")) && (
-                            <div className="text-[10px] text-[#DF8142] font-black uppercase tracking-widest mt-0.5">
-                              {user.department}{" "}
-                              {user.specialization && roleName === "Faculty" &&
-                                `• ${user.specialization}`}
-                            </div>
-                          )}
+                          <div className="text-[10px] text-[#DF8142] font-black uppercase tracking-widest mt-0.5">
+                            {user.department || "Architecture"}{" "}
+                            {user.specialization &&
+                              roleName === "Faculty" &&
+                              `• ${user.specialization}`}
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -594,30 +606,31 @@ const ManageUsers = () => {
                           roleName === "SuperAdmin" &&
                           currentRoleName !== "SuperAdmin" &&
                           currentRoleName !== "DepartmentHead"
-                        ) && currentRoleName !== "Admin" && (
-                          <>
-                            <button
-                              onClick={() => handleOpenEdit(user)}
-                              className="p-3 text-[#92664A] hover:text-[#DF8142] hover:bg-[#DF8142]/10 rounded-xl transition-all"
-                              title="Configure"
-                            >
-                              <Edit2 className="h-4 w-4" />
-                            </button>
-
-                            {!(
-                              roleName === "DepartmentHead" &&
-                              currentRoleName === "Admin"
-                            ) && (
+                        ) &&
+                          currentRoleName !== "Admin" && (
+                            <>
                               <button
-                                onClick={() => handleDelete(user.id)}
-                                className="p-3 text-[#92664A] hover:text-rose-600 hover:bg-red-50 rounded-xl transition-all"
-                                title="Terminate"
+                                onClick={() => handleOpenEdit(user)}
+                                className="p-3 text-[#92664A] hover:text-[#DF8142] hover:bg-[#DF8142]/10 rounded-xl transition-all"
+                                title="Configure"
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Edit2 className="h-4 w-4" />
                               </button>
-                            )}
-                          </>
-                        )}
+
+                              {!(
+                                roleName === "DepartmentHead" &&
+                                currentRoleName === "Admin"
+                              ) && (
+                                <button
+                                  onClick={() => handleDelete(user.id)}
+                                  className="p-3 text-[#92664A] hover:text-rose-600 hover:bg-red-50 rounded-xl transition-all"
+                                  title="Terminate"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              )}
+                            </>
+                          )}
                       </div>
                     </td>
                   </tr>
@@ -707,6 +720,7 @@ const ManageUsers = () => {
                     onChange={handleInputChange}
                     placeholder="e.g. U-ARCH-2024"
                     className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
+                    required
                   />
                 </div>
                 <div className="space-y-1">
@@ -837,6 +851,7 @@ const ManageUsers = () => {
                       onChange={handleInputChange}
                       placeholder="e.g. Design Studio"
                       className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
+                      required
                     />
                   </div>
                 </div>
@@ -855,17 +870,18 @@ const ManageUsers = () => {
                           <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
                             Specialization
                           </label>
-                        <input
-                          id="specialization"
-                          name="specialization"
-                          title="Specialization"
-                          value={formData.specialization}
-                          onChange={handleInputChange}
-                          placeholder="e.g. Parametric"
-                          className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
-                        />
+                          <input
+                            id="specialization"
+                            name="specialization"
+                            title="Specialization"
+                            value={formData.specialization}
+                            onChange={handleInputChange}
+                            placeholder="e.g. Parametric"
+                            className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
+                            required
+                          />
+                        </div>
                       </div>
-                    </div>
                     )}
                     <div className="space-y-1.5">
                       <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
@@ -879,6 +895,7 @@ const ManageUsers = () => {
                         onChange={handleInputChange}
                         placeholder="e.g. F-AX-001"
                         className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
+                        required
                       />
                     </div>
                   </div>
@@ -901,6 +918,7 @@ const ManageUsers = () => {
                           onChange={handleInputChange}
                           placeholder="2024"
                           className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
+                          required
                         />
                       </div>
                       <div className="space-y-1.5">
@@ -916,6 +934,7 @@ const ManageUsers = () => {
                           onChange={handleInputChange}
                           placeholder="1"
                           className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
+                          required
                         />
                       </div>
                       <div className="space-y-1.5">
@@ -931,6 +950,7 @@ const ManageUsers = () => {
                           onChange={handleInputChange}
                           placeholder="1"
                           className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
+                          required
                         />
                       </div>
                     </div>

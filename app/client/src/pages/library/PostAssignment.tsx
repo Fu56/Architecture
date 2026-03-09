@@ -181,6 +181,7 @@ const PostAssignment = () => {
                     value={metadata.academic_year}
                     onChange={handleMetaChange}
                     className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900"
+                    required
                   >
                     <option value="">Year</option>
                     {[1, 2, 3, 4, 5].map((y) => (
@@ -196,6 +197,7 @@ const PostAssignment = () => {
                     value={metadata.semester}
                     onChange={handleMetaChange}
                     className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900"
+                    required
                   >
                     <option value="">Semester</option>
                     {[1, 2].map((s) => (
@@ -218,6 +220,7 @@ const PostAssignment = () => {
                   value={metadata.design_stage_id}
                   onChange={handleMetaChange}
                   className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900"
+                  required
                 >
                   <option value="">Select Stage</option>
                   {designStages.map((stage) => (
@@ -241,6 +244,7 @@ const PostAssignment = () => {
                   onChange={handleMetaChange}
                   rows={8}
                   className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900 placeholder:text-gray-300 resize-none"
+                  required
                 />
               </div>
             </div>

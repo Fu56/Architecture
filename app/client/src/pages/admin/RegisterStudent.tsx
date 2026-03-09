@@ -321,6 +321,7 @@ const RegisterStudent = () => {
                           className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
                           value={formData.batch}
                           onChange={handleChange}
+                          required
                         />
                       </div>
                     </div>
@@ -339,6 +340,7 @@ const RegisterStudent = () => {
                         className="rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
                         value={formData.year}
                         onChange={handleChange}
+                        required
                       />
                     </div>
                     <div className="space-y-2">
@@ -356,6 +358,7 @@ const RegisterStudent = () => {
                         className="rounded-xl border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F] font-bold"
                         value={formData.semester}
                         onChange={handleChange}
+                        required
                       />
                     </div>
                   </div>

@@ -265,6 +265,7 @@ const Upload = () => {
                       ? "border-rose-400 bg-red-50/20"
                       : "border-[#D9D9C2]"
                   } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none`}
+                  required
                 />
                 <FieldError message={errors.title} />
               </div>
@@ -284,6 +285,7 @@ const Upload = () => {
                         ? "border-rose-400 bg-red-50/20"
                         : "border-[#D9D9C2]"
                     } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none`}
+                    required
                   />
                   <FieldError message={errors.author} />
                 </div>
@@ -297,6 +299,7 @@ const Upload = () => {
                     value={metadata.keywords}
                     onChange={handleMetaChange}
                     className="w-full px-6 py-3.5 bg-[#EFEDED] border border-[#D9D9C2] rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none"
+                    required
                   />
                 </div>
               </div>
@@ -317,6 +320,7 @@ const Upload = () => {
                         ? "border-rose-400 bg-red-50/20"
                         : "border-[#D9D9C2]"
                     } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all appearance-none cursor-pointer`}
+                    required
                   >
                     <option value="" disabled>
                       Select Course Type
@@ -348,6 +352,7 @@ const Upload = () => {
                           ? "border-rose-400 bg-red-50/20"
                           : "border-primary/20"
                       } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none animate-in fade-in slide-in-from-top-2`}
+                      required
                     />
                     <FieldError message={errors.customStageName} />
                   </div>
@@ -367,6 +372,7 @@ const Upload = () => {
                         ? "border-rose-400 bg-red-50/20"
                         : "border-[#D9D9C2]"
                     } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none`}
+                    required
                   />
                   <FieldError message={errors.forYearStudents} />
                 </div>
@@ -385,6 +391,7 @@ const Upload = () => {
                         ? "border-rose-400 bg-red-50/20"
                         : "border-[#D9D9C2]"
                     } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none`}
+                    required
                   />
                   <FieldError message={errors.semester} />
                 </div>
@@ -399,6 +406,7 @@ const Upload = () => {
                     value={metadata.batch}
                     onChange={handleMetaChange}
                     className="w-full px-6 py-3.5 bg-[#EFEDED] border border-[#D9D9C2] rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none"
+                    required
                   />
                 </div>
               </div>
