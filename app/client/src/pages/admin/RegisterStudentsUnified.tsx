@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as XLSX from "xlsx";
 import { Link } from "react-router-dom";
 import { api } from "../../lib/api";
 import {
@@ -14,7 +15,6 @@ import {
   Upload,
   FileSpreadsheet,
   CheckCircle,
-  XCircle,
   Download,
   AlertTriangle,
   FileText,
@@ -106,6 +106,10 @@ const RegisterStudentsUnified = () => {
     agreedToTerms: false,
   });
 
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof StudentFormData, string>>
+  >({});
+
   // Bulk State
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<StudentRow[]>([]);
@@ -119,43 +123,54 @@ const RegisterStudentsUnified = () => {
     results?: RegistrationResult[];
   } | null>(null);
 
-  // Individual Handlers
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev: StudentFormData) => ({
       ...prev,
       [name]: value,
     }));
+    // Clear error when user starts typing
+    if (errors[name as keyof StudentFormData]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const validateIndividualForm = (): boolean => {
+    const newErrors: Partial<Record<keyof StudentFormData, string>> = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!formData.first_name.trim())
+      newErrors.first_name = "Legal identity (First Name) required.";
+    if (!formData.last_name.trim())
+      newErrors.last_name = "Legal identity (Last Name) required.";
+    if (!formData.university_id.trim())
+      newErrors.university_id = "University designation ID required.";
+    if (!formData.email.trim()) {
+      newErrors.email = "System endpoint (Email) required.";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Invalid protocol format (Email).";
+    }
+    if (!formData.password) {
+      newErrors.password = "Authorization key (Password) required.";
+    } else if (formData.password.length < 6) {
+      newErrors.password =
+        "Security breach: Key must be at least 6 characters.";
+    }
+    if (!formData.batch) newErrors.batch = "Batch period required.";
+    if (!formData.year) newErrors.year = "Academic year required.";
+    if (!formData.semester) newErrors.semester = "Academic semester required.";
+    if (!formData.agreedToTerms)
+      newErrors.agreedToTerms = "Terms of operation must be accepted.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleIndividualSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (
-      !formData.first_name ||
-      !formData.last_name ||
-      !formData.email ||
-      !formData.password
-    ) {
-      toast.warning("Missing required identity protocols.");
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      toast.warn("Protocol Breach: Invalid email syntax detected.");
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      toast.warning("Security breach: Password insufficient length.");
-      return;
-    }
-
-    if (!formData.agreedToTerms) {
-      toast.warning(
-        "You must accept the terms and safety protocols before initializing the node.",
-      );
+    if (!validateIndividualForm()) {
+      toast.warning("Protocol Breach: Incomplete node specifications.");
       return;
     }
 
@@ -175,7 +190,7 @@ const RegisterStudentsUnified = () => {
 
       const message =
         requesterRole === "admin"
-          ? "Student Node initialized: Authorization required by Department Head."
+          ? "Student Node initialized: Authorization required for activation."
           : "Student Node initialized and activated successfully.";
 
       toast.success(message);
@@ -190,6 +205,7 @@ const RegisterStudentsUnified = () => {
         semester: "",
         agreedToTerms: false,
       });
+      setErrors({});
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       toast.error(
@@ -227,36 +243,38 @@ const RegisterStudentsUnified = () => {
     setBulkLoading(true);
     try {
       const reader = new FileReader();
-      const safeParseInt = (val: string) => {
-        const parsed = parseInt(val);
-        return isNaN(parsed) ? undefined : parsed;
-      };
 
       reader.onload = async (e) => {
         const data = e.target?.result;
-        if (typeof data === "string") {
-          const lines = data.split("\n");
-          const students: StudentRow[] = [];
-          for (let i = 1; i < lines.length; i++) {
-            if (lines[i].trim()) {
-              const values = lines[i].split(",").map((v) => v.trim());
-              students.push({
-                first_name: values[0] || "",
-                last_name: values[1] || "",
-                email: values[2] || "",
-                university_id: values[3] || undefined,
-                batch: safeParseInt(values[4]),
-                year: safeParseInt(values[5]),
-                semester: safeParseInt(values[6]),
-                password: values[7] || undefined,
-              });
-            }
-          }
+        if (data) {
+          const workbook = XLSX.read(data, { type: "array" });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet) as Record<
+            string,
+            unknown
+          >[];
+
+          const students: StudentRow[] = jsonData.map(
+            (row: Record<string, unknown>) => ({
+              first_name: row.first_name?.toString() || "",
+              last_name: row.last_name?.toString() || "",
+              email: row.email?.toString() || "",
+              university_id: row.university_id?.toString() || undefined,
+              batch: row.batch ? parseInt(row.batch.toString()) : undefined,
+              year: row.year ? parseInt(row.year.toString()) : undefined,
+              semester: row.semester
+                ? parseInt(row.semester.toString())
+                : undefined,
+              password: row.password?.toString() || undefined,
+            }),
+          );
+
           setPreview(students);
           validateStudents(students);
         }
       };
-      reader.readAsText(file);
+      reader.readAsArrayBuffer(file);
     } catch (error) {
       console.error("Error parsing file:", error);
       toast.error("Protocol Error: Failed to parse transmission file");
@@ -349,22 +367,45 @@ const RegisterStudentsUnified = () => {
   };
 
   const downloadTemplate = () => {
-    const template =
-      "first_name,last_name,email,university_id,batch,year,semester,password\nJulien,Wright,julien.wright@example.com,U12345,2024,1,1,pass123";
-    const blob = new Blob([template], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "nexus_integration_template.csv";
-    a.click();
-    window.URL.revokeObjectURL(url);
+    const headers = [
+      [
+        "first_name",
+        "last_name",
+        "email",
+        "university_id",
+        "batch",
+        "year",
+        "semester",
+        "password",
+      ],
+    ];
+    const example = [
+      [
+        "Julien",
+        "Wright",
+        "julien.wright@example.com",
+        "U12345",
+        2024,
+        1,
+        1,
+        "pass123",
+      ],
+    ];
+
+    const worksheet = XLSX.utils.aoa_to_sheet([...headers, ...example]);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Integration Template");
+
+    // Generate and download XLSX
+    XLSX.writeFile(workbook, "nexus_integration_template.xlsx");
+    toast.success("Operational Matrix Template synchronized.");
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-20">
+    <div className="max-w-7xl mx-auto space-y-8 pb-20 bg-[#EFEDED]/30 p-4 rounded-[3rem]">
       {/* Unified Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] border border-[#EEB38C]/30 shadow-md relative overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#DF8142]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[2.5rem] border border-[#EEB38C] shadow-xl relative overflow-hidden group">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#DF8142]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         <div className="flex items-center gap-6 relative z-10">
           <div className="h-16 w-16 bg-[#5A270F] rounded-2xl flex items-center justify-center text-white shadow-2xl">
             <GraduationCap className="h-8 w-8" />
@@ -382,7 +423,7 @@ const RegisterStudentsUnified = () => {
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex bg-[#EFEDED] p-1.5 rounded-2xl border border-[#D9D9C2] relative z-10">
+        <div className="flex bg-[#EFEDED] p-1.5 rounded-2xl border border-[#EEB38C] relative z-10">
           <button
             onClick={() => setActiveTab("individual")}
             className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
@@ -411,12 +452,13 @@ const RegisterStudentsUnified = () => {
           {/* Individual Form Content */}
           <div className="lg:col-span-7">
             <Card className="shadow-2xl shadow-[#5A270F]/5 border-[#EEB38C]/30 rounded-[2.5rem] overflow-hidden">
-              <CardHeader className="bg-[#EFEDED]/50 border-b border-[#EEB38C]/20 p-8">
-                <CardTitle className="text-[#5A270F] uppercase tracking-tight font-black">
+              <CardHeader className="bg-[#5A270F] border-b border-[#EEB38C]/20 p-8">
+                <CardTitle className="text-[#EEB38C] uppercase tracking-tight font-black flex items-center gap-3">
+                  <UserPlus className="h-6 w-6 text-[#DF8142]" />
                   Core Identity
                 </CardTitle>
-                <CardDescription className="text-[#92664A] font-medium">
-                  Enter personal and academic identifiers for the new student.
+                <CardDescription className="text-[#EEB38C]/60 font-medium font-mono text-[10px] uppercase tracking-widest">
+                  Initializing student node in the Nexus architecture.
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-8">
@@ -432,9 +474,13 @@ const RegisterStudentsUnified = () => {
                         placeholder="Julian"
                         value={formData.first_name}
                         onChange={handleChange}
-                        required
-                        className="rounded-xl border-[#D9D9C2] focus:border-[#DF8142] bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                        className={`rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED]/20 text-[#5A270F] font-bold ${errors.first_name ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                       />
+                      {errors.first_name && (
+                        <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
+                          {errors.first_name}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1">
@@ -445,9 +491,13 @@ const RegisterStudentsUnified = () => {
                         placeholder="Wright"
                         value={formData.last_name}
                         onChange={handleChange}
-                        required
-                        className="rounded-xl border-[#D9D9C2] focus:border-[#DF8142] bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                        className={`rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED]/20 text-[#5A270F] font-bold ${errors.last_name ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                       />
+                      {errors.last_name && (
+                        <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
+                          {errors.last_name}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -461,12 +511,16 @@ const RegisterStudentsUnified = () => {
                         <Input
                           name="university_id"
                           placeholder="U-ARCH-001"
-                          className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                          className={`pl-9 rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED]/20 text-[#5A270F] font-bold ${errors.university_id ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                           value={formData.university_id}
                           onChange={handleChange}
-                          required
                         />
                       </div>
+                      {errors.university_id && (
+                        <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
+                          {errors.university_id}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1">
@@ -478,12 +532,16 @@ const RegisterStudentsUnified = () => {
                           name="email"
                           type="email"
                           placeholder="student@nexus.edu"
-                          className="pl-9 rounded-xl border-[#D9D9C2] focus:border-[#DF8142] bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                          className={`pl-9 rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED]/20 text-[#5A270F] font-bold ${errors.email ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                           value={formData.email}
                           onChange={handleChange}
-                          required
                         />
                       </div>
+                      {errors.email && (
+                        <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
+                          {errors.email}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -498,17 +556,21 @@ const RegisterStudentsUnified = () => {
                           name="password"
                           type="text"
                           placeholder="Secure credential"
-                          className="pl-9 font-mono rounded-xl border-[#D9D9C2] focus:border-[#DF8142] bg-[#EFEDED]/30 text-[#5A270F] font-bold"
+                          className={`pl-9 font-mono rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED]/20 text-[#5A270F] font-bold ${errors.password ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                           value={formData.password}
                           onChange={handleChange}
-                          required
                         />
                       </div>
+                      {errors.password && (
+                        <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
+                          {errors.password}
+                        </p>
+                      )}
                       <Button
                         type="button"
                         variant="outline"
                         onClick={generatePassword}
-                        className="rounded-xl border-[#D9D9C2] text-[#6C3B1C] font-bold"
+                        className="rounded-xl border-[#EEB38C] hover:bg-[#EEB38C]/20 text-[#6C3B1C] font-bold transition-all"
                       >
                         <Zap className="h-4 w-4 mr-2 text-[#DF8142]" />
                         Auto
@@ -532,11 +594,15 @@ const RegisterStudentsUnified = () => {
                           name="batch"
                           type="number"
                           placeholder="2024"
-                          className="rounded-xl border-[#D9D9C2] bg-[#EFEDED]/30 font-bold"
+                          className={`rounded-xl border-[#EEB38C] bg-[#EFEDED]/20 font-bold ${errors.batch ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                           value={formData.batch}
                           onChange={handleChange}
-                          required
                         />
+                        {errors.batch && (
+                          <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
+                            {errors.batch}
+                          </p>
+                        )}
                       </div>
                       <div className="space-y-2">
                         <Label className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1">
@@ -546,11 +612,15 @@ const RegisterStudentsUnified = () => {
                           name="year"
                           type="number"
                           placeholder="1"
-                          className="rounded-xl border-[#D9D9C2] bg-[#EFEDED]/30 font-bold"
+                          className={`rounded-xl border-[#EEB38C] bg-[#EFEDED]/20 font-bold ${errors.year ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                           value={formData.year}
                           onChange={handleChange}
-                          required
                         />
+                        {errors.year && (
+                          <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
+                            {errors.year}
+                          </p>
+                        )}
                       </div>
                       <div className="space-y-2">
                         <Label className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1">
@@ -560,21 +630,25 @@ const RegisterStudentsUnified = () => {
                           name="semester"
                           type="number"
                           placeholder="1"
-                          className="rounded-xl border-[#D9D9C2] bg-[#EFEDED]/30 font-bold"
+                          className={`rounded-xl border-[#EEB38C] bg-[#EFEDED]/20 font-bold ${errors.semester ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                           value={formData.semester}
                           onChange={handleChange}
-                          required
                         />
+                        {errors.semester && (
+                          <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
+                            {errors.semester}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-[#EFEDED]/50 p-6 rounded-2xl border border-[#D9D9C2] space-y-4">
+                  <div className="bg-[#EFEDED]/30 p-6 rounded-2xl border border-[#EEB38C] space-y-4">
                     <div className="flex items-start gap-4">
                       <input
                         id="agreedToTerms"
                         type="checkbox"
-                        className="h-5 w-5 rounded-lg border-2 border-[#D9D9C2] text-[#DF8142] accent-[#DF8142]"
+                        className={`h-5 w-5 rounded-lg border-2 text-[#DF8142] accent-[#DF8142] ${errors.agreedToTerms ? "border-[#DF8142] shadow-[0_0_4px_#DF8142]" : "border-[#EEB38C]"}`}
                         checked={formData.agreedToTerms}
                         onChange={(e) =>
                           setFormData((prev) => ({
@@ -600,13 +674,18 @@ const RegisterStudentsUnified = () => {
                           </Link>
                           .
                         </p>
+                        {errors.agreedToTerms && (
+                          <p className="text-[9px] text-[#DF8142] font-black uppercase mt-1 animate-in fade-in slide-in-from-left-1">
+                            {errors.agreedToTerms}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
 
                   <Button
                     type="submit"
-                    className="w-full bg-[#5A270F] text-white py-6 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em]"
+                    className="w-full bg-[#DF8142] hover:bg-[#5A270F] text-white py-8 rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] shadow-xl shadow-[#DF8142]/20 transition-all active:scale-[0.98]"
                     disabled={loading}
                   >
                     {loading ? (
@@ -682,9 +761,9 @@ const RegisterStudentsUnified = () => {
           {/* Bulk Import UI from RegisterStudents... */}
           <div className="grid grid-cols-1 xl:grid-cols-5 gap-10">
             <div className="xl:col-span-2 space-y-10">
-              <div className="bg-white p-12 rounded-[3.5rem] border border-[#D9D9C2] shadow-3xl relative overflow-hidden group">
+              <div className="bg-white p-12 rounded-[3.5rem] border border-[#EEB38C] shadow-2xl relative overflow-hidden group">
                 <div className="text-center space-y-8">
-                  <div className="h-24 w-24 bg-[#EFEDED] rounded-[2.5rem] flex items-center justify-center text-[#EEB38C] mx-auto">
+                  <div className="h-24 w-24 bg-[#5A270F] rounded-[2.5rem] flex items-center justify-center text-[#EEB38C] mx-auto shadow-xl ring-4 ring-[#DF8142]/10">
                     <FileSpreadsheet className="h-12 w-12" />
                   </div>
                   <div className="space-y-2">
@@ -697,12 +776,12 @@ const RegisterStudentsUnified = () => {
                   </div>
                   <div className="flex flex-col gap-4">
                     <label className="cursor-pointer">
-                      <span className="flex items-center justify-center gap-4 px-10 py-5 bg-[#5A270F] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#6C3B1C] transition-all shadow-xl">
+                      <span className="flex items-center justify-center gap-4 px-10 py-5 bg-[#DF8142] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#5A270F] transition-all shadow-xl shadow-[#DF8142]/20">
                         <Upload className="h-4 w-4" /> Load Matrix
                       </span>
                       <input
                         type="file"
-                        accept=".csv"
+                        accept=".csv,.xlsx,.xls"
                         className="sr-only"
                         onChange={handleFileChange}
                       />
@@ -729,7 +808,7 @@ const RegisterStudentsUnified = () => {
               {/* Validation Results UI... */}
               {validationResult && (
                 <div
-                  className={`p-8 rounded-[2.5rem] border shadow-lg ${validationResult.valid ? "bg-emerald-50 border-emerald-100" : "bg-red-50 border-red-100"}`}
+                  className={`p-8 rounded-[2.5rem] border shadow-2xl ${validationResult.valid ? "bg-emerald-50 border-emerald-100" : "bg-orange-50 border-[#EEB38C]"}`}
                 >
                   <div className="flex items-start gap-5">
                     <div
@@ -738,7 +817,7 @@ const RegisterStudentsUnified = () => {
                       {validationResult.valid ? (
                         <CheckCircle className="h-5 w-5" />
                       ) : (
-                        <XCircle className="h-5 w-5" />
+                        <AlertTriangle className="h-5 w-5 text-[#DF8142]" />
                       )}
                     </div>
                     <div>
@@ -830,7 +909,7 @@ const RegisterStudentsUnified = () => {
                       <button
                         onClick={handleBulkUpload}
                         disabled={bulkLoading}
-                        className="px-8 py-3 bg-white text-[#5A270F] text-[10px] font-black uppercase rounded-xl hover:bg-[#DF8142] hover:text-white transition-all"
+                        className="px-8 py-3 bg-[#DF8142] text-white text-[10px] font-black uppercase rounded-xl hover:bg-white hover:text-[#5A270F] transition-all shadow-lg active:scale-95"
                       >
                         {bulkLoading ? "In Progress..." : "Initialize Nodes"}
                       </button>
@@ -868,21 +947,21 @@ const RegisterStudentsUnified = () => {
                   <div className="flex gap-4 pt-6">
                     <button
                       onClick={downloadCredentials}
-                      className="flex-1 py-4 bg-white text-[#5A270F] rounded-2xl text-[10px] font-black uppercase tracking-widest"
+                      className="flex-1 py-4 bg-[#DF8142] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#DF8142]/20 hover:bg-[#5A270F] transition-all"
                     >
                       Archive Credentials
                     </button>
                     <button
                       onClick={() => setUploadResult(null)}
-                      className="flex-1 py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase"
+                      className="flex-1 py-4 bg-white/10 border border-white/20 rounded-2xl text-[10px] font-black uppercase text-[#EEB38C] hover:bg-white/20 transition-all"
                     >
                       New Integration
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="h-full min-h-[400px] bg-[#EFEDED] rounded-[3rem] border-2 border-dashed border-[#D9D9C2] flex flex-col items-center justify-center text-center p-12 space-y-6">
-                  <Database className="h-16 w-16 text-[#D9D9C2]" />
+                <div className="h-full min-h-[400px] bg-white rounded-[3rem] border-2 border-dashed border-[#EEB38C] flex flex-col items-center justify-center text-center p-12 space-y-6 shadow-inner">
+                  <Database className="h-16 w-16 text-[#EEB38C] animate-pulse" />
                   <div className="max-w-xs">
                     <h4 className="text-sm font-black text-[#5A270F] uppercase tracking-widest">
                       Awaiting Data Segment

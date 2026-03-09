@@ -132,44 +132,46 @@ export const getRegistrationHtml = (
   password?: string,
 ) => {
   return `
-    <div ${emailStyle}>
-        <div ${headerStyle}>
-            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #818cf8; text-transform: uppercase;">New Entity Verified</p>
-            <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px;">WELCOME TO ARCHIVULT</h1>
+    <div ${emailStyle} style="border: 2px solid #EEB38C; max-width: 600px; margin: 0 auto; background: #white; border-radius: 12px; overflow: hidden;">
+        <div ${headerStyle} style="background: #5A270F; color: white; padding: 40px 30px; text-align: center; border-bottom: 4px solid #DF8142;">
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #EEB38C; text-transform: uppercase;">Node Integration Complete</p>
+            <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px; color: white;">REGISTRATION FINISHED</h1>
         </div>
-        <div style="padding: 0 20px;">
-            <p>Dear ${userName},</p>
-            <p>Your identity has been verified and registered on the Digital Architectural Platform. You now have active node status.</p>
+        <div style="padding: 30px 40px; background: white;">
+            <p style="font-size: 16px; color: #5A270F; font-weight: bold;">Salutations, ${userName},</p>
+            <p style="font-size: 14px; color: #6C3B1C; line-height: 1.6;">
+                The architectural registry has successfully synchronized your identity. Your digital workspace is now initialized and ready for deployment within the Nexus system.
+            </p>
             
-            <div style="background: #f8fafc; padding: 25px; border-radius: 12px; margin: 30px 0; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                <div style="margin-bottom: 15px;">
-                    <p style="margin: 0; font-size: 10px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Username (Email)</p>
-                    <p style="margin: 5px 0 0 0; font-family: monospace; font-size: 15px; font-weight: bold; color: #0f172a;">${email}</p>
+            <div style="background: #EFEDED; padding: 25px; border-radius: 16px; margin: 30px 0; border: 1px solid #D9D9C2;">
+                <div style="margin-bottom: 20px;">
+                    <p style="margin: 0; font-size: 10px; font-weight: 900; color: #92664A; text-transform: uppercase; letter-spacing: 2px;">Access Endpoint (Email)</p>
+                    <p style="margin: 5px 0 0 0; font-family: 'Courier New', monospace; font-size: 16px; font-weight: 900; color: #5A270F;">${email}</p>
                 </div>
                 ${
                   password
                     ? `<div>
-                         <p style="margin: 0; font-size: 10px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Access Key (Password)</p>
-                         <p style="margin: 5px 0 0 0; font-family: monospace; font-size: 15px; font-weight: bold; color: #4f46e5;">${password}</p>
+                         <p style="margin: 0; font-size: 10px; font-weight: 900; color: #92664A; text-transform: uppercase; letter-spacing: 2px;">Authorization Key (Password)</p>
+                         <p style="margin: 5px 0 0 0; font-family: 'Courier New', monospace; font-size: 16px; font-weight: 900; color: #DF8142;">${password}</p>
                        </div>`
                     : ""
                 }
             </div>
 
-            <div style="padding: 20px; background: #eef2ff; border-radius: 12px; border: 1px solid #e0e7ff; margin-bottom: 30px;">
-                <p style="margin: 0; font-size: 13px; color: #3730a3; font-weight: 500;">
-                    <strong>Next Action Protocol:</strong> Use the secure link below to establish a connection and update your access key upon first entry.
+            <div style="padding: 20px; background: #DF814210; border-radius: 12px; border: 1px solid #DF814230; margin-bottom: 30px;">
+                <p style="margin: 0; font-size: 13px; color: #5A270F; font-weight: 600; text-align: center;">
+                    <strong>System Access Established:</strong> You can now access all library resources, architectural designs, and assignment modules.
                 </p>
             </div>
 
             <div style="text-align: center; margin-top: 40px;">
-                <a href="${env.baseUrl}/login" ${buttonStyle}>Establish System Access</a>
+                <a href="${env.baseUrl}/login" style="display: inline-block; padding: 16px 32px; background-color: #DF8142; color: white; text-decoration: none; border-radius: 12px; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 14px rgba(223, 129, 66, 0.3);">Initialize System Entry</a>
             </div>
             
-            <p style="margin-top: 40px; font-size: 12px; color: #64748b; text-align: center;">
-                Security Warning: Never share your access key with unauthorized entities.
+            <p style="margin-top: 40px; font-size: 11px; color: #92664A; text-align: center; font-weight: bold; font-style: italic;">
+                Security Protocol: Ensure your credentials are kept within secure containment.
             </p>
-            <div ${footerStyle}>System Architect Level 0 | Root Authorization</div>
+            <div ${footerStyle} style="border-top: 1px solid #D9D9C2; color: #92664A; font-weight: 900;">Nexus Registry Protocol | Level 1 Authorization</div>
         </div>
     </div>
     `;

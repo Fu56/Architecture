@@ -533,17 +533,19 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
           },
         });
 
-        // Notify Student
-        await notifyUsers({
-          userIds: [newUser.id],
-          title: "Registration Confirmed",
-          message: `Welcome to the Digital Library! You have been registered successfully.`,
-          html: getRegistrationHtml(
-            `${first_name} ${last_name}`,
-            email,
-            password || finalPassword,
-          ),
-        });
+        // Notify Student only if already active (not requiring approval)
+        if (initialStatus === "active") {
+          await notifyUsers({
+            userIds: [newUser.id],
+            title: "Registration Confirmed",
+            message: `Welcome to the Digital Library! You have been registered successfully.`,
+            html: getRegistrationHtml(
+              `${first_name} ${last_name}`,
+              email,
+              password || finalPassword,
+            ),
+          });
+        }
 
         successCount++;
         results.push({ email, password: finalPassword, status: "success" });
@@ -676,13 +678,19 @@ export const registerFaculty = async (req: Request, res: Response) => {
       },
     });
 
-    // Notify Faculty member
-    await notifyUsers({
-      userIds: [user.id],
-      title: "Faculty Registration",
-      message: `Welcome to the platform. You have been registered as a Faculty member.`,
-      html: getRegistrationHtml(`${first_name} ${last_name}`, email, password),
-    });
+    // Notify Faculty member only if active
+    if (initialStatus === "active") {
+      await notifyUsers({
+        userIds: [user.id],
+        title: "Faculty Registration",
+        message: `Welcome to the platform. You have been registered as a Faculty member.`,
+        html: getRegistrationHtml(
+          `${first_name} ${last_name}`,
+          email,
+          password,
+        ),
+      });
+    }
 
     // TODO: Store department and specialization if you have a faculty profile table
 
@@ -868,13 +876,15 @@ export const createUser = async (req: Request, res: Response) => {
       },
     });
 
-    // Notify User
-    await notifyUsers({
-      userIds: [user.id],
-      title: "Account Created",
-      message: `Your account has been created by the administrator.`,
-      html: getRegistrationHtml(`${firstName} ${lastName}`, email, password),
-    });
+    // Notify User only if active
+    if (initialStatus === "active") {
+      await notifyUsers({
+        userIds: [user.id],
+        title: "Account Created",
+        message: `Your account has been created by the administrator.`,
+        html: getRegistrationHtml(`${firstName} ${lastName}`, email, password),
+      });
+    }
 
     res.status(201).json({ message: "User created successfully", user });
   } catch (error) {
@@ -930,9 +940,10 @@ export const updateUser = async (req: Request, res: Response) => {
       batch: batch ? Number(batch) : undefined,
       year: year ? Number(year) : undefined,
       semester: semester ? Number(semester) : undefined,
-      specialization: specialization === "" ? null : (specialization || undefined),
-      department: department === "" ? null : (department || undefined),
-      worker_id: workerId === "" ? null : (workerId || undefined),
+      specialization:
+        specialization === "" ? null : specialization || undefined,
+      department: department === "" ? null : department || undefined,
+      worker_id: workerId === "" ? null : workerId || undefined,
     };
 
     // Status Change Authorization Protocol
@@ -1006,21 +1017,38 @@ export const updateUser = async (req: Request, res: Response) => {
     });
 
     // Notify User about the update
-    await notifyUsers({
-      userIds: [updatedUser.id],
-      title: "Profile Configuration Update",
-      message: `Your system node configuration has been updated by the ${
-        requesterRole === "departmenthead" ? "Department Head" : "Administrator"
-      }.`,
-      html: getGenericHtml(
-        "Registry Update Protocol",
-        `Greetings ${updatedUser.first_name || "User"},<br/><br/>The architectural registry for your sector has been updated. Your system credentials and profile configurations have been synchronized by the ${
+    // SPECIAL PROTOCOL: If status transition from pending_approval to active, send Registration/Welcome email
+    if (targetUser.status === "pending_approval" && status === "active") {
+      await notifyUsers({
+        userIds: [updatedUser.id],
+        title: "Account Authorized",
+        message: `Your system node has been authorized by the Department Head. You can now access the Nexus.`,
+        html: getRegistrationHtml(
+          `${updatedUser.first_name} ${updatedUser.last_name}`,
+          updatedUser.email,
+        ),
+      });
+    } else {
+      await notifyUsers({
+        userIds: [updatedUser.id],
+        title: "Profile Configuration Update",
+        message: `Your system node configuration has been updated by the ${
           requesterRole === "departmenthead"
             ? "Department Head"
             : "Administrator"
         }.`,
-      ),
-    });
+        html: getGenericHtml(
+          "Registry Update Protocol",
+          `Greetings ${
+            updatedUser.first_name || "User"
+          },<br/><br/>The architectural registry for your sector has been updated. Your system credentials and profile configurations have been synchronized by the ${
+            requesterRole === "departmenthead"
+              ? "Department Head"
+              : "Administrator"
+          }.`,
+        ),
+      });
+    }
 
     res.json({ message: "User updated successfully", user: updatedUser });
   } catch (error) {
