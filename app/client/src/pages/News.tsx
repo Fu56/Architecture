@@ -101,13 +101,14 @@ const News = () => {
       {/* Immersive Header */}
       <section className="relative pt-32 pb-48 overflow-hidden bg-[#5A270F]">
         <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_20%,rgba(223,129,66,0.15),transparent_50%)]" />
-          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+          <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_20%,rgba(223,129,66,0.18),transparent_50%)]" />
+          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#EEB38C]/20 to-transparent" />
         </div>
 
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10 text-center">
-          <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#DF8142]/10 border border-[#DF8142]/20 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-[#DF8142] mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
-            <Megaphone className="h-3 w-3" /> Information Broadcast
+          <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#EEB38C]/10 border border-[#EEB38C]/20 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
+            <Megaphone className="h-3 w-3 text-[#DF8142]" /> Information
+            Broadcast
           </div>
           <h1 className="text-5xl sm:text-7xl font-black text-white tracking-tighter mb-6 leading-none animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
             CHRONICLES <br />
@@ -115,21 +116,21 @@ const News = () => {
               & ANNOUNCEMENTS.
             </span>
           </h1>
-          <p className="max-w-2xl mx-auto text-[#EEB38C]/60 text-lg font-medium leading-relaxed mb-12 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-400">
+          <p className="max-w-2xl mx-auto text-[#EEB38C]/70 text-lg font-medium leading-relaxed mb-12 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-400">
             Synchronize with the latest developments in our architectural nexus.
             From system upgrades to global industry summits.
           </p>
 
           {/* Filter Controls */}
-          <div className="flex items-center justify-center gap-2 p-1.5 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl max-w-sm mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 delay-600">
+          <div className="flex items-center justify-center gap-2 p-2 bg-[#6C3B1C]/30 backdrop-blur-xl border border-white/5 rounded-2xl max-w-sm mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 delay-600">
             {(["all", "news", "events"] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setFilter(t)}
                 className={`flex-1 py-3 px-6 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
                   filter === t
-                    ? "bg-[#DF8142] text-white shadow-xl shadow-[#DF8142]/20"
-                    : "text-white/40 hover:text-white hover:bg-white/5"
+                    ? "bg-[#DF8142] text-white shadow-2xl shadow-[#DF8142]/30"
+                    : "text-[#EEB38C]/40 hover:text-[#EEB38C] hover:bg-white/5"
                 }`}
               >
                 {t}
@@ -148,16 +149,16 @@ const News = () => {
               [...Array(3)].map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white h-[400px] rounded-[3rem] animate-pulse border border-[#D9D9C2]"
+                  className="bg-white h-[400px] rounded-[3rem] animate-pulse border border-[#EEB38C]/20"
                 />
               ))
             ) : filteredNews.length > 0 ? (
               filteredNews.map((item) => (
                 <article
                   key={item.id}
-                  className="group bg-white rounded-[3rem] border border-[#D9D9C2] shadow-xl shadow-slate-200/40 overflow-hidden hover:shadow-2xl hover:shadow-[#DF8142]/10 transition-all duration-500 flex flex-col sm:flex-row"
+                  className="group bg-white rounded-[3rem] border border-[#EEB38C]/30 shadow-xl shadow-[#92664A]/5 overflow-hidden hover:shadow-2xl hover:shadow-[#DF8142]/10 transition-all duration-500 flex flex-col sm:flex-row"
                 >
-                  <div className="sm:w-1/3 bg-[#EFEDED] p-12 flex flex-col items-center justify-center text-center relative overflow-hidden shrink-0">
+                  <div className="sm:w-1/3 bg-[#FAF8F4] p-12 flex flex-col items-center justify-center text-center relative overflow-hidden shrink-0">
                     <div className="absolute top-0 left-0 w-full h-1 bg-[#DF8142] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left" />
                     {item.isEvent ? (
                       <>
@@ -213,19 +214,19 @@ const News = () => {
                       {item.content}
                     </p>
 
-                    <div className="mt-auto flex items-center justify-between pt-8 border-t border-slate-50">
+                    <div className="mt-auto flex items-center justify-between pt-8 border-t border-[#EEB38C]/20">
                       <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-[#F5F5DC] flex items-center justify-center text-gray-500">
+                        <div className="h-8 w-8 rounded-full bg-[#FAF8F4] border border-[#EEB38C]/30 flex items-center justify-center text-[#92664A]">
                           <Tag className="h-3.5 w-3.5" />
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[#92664A]">
                           Metadata Source: {item.source || "Nexus Prime"}
                         </span>
                       </div>
 
                       <button
                         title="Share Transmission"
-                        className="h-12 w-12 rounded-2xl bg-[#EFEDED] flex items-center justify-center text-[#92664A] hover:bg-[#DF8142] hover:text-white transition-all duration-300"
+                        className="h-12 w-12 rounded-2xl bg-[#FAF8F4] flex items-center justify-center text-[#92664A] hover:bg-[#DF8142] hover:text-white transition-all duration-300 shadow-sm border border-[#EEB38C]/20"
                       >
                         <Share2 className="h-4 w-4" />
                       </button>
@@ -252,7 +253,7 @@ const News = () => {
           {/* Sidebar Modules */}
           <div className="space-y-12">
             {/* Search Module */}
-            <div className="bg-white p-10 rounded-[3rem] border border-[#D9D9C2] shadow-xl shadow-slate-200/20">
+            <div className="bg-white p-10 rounded-[3rem] border border-[#EEB38C]/30 shadow-xl shadow-[#92664A]/5">
               <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#92664A] mb-8">
                 Signal Scan
               </h3>
@@ -260,19 +261,19 @@ const News = () => {
                 <input
                   type="text"
                   placeholder="Search logs..."
-                  className="w-full h-16 bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl pl-12 pr-6 text-sm font-bold text-[#5A270F] outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142]/90 transition-all font-sans"
+                  className="w-full h-16 bg-[#FAF8F4] border border-[#EEB38C]/20 rounded-2xl pl-12 pr-6 text-sm font-bold text-[#5A270F] outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142]/90 transition-all font-sans"
                 />
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#DF8142] transition-colors" />
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-[#92664A] group-focus-within:text-[#DF8142] transition-colors" />
               </div>
             </div>
 
             {/* Newsletter Module */}
-            <div className="bg-[#DF8142] p-10 rounded-[3rem] shadow-2xl shadow-[#DF8142]/20 text-white relative overflow-hidden group">
+            <div className="bg-[#DF8142] p-10 rounded-[3rem] shadow-2xl shadow-[#DF8142]/30 text-white relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-[5rem] translate-x-12 -translate-y-12 group-hover:translate-x-8 group-hover:-translate-y-8 transition-transform duration-700" />
               <h3 className="text-2xl font-black mb-4 relative z-10 leading-none">
                 THE STUDIO <br /> DIGEST.
               </h3>
-              <p className="text-white/60 text-sm font-medium mb-8 relative z-10">
+              <p className="text-[#EEB38C] text-sm font-medium mb-8 relative z-10">
                 Monthly curation of technical benchmarks directly to your studio
                 terminal.
               </p>
@@ -289,11 +290,11 @@ const News = () => {
                   }}
                   placeholder="Terminal Email..."
                   disabled={subscribing || subscribed}
-                  className={`w-full h-14 bg-white/10 border ${newsletterError ? "border-red-400/50" : "border-white/20"} rounded-xl px-5 text-sm font-bold placeholder:text-white/40 mb-2 outline-none focus:bg-white/20 transition-all disabled:opacity-50`}
+                  className={`w-full h-14 bg-white/15 border ${newsletterError ? "border-[#5A270F]" : "border-white/20"} rounded-xl px-5 text-sm font-bold placeholder:text-white/50 mb-2 outline-none focus:bg-white/25 transition-all disabled:opacity-50`}
                 />
                 {newsletterError && (
-                  <p className="text-xs text-red-200 font-medium mb-3 flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-300">
-                    <span className="inline-block w-1 h-1 rounded-full bg-red-200" />
+                  <p className="text-xs text-[#5A270F] font-black mb-3 flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-300">
+                    <span className="inline-block w-1 h-1 rounded-full bg-[#5A270F]" />
                     {newsletterError}
                   </p>
                 )}
@@ -302,10 +303,10 @@ const News = () => {
                   disabled={
                     subscribing || subscribed || !newsletterEmail.trim()
                   }
-                  className={`w-full h-14 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 active:scale-95 shadow-lg disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
+                  className={`w-full h-14 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 active:scale-95 shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
                     subscribed
-                      ? "bg-green-500 text-white"
-                      : "bg-white text-[#DF8142] hover:bg-[#5A270F] hover:text-white disabled:opacity-50"
+                      ? "bg-[#5A270F] text-white"
+                      : "bg-white text-[#DF8142] hover:bg-[#5A270F] hover:text-white disabled:opacity-50 shadow-white/10"
                   }`}
                 >
                   {subscribing ? (
@@ -326,15 +327,15 @@ const News = () => {
             </div>
 
             {/* Support Link */}
-            <div className="bg-white p-10 rounded-[3rem] border border-[#D9D9C2] shadow-xl shadow-slate-200/20 text-center">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#5A270F]/5 rounded-full text-[8px] font-black uppercase tracking-widest text-[#2A1205] mb-4">
-                <div className="h-1.5 w-1.5 rounded-full bg-[#5A270F] animate-pulse" />{" "}
+            <div className="bg-white p-10 rounded-[3rem] border border-[#EEB38C]/30 shadow-xl shadow-[#92664A]/5 text-center">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#5A270F]/5 rounded-full text-[8px] font-black uppercase tracking-widest text-[#5A270F] mb-4">
+                <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142] animate-pulse" />{" "}
                 Live Support
               </div>
               <h3 className="text-sm font-black text-[#5A270F] uppercase tracking-widest mb-2">
                 Need Field Intel?
               </h3>
-              <p className="text-xs text-[#5A270F] font-medium mb-8">
+              <p className="text-xs text-[#92664A] font-medium mb-8">
                 Contact our operations node for priority technical support.
               </p>
               <Link

@@ -11,10 +11,10 @@ const NotificationIcon = ({ title }: { title: string }) => {
   if (t.includes("approved"))
     return <CheckCircle className="h-4 w-4 text-[#5A270F]" />;
   if (t.includes("rejected") || t.includes("denied"))
-    return <XCircle className="h-4 w-4 text-red-700" />;
+    return <XCircle className="h-4 w-4 text-rose-600" />;
   if (t.includes("assignment"))
     return <Zap className="h-4 w-4 text-[#DF8142]" />;
-  return <Info className="h-4 w-4 text-primary/90" />;
+  return <Info className="h-4 w-4 text-[#92664A]" />;
 };
 
 interface SessionUser {
@@ -84,9 +84,9 @@ const Notifications = () => {
     return (
       <div className="flex flex-col items-center justify-center py-24 space-y-4">
         <div className="relative">
-          <div className="h-12 w-12 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
+          <div className="h-12 w-12 border-2 border-[#EEB38C]/20 border-t-[#DF8142] rounded-full animate-spin" />
         </div>
-        <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">
+        <p className="text-[10px] font-black text-[#92664A] uppercase tracking-[0.3em]">
           Retrieving Briefings...
         </p>
       </div>
@@ -95,16 +95,18 @@ const Notifications = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-12">
         <div>
-          <h2 className="text-2xl font-black text-[#2A1205] tracking-tight">
+          <h2 className="text-3xl font-black text-[#5A270F] tracking-tighter uppercase mb-1">
             Intelligence Feed
           </h2>
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mt-1">
-            System Logistics & Updates
+          <p className="text-[10px] font-black text-[#92664A] uppercase tracking-[0.4em]">
+            System Logistics & Performance Updates
           </p>
         </div>
-        <Bell className="h-5 w-5 text-[#EEB38C]" />
+        <div className="h-12 w-12 bg-[#FAF8F4] border border-[#EEB38C]/30 rounded-2xl flex items-center justify-center shadow-sm">
+          <Bell className="h-5 w-5 text-[#DF8142]" />
+        </div>
       </div>
 
       {notifications.length > 0 ? (
@@ -113,41 +115,44 @@ const Notifications = () => {
             <div
               key={notification.id}
               onClick={() => handleNotificationClick(notification)}
-              className={`group relative flex items-start p-6 rounded-[2rem] border transition-all duration-300 cursor-pointer ${
+              className={`group relative flex items-start p-8 rounded-[2.5rem] border transition-all duration-500 cursor-pointer ${
                 !notification.is_read
-                  ? "bg-white border-primary/20 shadow-[0_10px_30px_-10px_rgba(79,70,229,0.1)]"
-                  : "bg-[#EFEDED]/50 border-transparent opacity-80 hover:opacity-100 hover:bg-white hover:border-[#D9D9C2]"
+                  ? "bg-white border-[#EEB38C]/40 shadow-xl shadow-[#DF8142]/5 hover:shadow-2xl hover:shadow-[#DF8142]/10"
+                  : "bg-[#FAF8F4] border-transparent opacity-80 hover:opacity-100 hover:bg-white hover:border-[#EEB38C]/30"
               }`}
             >
               {!notification.is_read && (
-                <div className="absolute top-6 right-8 flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-primary/90 animate-pulse" />
-                  <span className="text-[8px] font-black text-primary/90 uppercase tracking-widest">
-                    New Priority
+                <div className="absolute top-8 right-10 flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142] animate-pulse" />
+                  <span className="text-[8px] font-black text-[#DF8142] uppercase tracking-widest">
+                    Priority Intelligence
                   </span>
                 </div>
               )}
 
               <div
-                className={`flex-shrink-0 h-10 w-10 rounded-2xl flex items-center justify-center transition-colors ${
+                className={`flex-shrink-0 h-12 w-12 rounded-2xl flex items-center justify-center transition-all duration-500 ${
                   !notification.is_read
-                    ? "bg-primary shadow-lg shadow-primary/20"
-                    : "bg-slate-200"
+                    ? "bg-[#DF8142] text-white shadow-lg shadow-[#DF8142]/20"
+                    : "bg-[#6C3B1C]/5 text-[#92664A]"
                 }`}
               >
                 <NotificationIcon title={notification.title} />
               </div>
 
               <div className="ml-5 flex-1 min-w-0">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                   <p
-                    className={`text-xs font-black uppercase tracking-widest ${
-                      !notification.is_read ? "text-primary" : "text-gray-500"
+                    className={`text-[10px] font-black uppercase tracking-widest ${
+                      !notification.is_read
+                        ? "text-[#DF8142]"
+                        : "text-[#92664A]"
                     }`}
                   >
                     {notification.title}
                   </p>
-                  <span className="text-[10px] font-bold text-gray-400">
+                  <span className="text-[10px] font-black text-[#EEB38C] uppercase tracking-widest">
+                    •{" "}
                     {new Date(notification.created_at).toLocaleDateString(
                       undefined,
                       {
@@ -158,32 +163,32 @@ const Notifications = () => {
                   </span>
                 </div>
                 <p
-                  className={`text-sm mt-2 leading-relaxed whitespace-pre-wrap ${
+                  className={`text-sm mt-3 leading-relaxed whitespace-pre-wrap ${
                     !notification.is_read
-                      ? "text-slate-700 font-medium"
-                      : "text-[#5A270F]"
+                      ? "text-[#5A270F] font-bold"
+                      : "text-[#92664A] font-medium"
                   }`}
                 >
                   {notification.message}
                 </p>
 
-                <div className="mt-4 flex items-center gap-4">
+                <div className="mt-6 flex items-center gap-6 pt-6 border-t border-[#EEB38C]/10">
                   {notification.resource_id && (
-                    <span className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline decoration-2 underline-offset-4">
-                      Inspect Resource →
+                    <span className="text-[10px] font-black text-[#DF8142] uppercase tracking-[0.2em] hover:text-[#5A270F] transition-colors">
+                      Inspect Resource Node →
                     </span>
                   )}
                   {notification.assignment_id && (
-                    <span className="text-[10px] font-black text-amber-600 uppercase tracking-widest hover:underline decoration-2 underline-offset-4">
-                      View Assignment →
+                    <span className="text-[10px] font-black text-[#DF8142] uppercase tracking-[0.2em] hover:text-[#5A270F] transition-colors">
+                      View Assignment Brief →
                     </span>
                   )}
                   {!notification.is_read && (
                     <button
                       onClick={(e) => handleMarkAsRead(notification.id, e)}
-                      className="text-[9px] font-black text-gray-500 uppercase tracking-widest hover:text-[#2A1205] transition-colors"
+                      className="text-[9px] font-black text-[#92664A] uppercase tracking-[0.3em] hover:text-[#DF8142] transition-colors ml-auto"
                     >
-                      Acknowledge
+                      Acknowledge Intel
                     </button>
                   )}
                 </div>
@@ -192,14 +197,14 @@ const Notifications = () => {
           ))}
         </div>
       ) : (
-        <div className="py-24 text-center bg-[#EFEDED] rounded-[3rem] border border-dashed border-[#D9D9C2]">
-          <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-            <Bell className="h-8 w-8 text-slate-100" />
+        <div className="py-24 text-center bg-[#FAF8F4] rounded-[4rem] border border-dashed border-[#EEB38C]/40">
+          <div className="h-20 w-20 bg-white border border-[#EEB38C]/20 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-sm">
+            <Bell className="h-10 w-10 text-[#EEB38C]/30" />
           </div>
-          <h3 className="text-xl font-black text-[#5A270F] tracking-tight">
+          <h3 className="text-2xl font-black text-[#5A270F] tracking-tighter uppercase">
             Zero Delta Detected
           </h3>
-          <p className="text-xs text-gray-500 font-medium mt-2">
+          <p className="text-[10px] text-[#92664A] font-black uppercase tracking-[0.3em] mt-3">
             Intelligence feed is currently dormant.
           </p>
         </div>
