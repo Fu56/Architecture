@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { api } from "../../lib/api";
 import { UploadCloud, Loader2, Sparkles, Shield, Info } from "lucide-react";
 import { toast } from "../../lib/toast";
@@ -18,6 +18,7 @@ const Upload = () => {
     semester: "",
     batch: "",
     isPriority: false,
+    agreedToTerms: false,
   });
   const [designStages, setDesignStages] = useState<DesignStage[]>([]);
   const [loading, setLoading] = useState(false);
@@ -101,6 +102,11 @@ const Upload = () => {
         "Protocol Error: Author Authority must be established.";
     }
 
+    if (!metadata.keywords.trim()) {
+      newErrors.keywords =
+        "Protocol Error: Information Matrix Tags are required.";
+    }
+
     if (!metadata.design_stage_id) {
       newErrors.design_stage_id =
         "Protocol Error: Design Phase sequencing must be defined.";
@@ -115,17 +121,34 @@ const Upload = () => {
     }
 
     const yearNum = parseInt(metadata.forYearStudents);
-    if (isNaN(yearNum) || yearNum < 1 || yearNum > 5) {
+    if (
+      !metadata.forYearStudents.trim() ||
+      isNaN(yearNum) ||
+      yearNum < 1 ||
+      yearNum > 5
+    ) {
       newErrors.forYearStudents =
         "Metadata Breach: Target Student Year must be between 1 and 5.";
     }
 
-    if (metadata.semester) {
+    if (!metadata.semester.trim()) {
+      newErrors.semester =
+        "Metadata Breach: Academic Semester is required (1-2).";
+    } else {
       const semNum = parseInt(metadata.semester);
       if (isNaN(semNum) || semNum < 1 || semNum > 2) {
         newErrors.semester =
           "Metadata Breach: Academic Semester out of range (1-2).";
       }
+    }
+
+    if (!metadata.batch || isNaN(parseInt(metadata.batch))) {
+      newErrors.batch = "Metadata Breach: Batch Registry Node is required.";
+    }
+
+    if (!metadata.agreedToTerms) {
+      newErrors.agreedToTerms =
+        "Protocol Violation: Operational Protocols must be accepted.";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -265,7 +288,6 @@ const Upload = () => {
                       ? "border-rose-400 bg-red-50/20"
                       : "border-[#D9D9C2]"
                   } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none`}
-                  required
                 />
                 <FieldError message={errors.title} />
               </div>
@@ -285,7 +307,6 @@ const Upload = () => {
                         ? "border-rose-400 bg-red-50/20"
                         : "border-[#D9D9C2]"
                     } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none`}
-                    required
                   />
                   <FieldError message={errors.author} />
                 </div>
@@ -298,9 +319,13 @@ const Upload = () => {
                     placeholder="Urban, Design, Matrix"
                     value={metadata.keywords}
                     onChange={handleMetaChange}
-                    className="w-full px-6 py-3.5 bg-[#EFEDED] border border-[#D9D9C2] rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none"
-                    required
+                    className={`w-full px-6 py-3.5 bg-[#EFEDED] border ${
+                      errors.keywords
+                        ? "border-rose-400 bg-red-50/20"
+                        : "border-[#D9D9C2]"
+                    } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none`}
                   />
+                  <FieldError message={errors.keywords} />
                 </div>
               </div>
 
@@ -320,7 +345,6 @@ const Upload = () => {
                         ? "border-rose-400 bg-red-50/20"
                         : "border-[#D9D9C2]"
                     } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all appearance-none cursor-pointer`}
-                    required
                   >
                     <option value="" disabled>
                       Select Course Type
@@ -352,7 +376,6 @@ const Upload = () => {
                           ? "border-rose-400 bg-red-50/20"
                           : "border-primary/20"
                       } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none animate-in fade-in slide-in-from-top-2`}
-                      required
                     />
                     <FieldError message={errors.customStageName} />
                   </div>
@@ -372,7 +395,6 @@ const Upload = () => {
                         ? "border-rose-400 bg-red-50/20"
                         : "border-[#D9D9C2]"
                     } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none`}
-                    required
                   />
                   <FieldError message={errors.forYearStudents} />
                 </div>
@@ -391,7 +413,6 @@ const Upload = () => {
                         ? "border-rose-400 bg-red-50/20"
                         : "border-[#D9D9C2]"
                     } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none`}
-                    required
                   />
                   <FieldError message={errors.semester} />
                 </div>
@@ -405,9 +426,13 @@ const Upload = () => {
                     placeholder="Year"
                     value={metadata.batch}
                     onChange={handleMetaChange}
-                    className="w-full px-6 py-3.5 bg-[#EFEDED] border border-[#D9D9C2] rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none"
-                    required
+                    className={`w-full px-6 py-3.5 bg-[#EFEDED] border ${
+                      errors.batch
+                        ? "border-rose-400 bg-red-50/20"
+                        : "border-[#D9D9C2]"
+                    } rounded-xl text-[#5A270F] font-bold focus:outline-none focus:border-primary/90 focus:bg-white transition-all outline-none`}
                   />
+                  <FieldError message={errors.batch} />
                 </div>
               </div>
             </div>
@@ -415,6 +440,7 @@ const Upload = () => {
             {(userRole === "Faculty" ||
               userRole === "Admin" ||
               userRole === "SuperAdmin" ||
+              userRole === "DepartmentHead" ||
               userRole === "admin") && (
               <div className="flex items-center gap-4 bg-primary/10 p-6 rounded-2xl border border-primary/20 shadow-inner">
                 <input
@@ -439,6 +465,59 @@ const Upload = () => {
                 </div>
               </div>
             )}
+
+            {/* Terms and Conditions */}
+            <div
+              className={`bg-[#EFEDED]/50 p-6 rounded-2xl border ${
+                errors.agreedToTerms
+                  ? "border-rose-400 bg-red-50/20"
+                  : "border-[#D9D9C2]"
+              } space-y-4 transition-all`}
+            >
+              <div className="flex items-start gap-4 group/terms">
+                <div className="relative flex items-center h-6 pt-0.5">
+                  <input
+                    id="agreedToTerms"
+                    name="agreedToTerms"
+                    type="checkbox"
+                    className={`h-5 w-5 rounded-lg border-2 ${
+                      errors.agreedToTerms
+                        ? "border-rose-400 outline-none ring-2 ring-red-500/20"
+                        : "border-[#D9D9C2] text-primary focus:ring-primary/20"
+                    } cursor-pointer accent-primary`}
+                    checked={metadata.agreedToTerms}
+                    onChange={handleMetaChange}
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label
+                    htmlFor="agreedToTerms"
+                    className={`text-[10px] font-black uppercase tracking-widest ${
+                      errors.agreedToTerms ? "text-rose-700" : "text-[#5A270F]"
+                    } leading-snug cursor-pointer`}
+                  >
+                    Accept Operational Protocols
+                  </label>
+                  <p
+                    className={`text-[10px] ${
+                      errors.agreedToTerms ? "text-rose-600" : "text-[#92664A]"
+                    } font-medium leading-relaxed`}
+                  >
+                    By initializing this transmission, you agree to the{" "}
+                    <Link
+                      to="/terms"
+                      className="text-primary underline font-bold"
+                    >
+                      Terms of Operation
+                    </Link>
+                    . This includes strict prohibition of intellectual property
+                    theft, metadata distortion, and unauthorized schematic
+                    access.
+                  </p>
+                </div>
+              </div>
+              <FieldError message={errors.agreedToTerms} />
+            </div>
           </div>
 
           {/* Submit Button */}

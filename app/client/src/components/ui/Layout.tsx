@@ -340,7 +340,19 @@ const Layout = () => {
 
                         {/* Menu Links */}
                         <div className="space-y-1 p-1">
-                          {/* Personal Console removed for UI optimization */}
+                          {/* Personal Console */}
+                          {!isAdmin && !isSuperAdmin && (
+                            <Link
+                              to="/dashboard"
+                              onClick={() => setUserMenuOpen(false)}
+                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F] bg-[#EFEDED]/50 hover:bg-[#5A270F] hover:text-white rounded-2xl transition-all group/item"
+                            >
+                              <div className="p-2 bg-white rounded-xl shadow-sm text-[#5A270F] group-hover/item:bg-[#92664A] group-hover/item:text-white transition-all">
+                                <LayoutDashboard className="h-4 w-4" />
+                              </div>
+                              Personal Console
+                            </Link>
+                          )}
 
                           {isAdmin && (
                             <Link
