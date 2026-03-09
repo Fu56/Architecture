@@ -93,7 +93,7 @@ export const getAllNews = async (req: Request, res: Response) => {
     });
 
     // Format for frontend
-    const formattedNews = news.map((item) => {
+    const formattedNews = news.map((item: any) => {
       const authorName = item.author
         ? item.author.first_name && item.author.last_name
           ? `${item.author.first_name} ${item.author.last_name}`

@@ -13,6 +13,15 @@ import {
 } from "lucide-react";
 import type { DesignStage } from "../../models";
 
+const FieldError = ({ message }: { message?: string }) => {
+  if (!message) return null;
+  return (
+    <p className="text-[11px] font-black text-rose-600 uppercase tracking-[0.05em] mt-2 ml-1 animate-in fade-in slide-in-from-top-1 drop-shadow-sm">
+      {message}
+    </p>
+  );
+};
+
 const PostAssignment = () => {
   const [file, setFile] = useState<File | null>(null);
   const [metadata, setMetadata] = useState({
@@ -25,6 +34,7 @@ const PostAssignment = () => {
   });
   const [designStages, setDesignStages] = useState<DesignStage[]>([]);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -44,45 +54,64 @@ const PostAssignment = () => {
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
+    if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
+      if (errors.file) {
+        setErrors((prev) => ({ ...prev, file: "" }));
+      }
     }
   };
 
   const handleMetaChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
-    setMetadata({ ...metadata, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setMetadata({ ...metadata, [name]: value });
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Mission Control Validation
+    const newErrors: Record<string, string> = {};
+
+    // Mission Control Validation Protocols
     if (!metadata.title.trim()) {
-      toast.warn("Protocol Error: Assignment Title identifier required.");
-      return;
+      newErrors.title = "Protocol Error: Assignment Title identifier required.";
     }
 
     if (!metadata.description.trim()) {
-      toast.warn("Protocol Error: Brief Description narrative missing.");
-      return;
+      newErrors.description =
+        "Protocol Error: Brief Description narrative missing.";
     }
 
     if (!metadata.academic_year) {
-      toast.warn("Protocol Error: Target Academic Year not specified.");
-      return;
+      newErrors.academic_year =
+        "Protocol Error: Target Academic Year not specified.";
     }
 
     if (!metadata.semester) {
-      toast.warn("Protocol Error: Academic Semester sequence required.");
-      return;
+      newErrors.semester =
+        "Protocol Error: Academic Semester sequence required.";
     }
 
     if (!metadata.design_stage_id) {
-      toast.warn("Protocol Error: Phase Matrix selection required.");
+      newErrors.design_stage_id =
+        "Protocol Error: Phase Matrix selection required.";
+    }
+
+    if (!file) {
+      newErrors.file =
+        "Security Breach: Brief Attachment (PDF/Doc) is mandatory.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast.error("Validation failed: Please correct the highlighted errors.");
       return;
     }
 
@@ -110,7 +139,7 @@ const PostAssignment = () => {
         err as { response?: { data?: { message?: string } } }
       ).response?.data?.message;
       toast.error(
-        errorMessage || "Failed to post assignment. Please try again."
+        errorMessage || "Failed to post assignment. Please try again.",
       );
       setLoading(false);
     }
@@ -144,13 +173,17 @@ const PostAssignment = () => {
                   <FileText className="h-3.5 w-3.5" /> Assignment Title
                 </label>
                 <input
-                  required
                   name="title"
                   placeholder="e.g. Master Plan Urban Project - Phase 1"
                   value={metadata.title}
                   onChange={handleMetaChange}
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900 placeholder:text-gray-300"
+                  className={`w-full px-6 py-4 bg-gray-50 border ${
+                    errors.title
+                      ? "border-rose-400 bg-red-50/20"
+                      : "border-gray-100"
+                  } rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900 placeholder:text-gray-300`}
                 />
+                <FieldError message={errors.title} />
               </div>
 
               <div>
@@ -173,39 +206,51 @@ const PostAssignment = () => {
                 <label className="flex items-center gap-2 text-xs font-black text-gray-400 uppercase tracking-widest mb-3 px-1">
                   Target Audience
                 </label>
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <select
-                    id="academic_year"
-                    name="academic_year"
-                    title="Target Academic Year"
-                    value={metadata.academic_year}
-                    onChange={handleMetaChange}
-                    className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900"
-                    required
-                  >
-                    <option value="">Year</option>
-                    {[1, 2, 3, 4, 5].map((y) => (
-                      <option key={y} value={y}>
-                        Year {y}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    id="semester"
-                    name="semester"
-                    title="Academic Semester"
-                    value={metadata.semester}
-                    onChange={handleMetaChange}
-                    className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900"
-                    required
-                  >
-                    <option value="">Semester</option>
-                    {[1, 2].map((s) => (
-                      <option key={s} value={s}>
-                        Sem {s}
-                      </option>
-                    ))}
-                  </select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <select
+                      id="academic_year"
+                      name="academic_year"
+                      title="Target Academic Year"
+                      value={metadata.academic_year}
+                      onChange={handleMetaChange}
+                      className={`w-full px-6 py-4 bg-gray-50 border ${
+                        errors.academic_year
+                          ? "border-rose-400 bg-red-50/20"
+                          : "border-gray-100"
+                      } rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900`}
+                    >
+                      <option value="">Year</option>
+                      {[1, 2, 3, 4, 5].map((y) => (
+                        <option key={y} value={y}>
+                          Year {y}
+                        </option>
+                      ))}
+                    </select>
+                    <FieldError message={errors.academic_year} />
+                  </div>
+                  <div>
+                    <select
+                      id="semester"
+                      name="semester"
+                      title="Academic Semester"
+                      value={metadata.semester}
+                      onChange={handleMetaChange}
+                      className={`w-full px-6 py-4 bg-gray-50 border ${
+                        errors.semester
+                          ? "border-rose-400 bg-red-50/20"
+                          : "border-gray-100"
+                      } rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900`}
+                    >
+                      <option value="">Semester</option>
+                      {[1, 2].map((s) => (
+                        <option key={s} value={s}>
+                          Sem {s}
+                        </option>
+                      ))}
+                    </select>
+                    <FieldError message={errors.semester} />
+                  </div>
                 </div>
               </div>
 
@@ -219,8 +264,11 @@ const PostAssignment = () => {
                   title="Design Stage"
                   value={metadata.design_stage_id}
                   onChange={handleMetaChange}
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900"
-                  required
+                  className={`w-full px-6 py-4 bg-gray-50 border ${
+                    errors.design_stage_id
+                      ? "border-rose-400 bg-red-50/20"
+                      : "border-gray-100"
+                  } rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900`}
                 >
                   <option value="">Select Stage</option>
                   {designStages.map((stage) => (
@@ -229,6 +277,7 @@ const PostAssignment = () => {
                     </option>
                   ))}
                 </select>
+                <FieldError message={errors.design_stage_id} />
               </div>
             </div>
 
@@ -243,9 +292,13 @@ const PostAssignment = () => {
                   value={metadata.description}
                   onChange={handleMetaChange}
                   rows={8}
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900 placeholder:text-gray-300 resize-none"
-                  required
+                  className={`w-full px-6 py-4 bg-gray-50 border ${
+                    errors.description
+                      ? "border-rose-400 bg-red-50/20"
+                      : "border-gray-100"
+                  } rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900 placeholder:text-gray-300 resize-none min-h-[320px]`}
                 />
+                <FieldError message={errors.description} />
               </div>
             </div>
           </div>
@@ -260,9 +313,15 @@ const PostAssignment = () => {
                 type="file"
                 title="Choose brief file"
                 onChange={handleFileChange}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
               />
-              <div className="border-2 border-dashed border-gray-200 rounded-[2.5rem] py-12 text-center group-hover:border-primary/80 group-hover:bg-primary/10 transition-all">
+              <div
+                className={`border-2 border-dashed ${
+                  errors.file
+                    ? "border-rose-400 bg-red-50/10"
+                    : "border-gray-200"
+                } rounded-[2.5rem] py-12 text-center group-hover:border-primary/80 group-hover:bg-primary/10 transition-all relative overflow-hidden`}
+              >
                 <div className="h-16 w-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:text-primary transition-all">
                   <UploadCloud className="h-8 w-8 text-gray-400" />
                 </div>
@@ -274,6 +333,7 @@ const PostAssignment = () => {
                 </p>
               </div>
             </div>
+            <FieldError message={errors.file} />
           </div>
 
           <button
