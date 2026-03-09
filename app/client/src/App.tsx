@@ -27,6 +27,7 @@ import PostAssignment from "./pages/library/PostAssignment";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminRoute from "./routes/AdminRoute";
 import SuperAdminRoute from "./routes/SuperAdminRoute";
+import DeptHeadAboveRoute from "./routes/DeptHeadAboveRoute";
 import SuperAdminDashboard from "./pages/superadmin/Dashboard";
 import ManageDeptHeads from "./pages/superadmin/ManageDeptHeads";
 import SystemLogs from "./pages/superadmin/SystemLogs";
@@ -106,7 +107,9 @@ const App = () => {
                 element={<Navigate to="../register-student" replace />}
               />
               <Route path="register-faculty" element={<RegisterFaculty />} />
-              <Route path="approvals" element={<Approvals />} />
+              <Route element={<DeptHeadAboveRoute />}>
+                <Route path="approvals" element={<Approvals />} />
+              </Route>
               <Route path="news" element={<NewsManager />} />
               <Route path="flags" element={<Flags />} />
               <Route path="notifications" element={<Notifications />} />

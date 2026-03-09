@@ -259,7 +259,17 @@ const ManageUsers = () => {
 
   const handleBroadcastSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!notifyData.title || !notifyData.message) return;
+    const newErrors: Record<string, string> = {};
+    if (!notifyData.title.trim())
+      newErrors.broadcastTitle = "Relay headline required.";
+    if (!notifyData.message.trim())
+      newErrors.broadcastMessage = "Broadcast payload required.";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors((prev) => ({ ...prev, ...newErrors }));
+      toast.warn("Broadcast Rejection: Incomplete payload parameters.");
+      return;
+    }
 
     setProcessing(true);
     try {
@@ -267,6 +277,11 @@ const ManageUsers = () => {
       toast.success("Global broadcast transmitted to all nodes.");
       setIsBroadcastModalOpen(false);
       setNotifyData({ title: "", message: "" });
+      setErrors((prev) => ({
+        ...prev,
+        broadcastTitle: "",
+        broadcastMessage: "",
+      }));
     } catch (err: unknown) {
       console.error("Broadcast transmission error:", err);
       toast.error("Global transmission failed: Protocol error.");
@@ -502,13 +517,17 @@ const ManageUsers = () => {
               </div>
             )}
           </div>
-          <button
-            onClick={() => setIsBroadcastModalOpen(true)}
-            className="flex-1 md:flex-none px-6 py-3 bg-[#DF8142]/10 text-[#DF8142] text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#DF8142] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3"
-          >
-            <Zap className="h-4 w-4" />
-            Global Broadcast
-          </button>
+          {(currentRoleName === "DepartmentHead" ||
+            currentRoleName === "SuperAdmin") && (
+            <button
+              onClick={() => setIsBroadcastModalOpen(true)}
+              title="Engage Global Intelligence Relay"
+              className="flex-1 md:flex-none px-6 py-3 bg-[#DF8142]/10 text-[#DF8142] text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#DF8142] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3 border border-[#DF8142]/20"
+            >
+              <Zap className="h-4 w-4" />
+              Global Broadcast
+            </button>
+          )}
           <button
             onClick={handleOpenCreate}
             className="flex-1 md:flex-none px-8 py-3 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#6C3B1C] transition-all hover:-translate-y-1 shadow-2xl shadow-[#5A270F]/20 active:scale-95 flex items-center justify-center gap-3"
@@ -1167,69 +1186,97 @@ const ManageUsers = () => {
             onClick={() => setIsBroadcastModalOpen(false)}
           />
           <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
-            <div className="bg-[#DF8142] px-10 py-8 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-[50px]" />
-              <div className="relative z-10">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 mb-2">
-                  Emergency Broadcast
-                </p>
-                <h3 className="text-2xl font-black text-white leading-tight">
-                  Global Intelligence Relay
-                </h3>
+            <div className="bg-[#5A270F] px-10 py-8 relative overflow-hidden group/broadcast">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/20 blur-[50px] transition-all group-hover/broadcast:bg-[#DF8142]/30" />
+              <div className="relative z-10 flex justify-between items-start">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-2">
+                    Emergency Broadcast
+                  </p>
+                  <h3 className="text-2xl font-black text-white leading-tight">
+                    Global Intelligence Relay
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  title="Abort Broadcast"
+                  onClick={() => setIsBroadcastModalOpen(false)}
+                  className="p-2 hover:bg-white/10 rounded-xl text-[#EEB38C] transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                </button>
               </div>
             </div>
 
             <form onSubmit={handleBroadcastSubmit} className="p-10 space-y-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
                   Relay Headline
                 </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Universal objective..."
-                  className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm font-bold outline-none focus:ring-2 focus:ring-primary/20"
-                  value={notifyData.title}
-                  onChange={(e) =>
-                    setNotifyData({ ...notifyData, title: e.target.value })
-                  }
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    title="Broadcast Headline"
+                    placeholder="Enter universal objective..."
+                    className={`w-full bg-[#EFEDED] border rounded-2xl px-5 py-3 text-sm font-bold text-[#5A270F] outline-none focus:border-[#DF8142] transition-all ${errors.broadcastTitle ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                    value={notifyData.title}
+                    onChange={(e) => {
+                      setNotifyData({ ...notifyData, title: e.target.value });
+                      if (errors.broadcastTitle)
+                        setErrors((prev) => ({ ...prev, broadcastTitle: "" }));
+                    }}
+                  />
+                  {errors.broadcastTitle && (
+                    <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
+                  )}
+                </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
                   Broadcast Payload
                 </label>
-                <textarea
-                  required
-                  rows={4}
-                  placeholder="Distribute intelligence to all active nodes..."
-                  className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-none"
-                  value={notifyData.message}
-                  onChange={(e) =>
-                    setNotifyData({ ...notifyData, message: e.target.value })
-                  }
-                />
+                <div className="relative">
+                  <textarea
+                    rows={4}
+                    title="Broadcast Content"
+                    placeholder="Distribute intelligence to all active nodes..."
+                    className={`w-full bg-[#EFEDED] border rounded-2xl px-5 py-3 text-sm text-[#5A270F] outline-none focus:border-[#DF8142] transition-all resize-none ${errors.broadcastMessage ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                    value={notifyData.message}
+                    onChange={(e) => {
+                      setNotifyData({ ...notifyData, message: e.target.value });
+                      if (errors.broadcastMessage)
+                        setErrors((prev) => ({
+                          ...prev,
+                          broadcastMessage: "",
+                        }));
+                    }}
+                  />
+                  {errors.broadcastMessage && (
+                    <AlertCircle className="absolute right-4 top-3 h-4 w-4 text-[#DF8142]" />
+                  )}
+                </div>
               </div>
 
               <div className="pt-4 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsBroadcastModalOpen(false)}
-                  className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-[#92664A] hover:text-[#5A270F]"
+                  className="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-[#92664A] hover:text-[#5A270F] transition-colors"
                 >
-                  Abort
+                  Abort Relay
                 </button>
                 <button
                   type="submit"
                   disabled={processing}
-                  className="px-8 py-2.5 bg-[#DF8142] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#DF8142]/90 transition-all shadow-lg shadow-[#DF8142]/20 flex items-center gap-2"
+                  title="Initiate Global Transmission"
+                  className="px-8 py-3 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#6C3B1C] transition-all shadow-xl shadow-[#5A270F]/20 active:scale-95 flex items-center gap-3 disabled:opacity-50"
                 >
                   {processing ? (
-                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <>
-                      <Zap className="h-3 w-3" />
+                      <Zap className="h-4 w-4" />
                       Engage Wide-Spectrum Broadcast
                     </>
                   )}

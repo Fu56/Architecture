@@ -31,17 +31,42 @@ const router = Router();
 
 router.use(requireAuth, requireRole(["Admin", "SuperAdmin", "DepartmentHead"])); // Adjust role names as needed
 
-router.get("/resources/pending", getPendingResources);
-router.patch("/resources/:id/approve", approveResource);
-router.patch("/resources/:id/reject", rejectResource);
-router.patch("/resources/:id/archive", archiveResource);
-router.patch("/resources/:id/restore", restoreResource);
+// Resource Approval — restricted to DepartmentHead and SuperAdmin only
+router.get(
+  "/resources/pending",
+  requireRole(["DepartmentHead", "SuperAdmin"]),
+  getPendingResources,
+);
+router.patch(
+  "/resources/:id/approve",
+  requireRole(["DepartmentHead", "SuperAdmin"]),
+  approveResource,
+);
+router.patch(
+  "/resources/:id/reject",
+  requireRole(["DepartmentHead", "SuperAdmin"]),
+  rejectResource,
+);
+router.patch(
+  "/resources/:id/archive",
+  requireRole(["DepartmentHead", "SuperAdmin"]),
+  archiveResource,
+);
+router.patch(
+  "/resources/:id/restore",
+  requireRole(["DepartmentHead", "SuperAdmin"]),
+  restoreResource,
+);
 router.delete(
   "/resources/:id/permanent",
-  requireRole(["SuperAdmin", "DepartmentHead"]),
+  requireRole(["SuperAdmin"]),
   deleteResource,
 );
-router.get("/resources/archived", getArchivedResources);
+router.get(
+  "/resources/archived",
+  requireRole(["DepartmentHead", "SuperAdmin"]),
+  getArchivedResources,
+);
 
 router.get("/flags", getFlags);
 router.patch("/flags/:id/resolve", resolveFlag);
@@ -50,7 +75,12 @@ router.get("/users", getAllUsers);
 router.post("/users/create", createUser);
 router.patch("/users/:id", updateUser); // Generic update
 router.delete("/users/:id", deleteUser);
-router.patch("/users/:id/approve", approveUser);
+// User Registration Approval — restricted to DepartmentHead and SuperAdmin only
+router.patch(
+  "/users/:id/approve",
+  requireRole(["DepartmentHead", "SuperAdmin"]),
+  approveUser,
+);
 router.patch("/users/:id/role", manageUserRole); // Keep specific if needed, or deprecate
 router.post("/users/bulk-register", bulkRegisterStudents);
 router.post("/users/register-faculty", registerFaculty);
@@ -61,6 +91,11 @@ router.get("/stats", getStats);
 router.post("/news", createNews);
 router.delete("/news/:id", deleteNews);
 router.post("/notifications/send", sendDirectNotification);
-router.post("/notifications/broadcast", broadcastNotification);
+// Global Broadcast — restricted to DepartmentHead and SuperAdmin only
+router.post(
+  "/notifications/broadcast",
+  requireRole(["DepartmentHead", "SuperAdmin"]),
+  broadcastNotification,
+);
 
 export default router;

@@ -12,6 +12,14 @@ import {
   Layers,
 } from "lucide-react";
 import { api } from "../../lib/api";
+import { useSession } from "../../lib/auth-client";
+
+interface UserWithRole {
+  id: string | number;
+  email: string;
+  name?: string;
+  role?: { name: string } | string;
+}
 
 interface StatCardProps {
   title: string;
@@ -75,6 +83,11 @@ interface AnalyticsStats {
 const Analytics = () => {
   const [stats, setStats] = useState<AnalyticsStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const { data: session } = useSession();
+
+  const user = session?.user as UserWithRole | undefined;
+  const role = typeof user?.role === "object" ? user.role.name : user?.role;
+  const isAuthorizedFull = role === "SuperAdmin" || role === "DepartmentHead";
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -155,25 +168,29 @@ const Analytics = () => {
               </h3>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-8">
-              <div className="bg-[#6C3B1C]/30 border border-[#EEB38C]/10 p-8 rounded-[2.5rem] group/item hover:bg-[#6C3B1C]/50 transition-colors">
-                <div className="flex items-center justify-between mb-6">
-                  <p className="text-[10px] font-black text-[#EEB38C]/60 uppercase tracking-[0.2em]">
-                    Pending Intelligence
-                  </p>
-                  <ShieldCheck className="h-4 w-4 text-[#EEB38C]" />
+            <div
+              className={`grid ${isAuthorizedFull ? "sm:grid-cols-2" : "sm:grid-cols-1"} gap-8`}
+            >
+              {isAuthorizedFull && (
+                <div className="bg-[#6C3B1C]/30 border border-[#EEB38C]/10 p-8 rounded-[2.5rem] group/item hover:bg-[#6C3B1C]/50 transition-colors text-left">
+                  <div className="flex items-center justify-between mb-6">
+                    <p className="text-[10px] font-black text-[#EEB38C]/60 uppercase tracking-[0.2em]">
+                      Pending Intelligence
+                    </p>
+                    <ShieldCheck className="h-4 w-4 text-[#EEB38C]" />
+                  </div>
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-5xl font-black text-white tracking-tighter">
+                      {stats?.pendingResources}
+                    </span>
+                    <span className="text-[10px] font-bold text-[#EEB38C] uppercase tracking-widest">
+                      Awaiting Verification
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-baseline gap-4">
-                  <span className="text-5xl font-black text-white tracking-tighter">
-                    {stats?.pendingResources}
-                  </span>
-                  <span className="text-[10px] font-bold text-[#EEB38C] uppercase tracking-widest">
-                    Awaiting Verification
-                  </span>
-                </div>
-              </div>
+              )}
 
-              <div className="bg-[#6C3B1C]/30 border border-[#EEB38C]/10 p-8 rounded-[2.5rem] group/item hover:bg-[#6C3B1C]/50 transition-colors">
+              <div className="bg-[#6C3B1C]/30 border border-[#EEB38C]/10 p-8 rounded-[2.5rem] group/item hover:bg-[#6C3B1C]/50 transition-colors text-left">
                 <div className="flex items-center justify-between mb-6">
                   <p className="text-[10px] font-black text-[#EEB38C]/60 uppercase tracking-[0.2em]">
                     Transmission Velocity
@@ -213,12 +230,14 @@ const Analytics = () => {
             >
               Nexus User Log
             </Link>
-            <Link
-              to="/admin/approvals"
-              className="w-full h-16 flex justify-center items-center gap-4 bg-white border-2 border-[#D9D9C2] text-[10px] font-black uppercase tracking-[0.3em] rounded-3xl text-[#5A270F] hover:border-[#5A270F] hover:text-[#2A1205] transition-all active:scale-95"
-            >
-              Review Artifacts
-            </Link>
+            {isAuthorizedFull && (
+              <Link
+                to="/admin/approvals"
+                className="w-full h-16 flex justify-center items-center gap-4 bg-white border-2 border-[#D9D9C2] text-[10px] font-black uppercase tracking-[0.3em] rounded-3xl text-[#5A270F] hover:border-[#5A270F] hover:text-[#2A1205] transition-all active:scale-95"
+              >
+                Review Artifacts
+              </Link>
+            )}
           </div>
         </div>
       </div>

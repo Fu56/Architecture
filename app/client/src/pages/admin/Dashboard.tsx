@@ -158,32 +158,41 @@ const AdminDashboard = () => {
                     <div className="h-px flex-grow ml-4 bg-white/5" />
                   </div>
                   <div className="space-y-2">
-                    {adminNavLinks.map((link) => {
-                      const isActive = location.pathname.startsWith(link.href);
-                      return (
-                        <NavLink
-                          key={link.name}
-                          to={link.href}
-                          className={`group relative flex items-center px-4 py-3 text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all duration-500 ${
-                            isActive
-                              ? "bg-white text-[#2A1205] shadow-lg -translate-y-0.5"
-                              : "text-white/40 hover:text-white hover:bg-white/5"
-                          }`}
-                        >
-                          <link.icon
-                            className={`mr-4 h-5 w-5 transition-all duration-500 ${
+                    {adminNavLinks
+                      .filter((link) => {
+                        if (link.name === "Resource Approvals") {
+                          return isSuperAdmin;
+                        }
+                        return true;
+                      })
+                      .map((link) => {
+                        const isActive = location.pathname.startsWith(
+                          link.href,
+                        );
+                        return (
+                          <NavLink
+                            key={link.name}
+                            to={link.href}
+                            className={`group relative flex items-center px-4 py-3 text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all duration-500 ${
                               isActive
-                                ? "text-[#DF8142] scale-110"
-                                : "text-white/20 group-hover:text-[#DF8142]/80 group-hover:scale-110"
+                                ? "bg-white text-[#2A1205] shadow-lg -translate-y-0.5"
+                                : "text-white/40 hover:text-white hover:bg-white/5"
                             }`}
-                          />
-                          <span className="relative z-10">{link.name}</span>
-                          {isActive && (
-                            <div className="absolute right-4 w-1.5 h-1.5 rounded-full bg-[#DF8142] shadow-[0_0_10px_rgba(223,129,66,1)]" />
-                          )}
-                        </NavLink>
-                      );
-                    })}
+                          >
+                            <link.icon
+                              className={`mr-4 h-5 w-5 transition-all duration-500 ${
+                                isActive
+                                  ? "text-[#DF8142] scale-110"
+                                  : "text-white/20 group-hover:text-[#DF8142]/80 group-hover:scale-110"
+                              }`}
+                            />
+                            <span className="relative z-10">{link.name}</span>
+                            {isActive && (
+                              <div className="absolute right-4 w-1.5 h-1.5 rounded-full bg-[#DF8142] shadow-[0_0_10px_rgba(223,129,66,1)]" />
+                            )}
+                          </NavLink>
+                        );
+                      })}
                   </div>
                 </nav>
               </div>

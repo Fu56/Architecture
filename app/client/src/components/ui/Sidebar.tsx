@@ -25,7 +25,13 @@ export default function Sidebar({ isOpen, setOpen }: SidebarProps) {
     user && typeof user.role === "object" && user.role !== null
       ? user.role.name
       : user?.role;
-  const isAdmin = role === "admin" || role === "Admin" || role === "SuperAdmin";
+  const isAdmin =
+    role === "admin" ||
+    role === "Admin" ||
+    role === "SuperAdmin" ||
+    role === "DepartmentHead";
+  const isAuthorizedForApprovals =
+    role === "SuperAdmin" || role === "DepartmentHead";
 
   return (
     <>
@@ -79,15 +85,17 @@ export default function Sidebar({ isOpen, setOpen }: SidebarProps) {
             >
               Dashboard
             </Link>
-            <Link
-              onClick={closeSidebar}
-              className={`block px-3 py-2 rounded ${active(
-                "/admin/approvals"
-              )}`}
-              to="/admin/approvals"
-            >
-              Approvals
-            </Link>
+            {isAuthorizedForApprovals && (
+              <Link
+                onClick={closeSidebar}
+                className={`block px-3 py-2 rounded ${active(
+                  "/admin/approvals",
+                )}`}
+                to="/admin/approvals"
+              >
+                Resource Approvals
+              </Link>
+            )}
             <Link
               onClick={closeSidebar}
               className={`block px-3 py-2 rounded ${active("/admin/users")}`}

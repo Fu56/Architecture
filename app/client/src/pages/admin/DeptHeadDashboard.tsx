@@ -77,7 +77,11 @@ const DeptHeadDashboard = () => {
                   {[
                     { to: "analytics", label: "Analytics", icon: BarChart3 },
                     { to: "users", label: "Manage Users", icon: Users },
-                    { to: "approvals", label: "Approvals", icon: CheckSquare },
+                    {
+                      to: "approvals",
+                      label: "Resource Approvals",
+                      icon: CheckSquare,
+                    },
                     { to: "flags", label: "Flagged Content", icon: Flag },
                   ].map((item) => (
                     <NavLink
