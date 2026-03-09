@@ -5,7 +5,17 @@ import { prisma } from "../config/db";
 export const updateProfile = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
-    const { first_name, last_name, university_id } = req.body;
+    const {
+      first_name,
+      last_name,
+      university_id,
+      batch,
+      year,
+      semester,
+      specialization,
+      department,
+      worker_id,
+    } = req.body;
 
     const user = await prisma.user.update({
       where: { id: userId },
@@ -13,6 +23,12 @@ export const updateProfile = async (req: Request, res: Response) => {
         first_name,
         last_name,
         university_id,
+        batch: batch ? Number(batch) : undefined,
+        year: year ? Number(year) : undefined,
+        semester: semester ? Number(semester) : undefined,
+        specialization: specialization || null,
+        department: department || null,
+        worker_id: worker_id || null,
       },
       include: {
         role: true,
@@ -45,7 +61,9 @@ export const changePassword = async (req: Request, res: Response) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     if (!user.password) {
-      return res.status(400).json({ message: "Account does not have a password configured" });
+      return res
+        .status(400)
+        .json({ message: "Account does not have a password configured" });
     }
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
