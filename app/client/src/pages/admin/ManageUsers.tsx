@@ -15,6 +15,8 @@ import {
   RefreshCw,
   Download,
   ChevronDown,
+  AlertCircle,
+  X,
 } from "lucide-react";
 import { toast } from "../../lib/toast";
 import { useSession } from "../../lib/auth-client";
@@ -60,6 +62,7 @@ const ManageUsers = () => {
     workerId: "",
   });
   const [processing, setProcessing] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Download Format Dropdown State
   const [isDownloadFormatOpen, setIsDownloadFormatOpen] = useState(false);
@@ -100,6 +103,7 @@ const ManageUsers = () => {
       workerId: "",
     });
     setSelectedUser(null);
+    setErrors({});
   };
 
   const handleOpenCreate = () => {
@@ -198,6 +202,61 @@ const ManageUsers = () => {
     }
   };
 
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.firstName.trim())
+      newErrors.firstName = "First name required.";
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name required.";
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim()) {
+      newErrors.email = "Email identifier required.";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Invalid protocol: Improper email syntax.";
+    }
+
+    if (modalMode === "create") {
+      if (!formData.password) {
+        newErrors.password = "Authorization key required.";
+      } else if (formData.password.length < 6) {
+        newErrors.password = "Security breach: Key too short (min 6 chars).";
+      }
+    }
+
+    if (formData.roleNames.length === 0) {
+      newErrors.roles = "Designate at least one authorization role.";
+    }
+
+    if (!formData.department.trim()) {
+      newErrors.department = "Departmental sector required.";
+    }
+
+    if (
+      formData.roleNames.some((r) =>
+        ["Faculty", "Admin", "DepartmentHead"].includes(r),
+      )
+    ) {
+      if (!formData.workerId.trim())
+        newErrors.workerId = "Personnel identification required.";
+    }
+
+    if (
+      formData.roleNames.includes("Faculty") &&
+      !formData.specialization.trim()
+    ) {
+      newErrors.specialization = "Academic specialization required.";
+    }
+
+    if (formData.roleNames.includes("Student")) {
+      if (!formData.batch) newErrors.batch = "Batch required.";
+      if (!formData.year) newErrors.year = "Year required.";
+      if (!formData.semester) newErrors.semester = "Semester required.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleBroadcastSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!notifyData.title || !notifyData.message) return;
@@ -219,24 +278,8 @@ const ManageUsers = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.firstName.trim() || !formData.lastName.trim()) {
-      toast.warn("Registry Denial: Legal Identity identifiers required.");
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      toast.warn("Protocol Breach: Invalid email syntax detected.");
-      return;
-    }
-
-    if (modalMode === "create" && formData.password.length < 6) {
-      toast.warn("Security Warning: Initial authorization key is too short.");
-      return;
-    }
-
-    if (formData.roleNames.length === 0) {
-      toast.warn("Authorization Error: At least one role must be designated.");
+    if (!validateForm()) {
+      toast.warn("Registry Denial: Invalid field synchronization.");
       return;
     }
 
@@ -278,7 +321,11 @@ const ManageUsers = () => {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const filteredUsers = users.filter((user) => {
@@ -662,88 +709,122 @@ const ManageUsers = () => {
           <div className="relative w-full max-w-lg bg-white rounded-[2rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
             <div className="bg-[#5A270F] px-8 py-6 relative overflow-hidden group/modal">
               <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/20 blur-[60px] transition-all group-hover/modal:bg-[#DF8142]/30" />
-              <div className="relative z-10">
-                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-1">
-                  Registry Update
-                </p>
-                <h3 className="text-2xl font-black text-white leading-tight">
-                  {modalMode === "create"
-                    ? "Initialize User Node"
-                    : "Configure Specimen"}
-                </h3>
+              <div className="relative z-10 flex justify-between items-start">
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-1">
+                    Registry Update
+                  </p>
+                  <h3 className="text-2xl font-black text-white leading-tight">
+                    {modalMode === "create"
+                      ? "Initialize User Node"
+                      : "Configure Specimen"}
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  title="Abort Initialization"
+                  onClick={() => setIsModalOpen(false)}
+                  className="p-2 hover:bg-white/10 rounded-xl text-[#EEB38C] transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                </button>
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-8 space-y-5">
-              <div className="grid grid-cols-2 gap-3">
+            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
                     First Name
                   </label>
-                  <input
-                    id="firstName"
-                    name="firstName"
-                    title="First Name"
-                    placeholder="Enter first name"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      id="firstName"
+                      name="firstName"
+                      title="First Name"
+                      value={formData.firstName}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                        if (errors.firstName)
+                          setErrors((prev) => ({ ...prev, firstName: "" }));
+                      }}
+                      className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.firstName ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                      placeholder="e.g. John"
+                    />
+                    {errors.firstName && (
+                      <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
+                    )}
+                  </div>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
                     Last Name
                   </label>
-                  <input
-                    id="lastName"
-                    name="lastName"
-                    title="Last Name"
-                    placeholder="Enter last name"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      id="lastName"
+                      name="lastName"
+                      title="Last Name"
+                      value={formData.lastName}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                        if (errors.lastName)
+                          setErrors((prev) => ({ ...prev, lastName: "" }));
+                      }}
+                      className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.lastName ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                      placeholder="e.g. Doe"
+                    />
+                    {errors.lastName && (
+                      <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
+                    )}
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
                     University ID
                   </label>
                   <input
                     id="universityId"
                     name="universityId"
+                    title="University Identifier"
                     value={formData.universityId}
                     onChange={handleInputChange}
-                    placeholder="e.g. U-ARCH-2024"
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
-                    required
+                    placeholder="U-ARCH-XXXX"
+                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
                     Email Address
                   </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    title="Email Address"
-                    placeholder="example@nexus.edu"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      title="Email Communications"
+                      value={formData.email}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                        if (errors.email)
+                          setErrors((prev) => ({ ...prev, email: "" }));
+                      }}
+                      className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.email ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                      placeholder="node@nexus.edu"
+                    />
+                    {errors.email && (
+                      <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
+                    )}
+                  </div>
                 </div>
               </div>
 
               {modalMode === "create" && (
-                <div className="space-y-1.5">
-                  <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
                     Initial Authorization Key
                   </label>
                   <div className="relative flex items-center">
@@ -752,232 +833,245 @@ const ManageUsers = () => {
                       type="text"
                       name="password"
                       title="Initial Authorization Key"
+                      placeholder="Enter security key"
                       value={formData.password}
-                      onChange={handleInputChange}
-                      className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl pl-3 pr-8 py-2 text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none"
-                      required={modalMode === "create"}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                        if (errors.password)
+                          setErrors((prev) => ({ ...prev, password: "" }));
+                      }}
+                      className={`w-full bg-[#EFEDED] border rounded-xl pl-4 pr-12 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.password ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
                     />
                     <button
                       type="button"
+                      title="Auto-Generate Secret Key"
                       onClick={generatePassword}
                       className="absolute right-2 p-1.5 hover:bg-[#DF8142]/10 rounded-lg text-[#92664A] hover:text-[#DF8142] transition-colors"
-                      title="Auto-Generate Secure Key"
                     >
-                      <RefreshCw className="h-3.5 w-3.5" />
+                      <RefreshCw className="h-4 w-4" />
                     </button>
+                    {errors.password && (
+                      <AlertCircle className="absolute right-10 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
+                    )}
                   </div>
+                  {errors.password && (
+                    <p className="text-[8px] text-[#DF8142] font-black uppercase ml-1">
+                      {errors.password}
+                    </p>
+                  )}
                 </div>
               )}
 
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
-                    Role Designation (Multi-Select)
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {["Student", "Faculty", "Admin", "DepartmentHead"]
-                      .filter(
-                        (role) =>
-                          role !== "DepartmentHead" ||
-                          currentRoleName === "SuperAdmin",
-                      )
-                      .map((role) => {
-                        const isSelected = formData.roleNames.includes(role);
-                        return (
-                          <div
-                            key={role}
-                            onClick={() => {
-                              const newRoles = isSelected
-                                ? formData.roleNames.filter((r) => r !== role)
-                                : [...formData.roleNames, role];
-                              setFormData({ ...formData, roleNames: newRoles });
-                            }}
-                            className={`cursor-pointer px-3 py-2.5 rounded-xl border transition-all ${
-                              isSelected
-                                ? "bg-[#5A270F] border-[#5A270F] text-white shadow-md scale-[1.02]"
-                                : "bg-white border-[#D9D9C2] text-[#5A270F] hover:border-[#DF8142]"
-                            }`}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div
-                                className={`h-2.5 w-2.5 rounded-full border-2 ${
-                                  isSelected
-                                    ? "border-white bg-[#DF8142]"
-                                    : "border-[#D9D9C2]"
-                                }`}
-                              />
-                              <span className="text-[10px] font-black uppercase tracking-widest">
-                                {role.replace(/([A-Z])/g, " $1").trim()}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                  </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                  Role Authorization
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {["Student", "Faculty", "Admin", "DepartmentHead"]
+                    .filter(
+                      (role) =>
+                        role !== "DepartmentHead" ||
+                        currentRoleName === "SuperAdmin",
+                    )
+                    .map((role) => {
+                      const isSelected = formData.roleNames.includes(role);
+                      return (
+                        <button
+                          key={role}
+                          type="button"
+                          title={`Assign ${role} Role`}
+                          onClick={() => {
+                            const newRoles = isSelected
+                              ? formData.roleNames.filter((r) => r !== role)
+                              : [...formData.roleNames, role];
+                            setFormData({ ...formData, roleNames: newRoles });
+                            if (errors.roles)
+                              setErrors((prev) => ({ ...prev, roles: "" }));
+                          }}
+                          className={`flex-1 px-3 py-2 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all ${
+                            isSelected
+                              ? "bg-[#5A270F] border-[#5A270F] text-white shadow-lg scale-105"
+                              : "bg-white border-[#D9D9C2] text-[#92664A] hover:border-[#DF8142]"
+                          }`}
+                        >
+                          {role}
+                        </button>
+                      );
+                    })}
                 </div>
+                {errors.roles && (
+                  <p className="text-[8px] text-[#DF8142] font-black uppercase ml-1">
+                    {errors.roles}
+                  </p>
+                )}
+                {modalMode === "create" && currentRoleName === "Admin" && (
+                  <p className="text-[8px] text-[#DF8142] font-black uppercase ml-1 italic opacity-80">
+                    * Admin initialization requires Department Head approval.
+                  </p>
+                )}
+              </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
-                    Active Status
-                  </label>
-                  <select
-                    id="status"
-                    name="status"
-                    title="Active Status"
-                    value={formData.status}
-                    onChange={handleInputChange}
-                    disabled={
-                      currentRoleName !== "DepartmentHead" &&
-                      currentRoleName !== "SuperAdmin"
-                    }
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <option value="active">Protocol: Active</option>
-                    <option value="inactive">Protocol: Suspended</option>
-                  </select>
-                </div>
-
-                {/* Department Field - All Users */}
-                <div className="space-y-4 pt-4 border-t border-[#EFEDED] animate-in slide-in-from-top-2 duration-300">
-                  <div className="space-y-1.5">
-                    <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+              {/* Advanced Signal Matrix (Dynamic Fields) */}
+              <div className="space-y-4 pt-2">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
                       Department
                     </label>
-                    <input
-                      id="department"
-                      name="department"
-                      title="Department"
-                      value={formData.department}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Design Studio"
-                      className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
-                      required
-                    />
+                    <div className="relative">
+                      <input
+                        id="department"
+                        name="department"
+                        title="Department/Sector"
+                        value={formData.department}
+                        onChange={handleInputChange}
+                        placeholder="e.g. Design Studio"
+                        className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.department ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                      />
+                      {errors.department && (
+                        <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
+                      )}
+                    </div>
                   </div>
-                </div>
-
-                {/* Staff/Faculty/Admin Profile Signals */}
-                {formData.roleNames.some((r) =>
-                  ["Faculty", "Admin", "DepartmentHead", "SuperAdmin"].includes(
-                    r,
-                  ),
-                ) && (
-                  <div className="space-y-4 pt-2 animate-in slide-in-from-top-2 duration-300">
-                    {/* Faculty-only signals */}
-                    {formData.roleNames.includes("Faculty") && (
-                      <div className="grid grid-cols-1 gap-4">
-                        <div className="space-y-1.5">
-                          <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
-                            Specialization
-                          </label>
-                          <input
-                            id="specialization"
-                            name="specialization"
-                            title="Specialization"
-                            value={formData.specialization}
-                            onChange={handleInputChange}
-                            placeholder="e.g. Parametric"
-                            className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
-                            required
-                          />
-                        </div>
-                      </div>
-                    )}
-                    <div className="space-y-1.5">
-                      <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                  {formData.roleNames.some((r) =>
+                    ["Faculty", "Admin", "DepartmentHead"].includes(r),
+                  ) && (
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
                         Worker ID
                       </label>
+                      <div className="relative">
+                        <input
+                          id="workerId"
+                          name="workerId"
+                          title="Institutional Personnel ID"
+                          value={formData.workerId}
+                          onChange={handleInputChange}
+                          placeholder="e.g. F-001X"
+                          className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.workerId ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                        />
+                        {errors.workerId && (
+                          <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {formData.roleNames.includes("Faculty") && (
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                      Academic Specialization
+                    </label>
+                    <div className="relative">
                       <input
-                        id="workerId"
-                        name="workerId"
-                        title="Worker ID"
-                        value={formData.workerId}
+                        id="specialization"
+                        name="specialization"
+                        title="Faculty Specialization"
+                        value={formData.specialization}
                         onChange={handleInputChange}
-                        placeholder="e.g. F-AX-001"
-                        className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
-                        required
+                        placeholder="e.g. Parametric Architecture"
+                        className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.specialization ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
                       />
+                      {errors.specialization && (
+                        <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
+                      )}
                     </div>
                   </div>
                 )}
 
-                {/* Student Academic Signals */}
                 {formData.roleNames.includes("Student") && (
-                  <div className="space-y-4 pt-4 border-t border-[#EFEDED] animate-in slide-in-from-top-2 duration-300">
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
-                          Batch
-                        </label>
+                  <div className="grid grid-cols-3 gap-3 pt-2">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                        Batch
+                      </label>
+                      <div className="relative">
                         <input
                           id="batch"
                           name="batch"
                           type="number"
-                          title="Batch"
+                          title="Admission Batch"
                           value={formData.batch}
                           onChange={handleInputChange}
                           placeholder="2024"
-                          className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
-                          required
+                          className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.batch ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
                         />
+                        {errors.batch && (
+                          <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
+                        )}
                       </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
-                          Year
-                        </label>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                        Year
+                      </label>
+                      <div className="relative">
                         <input
                           id="year"
                           name="year"
                           type="number"
-                          title="Year"
+                          title="Academic Year"
                           value={formData.year}
                           onChange={handleInputChange}
                           placeholder="1"
-                          className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
-                          required
+                          className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.year ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
                         />
+                        {errors.year && (
+                          <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
+                        )}
                       </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">
-                          Semester
-                        </label>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                        Semester
+                      </label>
+                      <div className="relative">
                         <input
                           id="semester"
                           name="semester"
                           type="number"
-                          title="Semester"
+                          title="Current Semester"
                           value={formData.semester}
                           onChange={handleInputChange}
                           placeholder="1"
-                          className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold focus:ring-2 focus:ring-primary/20 outline-none"
-                          required
+                          className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.semester ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
                         />
+                        {errors.semester && (
+                          <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
+                        )}
                       </div>
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className="pt-6 flex justify-end gap-3 border-t border-slate-50">
+              <div className="pt-4 flex gap-3">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-6 py-2.5 text-[9px] font-black uppercase tracking-[0.2em] text-[#92664A] hover:text-[#5A270F] transition-colors"
+                  className="flex-1 px-6 py-3 bg-[#EFEDED] text-[#92664A] text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#D9D9C2] transition-colors"
                 >
-                  Abort
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={processing}
-                  className="px-8 py-2.5 bg-[#5A270F] text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-[#DF8142] transition-all shadow-lg disabled:opacity-50"
+                  title={
+                    modalMode === "create"
+                      ? "Finalize Node Initialization"
+                      : "Deploy Registry Updates"
+                  }
+                  className="flex-1 px-6 py-3 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#6C3B1C] transition-all shadow-xl shadow-[#5A270F]/20 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {processing ? (
-                    <Loader2 className="h-3 w-3 animate-spin mx-auto" />
-                  ) : modalMode === "create" ? (
-                    "Initialize"
+                    <RefreshCw className="h-4 w-4 animate-spin" />
                   ) : (
-                    "Deploy Changes"
+                    <CheckCircle className="h-4 w-4" />
                   )}
+                  {modalMode === "create"
+                    ? "Initialize Node"
+                    : "Confirm Update"}
                 </button>
               </div>
             </form>
