@@ -100,8 +100,11 @@ const PostAssignment = () => {
     }
 
     if (!metadata.design_stage_id) {
-      newErrors.design_stage_id =
-        "Protocol Error: Phase Matrix selection required.";
+      newErrors.design_stage_id = "Protocol Error: Phase Matrix selection required.";
+    }
+
+    if (!metadata.due_date) {
+      newErrors.due_date = "Protocol Error: Temporal deadline required for submission.";
     }
 
     if (!file) {
@@ -149,47 +152,50 @@ const PostAssignment = () => {
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       <Link
         to={`${basePath}/assignments`}
-        className="inline-flex items-center gap-2 text-gray-400 hover:text-primary font-bold text-sm uppercase tracking-widest mb-10 transition-colors"
+        className="inline-flex items-center gap-2 text-[#92664A] hover:text-[#5A270F] font-bold text-sm uppercase tracking-widest mb-10 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Assignments
       </Link>
 
       <div className="text-center mb-16">
-        <h1 className="text-5xl font-black text-gray-900 tracking-tight mb-4">
+        <h1 className="text-5xl font-black text-[#5A270F] tracking-tight mb-4">
           Post Assignment
         </h1>
-        <p className="text-xl text-gray-500 font-medium">
+        <p className="text-xl text-[#92664A] font-medium">
           Create a new academic brief for your students.
         </p>
       </div>
 
-      <div className="bg-white p-10 rounded-[3rem] shadow-2xl border border-gray-100">
-        <form onSubmit={handleSubmit} className="space-y-10">
+      <div className="bg-white p-10 rounded-[3rem] shadow-2xl border border-[#EEB38C]/30 relative overflow-hidden">
+        {/* Decorative architectural elements */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#5A270F]/5 blur-2xl rounded-full -translate-x-1/2 translate-y-1/2" />
+
+        <form onSubmit={handleSubmit} className="space-y-10 relative z-10">
           <div className="grid md:grid-cols-2 gap-10">
             <div className="space-y-6">
               <div>
-                <label className="flex items-center gap-2 text-xs font-black text-gray-400 uppercase tracking-widest mb-3 px-1">
-                  <FileText className="h-3.5 w-3.5" /> Assignment Title
+                <label className="flex items-center gap-2 text-xs font-black text-[#92664A] uppercase tracking-widest mb-3 px-1">
+                  <FileText className="h-3.5 w-3.5 text-[#DF8142]" /> Assignment Title
                 </label>
                 <input
                   name="title"
                   placeholder="e.g. Master Plan Urban Project - Phase 1"
                   value={metadata.title}
                   onChange={handleMetaChange}
-                  className={`w-full px-6 py-4 bg-gray-50 border ${
+                  className={`w-full px-6 py-4 bg-[#EFEDED]/50 border ${
                     errors.title
                       ? "border-rose-400 bg-red-50/20"
-                      : "border-gray-100"
-                  } rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900 placeholder:text-gray-300`}
+                      : "border-[#EEB38C]/40"
+                  } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-bold text-[#5A270F] placeholder:text-[#92664A]/30`}
                 />
                 <FieldError message={errors.title} />
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-xs font-black text-gray-400 uppercase tracking-widest mb-3 px-1">
-                  <Calendar className="h-3.5 w-3.5" /> Due Date & Time
-                  (Optional)
+                <label className="flex items-center gap-2 text-xs font-black text-[#92664A] uppercase tracking-widest mb-3 px-1">
+                  <Calendar className="h-3.5 w-3.5 text-[#DF8142]" /> Due Date & Time
                 </label>
                 <input
                   id="due_date"
@@ -198,12 +204,17 @@ const PostAssignment = () => {
                   title="Due Date & Time"
                   value={metadata.due_date}
                   onChange={handleMetaChange}
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900"
+                  className={`w-full px-6 py-4 bg-[#EFEDED]/50 border ${
+                    errors.due_date
+                      ? "border-rose-400 bg-red-50/20"
+                      : "border-[#EEB38C]/40"
+                  } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-bold text-[#5A270F]`}
                 />
+                <FieldError message={errors.due_date} />
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-xs font-black text-gray-400 uppercase tracking-widest mb-3 px-1">
+                <label className="flex items-center gap-2 text-xs font-black text-[#92664A] uppercase tracking-widest mb-3 px-1">
                   Target Audience
                 </label>
                 <div className="grid grid-cols-2 gap-4">
@@ -214,11 +225,11 @@ const PostAssignment = () => {
                       title="Target Academic Year"
                       value={metadata.academic_year}
                       onChange={handleMetaChange}
-                      className={`w-full px-6 py-4 bg-gray-50 border ${
+                      className={`w-full px-6 py-4 bg-[#EFEDED]/50 border ${
                         errors.academic_year
                           ? "border-rose-400 bg-red-50/20"
-                          : "border-gray-100"
-                      } rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900`}
+                          : "border-[#EEB38C]/40"
+                      } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-bold text-[#5A270F]`}
                     >
                       <option value="">Year</option>
                       {[1, 2, 3, 4, 5].map((y) => (
@@ -236,11 +247,11 @@ const PostAssignment = () => {
                       title="Academic Semester"
                       value={metadata.semester}
                       onChange={handleMetaChange}
-                      className={`w-full px-6 py-4 bg-gray-50 border ${
+                      className={`w-full px-6 py-4 bg-[#EFEDED]/50 border ${
                         errors.semester
                           ? "border-rose-400 bg-red-50/20"
-                          : "border-gray-100"
-                      } rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900`}
+                          : "border-[#EEB38C]/40"
+                      } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-bold text-[#5A270F]`}
                     >
                       <option value="">Semester</option>
                       {[1, 2].map((s) => (
@@ -255,7 +266,7 @@ const PostAssignment = () => {
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-xs font-black text-gray-400 uppercase tracking-widest mb-3 px-1">
+                <label className="flex items-center gap-2 text-xs font-black text-[#92664A] uppercase tracking-widest mb-3 px-1">
                   Design Stage
                 </label>
                 <select
@@ -264,11 +275,11 @@ const PostAssignment = () => {
                   title="Design Stage"
                   value={metadata.design_stage_id}
                   onChange={handleMetaChange}
-                  className={`w-full px-6 py-4 bg-gray-50 border ${
+                  className={`w-full px-6 py-4 bg-[#EFEDED]/50 border ${
                     errors.design_stage_id
                       ? "border-rose-400 bg-red-50/20"
-                      : "border-gray-100"
-                  } rounded-2xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900`}
+                      : "border-[#EEB38C]/40"
+                  } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-bold text-[#5A270F]`}
                 >
                   <option value="">Select Stage</option>
                   {designStages.map((stage) => (
@@ -283,8 +294,8 @@ const PostAssignment = () => {
 
             <div className="space-y-6">
               <div>
-                <label className="flex items-center gap-2 text-xs font-black text-gray-400 uppercase tracking-widest mb-3 px-1">
-                  <AlignLeft className="h-3.5 w-3.5" /> Brief Description
+                <label className="flex items-center gap-2 text-xs font-black text-[#92664A] uppercase tracking-widest mb-3 px-1">
+                  <AlignLeft className="h-3.5 w-3.5 text-[#DF8142]" /> Brief Description
                 </label>
                 <textarea
                   name="description"
@@ -292,11 +303,11 @@ const PostAssignment = () => {
                   value={metadata.description}
                   onChange={handleMetaChange}
                   rows={8}
-                  className={`w-full px-6 py-4 bg-gray-50 border ${
+                  className={`w-full px-6 py-4 bg-[#EFEDED]/50 border ${
                     errors.description
                       ? "border-rose-400 bg-red-50/20"
-                      : "border-gray-100"
-                  } rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/90 transition-all font-bold text-gray-900 placeholder:text-gray-300 resize-none min-h-[320px]`}
+                      : "border-[#EEB38C]/40"
+                  } rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-bold text-[#5A270F] placeholder:text-[#92664A]/30 resize-none min-h-[320px]`}
                 />
                 <FieldError message={errors.description} />
               </div>
@@ -304,8 +315,8 @@ const PostAssignment = () => {
           </div>
 
           <div>
-            <label className="flex items-center gap-2 text-xs font-black text-gray-400 uppercase tracking-widest mb-3 px-1">
-              <UploadCloud className="h-3.5 w-3.5" /> Attachment (Brief PDF/Doc)
+            <label className="flex items-center gap-2 text-xs font-black text-[#92664A] uppercase tracking-widest mb-3 px-1">
+              <UploadCloud className="h-3.5 w-3.5 text-[#DF8142]" /> Attachment (Brief PDF/Doc)
             </label>
             <div className="relative group">
               <input
@@ -319,16 +330,16 @@ const PostAssignment = () => {
                 className={`border-2 border-dashed ${
                   errors.file
                     ? "border-rose-400 bg-red-50/10"
-                    : "border-gray-200"
-                } rounded-[2.5rem] py-12 text-center group-hover:border-primary/80 group-hover:bg-primary/10 transition-all relative overflow-hidden`}
+                    : "border-[#EEB38C]"
+                } rounded-[2.5rem] py-12 text-center group-hover:border-[#DF8142] group-hover:bg-[#EEB38C]/5 transition-all relative overflow-hidden`}
               >
-                <div className="h-16 w-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:text-primary transition-all">
-                  <UploadCloud className="h-8 w-8 text-gray-400" />
+                <div className="h-16 w-16 bg-[#EFEDED] rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-[#DF8142]/10 group-hover:text-[#DF8142] transition-all">
+                  <UploadCloud className="h-8 w-8 text-[#92664A]" />
                 </div>
-                <p className="text-lg font-black text-gray-900 mb-1">
+                <p className="text-lg font-black text-[#5A270F] mb-1">
                   {file ? file.name : "Choose brief file"}
                 </p>
-                <p className="text-gray-400 font-medium text-sm">
+                <p className="text-[#92664A] font-medium text-sm">
                   PDF, DOCX, TXT, MD up to 50MB
                 </p>
               </div>
@@ -339,7 +350,7 @@ const PostAssignment = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex justify-center items-center gap-3 py-6 px-10 bg-primary text-white text-xl font-black rounded-[2rem] shadow-2xl shadow-primary/20 hover:bg-primary/90 hover:scale-[1.01] transition-all disabled:opacity-50 active:scale-[0.99]"
+            className="w-full flex justify-center items-center gap-3 py-6 px-10 bg-[#5A270F] text-white text-xl font-black rounded-[2rem] shadow-2xl shadow-[#5A270F]/20 hover:bg-[#6C3B1C] hover:scale-[1.01] transition-all disabled:opacity-50 active:scale-[0.99]"
           >
             {loading ? (
               <Loader2 className="h-8 w-8 animate-spin" />
