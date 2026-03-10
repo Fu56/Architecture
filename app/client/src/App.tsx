@@ -98,6 +98,7 @@ const App = () => {
               <Route path="favorites" element={<Favorites />} />
               <Route path="resources/:id" element={<ResourceDetails />} />
               <Route path="upload" element={<Upload />} />
+              <Route path="uploads" element={<MyUploads />} />
               <Route
                 path="register-student"
                 element={<RegisterStudentsUnified />}

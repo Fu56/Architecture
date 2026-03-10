@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavLink, Outlet, useLocation, Link } from "react-router-dom";
 import {
-  Upload,
+  Archive,
   Bell,
   User,
   LayoutDashboard,
@@ -30,7 +30,7 @@ const dashboardNavLinks = [
   { name: "Saved Resources", href: "/dashboard/favorites", icon: Heart },
   { name: "Asset Library", href: "/dashboard/resources", icon: Library },
   { name: "Assessments", href: "/dashboard/assignments", icon: BookOpen },
-  { name: "My Archives", href: "/dashboard/uploads", icon: Upload },
+  { name: "My Archives", href: "/dashboard/uploads", icon: Archive },
   {
     name: "Journal Entry",
     href: "/dashboard/blog/new",
