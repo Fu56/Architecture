@@ -159,12 +159,12 @@ const Home = () => {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-20 w-full mt-6">
           <div className="max-w-5xl">
             {/* Premium Badge */}
-            <div className="inline-flex items-center gap-4 px-4 py-2 mb-8 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.5em] text-white bg-white/5 dark:bg-card/5 backdrop-blur-3xl border border-white/10 rounded-full animate-in fade-in slide-in-from-top-12 duration-1000 shadow-2xl group cursor-default">
+            <div className="inline-flex items-center gap-4 px-4 py-2 mb-8 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.5em] text-white dark:text-[#EEB38C] bg-white/5 dark:bg-card/5 backdrop-blur-3xl border border-white/10 rounded-full animate-in fade-in slide-in-from-top-12 duration-1000 shadow-2xl group cursor-default">
               <div className="relative flex items-center justify-center">
                 <Sparkles className="h-4 w-4 text-[#DF8142] animate-pulse relative z-10" />
                 <div className="absolute inset-0 bg-[#DF8142]/90 blur-xl opacity-40 group-hover:opacity-100 transition-opacity duration-1000" />
               </div>
-              <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-white via-white/80 to-[#EEB38C]/40">
+              <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-white via-white/80 to-[#EEB38C] dark:from-[#EEB38C] dark:to-white">
                 ARCHVAULT: THE PRE-EMINENT ARCHIVE
               </span>
               <div className="w-1.5 h-1.5 rounded-full bg-[#DF8142] animate-[pulse_2s_infinite]" />
@@ -455,16 +455,16 @@ const Home = () => {
             </div>
 
             {/* Live Indicator Bar */}
-            <div className="flex items-center justify-center gap-6 py-4 bg-[#EFEDED] dark:bg-background/50 dark:bg-white/5 rounded-b-[2.5rem] border-t border-[#D9D9C2] dark:border-white/5 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80 to-transparent translate-x-[-100%] animate-shimmer" />
+            <div className="flex items-center justify-center gap-6 py-4 bg-[#EFEDED] dark:bg-white/5 rounded-b-[2.5rem] border-t border-[#D9D9C2] dark:border-white/5 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80 dark:via-white/10 to-transparent translate-x-[-100%] animate-shimmer" />
               <div className="flex items-center gap-3 relative z-10">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#DF8142] animate-[pulse_1.5s_infinite] shadow-[0_0_10px_rgba(223,129,66,0.3)]" />
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C] transition-colors">
+                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C]">
                   REAL-TIME NETWORK INDEX
                 </span>
               </div>
-              <span className="text-[#EEB38C] relative z-10">|</span>
-              <span className="text-[9px] font-bold text-gray-500 dark:text-white/40 uppercase tracking-[0.4em] relative z-10">
+              <span className="text-gray-300 dark:text-[#EEB38C]/20 relative z-10">|</span>
+              <span className="text-[9px] font-bold text-[#5A270F]/40 dark:text-white/40 uppercase tracking-[0.4em] relative z-10">
                 LAST CLOUD SYNC:{" "}
                 {new Date().toLocaleTimeString([], {
                   hour: "2-digit",
@@ -591,11 +591,11 @@ const Home = () => {
                 <div className="w-20 h-20 bg-white/10 dark:bg-card/10 backdrop-blur-3xl text-white rounded-[1.5rem] flex items-center justify-center mb-12 border border-white/20 group-hover:bg-[#DF8142] group-hover:border-[#DF8142]/90 transition-all duration-500">
                   <ShieldCheck className="h-10 w-10" />
                 </div>
-                <h3 className="text-3xl font-black tracking-tight text-white mb-6 uppercase leading-none">
+                <h3 className="text-3xl font-black tracking-tight text-white dark:text-[#EEB38C] mb-6 uppercase leading-none">
                   VERIFIED <br />
                   TRUST
                 </h3>
-                <p className="text-white/60 dark:text-foreground/60 leading-relaxed font-bold mb-12 text-lg transition-colors">
+                <p className="text-white/80 dark:text-[#EEB38C]/70 leading-relaxed font-bold mb-12 text-lg transition-colors">
                   A high-security ecosystem ensuring intellectual property
                   protection and content authenticity.
                 </p>
@@ -730,8 +730,8 @@ const Home = () => {
                         <div className="absolute inset-0 bg-gradient-to-t from-[#2A1205] via-[#2A1205]/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-700" />
 
                         <div className="absolute top-10 left-10">
-                          <div className="px-5 py-2 glass-morphism rounded-full border border-white/20">
-                            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white">
+                          <div className="px-5 py-2 bg-white/10 dark:bg-black/20 backdrop-blur-md rounded-full border border-white/20">
+                            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white dark:text-[#EEB38C]">
                               Issue 2024
                             </span>
                           </div>
@@ -775,24 +775,24 @@ const Home = () => {
 
             {/* News Sidebar - High End Professional Journal */}
             <div className="lg:w-1/3 pt-12">
-              <div className="bg-[#2A1205] dark:bg-card p-8 sm:p-12 rounded-[3.5rem] text-white space-y-12 shadow-[0_64px_128px_-32px_rgba(42,18,5,0.5)] dark:shadow-none relative overflow-hidden group/journal border border-transparent dark:border-white/10 transition-all duration-500">
+              <div className="bg-white dark:bg-[#1A0B04] p-8 sm:p-12 rounded-[3.5rem] text-[#5A270F] dark:text-white space-y-12 shadow-xl shadow-[#92664A]/5 dark:shadow-none relative overflow-hidden group/journal border border-[#D9D9C2] dark:border-white/10 transition-all duration-500">
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#DF8142]/10 blur-[150px] -translate-y-1/2 translate-x-1/2 group-hover/journal:bg-[#DF8142]/20 transition-colors duration-1000" />
                 <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#DF8142] to-[#5A270F]" />
 
-                <div className="relative z-10 flex items-center justify-between pb-10 border-b border-white/10">
+                <div className="relative z-10 flex items-center justify-between pb-10 border-b border-[#D9D9C2] dark:border-white/10">
                   <div>
-                    <h3 className="text-2xl font-black uppercase tracking-[-0.05em] mb-2 italic">
+                    <h3 className="text-2xl font-black uppercase tracking-[-0.05em] mb-2 italic text-[#5A270F] dark:text-white">
                       Journal
                     </h3>
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 rounded-full bg-[#DF8142] animate-pulse" />
-                      <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.4em]">
+                      <p className="text-[10px] font-bold text-[#5A270F]/40 dark:text-white/40 uppercase tracking-[0.4em]">
                         Live Updates
                       </p>
                     </div>
                   </div>
-                  <div className="w-16 h-16 bg-white/5 dark:bg-card/5 rounded-[1.2rem] border border-white/10 flex items-center justify-center hover:bg-[#DF8142] hover:border-[#DF8142]/90 transition-all duration-500">
-                    <Calendar className="h-7 w-7 text-[#DF8142]/80 group-hover/journal:text-white" />
+                  <div className="w-16 h-16 bg-[#EFEDED] dark:bg-white/5 rounded-[1.2rem] border border-[#D9D9C2] dark:border-white/10 flex items-center justify-center hover:bg-[#DF8142] hover:border-[#DF8142]/90 transition-all duration-500">
+                    <Calendar className="h-7 w-7 text-[#DF8142] group-hover/journal:text-white" />
                   </div>
                 </div>
 
@@ -808,28 +808,28 @@ const Home = () => {
                             className={`${
                               item.isEvent
                                 ? "text-[#DF8142] border border-[#DF8142]/30 bg-[#DF8142]/10"
-                                : "text-[#EEB38C] border border-[#EEB38C]/30 dark:border-white/5 bg-[#EEB38C]/10"
+                                : "text-[#5A270F] dark:text-[#EEB38C] border border-[#5A270F]/10 dark:border-white/5 bg-[#5A270F]/5 dark:bg-[#EEB38C]/10"
                             } px-4 py-1 rounded-full`}
                           >
                             {item.isEvent ? "EVENT" : "LIVE"}
                           </span>
-                          <span className="text-white/30 truncate max-w-[120px]">
+                          <span className="text-[#5A270F]/60 dark:text-white/30 truncate max-w-[120px]">
                             {item.source || "ARCHVAULT"}
                           </span>
-                          <span className="text-white/10">/</span>
-                          <span className="text-white/30">{item.time}</span>
+                          <span className="text-gray-300 dark:text-white/10">/</span>
+                          <span className="text-[#5A270F]/60 dark:text-white/30">{item.time}</span>
                         </div>
-                        <h4 className="text-2xl font-black group-hover/news:text-[#EEB38C] transition-colors leading-[1.2] tracking-tight uppercase">
+                        <h4 className="text-2xl font-black text-[#5A270F] dark:text-white group-hover/news:text-[#DF8142] dark:group-hover/news:text-[#EEB38C] transition-colors leading-[1.2] tracking-tight uppercase">
                           {item.title}
                         </h4>
                       </div>
                     ))
                   ) : (
                     <div className="py-20 text-center space-y-6">
-                      <div className="w-12 h-12 bg-white/5 dark:bg-card/5 rounded-2xl mx-auto flex items-center justify-center border border-white/5">
-                        <Cpu className="h-6 w-6 text-[#EEB38C]/20" />
+                      <div className="w-12 h-12 bg-[#EFEDED] dark:bg-white/5 rounded-2xl mx-auto flex items-center justify-center border border-[#D9D9C2] dark:border-white/10">
+                        <Cpu className="h-6 w-6 text-[#5A270F]/20 dark:text-[#EEB38C]/20" />
                       </div>
-                      <p className="text-white/20 font-black uppercase tracking-[0.4em] text-[10px]">
+                      <p className="text-[#5A270F]/40 dark:text-white/20 font-black uppercase tracking-[0.4em] text-[10px]">
                         Awaiting Sync
                       </p>
                     </div>
@@ -866,7 +866,7 @@ const Home = () => {
 
                 {/* Floating Badge */}
                 <div className="absolute bottom-12 left-12 right-12">
-                  <div className="glass-morphism p-8 rounded-[2rem] border border-white/20 backdrop-blur-3xl animate-in slide-in-from-bottom-8 duration-1000">
+                  <div className="bg-[#5A270F] dark:bg-black/40 backdrop-blur-3xl p-8 rounded-[2rem] border border-white/20 animate-in slide-in-from-bottom-8 duration-1000">
                     <div className="flex items-center gap-4 mb-3">
                       <div className="flex -space-x-3">
                         <div className="h-8 w-8 rounded-full border-2 border-white bg-[#DF8142] flex items-center justify-center text-[10px] font-black text-white">
@@ -876,11 +876,11 @@ const Home = () => {
                           SOFT
                         </div>
                       </div>
-                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white dark:text-[#EEB38C]">
+                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#EEB38C]">
                         JOINT VENTURE
                       </span>
                     </div>
-                    <p className="text-white/80 dark:text-[#EEB38C]/80 text-xs font-bold leading-relaxed">
+                    <p className="text-white/90 dark:text-[#EEB38C]/80 text-xs font-bold leading-relaxed">
                       Bridge of intelligence between physical space and digital
                       logic.
                     </p>

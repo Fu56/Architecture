@@ -122,7 +122,7 @@ const News = () => {
           </p>
 
           {/* Filter Controls */}
-          <div className="flex items-center justify-center gap-2 p-2 bg-[#6C3B1C]/30 backdrop-blur-xl border border-white/5 rounded-2xl max-w-sm mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 delay-600">
+          <div className="flex items-center justify-center gap-2 p-2 bg-black/10 dark:bg-[#6C3B1C]/30 backdrop-blur-xl border border-white/10 rounded-2xl max-w-sm mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 delay-600">
             {(["all", "news", "events"] as const).map((t) => (
               <button
                 key={t}
@@ -130,7 +130,7 @@ const News = () => {
                 className={`flex-1 py-3 px-6 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
                   filter === t
                     ? "bg-[#DF8142] text-white shadow-2xl shadow-[#DF8142]/30"
-                    : "text-[#EEB38C]/40 hover:text-[#EEB38C] hover:bg-white/5 dark:bg-card/5"
+                    : "text-white/40 dark:text-[#EEB38C]/40 hover:text-white dark:hover:text-[#EEB38C] hover:bg-white/5"
                 }`}
               >
                 {t}
