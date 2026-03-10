@@ -61,7 +61,7 @@ const Home = () => {
         api.get("/resources?sortBy=downloads&limit=4"),
         api.get("/resources?sortBy=recent&limit=3"),
         api.get("/common/stats"),
-        api.get("/blogs?published=true&limit=2"),
+        api.get("/blogs?published=true&limit=4"),
         api.get("/common/news"),
       ]);
 
@@ -720,7 +720,7 @@ const Home = () => {
                           src={
                             blog.image_path
                               ? `${import.meta.env.VITE_API_URL}/${
-                                  blog.image_path
+                                  blog.image_path.replace(/\\/g, "/")
                                 }`
                               : "/assets/blog-placeholder.png"
                           }

@@ -16,11 +16,11 @@ export const createBlog = async (req: Request, res: Response) => {
       where: { id: userId },
       include: { role: true },
     });
-    const allowedRoles = ["Faculty", "Admin", "SuperAdmin"];
+    const allowedRoles = ["Faculty", "Admin", "SuperAdmin", "DepartmentHead"];
     if (!allowedRoles.includes(user?.role?.name || "")) {
       return res
         .status(403)
-        .json({ message: "Forbidden: Only Faculty and Admin can post blogs." });
+        .json({ message: "Forbidden: Only Faculty, Dept Heads and Admin can post blogs." });
     }
 
     const blog = await prisma.blog.create({
