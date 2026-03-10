@@ -97,9 +97,9 @@ const News = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] selection:bg-[#DF8142]/20">
+    <div className="min-h-screen bg-[#FAF9F6] dark:bg-background selection:bg-[#DF8142]/20 transition-colors duration-500">
       {/* Immersive Header */}
-      <section className="relative pt-32 pb-48 overflow-hidden bg-[#5A270F]">
+      <section className="relative pt-32 pb-48 overflow-hidden bg-[#5A270F] dark:bg-[#1A0B02] transition-colors duration-700">
         <div className="absolute inset-0 z-0">
           <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_20%,rgba(223,129,66,0.18),transparent_50%)]" />
           <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#EEB38C]/20 to-transparent" />
@@ -130,7 +130,7 @@ const News = () => {
                 className={`flex-1 py-3 px-6 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
                   filter === t
                     ? "bg-[#DF8142] text-white shadow-2xl shadow-[#DF8142]/30"
-                    : "text-[#EEB38C]/40 hover:text-[#EEB38C] hover:bg-white/5"
+                    : "text-[#EEB38C]/40 hover:text-[#EEB38C] hover:bg-white/5 dark:bg-card/5"
                 }`}
               >
                 {t}
@@ -149,26 +149,26 @@ const News = () => {
               [...Array(3)].map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white h-[400px] rounded-[3rem] animate-pulse border border-[#EEB38C]/20"
+                  className="bg-white dark:bg-card h-[400px] rounded-[3rem] animate-pulse border border-[#EEB38C]/20"
                 />
               ))
             ) : filteredNews.length > 0 ? (
               filteredNews.map((item) => (
                 <article
                   key={item.id}
-                  className="group bg-white rounded-[3rem] border border-[#EEB38C]/30 shadow-xl shadow-[#92664A]/5 overflow-hidden hover:shadow-2xl hover:shadow-[#DF8142]/10 transition-all duration-500 flex flex-col sm:flex-row"
+                  className="group bg-white dark:bg-card rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 shadow-xl shadow-[#92664A]/5 overflow-hidden hover:shadow-2xl hover:shadow-[#DF8142]/10 transition-all duration-500 flex flex-col sm:flex-row"
                 >
-                  <div className="sm:w-1/3 bg-[#FAF8F4] p-12 flex flex-col items-center justify-center text-center relative overflow-hidden shrink-0">
+                  <div className="sm:w-1/3 bg-[#FAF8F4] dark:bg-white/5 p-12 flex flex-col items-center justify-center text-center relative overflow-hidden shrink-0">
                     <div className="absolute top-0 left-0 w-full h-1 bg-[#DF8142] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left" />
                     {item.isEvent ? (
                       <>
                         <Calendar className="h-10 w-10 text-[#DF8142] mb-6 group-hover:scale-110 transition-transform" />
-                        <p className="text-2xl font-black text-[#5A270F] tracking-tight leading-none mb-1">
+                        <p className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight leading-none mb-1">
                           {item.eventDate
                             ? new Date(item.eventDate).getDate()
                             : "--"}
                         </p>
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">
+                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 dark:text-white/40">
                           {item.eventDate
                             ? new Date(item.eventDate).toLocaleString(
                                 "default",
@@ -180,10 +180,10 @@ const News = () => {
                     ) : (
                       <>
                         <Zap className="h-10 w-10 text-[#DF8142] mb-6 group-hover:scale-110 transition-transform" />
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">
+                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 dark:text-white/40">
                           Transmission
                         </p>
-                        <p className="text-sm font-black text-[#5A270F] mt-2">
+                        <p className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C] mt-2">
                           Update Node
                         </p>
                       </>
@@ -196,37 +196,37 @@ const News = () => {
                         className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${
                           item.isEvent
                             ? "bg-[#DF8142]/10 text-[#DF8142]"
-                            : "bg-[#EEB38C]/10 text-[#92664A]"
+                            : "bg-[#EEB38C]/10 text-[#92664A] dark:text-[#EEB38C]/40"
                         }`}
                       >
                         {item.isEvent ? "Protocol Event" : "System Alert"}
                       </span>
-                      <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-[#92664A]/60">
+                      <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40/60">
                         <Clock className="h-3 w-3" /> {item.time}
                       </span>
                     </div>
 
-                    <h2 className="text-3xl font-black text-[#5A270F] tracking-tighter leading-tight mb-6 group-hover:text-[#DF8142] transition-colors">
+                    <h2 className="text-3xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter leading-tight mb-6 group-hover:text-[#DF8142] transition-colors">
                       {item.title}
                     </h2>
 
-                    <p className="text-[#5A270F] font-medium leading-relaxed mb-8 line-clamp-3">
+                    <p className="text-[#5A270F] dark:text-foreground/70 font-medium leading-relaxed mb-8 line-clamp-3">
                       {item.content}
                     </p>
 
-                    <div className="mt-auto flex items-center justify-between pt-8 border-t border-[#EEB38C]/20">
+                    <div className="mt-auto flex items-center justify-between pt-8 border-t border-[#EEB38C]/20 dark:border-white/10">
                       <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-[#FAF8F4] border border-[#EEB38C]/30 flex items-center justify-center text-[#92664A]">
+                        <div className="h-8 w-8 rounded-full bg-[#FAF8F4] dark:bg-white/5 border border-[#EEB38C]/30 dark:border-white/10 flex items-center justify-center text-[#92664A] dark:text-[#EEB38C]/60">
                           <Tag className="h-3.5 w-3.5" />
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-[#92664A]">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40">
                           Metadata Source: {item.source || "Nexus Prime"}
                         </span>
                       </div>
 
                       <button
                         title="Share Transmission"
-                        className="h-12 w-12 rounded-2xl bg-[#FAF8F4] flex items-center justify-center text-[#92664A] hover:bg-[#DF8142] hover:text-white transition-all duration-300 shadow-sm border border-[#EEB38C]/20"
+                        className="h-12 w-12 rounded-2xl bg-[#FAF8F4] dark:bg-white/5 flex items-center justify-center text-[#92664A] dark:text-[#EEB38C]/60 hover:bg-[#DF8142] dark:hover:bg-primary hover:text-white transition-all duration-300 shadow-sm border border-[#EEB38C]/20 dark:border-white/10"
                       >
                         <Share2 className="h-4 w-4" />
                       </button>
@@ -235,14 +235,14 @@ const News = () => {
                 </article>
               ))
             ) : (
-              <div className="py-32 bg-white rounded-[3rem] border border-[#D9D9C2] text-center">
-                <div className="h-20 w-20 bg-[#EFEDED] rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-sm">
-                  <Search className="h-10 w-10 text-gray-400" />
+              <div className="py-32 bg-white dark:bg-card rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 text-center">
+                <div className="h-20 w-20 bg-[#EFEDED] dark:bg-background rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-sm">
+                  <Search className="h-10 w-10 text-gray-400 dark:text-white/30" />
                 </div>
-                <h3 className="text-2xl font-black text-[#5A270F] mb-2">
+                <h3 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] mb-2">
                   No Signals Found
                 </h3>
-                <p className="text-gray-500 font-medium max-w-xs mx-auto">
+                <p className="text-gray-500 dark:text-white/40 font-medium max-w-xs mx-auto">
                   The news cluster currently has no active transmissions for
                   this filter.
                 </p>
@@ -253,23 +253,23 @@ const News = () => {
           {/* Sidebar Modules */}
           <div className="space-y-12">
             {/* Search Module */}
-            <div className="bg-white p-10 rounded-[3rem] border border-[#EEB38C]/30 shadow-xl shadow-[#92664A]/5">
-              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#92664A] mb-8">
+            <div className="bg-white dark:bg-card p-10 rounded-[3rem] border border-[#EEB38C]/30 dark:border-white/5 shadow-xl shadow-[#92664A]/5">
+              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#92664A] dark:text-[#EEB38C]/40 mb-8">
                 Signal Scan
               </h3>
               <div className="relative group">
                 <input
                   type="text"
                   placeholder="Search logs..."
-                  className="w-full h-16 bg-[#FAF8F4] border border-[#EEB38C]/20 rounded-2xl pl-12 pr-6 text-sm font-bold text-[#5A270F] outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142]/90 transition-all font-sans"
+                  className="w-full h-16 bg-[#FAF8F4] dark:bg-white/5 border border-[#EEB38C]/20 dark:border-white/10 rounded-2xl pl-12 pr-6 text-sm font-bold text-[#5A270F] dark:text-white outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142]/90 transition-all font-sans"
                 />
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-[#92664A] group-focus-within:text-[#DF8142] transition-colors" />
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-[#92664A] dark:text-[#EEB38C]/40 group-focus-within:text-[#DF8142] transition-colors" />
               </div>
             </div>
 
             {/* Newsletter Module */}
             <div className="bg-[#DF8142] p-10 rounded-[3rem] shadow-2xl shadow-[#DF8142]/30 text-white relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-[5rem] translate-x-12 -translate-y-12 group-hover:translate-x-8 group-hover:-translate-y-8 transition-transform duration-700" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 dark:bg-card/10 rounded-bl-[5rem] translate-x-12 -translate-y-12 group-hover:translate-x-8 group-hover:-translate-y-8 transition-transform duration-700" />
               <h3 className="text-2xl font-black mb-4 relative z-10 leading-none">
                 THE STUDIO <br /> DIGEST.
               </h3>
@@ -290,10 +290,10 @@ const News = () => {
                   }}
                   placeholder="Terminal Email..."
                   disabled={subscribing || subscribed}
-                  className={`w-full h-14 bg-white/15 border ${newsletterError ? "border-[#5A270F]" : "border-white/20"} rounded-xl px-5 text-sm font-bold placeholder:text-white/50 mb-2 outline-none focus:bg-white/25 transition-all disabled:opacity-50`}
+                  className={`w-full h-14 bg-white/15 dark:bg-card/15 border ${newsletterError ? "border-[#5A270F]" : "border-white/20"} rounded-xl px-5 text-sm font-bold placeholder:text-white/50 mb-2 outline-none focus:bg-white/25 dark:bg-card/25 transition-all disabled:opacity-50`}
                 />
                 {newsletterError && (
-                  <p className="text-xs text-[#5A270F] font-black mb-3 flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-300">
+                  <p className="text-xs text-[#5A270F] dark:text-[#EEB38C] font-black mb-3 flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-300">
                     <span className="inline-block w-1 h-1 rounded-full bg-[#5A270F]" />
                     {newsletterError}
                   </p>
@@ -306,7 +306,7 @@ const News = () => {
                   className={`w-full h-14 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 active:scale-95 shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
                     subscribed
                       ? "bg-[#5A270F] text-white"
-                      : "bg-white text-[#DF8142] hover:bg-[#5A270F] hover:text-white disabled:opacity-50 shadow-white/10"
+                      : "bg-white dark:bg-card text-[#DF8142] hover:bg-[#5A270F] hover:text-white disabled:opacity-50 shadow-white/10"
                   }`}
                 >
                   {subscribing ? (
@@ -327,20 +327,20 @@ const News = () => {
             </div>
 
             {/* Support Link */}
-            <div className="bg-white p-10 rounded-[3rem] border border-[#EEB38C]/30 shadow-xl shadow-[#92664A]/5 text-center">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#5A270F]/5 rounded-full text-[8px] font-black uppercase tracking-widest text-[#5A270F] mb-4">
+            <div className="bg-white dark:bg-card p-10 rounded-[3rem] border border-[#EEB38C]/30 dark:border-white/10 shadow-xl shadow-[#92664A]/5 text-center">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#5A270F]/5 dark:bg-[#EEB38C]/10 rounded-full text-[8px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] mb-4">
                 <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142] animate-pulse" />{" "}
                 Live Support
               </div>
-              <h3 className="text-sm font-black text-[#5A270F] uppercase tracking-widest mb-2">
+              <h3 className="text-sm font-black text-[#5A270F] dark:text-white uppercase tracking-widest mb-2">
                 Need Field Intel?
               </h3>
-              <p className="text-xs text-[#92664A] font-medium mb-8">
+              <p className="text-xs text-[#92664A] dark:text-white/40 font-medium mb-8">
                 Contact our operations node for priority technical support.
               </p>
               <Link
                 to="/about"
-                className="flex items-center justify-center gap-3 text-xs font-black uppercase tracking-widest text-[#DF8142] hover:text-[#5A270F] transition-colors group"
+                className="flex items-center justify-center gap-3 text-xs font-black uppercase tracking-widest text-[#DF8142] dark:text-[#DF8142] hover:text-[#5A270F] dark:text-[#EEB38C] dark:hover:text-white transition-colors group"
               >
                 Reach Control{" "}
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-2 transition-transform" />

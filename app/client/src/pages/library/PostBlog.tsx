@@ -139,13 +139,12 @@ const PostBlog = () => {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-5xl">
-      <div className="mb-8 text-center space-y-3">
-        <h1 className="text-3xl md:text-4xl font-display font-bold text-[#5A270F] tracking-tight">
+      <div className="mb-12 text-center space-y-4">
+        <h1 className="text-4xl md:text-5xl font-black text-[#5A270F] dark:text-white tracking-tighter transition-colors italic uppercase">
           Create New Story
         </h1>
-        <p className="text-base text-[#6C3B1C] max-w-xl mx-auto font-medium">
-          Share your architectural insights, news, and narratives with the
-          community.
+        <p className="text-[11px] text-[#5A270F]/40 dark:text-[#EEB38C]/40 max-w-xl mx-auto font-black uppercase tracking-[0.3em] transition-colors">
+          Share your architectural insights, news, and narratives with the community.
         </p>
       </div>
 
@@ -153,10 +152,10 @@ const PostBlog = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left: Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="premium-card p-6 space-y-6 bg-white/50 backdrop-blur-sm border border-[#92664A]/20 shadow-xl shadow-[#5A270F]/5">
-              <div className="space-y-3">
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#92664A]">
-                  Title
+            <div className="premium-card p-10 space-y-8 bg-[#FAF8F4] dark:bg-card border border-[#D9D9C2] dark:border-white/10 shadow-xl shadow-[#5A270F]/10 transition-all duration-500 rounded-[3rem]">
+              <div className="space-y-4">
+                <label className="block text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 px-1">
+                  Story Title
                 </label>
                 <input
                   type="text"
@@ -164,30 +163,30 @@ const PostBlog = () => {
                   value={formData.title}
                   onChange={handleInputChange}
                   placeholder="Enter a compelling title..."
-                  className={`w-full px-5 py-3 bg-[#f8f5f2] border ${
+                  className={`w-full px-6 py-4 bg-white dark:bg-background border ${
                     errors.title
-                      ? "border-rose-400 bg-red-50/20"
-                      : "border-[#d9d9c2]"
-                  } rounded-xl focus:outline-none focus:ring-2 focus:ring-[#DF8142]/30 focus:border-[#DF8142] transition-all text-lg font-display font-bold text-[#5A270F] placeholder:text-[#92664A]/40`}
+                      ? "border-rose-400 bg-red-50/10"
+                      : "border-[#D9D9C2] dark:border-white/10"
+                  } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all text-xl font-black uppercase tracking-tight text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/20 dark:placeholder-white/20`}
                 />
                 <FieldError message={errors.title} />
               </div>
 
-              <div className="space-y-3">
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#92664A]">
-                  Content
+              <div className="space-y-4">
+                <label className="block text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 px-1">
+                  Narrative Content
                 </label>
                 <textarea
                   name="content"
                   value={formData.content}
                   onChange={handleInputChange}
-                  placeholder="Write your story here (Markdown supported)..."
-                  rows={15}
-                  className={`w-full px-5 py-3 bg-[#f8f5f2] border ${
+                  placeholder="Share your architectural wisdom here (Markdown supported)..."
+                  rows={20}
+                  className={`w-full px-6 py-5 bg-white dark:bg-background border ${
                     errors.content
-                      ? "border-rose-400 bg-red-50/20"
-                      : "border-[#d9d9c2]"
-                  } rounded-xl focus:outline-none focus:ring-2 focus:ring-[#DF8142]/30 focus:border-[#DF8142] transition-all text-sm leading-relaxed text-[#6C3B1C] placeholder:text-[#92664A]/40 resize-none font-medium`}
+                      ? "border-rose-400 bg-red-50/10"
+                      : "border-[#D9D9C2] dark:border-white/10"
+                  } rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all text-sm leading-relaxed text-[#5A270F] dark:text-white/80 placeholder:text-[#5A270F]/20 dark:placeholder-white/20 resize-none font-bold`}
                 />
                 <FieldError message={errors.content} />
               </div>
@@ -197,18 +196,18 @@ const PostBlog = () => {
           {/* Right: Sidebar Metadata */}
           <div className="space-y-8">
             {/* Image Upload */}
-            <div className="premium-card p-5 space-y-4 border border-[#92664A]/20">
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#92664A]">
-                Featured Image
+            <div className="premium-card p-8 space-y-6 bg-[#FAF8F4] dark:bg-card border border-[#D9D9C2] dark:border-white/10 rounded-[2.5rem] shadow-xl shadow-[#5A270F]/5 transition-all duration-500">
+              <label className="block text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 px-1">
+                Featured Cover
               </label>
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className={`group relative aspect-video rounded-2xl border-2 border-dashed transition-all duration-300 cursor-pointer overflow-hidden flex flex-col items-center justify-center ${
+                className={`group relative aspect-video rounded-3xl border-2 border-dashed transition-all duration-300 cursor-pointer overflow-hidden flex flex-col items-center justify-center ${
                   imagePreview
-                    ? "border-[#DF8142]/50 bg-[#DF8142]/5"
+                    ? "border-[#DF8142] bg-[#FAF8F4] dark:bg-[#DF8142]/5"
                     : errors.image
-                      ? "border-rose-400 bg-red-50/20"
-                      : "border-[#d9d9c2] hover:border-[#DF8142]/60 hover:bg-[#DF8142]/5 bg-[#f8f5f2]"
+                      ? "border-rose-400 bg-red-50/10"
+                      : "border-[#D9D9C2] dark:border-white/10 hover:border-[#DF8142] hover:bg-white dark:hover:bg-white/5 bg-white dark:bg-background/20"
                 }`}
               >
                 {imagePreview ? (
@@ -231,7 +230,7 @@ const PostBlog = () => {
                         setImage(null);
                         setImagePreview(null);
                       }}
-                      className="absolute top-3 right-3 p-2 bg-white/90 text-[#d32f2f] rounded-full hover:bg-white transition-all shadow-md transform hover:scale-110"
+                      className="absolute top-3 right-3 p-2 bg-white/90 dark:bg-card/90 text-[#d32f2f] rounded-full hover:bg-white dark:bg-card transition-all shadow-md transform hover:scale-110"
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -242,10 +241,10 @@ const PostBlog = () => {
                       <UploadCloud className="h-7 w-7" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm font-bold text-[#5A270F]">
-                        Click to upload
+                      <p className="text-xs font-black uppercase tracking-widest text-[#5A270F] dark:text-white italic">
+                        Select Asset
                       </p>
-                      <p className="text-xs text-[#92664A]">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-white/40">
                         SVG, PNG, JPG or GIF
                       </p>
                     </div>
@@ -265,10 +264,10 @@ const PostBlog = () => {
             </div>
 
             {/* Tags & Settings */}
-            <div className="premium-card p-5 space-y-5 border border-[#92664A]/20">
-              <div className="space-y-3">
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#92664A]">
-                  Tags
+            <div className="premium-card p-8 space-y-8 bg-[#FAF8F4] dark:bg-card border border-[#D9D9C2] dark:border-white/10 rounded-[2.5rem] shadow-xl shadow-[#5A270F]/5 transition-all duration-500">
+              <div className="space-y-4">
+                <label className="block text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 px-1">
+                  Matrix Tags
                 </label>
                 <div className="relative group">
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#DF8142]/10 flex items-center justify-center text-[#DF8142] group-focus-within:bg-[#DF8142] group-focus-within:text-white transition-colors duration-300">
@@ -279,18 +278,18 @@ const PostBlog = () => {
                     name="tags"
                     value={formData.tags}
                     onChange={handleInputChange}
-                    placeholder="architecture, design, news..."
-                    className={`w-full pl-14 pr-4 py-3.5 bg-[#f8f5f2] border ${
+                    placeholder="architecture, design, matrix..."
+                    className={`w-full pl-14 pr-4 py-4 bg-white dark:bg-background border ${
                       errors.tags
-                        ? "border-rose-400 bg-red-50/20"
-                        : "border-[#d9d9c2]"
-                    } rounded-xl focus:outline-none focus:ring-2 focus:ring-[#DF8142]/30 focus:border-[#DF8142] transition-all font-medium text-[#5A270F] placeholder:text-[#92664A]/40`}
+                        ? "border-rose-400 bg-red-50/10"
+                        : "border-[#D9D9C2] dark:border-white/10"
+                    } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-black uppercase tracking-widest text-[9px] text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/20 dark:placeholder-white/20`}
                   />
                 </div>
                 <FieldError message={errors.tags} />
               </div>
 
-              <div className="flex items-center gap-4 p-4 bg-[#f8f5f2] rounded-xl border border-[#d9d9c2] transition-colors hover:border-[#DF8142]/30">
+              <div className="flex items-center gap-4 p-5 bg-white dark:bg-background/20 rounded-2xl border border-[#D9D9C2] dark:border-white/10 transition-all hover:border-[#DF8142] shadow-sm">
                 <div className="relative flex items-center">
                   <input
                     type="checkbox"
@@ -298,7 +297,7 @@ const PostBlog = () => {
                     checked={formData.published}
                     onChange={handleInputChange}
                     id="published"
-                    className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-[#92664A]/40 bg-white transition-all checked:border-[#DF8142] checked:bg-[#DF8142] hover:border-[#DF8142] focus:outline-none focus:ring-2 focus:ring-[#DF8142]/20"
+                    className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-[#92664A]/40 bg-white dark:bg-card transition-all checked:border-[#DF8142] checked:bg-[#DF8142] hover:border-[#DF8142] focus:outline-none focus:ring-2 focus:ring-[#DF8142]/20"
                   />
                   <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                     <svg
@@ -317,16 +316,16 @@ const PostBlog = () => {
                 </div>
                 <label
                   htmlFor="published"
-                  className="font-bold text-sm text-[#5A270F] cursor-pointer select-none flex-1"
+                  className="font-black text-[10px] uppercase tracking-widest text-[#5A270F] dark:text-white cursor-pointer select-none flex-1 italic"
                 >
-                  Publish Immediately
+                  Broadcast Immediately
                 </label>
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 bg-[#DF8142] text-white rounded-xl font-bold tracking-wide shadow-lg shadow-[#DF8142]/25 hover:shadow-[#DF8142]/40 hover:bg-[#c9743a] hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none"
+                className="w-full py-6 bg-[#5A270F] text-white rounded-[2rem] text-[10px] font-black uppercase tracking-[0.3em] shadow-[0_20px_50px_rgba(90,39,15,0.3)] hover:bg-[#6C3B1C] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 active:scale-[0.98] disabled:opacity-50"
               >
                 {loading ? (
                   <Loader2 className="h-5 w-5 animate-spin" />

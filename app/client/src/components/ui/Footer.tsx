@@ -95,7 +95,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-[#5A270F] text-gray-400 pt-24 pb-12 overflow-hidden relative">
+    <footer className="bg-[#FAF8F4] dark:bg-[#1A0B04] text-[#5A270F]/60 dark:text-gray-400 pt-24 pb-12 overflow-hidden relative transition-colors duration-500">
       {/* Decorative Blueprint Background */}
       <div className="absolute top-0 left-0 w-full h-full blueprint-grid-dark opacity-[0.02] pointer-events-none" />
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#DF8142]/20 to-transparent" />
@@ -110,17 +110,17 @@ const Footer = () => {
                 <BookOpen className="h-7 w-7 text-white relative z-10" />
               </div>
               <div className="flex flex-col">
-                <span className="text-3xl font-bold tracking-tight text-white leading-none uppercase">
+                <span className="text-3xl font-black tracking-tight text-[#5A270F] dark:text-white leading-none uppercase">
                   ARCH
                   <span className="text-[#DF8142]">VAULT</span>
                 </span>
-                <span className="text-[9px] font-bold tracking-widest uppercase text-[#EEB38C] mt-1 px-1.5 py-0.5 bg-[#DF8142]/10 rounded border border-[#DF8142]/20 inline-block w-fit">
+                <span className="text-[9px] font-bold tracking-widest uppercase text-[#5A270F] dark:text-[#EEB38C] mt-1 px-1.5 py-0.5 bg-[#DF8142]/10 rounded border border-[#DF8142]/20 inline-block w-fit">
                   EST. 2024 / NODE-01
                 </span>
               </div>
             </Link>
 
-            <p className="text-[#EEB38C]/80 text-lg leading-relaxed max-w-sm font-medium border-l-2 border-[#DF8142]/30 pl-6">
+            <p className="text-[#6C3B1C] dark:text-[#EEB38C]/80 text-lg leading-relaxed max-w-sm font-medium border-l-2 border-[#DF8142]/30 pl-6">
               The digital archive for visionary architects. Accelerating
               evolution through verified intellectual property.
             </p>
@@ -135,7 +135,7 @@ const Footer = () => {
                 <a
                   key={i}
                   href="#"
-                  className="p-4 bg-white/5 border border-white/5 rounded-2xl text-white/30 hover:bg-[#DF8142] hover:text-white hover:border-[#DF8142]/30 transition-all duration-500 hover:-translate-y-1 group/social"
+                  className="p-4 bg-[#EFEDED] dark:bg-white/5 border border-black/5 dark:border-white/5 rounded-2xl text-[#92664A] dark:text-white/40 hover:bg-[#DF8142] hover:text-white hover:border-[#DF8142]/30 transition-all duration-500 hover:-translate-y-1 group/social dark:hover:text-white"
                   aria-label={social.label}
                 >
                   <social.icon className="h-4 w-4" />
@@ -146,11 +146,11 @@ const Footer = () => {
 
           {/* Navigation Matrix */}
           <div className="lg:col-span-3">
-            <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-8 flex items-center gap-3">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F]/60 dark:text-white/50 mb-8 flex items-center gap-3">
               <div className="w-1.5 h-1.5 rounded-full bg-[#DF8142]" />
               SYSTEM INDEX
             </h3>
-            <ul className="space-y-3 sm:space-y-4 text-sm font-bold uppercase tracking-wide">
+            <ul className="space-y-3 sm:space-y-4 text-sm font-black uppercase tracking-widest">
               {[
                 { label: "Collective Archive", to: "/browse" },
                 { label: "Research Journal", to: "/blog" },
@@ -161,9 +161,9 @@ const Footer = () => {
                 <li key={link.label}>
                   <Link
                     to={link.to}
-                    className="text-[#EEB38C]/70 hover:text-white transition-all flex items-center gap-4 group/link"
+                    className="text-[#6C3B1C] dark:text-[#EEB38C]/70 hover:text-[#5A270F] dark:hover:text-white transition-all flex items-center gap-4 group/link"
                   >
-                    <div className="w-2 h-[1px] bg-[#92664A] group-hover/link:w-6 group-hover/link:bg-[#DF8142] transition-all" />
+                    <div className="w-2 h-[1px] bg-[#D9D9C2] dark:bg-[#92664A] group-hover/link:w-6 group-hover/link:bg-[#DF8142] transition-all" />
                     {link.label}
                   </Link>
                 </li>
@@ -172,22 +172,22 @@ const Footer = () => {
           </div>
 
           {/* Infrastructure Metrics Module */}
-          <div className="lg:col-span-4 bg-white/[0.02] p-8 rounded-3xl border border-white/5 relative overflow-hidden group/signup">
+          <div className="lg:col-span-4 bg-white dark:bg-card/[0.02] p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/5 relative overflow-hidden group/signup transition-all">
             <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover/signup:opacity-[0.08] transition-all duration-1000 group-hover/signup:rotate-12 group-hover/signup:scale-125">
               <Cpu className="h-48 w-48 text-[#DF8142]" />
             </div>
 
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-2.5 bg-white/5 rounded-xl border border-white/10">
+                <div className="p-2.5 bg-[#EFEDED] dark:bg-white/5 rounded-xl border border-black/5 dark:border-white/10">
                   <Layers className="h-5 w-5 text-[#DF8142]" />
                 </div>
-                <h3 className="text-[10px] font-bold uppercase tracking-widest text-white">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-white">
                   METRIC SUBSCRIPTION
                 </h3>
               </div>
 
-              <p className="text-base text-[#EEB38C]/80 mb-8 font-medium leading-relaxed">
+              <p className="text-base text-[#6C3B1C] dark:text-[#EEB38C]/80 mb-8 font-bold leading-relaxed">
                 Registration for our monthly technical publication. Zero-Trust
                 verified transmission.
               </p>
@@ -209,14 +209,14 @@ const Footer = () => {
                     }}
                     disabled={footerSubscribing || footerSubscribed}
                     placeholder="Enter your email identifier..."
-                    className={`relative w-full bg-[#6C3B1C]/20 border ${footerError ? "border-red-500/50" : "border-white/10"} rounded-xl py-4 pl-6 pr-16 text-xs font-bold text-white outline-none focus:border-[#DF8142] transition-all placeholder:text-white/20 disabled:opacity-50`}
+                    className={`relative w-full bg-[#EFEDED] dark:bg-white/5 border ${footerError ? "border-red-500/50" : "border-black/10 dark:border-white/10"} rounded-xl py-4 pl-6 pr-16 text-xs font-black text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all placeholder:text-[#92664A]/50 dark:placeholder:text-white/20 disabled:opacity-50`}
                   />
                   <button
                     type="submit"
                     disabled={footerSubscribing || footerSubscribed}
                     title="Execute Subscription"
                     aria-label="Initialize Footer Transmission"
-                    className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[#DF8142] rounded-lg hover:bg-white hover:text-[#5A270F] transition-all duration-300 text-white shadow-lg shadow-[#DF8142]/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[#DF8142] rounded-lg hover:bg-[#5A270F] dark:hover:bg-white transition-all duration-300 text-white dark:hover:text-[#5A270F] shadow-lg shadow-[#DF8142]/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {footerSubscribing ? (
                       <Loader2 className="h-5 w-5 animate-spin" />
@@ -235,7 +235,7 @@ const Footer = () => {
                 )}
               </form>
 
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 py-4 px-4 sm:px-6 bg-[#6C3B1C]/30 rounded-2xl border border-white/5">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 py-4 px-4 sm:px-6 bg-[#EFEDED] dark:bg-[#6C3B1C]/30 rounded-[1.5rem] border border-black/5 dark:border-white/5">
                 <div className="flex -space-x-2">
                   {(stats.activeSquad && stats.activeSquad.length > 0
                     ? stats.activeSquad.slice(0, 3)
@@ -243,7 +243,7 @@ const Footer = () => {
                   ).map((item, i) => (
                     <div
                       key={i}
-                      className="w-7 h-7 rounded-full border-2 border-[#5A270F] bg-[#92664A] overflow-hidden group/avatar"
+                      className="w-7 h-7 rounded-full border-2 border-[#FAF8F4] dark:border-[#5A270F] bg-[#92664A] overflow-hidden group/avatar"
                     >
                       <img
                         src={
@@ -258,10 +258,10 @@ const Footer = () => {
                   ))}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[8px] font-black text-white/40 uppercase tracking-[0.3em]">
+                  <span className="text-[8px] font-black text-[#5A270F]/60 dark:text-white/40 uppercase tracking-[0.3em]">
                     ACTIVE SQUAD
                   </span>
-                  <span className="text-[10px] font-black text-[#EEB38C] uppercase tracking-widest">
+                  <span className="text-[10px] font-black text-[#DF8142] dark:text-[#EEB38C] uppercase tracking-widest">
                     {(
                       stats.totalUsers + stats.newsletterCount
                     ).toLocaleString()}{" "}
@@ -276,7 +276,7 @@ const Footer = () => {
         {/* Bottom Bar - Protocol & Legal */}
         <div className="pt-8 sm:pt-12 border-t border-white/5 flex flex-col lg:flex-row justify-between items-center gap-8 lg:gap-16">
           <div className="flex flex-col items-center lg:items-start gap-4">
-            <p className="text-[9px] font-medium tracking-widest text-[#92664A] uppercase">
+            <p className="text-[9px] font-bold tracking-[0.3em] text-[#92664A] dark:text-[#EEB38C]/40 uppercase">
               &copy; {currentYear} ARCHVAULT DIGITAL ARCHITECTURAL SYSTEMS.
             </p>
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 sm:gap-x-10 gap-y-3 sm:gap-y-4">
@@ -287,7 +287,7 @@ const Footer = () => {
                 <Link
                   key={item.label}
                   to={item.to}
-                  className="text-[10px] font-bold tracking-widest uppercase text-[#EEB38C]/70 hover:text-[#DF8142] transition-all relative group/footer-link"
+                  className="text-[10px] font-black tracking-[0.3em] uppercase text-[#6C3B1C] dark:text-[#EEB38C]/70 hover:text-[#DF8142] transition-all relative group/footer-link"
                 >
                   {item.label}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#DF8142] transition-all group-hover/footer-link:w-full rounded-full" />
@@ -297,18 +297,18 @@ const Footer = () => {
           </div>
 
           <div className="flex flex-col items-center lg:items-end gap-2 w-full lg:w-auto">
-            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 bg-white/5 rounded-full border border-white/5 shadow-xl backdrop-blur-md w-full sm:w-auto">
-              <div className="flex items-center gap-3 text-[#EEB38C]">
+            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 bg-[#EFEDED] dark:bg-card/5 rounded-full border border-black/5 dark:border-white/5 shadow-sm backdrop-blur-md w-full sm:w-auto">
+              <div className="flex items-center gap-3 text-[#5A270F] dark:text-[#EEB38C]">
                 <div className="w-2 h-2 rounded-full bg-[#DF8142] animate-pulse shadow-[0_0_8px_rgba(223,129,66,0.4)]" />
                 <Globe className="h-3.5 w-3.5" />
                 <span className="text-[9px] font-bold uppercase tracking-widest">
                   GLOBAL RELAY: ACTIVE
                 </span>
               </div>
-              <div className="h-4 w-px bg-white/10 hidden sm:block" />
+              <div className="h-4 w-px bg-black/10 dark:bg-card/10 hidden sm:block" />
               <div className="flex items-center gap-2">
                 <ShieldCheck className="h-3.5 w-3.5 text-[#DF8142]" />
-                <p className="text-[9px] font-bold text-white/30 uppercase tracking-widest">
+                <p className="text-[9px] font-black text-[#5A270F]/60 dark:text-white/40 uppercase tracking-[0.3em]">
                   ENCRYPTED TLS 1.3
                 </p>
               </div>

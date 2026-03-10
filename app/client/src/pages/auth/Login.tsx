@@ -204,7 +204,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#EFEDED] via-[#D9D9C2] to-[#EFEDED] py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#EFEDED] via-[#D9D9C2] to-[#EFEDED] dark:from-[#1A0B04] dark:via-[#0F0602] dark:to-[#1A0B04] py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden transition-colors duration-500">
       {/* Background Decorations */}
       <div className="absolute top-0 left-0 w-full h-full opacity-5">
         <div className="absolute top-20 left-20 w-64 h-64 bg-[#DF8142] rounded-full blur-3xl" />
@@ -214,15 +214,17 @@ const Login = () => {
       <div className="w-full max-w-md relative z-10">
         {!showForgotPassword ? (
           // Login Form
-          <div className="bg-white p-10 rounded-[3rem] shadow-2xl border border-[#D9D9C2]">
-            <div className="text-center mb-10">
+          <div className="bg-white dark:bg-card p-10 rounded-[3rem] shadow-2xl border border-[#D9D9C2] dark:border-white/10 relative overflow-hidden group/card transition-all duration-500">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/5 blur-3xl group-hover/card:bg-[#DF8142]/10 transition-colors" />
+            
+            <div className="relative z-10 text-center mb-10">
               <div className="mx-auto w-20 h-20 bg-gradient-to-br from-[#DF8142] to-[#92664A] rounded-3xl flex items-center justify-center mb-6 shadow-lg shadow-[#DF8142]/20">
                 <ShieldCheck className="h-10 w-10 text-white" />
               </div>
-              <h2 className="text-4xl font-black text-[#5A270F] tracking-tight uppercase">
+              <h2 className="text-4xl font-black text-[#5A270F] dark:text-foreground tracking-tight uppercase">
                 Sign In
               </h2>
-              <p className="mt-4 text-xs text-[#92664A] font-bold uppercase tracking-widest">
+              <p className="mt-4 text-xs text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest">
                 Access the Architecture Core
               </p>
             </div>
@@ -231,7 +233,7 @@ const Login = () => {
               <div className="space-y-5">
                 {/* Email Input */}
                 <div className="relative group">
-                  <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#92664A] group-focus-within:text-[#DF8142] transition-colors">
+                  <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#92664A] dark:text-[#EEB38C]/40 group-focus-within:text-[#DF8142] transition-colors">
                     <Mail className="h-5 w-5" />
                   </div>
                   <input
@@ -239,7 +241,7 @@ const Login = () => {
                     name="email"
                     type="email"
                     autoComplete="email"
-                    className={`w-full pl-14 pr-6 py-4 bg-[#EFEDED] border-2 ${errors.email ? "border-red-500" : "border-[#D9D9C2]"} rounded-2xl text-[#5A270F] font-bold placeholder-[#92664A]/50 focus:outline-none focus:border-[#DF8142] focus:bg-white transition-all`}
+                    className={`w-full pl-14 pr-6 py-4 bg-[#EFEDED] dark:bg-white/5 border-2 ${errors.email ? "border-red-500" : "border-[#D9D9C2] dark:border-white/10"} rounded-2xl text-[#5A270F] dark:text-white font-bold placeholder-[#92664A]/50 focus:outline-none focus:border-[#DF8142] focus:bg-white dark:bg-card dark:focus:bg-white/10 transition-all`}
                     placeholder="Studio email address"
                     value={form.email}
                     onChange={handleChange}
@@ -254,7 +256,7 @@ const Login = () => {
 
                 {/* Password Input */}
                 <div className="relative group">
-                  <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#92664A] group-focus-within:text-[#DF8142] transition-colors">
+                  <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#92664A] dark:text-[#EEB38C]/40 group-focus-within:text-[#DF8142] transition-colors">
                     <Lock className="h-5 w-5" />
                   </div>
                   <input
@@ -262,7 +264,7 @@ const Login = () => {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
-                    className={`w-full pl-14 pr-14 py-4 bg-[#EFEDED] border-2 ${errors.password ? "border-red-500" : "border-[#D9D9C2]"} rounded-2xl text-[#5A270F] font-bold placeholder-[#92664A]/50 focus:outline-none focus:border-[#DF8142] focus:bg-white transition-all`}
+                    className={`w-full pl-14 pr-14 py-4 bg-[#EFEDED] dark:bg-white/5 border-2 ${errors.password ? "border-red-500" : "border-[#D9D9C2] dark:border-white/10"} rounded-2xl text-[#5A270F] dark:text-white font-bold placeholder-[#92664A]/50 focus:outline-none focus:border-[#DF8142] focus:bg-white dark:bg-card dark:focus:bg-white/10 transition-all`}
                     placeholder="Account password"
                     value={form.password}
                     onChange={handleChange}
@@ -270,7 +272,7 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-5 top-1/2 -translate-y-1/2 text-[#92664A] hover:text-[#DF8142] transition-colors"
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] transition-colors"
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
@@ -295,7 +297,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowForgotPassword(true)}
-                  className="text-xs font-bold text-[#DF8142] hover:text-[#5A270F] transition-colors uppercase tracking-widest"
+                  className="text-xs font-bold text-[#DF8142] hover:text-[#5A270F] dark:text-[#EEB38C] transition-colors uppercase tracking-widest"
                 >
                   Forgot Password?
                 </button>
@@ -309,7 +311,7 @@ const Login = () => {
                       id="agreedToTerms"
                       name="agreedToTerms"
                       type="checkbox"
-                      className="h-5 w-5 rounded-lg border-2 border-[#D9D9C2] text-[#DF8142] focus:ring-[#DF8142]/20 cursor-pointer accent-[#DF8142] transition-all"
+                      className="h-5 w-5 rounded-lg border-2 border-[#D9D9C2] dark:border-white/10 bg-transparent text-[#DF8142] focus:ring-[#DF8142]/20 cursor-pointer accent-[#DF8142] transition-all"
                       checked={form.agreedToTerms}
                       onChange={(e) => {
                         setForm({ ...form, agreedToTerms: e.target.checked });
@@ -321,7 +323,7 @@ const Login = () => {
                   </div>
                   <label
                     htmlFor="agreedToTerms"
-                    className="text-xs font-bold text-[#5A270F]/70 leading-relaxed cursor-pointer group-hover/terms:text-[#5A270F] transition-colors"
+                    className="text-xs font-bold text-[#5A270F] dark:text-[#EEB38C]/70 dark:text-white/60 leading-relaxed cursor-pointer group-hover/terms:text-[#5A270F] dark:text-[#EEB38C] dark:group-hover/terms:text-white transition-colors"
                   >
                     I confirm that I understand the rules and agree to use this system responsibly and lawfully, as outlined in the{" "}
                     <Link
@@ -361,8 +363,8 @@ const Login = () => {
             </form>
 
             {/* Additional Info */}
-            <div className="mt-8 pt-6 border-t border-[#D9D9C2]">
-              <p className="text-center text-xs text-[#92664A] font-medium">
+            <div className="mt-8 pt-6 border-t border-[#D9D9C2] dark:border-white/5 relative z-10">
+              <p className="text-center text-xs text-[#92664A] dark:text-[#EEB38C]/40 font-medium">
                 Protected by{" "}
                 <span className="font-black text-[#DF8142]">ArchVault</span>{" "}
                 Security Protocol
@@ -371,15 +373,17 @@ const Login = () => {
           </div>
         ) : (
           // Forgot Password Form
-          <div className="bg-white p-10 rounded-[3rem] shadow-2xl border border-[#D9D9C2]">
-            <div className="text-center mb-10">
+          <div className="bg-white dark:bg-card p-10 rounded-[3rem] shadow-2xl border border-[#D9D9C2] dark:border-white/10 relative overflow-hidden group/card transition-all duration-500">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/5 blur-3xl" />
+            
+            <div className="relative z-10 text-center mb-10">
               <div className="mx-auto w-20 h-20 bg-gradient-to-br from-[#EEB38C] to-[#DF8142] rounded-3xl flex items-center justify-center mb-6 shadow-lg shadow-[#DF8142]/20">
                 <Mail className="h-10 w-10 text-white" />
               </div>
-              <h2 className="text-3xl font-black text-[#5A270F] tracking-tight uppercase">
+              <h2 className="text-3xl font-black text-[#5A270F] dark:text-foreground tracking-tight uppercase">
                 Reset Password
               </h2>
-              <p className="mt-4 text-sm text-[#92664A] font-medium leading-relaxed">
+              <p className="mt-4 text-sm text-[#92664A] dark:text-[#EEB38C]/40 font-medium leading-relaxed">
                 Enter your email address and we'll send you a link to reset your
                 password.
               </p>
@@ -388,12 +392,12 @@ const Login = () => {
             <form onSubmit={handleForgotPassword} className="space-y-6">
               {/* Email Input */}
               <div className="relative group">
-                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#92664A] group-focus-within:text-[#DF8142] transition-colors">
+                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#92664A] dark:text-[#EEB38C]/40 group-focus-within:text-[#DF8142] transition-colors">
                   <Mail className="h-5 w-5" />
                 </div>
                 <input
                   type="email"
-                  className="w-full pl-14 pr-6 py-4 bg-[#EFEDED] border-2 border-[#D9D9C2] rounded-2xl text-[#5A270F] font-bold placeholder-[#92664A]/50 focus:outline-none focus:border-[#DF8142] focus:bg-white transition-all"
+                  className="w-full pl-14 pr-6 py-4 bg-[#EFEDED] dark:bg-white/5 border-2 border-[#D9D9C2] dark:border-white/10 rounded-2xl text-[#5A270F] dark:text-white font-bold placeholder-[#92664A]/50 focus:outline-none focus:border-[#DF8142] focus:bg-white dark:bg-card dark:focus:bg-white/10 transition-all"
                   placeholder="Your email address"
                   value={resetEmail}
                   onChange={(e) => {
@@ -419,7 +423,7 @@ const Login = () => {
                     setShowForgotPassword(false);
                     setResetEmail("");
                   }}
-                  className="flex-1 py-4 px-4 bg-[#EFEDED] text-[#5A270F] text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-[#D9D9C2] transition-all active:scale-95"
+                  className="flex-1 py-4 px-4 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-[#D9D9C2] dark:hover:bg-white/10 transition-all active:scale-95"
                 >
                   Cancel
                 </button>

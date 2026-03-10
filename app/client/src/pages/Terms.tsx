@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const TermsOfService = () => {
   return (
-    <div className="min-h-screen bg-white selection:bg-primary/20">
+    <div className="min-h-screen bg-white dark:bg-card selection:bg-primary/20">
       {/* Minimal High-Tech Header */}
       <header className="bg-[#2A1205] pt-32 pb-24 overflow-hidden relative">
         <div className="absolute inset-0">
@@ -14,7 +14,7 @@ const TermsOfService = () => {
         <div className="max-w-4xl mx-auto px-4 relative z-10 text-center">
           <Link
             to="/"
-            className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] hover:text-primary/80 mb-12 transition-all group"
+            className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] hover:text-primary/80 mb-12 transition-all group"
           >
             <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-1 transition-transform" />
             Main Nexus
@@ -29,7 +29,7 @@ const TermsOfService = () => {
               OPERATION.
             </span>
           </h1>
-          <p className="text-gray-500 font-medium text-lg max-w-2xl mx-auto">
+          <p className="text-gray-500 dark:text-white/40 font-medium text-lg max-w-2xl mx-auto">
             By entering this digital perimeter, you agree to adhere to the
             structural protocols and ethical benchmarks of our design
             collective.
@@ -42,8 +42,8 @@ const TermsOfService = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
           <div
             className="md:col-span-2 prose prose-slate prose-lg max-w-none 
-                        prose-headings:font-black prose-headings:tracking-tight prose-headings:text-[#5A270F]
-                        prose-p:text-[#5A270F]/80 prose-p:leading-relaxed prose-p:font-medium
+                        prose-headings:font-black prose-headings:tracking-tight prose-headings:text-[#5A270F] dark:text-[#EEB38C]
+                        prose-p:text-[#5A270F] dark:text-[#EEB38C]/80 prose-p:leading-relaxed prose-p:font-medium
                         prose-strong:text-[#2A1205] prose-strong:font-black"
           >
             <section className="mb-16">
@@ -103,7 +103,7 @@ const TermsOfService = () => {
                         "Offensive, indecent, or unlawful content",
                         "Materials that violate copyright or integrity",
                       ].map((item, i) => (
-                        <li key={i} className="flex items-center gap-2 text-sm text-amber-800/80 font-medium bg-white/50 p-3 rounded-xl border border-amber-200">
+                        <li key={i} className="flex items-center gap-2 text-sm text-amber-800/80 font-medium bg-white/50 dark:bg-card/50 p-3 rounded-xl border border-amber-200">
                           <CheckCircle2 className="h-4 w-4 text-amber-500 shrink-0" />
                           {item}
                         </li>
@@ -112,7 +112,7 @@ const TermsOfService = () => {
                   </div>
                 </div>
 
-                <div className="space-y-6 text-[#5A270F]/80">
+                <div className="space-y-6 text-[#5A270F] dark:text-[#EEB38C]/80">
                   <p className="font-bold">
                     All user activities on this platform are logged and traceable. 
                     The nexus maintains a zero-tolerance policy regarding the integrity of our digital perimeter.
@@ -139,7 +139,7 @@ const TermsOfService = () => {
                         Legal liability under Ethiopian law, including:
                       </li>
                     </ul>
-                    <div className="bg-white/40 p-5 rounded-2xl border border-red-200 text-[11px] font-bold text-red-900/70 leading-relaxed italic">
+                    <div className="bg-white/40 dark:bg-card/40 p-5 rounded-2xl border border-red-200 text-[11px] font-bold text-red-900/70 leading-relaxed italic">
                       Computer Crime Proclamation No. 958/2016 and the Hate Speech and Disinformation 
                       Prevention and Suppression Proclamation No. 1185/2020, which provide for 
                       criminal penalties such as fines and imprisonment for cybercrime and illegal 
@@ -169,21 +169,21 @@ const TermsOfService = () => {
 
           {/* Sidebar Stats/Info */}
           <div className="space-y-8">
-            <div className="bg-[#EFEDED] p-8 rounded-[2.5rem] border border-[#D9D9C2]">
+            <div className="bg-[#EFEDED] dark:bg-background p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10">
               <ShieldAlert className="h-8 w-8 text-[#DF8142] mb-6" />
-              <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F] mb-2">
+              <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] mb-2">
                 Policy Enforcement
               </h3>
-              <p className="text-xs text-[#5A270F] font-medium leading-relaxed">
+              <p className="text-xs text-[#5A270F] dark:text-[#EEB38C] font-medium leading-relaxed">
                 Violations lead to immediate credential suspension.
               </p>
             </div>
-            <div className="bg-[#EFEDED] p-8 rounded-[2.5rem] border border-[#D9D9C2]">
-              <CheckCircle2 className="h-8 w-8 text-[#5A270F] mb-6" />
-              <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F] mb-2">
+            <div className="bg-[#EFEDED] dark:bg-background p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10">
+              <CheckCircle2 className="h-8 w-8 text-[#5A270F] dark:text-[#EEB38C] mb-6" />
+              <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] mb-2">
                 Verified Content
               </h3>
-              <p className="text-xs text-[#5A270F] font-medium leading-relaxed">
+              <p className="text-xs text-[#5A270F] dark:text-[#EEB38C] font-medium leading-relaxed">
                 Top-tier assets undergo faculty validation checks.
               </p>
             </div>
@@ -207,8 +207,8 @@ const TermsOfService = () => {
       </main>
 
       {/* Footer Termination */}
-      <footer className="py-20 bg-[#EFEDED] border-t border-[#D9D9C2] text-center">
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">
+      <footer className="py-20 bg-[#EFEDED] dark:bg-background border-t border-[#D9D9C2] dark:border-white/10 text-center">
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 dark:text-white/30">
           End of Terms Protocol Transmission
         </p>
       </footer>

@@ -63,23 +63,23 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
         {/* Search Bar - Premium Style */}
         <div className="relative flex-grow group">
           <div className="absolute -inset-0.5 bg-[#DF8142]/90 rounded-xl blur opacity-10 group-focus-within:opacity-20 transition duration-500" />
-          <div className="relative flex items-center bg-white border border-[#EEB38C]/30 rounded-xl overflow-hidden shadow-sm group-focus-within:border-[#DF8142]/80 group-focus-within:shadow-[#DF8142]/5 transition-all">
-            <Search className="ml-5 h-5 w-5 text-[#92664A]" />
+          <div className="relative flex items-center bg-[#FAF8F4] dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-xl overflow-hidden shadow-sm group-focus-within:border-[#DF8142]/80 group-focus-within:shadow-[#DF8142]/5 transition-all">
+            <Search className="ml-5 h-5 w-5 text-[#5A270F]/40 dark:text-[#EEB38C]/40" />
             <input
               type="text"
               name="search"
               placeholder="Search library matrix..."
               value={filters.search || ""}
               onChange={handleInputChange}
-              className="w-full pl-4 pr-4 py-3.5 text-[#5A270F] placeholder:text-[#92664A]/50 font-bold outline-none"
+              className="w-full pl-4 pr-4 py-3.5 bg-transparent text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/40 dark:placeholder-white/20 font-black uppercase tracking-widest text-[10px] outline-none"
             />
             {filters.search && (
               <button
                 title="Clear Search"
                 onClick={() => setFilters((prev) => ({ ...prev, search: "" }))}
-                className="mr-4 p-1 hover:bg-[#F5F5DC] rounded-full transition-colors"
+                className="mr-4 p-1 hover:bg-[#F5F5DC] dark:hover:bg-white/10 dark:bg-card/10 rounded-full transition-colors"
               >
-                <X className="h-4 w-4 text-[#92664A]" />
+                <X className="h-4 w-4 text-[#92664A] dark:text-[#EEB38C]/40" />
               </button>
             )}
           </div>
@@ -88,16 +88,16 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
         {/* Filter Toggle Button */}
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className={`flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl font-bold uppercase tracking-widest text-[10px] transition-all duration-300 border-2 ${
+          className={`flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 border ${
             showFilters || activeFilterCount > 0
-              ? "bg-[#DF8142] text-white border-[#DF8142] shadow-md shadow-[#DF8142]/20"
-              : "bg-white text-[#5A270F] border-[#D9D9C2] hover:border-[#DF8142]/40"
+              ? "bg-[#5A270F] dark:bg-[#DF8142] text-white border-[#5A270F] dark:border-[#DF8142] shadow-xl shadow-[#5A270F]/20 dark:shadow-[#DF8142]/20"
+              : "bg-[#FAF8F4] dark:bg-white/5 text-[#5A270F] dark:text-white border-[#D9D9C2] dark:border-white/10 hover:border-[#DF8142]"
           }`}
         >
           <SlidersHorizontal className="h-4 w-4" />
           <span>Filter Resource</span>
           {activeFilterCount > 0 && (
-            <span className="ml-1 bg-white text-[#DF8142] px-2 py-0.5 rounded-full text-[10px]">
+            <span className="ml-1 bg-white dark:bg-primary text-[#DF8142] dark:text-[#EEB38C] px-2 py-0.5 rounded-full text-[10px]">
               {activeFilterCount}
             </span>
           )}
@@ -117,14 +117,14 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
         }`}
       >
         <div className="overflow-hidden">
-          <div className="bg-[#EEB38C]/10 border border-[#EEB38C]/30 rounded-2xl p-6 space-y-6">
+          <div className="bg-[#FAF8F4] dark:bg-card p-6 border border-[#D9D9C2] dark:border-white/10 rounded-2xl p-6 space-y-6 transition-colors duration-500 shadow-inner">
             <div className="flex items-center justify-between">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#92664A]">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40">
                 Parameter Configuration
               </h3>
               <button
                 onClick={clearFilters}
-                className="text-[10px] font-bold uppercase tracking-widest text-[#DF8142] hover:text-[#5A270F] transition-colors"
+                className="text-[10px] font-bold uppercase tracking-widest text-[#DF8142] hover:text-[#5A270F] dark:text-[#EEB38C] transition-colors"
               >
                 Reset Matrix
               </button>
@@ -132,7 +132,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-[#92664A] ml-1">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#92664A] dark:text-white/40 ml-1">
                   Asset Protocol
                 </label>
                 <select
@@ -140,7 +140,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                   title="File Type Protocol"
                   value={filters.fileType || ""}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-white border border-[#EEB38C]/50 rounded-lg font-bold text-[#5A270F] focus:ring-2 focus:ring-[#DF8142]/90 focus:border-[#DF8142] outline-none appearance-none cursor-pointer placeholder:text-[#92664A]/50"
+                  className="w-full px-4 py-3 bg-white dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-lg font-black uppercase tracking-widest text-[10px] text-[#5A270F] dark:text-white focus:ring-2 focus:ring-[#DF8142] focus:border-[#DF8142] outline-none appearance-none cursor-pointer placeholder:text-[#5A270F]/40"
                 >
                   <option value="">All Formats</option>
                   {fileTypes.map((type) => (
@@ -152,7 +152,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-[#92664A] ml-1">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#92664A] dark:text-white/40 ml-1">
                   Design Stage Nexus
                 </label>
                 <select
@@ -160,7 +160,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                   title="Design Stage Nexus"
                   value={filters.stage || ""}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-white border border-[#EEB38C]/50 rounded-lg font-bold text-[#5A270F] focus:ring-2 focus:ring-[#DF8142]/90 focus:border-[#DF8142] outline-none appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 bg-white dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-lg font-black uppercase tracking-widest text-[10px] text-[#5A270F] dark:text-white focus:ring-2 focus:ring-[#DF8142] focus:border-[#DF8142] outline-none appearance-none cursor-pointer"
                 >
                   <option value="">All Development Stages</option>
                   {designStages.map((stage) => (
@@ -172,7 +172,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-[#92664A] ml-1">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#92664A] dark:text-white/40 ml-1">
                   Temporal Alignment
                 </label>
                 <select
@@ -180,7 +180,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                   title="Temporal Alignment Sort"
                   value={filters.sort || ""}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-white border border-[#EEB38C]/50 rounded-lg font-bold text-[#5A270F] focus:ring-2 focus:ring-[#DF8142]/90 focus:border-[#DF8142] outline-none appearance-none cursor-pointer"
+                  className="w-full px-4 py-3 bg-white dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-lg font-black uppercase tracking-widest text-[10px] text-[#5A270F] dark:text-white focus:ring-2 focus:ring-[#DF8142] focus:border-[#DF8142] outline-none appearance-none cursor-pointer"
                 >
                   <option value="">Chronological: Newest First</option>
                   <option value="oldest">Chronological: Archive Access</option>
@@ -191,7 +191,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-[#92664A] ml-1">
+                <label className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-white/40 ml-1">
                   Academic Cycle
                 </label>
                 <div className="grid grid-cols-2 gap-4">
@@ -201,7 +201,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                     placeholder="Year..."
                     value={filters.year || ""}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white border border-[#EEB38C]/50 rounded-lg font-bold text-[#5A270F] outline-none focus:ring-2 focus:ring-[#DF8142]/90 focus:border-[#DF8142] placeholder:text-[#92664A]/50"
+                    className="w-full px-4 py-3 bg-white dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-lg font-black uppercase tracking-widest text-[10px] text-[#5A270F] dark:text-white outline-none focus:ring-2 focus:ring-[#DF8142] focus:border-[#DF8142] placeholder:text-[#5A270F]/40"
                   />
                   <input
                     type="number"
@@ -209,7 +209,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                     placeholder="Sem..."
                     value={filters.semester || ""}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white border border-[#EEB38C]/50 rounded-lg font-bold text-[#5A270F] outline-none focus:ring-2 focus:ring-[#DF8142]/90 focus:border-[#DF8142] placeholder:text-[#92664A]/50"
+                    className="w-full px-4 py-3 bg-white dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-lg font-black uppercase tracking-widest text-[10px] text-[#5A270F] dark:text-white outline-none focus:ring-2 focus:ring-[#DF8142] focus:border-[#DF8142] placeholder:text-[#5A270F]/40"
                   />
                 </div>
               </div>

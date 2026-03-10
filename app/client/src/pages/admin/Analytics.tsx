@@ -38,7 +38,7 @@ const StatCard = ({
   trend,
   color,
 }: StatCardProps) => (
-  <div className="bg-white p-8 rounded-[3rem] shadow-xl shadow-[#5A270F]/5 border border-[#D9D9C2] group hover:border-[#DF8142]/30 transition-all duration-500 overflow-hidden relative">
+  <div className="bg-white dark:bg-card p-8 rounded-[3rem] shadow-xl shadow-[#5A270F]/5 border border-[#D9D9C2] dark:border-white/10 group hover:border-[#DF8142]/30 transition-all duration-500 overflow-hidden relative">
     <div
       className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${color} opacity-[0.08] rounded-bl-[4rem] group-hover:opacity-15 transition-opacity`}
     />
@@ -50,20 +50,20 @@ const StatCard = ({
           <Icon className="h-6 w-6" />
         </div>
         {trend && (
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-[#EEB38C]/20 text-[#5A270F] rounded-full text-[10px] font-black uppercase tracking-wider border border-[#EEB38C]/40">
+          <div className="flex items-center gap-1.5 px-3 py-1 bg-[#EEB38C]/20 text-[#5A270F] dark:text-[#EEB38C] rounded-full text-[10px] font-black uppercase tracking-wider border border-[#EEB38C]/40">
             <ArrowUpRight className="h-3 w-3" /> {trend}
           </div>
         )}
       </div>
       <div>
-        <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-2">
+        <p className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-[0.3em] mb-2">
           {title}
         </p>
         <div className="flex items-baseline gap-3">
           <h2 className="text-4xl font-black text-[#2A1205] tracking-tighter">
             {value}
           </h2>
-          <span className="text-[10px] font-bold text-[#92664A] uppercase tracking-widest">
+          <span className="text-[10px] font-bold text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest">
             {label}
           </span>
         </div>
@@ -107,10 +107,10 @@ const Analytics = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
         <div className="relative">
-          <div className="h-16 w-16 border-4 border-[#D9D9C2] border-t-[#5A270F] rounded-full animate-spin" />
-          <Loader2 className="h-8 w-8 text-[#5A270F] animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+          <div className="h-16 w-16 border-4 border-[#D9D9C2] dark:border-white/10 border-t-[#5A270F] rounded-full animate-spin" />
+          <Loader2 className="h-8 w-8 text-[#5A270F] dark:text-[#EEB38C] animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         </div>
-        <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em]">
+        <p className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-[0.4em]">
           Synchronizing Matrix...
         </p>
       </div>
@@ -210,7 +210,7 @@ const Analytics = () => {
           </div>
         </div>
 
-        <div className="lg:col-span-4 bg-white p-10 rounded-[4rem] shadow-2xl shadow-slate-200 border border-[#D9D9C2] flex flex-col justify-center">
+        <div className="lg:col-span-4 bg-white dark:bg-card p-10 rounded-[4rem] shadow-2xl shadow-slate-200 border border-[#D9D9C2] dark:border-white/10 flex flex-col justify-center">
           <div className="mb-10 text-center">
             <div className="h-16 w-16 bg-[#2A1205] rounded-[2rem] flex items-center justify-center text-white mx-auto mb-6 shadow-2xl shadow-[#2A1205]/30">
               <Zap className="h-7 w-7 text-[#DF8142]" />
@@ -218,7 +218,7 @@ const Analytics = () => {
             <h3 className="text-lg font-black text-[#2A1205] tracking-tight">
               Direct Command
             </h3>
-            <p className="text-xs text-gray-500 font-medium mt-1">
+            <p className="text-xs text-gray-500 dark:text-white/40 font-medium mt-1">
               Matrix Override Protocols
             </p>
           </div>
@@ -233,7 +233,7 @@ const Analytics = () => {
             {isAuthorizedFull && (
               <Link
                 to="/admin/approvals"
-                className="w-full h-16 flex justify-center items-center gap-4 bg-white border-2 border-[#D9D9C2] text-[10px] font-black uppercase tracking-[0.3em] rounded-3xl text-[#5A270F] hover:border-[#5A270F] hover:text-[#2A1205] transition-all active:scale-95"
+                className="w-full h-16 flex justify-center items-center gap-4 bg-white dark:bg-card border-2 border-[#D9D9C2] dark:border-white/10 text-[10px] font-black uppercase tracking-[0.3em] rounded-3xl text-[#5A270F] dark:text-[#EEB38C] hover:border-[#5A270F] hover:text-[#2A1205] transition-all active:scale-95"
               >
                 Review Artifacts
               </Link>

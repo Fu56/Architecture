@@ -402,19 +402,19 @@ const RegisterStudentsUnified = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-20 bg-[#EFEDED]/30 p-4 rounded-[3rem]">
+    <div className="max-w-7xl mx-auto space-y-8 pb-20 bg-[#EFEDED] dark:bg-background/30 p-4 rounded-[3rem]">
       {/* Unified Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[2.5rem] border border-[#EEB38C] shadow-xl relative overflow-hidden group">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white dark:bg-card p-8 rounded-[2.5rem] border border-[#EEB38C] shadow-xl relative overflow-hidden group">
         <div className="absolute inset-0 bg-gradient-to-r from-[#DF8142]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         <div className="flex items-center gap-6 relative z-10">
           <div className="h-16 w-16 bg-[#5A270F] rounded-2xl flex items-center justify-center text-white shadow-2xl">
             <GraduationCap className="h-8 w-8" />
           </div>
           <div>
-            <h2 className="text-3xl font-black text-[#5A270F] tracking-tighter uppercase">
+            <h2 className="text-3xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase">
               Student Integration
             </h2>
-            <p className="text-xs text-[#92664A] font-bold tracking-[0.2em] uppercase">
+            <p className="text-xs text-[#92664A] dark:text-[#EEB38C]/40 font-bold tracking-[0.2em] uppercase">
               {activeTab === "individual"
                 ? "Manual Identity Entry"
                 : "Bulk Node Population Protocol"}
@@ -423,13 +423,13 @@ const RegisterStudentsUnified = () => {
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex bg-[#EFEDED] p-1.5 rounded-2xl border border-[#EEB38C] relative z-10">
+        <div className="flex bg-[#EFEDED] dark:bg-background p-1.5 rounded-2xl border border-[#EEB38C] relative z-10">
           <button
             onClick={() => setActiveTab("individual")}
             className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
               activeTab === "individual"
-                ? "bg-white text-[#5A270F] shadow-lg"
-                : "text-[#92664A] hover:text-[#5A270F]"
+                ? "bg-white dark:bg-card text-[#5A270F] dark:text-[#EEB38C] shadow-lg"
+                : "text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:text-[#EEB38C]"
             }`}
           >
             Individual
@@ -438,8 +438,8 @@ const RegisterStudentsUnified = () => {
             onClick={() => setActiveTab("bulk")}
             className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
               activeTab === "bulk"
-                ? "bg-white text-[#5A270F] shadow-lg"
-                : "text-[#92664A] hover:text-[#5A270F]"
+                ? "bg-white dark:bg-card text-[#5A270F] dark:text-[#EEB38C] shadow-lg"
+                : "text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:text-[#EEB38C]"
             }`}
           >
             Bulk Integrate
@@ -451,7 +451,7 @@ const RegisterStudentsUnified = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-in fade-in slide-in-from-bottom-4 duration-500">
           {/* Individual Form Content */}
           <div className="lg:col-span-7">
-            <Card className="shadow-2xl shadow-[#5A270F]/5 border-[#EEB38C]/30 rounded-[2.5rem] overflow-hidden">
+            <Card className="shadow-2xl shadow-[#5A270F]/5 border-[#EEB38C]/30 dark:border-white/5 rounded-[2.5rem] overflow-hidden">
               <CardHeader className="bg-[#5A270F] border-b border-[#EEB38C]/20 p-8">
                 <CardTitle className="text-[#EEB38C] uppercase tracking-tight font-black flex items-center gap-3">
                   <UserPlus className="h-6 w-6 text-[#DF8142]" />
@@ -466,7 +466,7 @@ const RegisterStudentsUnified = () => {
                   {/* Grid fields from RegisterStudent... */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1">
+                      <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
                         First Name
                       </Label>
                       <Input
@@ -474,7 +474,7 @@ const RegisterStudentsUnified = () => {
                         placeholder="Julian"
                         value={formData.first_name}
                         onChange={handleChange}
-                        className={`rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED]/20 text-[#5A270F] font-bold ${errors.first_name ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
+                        className={`rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED] dark:bg-background/20 text-[#5A270F] dark:text-[#EEB38C] font-bold ${errors.first_name ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                       />
                       {errors.first_name && (
                         <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
@@ -483,7 +483,7 @@ const RegisterStudentsUnified = () => {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1">
+                      <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
                         Last Name
                       </Label>
                       <Input
@@ -491,7 +491,7 @@ const RegisterStudentsUnified = () => {
                         placeholder="Wright"
                         value={formData.last_name}
                         onChange={handleChange}
-                        className={`rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED]/20 text-[#5A270F] font-bold ${errors.last_name ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
+                        className={`rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED] dark:bg-background/20 text-[#5A270F] dark:text-[#EEB38C] font-bold ${errors.last_name ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                       />
                       {errors.last_name && (
                         <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
@@ -503,15 +503,15 @@ const RegisterStudentsUnified = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1">
+                      <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
                         University ID
                       </Label>
                       <div className="relative">
-                        <Hash className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
+                        <Hash className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A] dark:text-[#EEB38C]/40" />
                         <Input
                           name="university_id"
                           placeholder="U-ARCH-001"
-                          className={`pl-9 rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED]/20 text-[#5A270F] font-bold ${errors.university_id ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
+                          className={`pl-9 rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED] dark:bg-background/20 text-[#5A270F] dark:text-[#EEB38C] font-bold ${errors.university_id ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                           value={formData.university_id}
                           onChange={handleChange}
                         />
@@ -523,16 +523,16 @@ const RegisterStudentsUnified = () => {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1">
+                      <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
                         System Email
                       </Label>
                       <div className="relative">
-                        <AtSign className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
+                        <AtSign className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A] dark:text-[#EEB38C]/40" />
                         <Input
                           name="email"
                           type="email"
                           placeholder="student@nexus.edu"
-                          className={`pl-9 rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED]/20 text-[#5A270F] font-bold ${errors.email ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
+                          className={`pl-9 rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED] dark:bg-background/20 text-[#5A270F] dark:text-[#EEB38C] font-bold ${errors.email ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                           value={formData.email}
                           onChange={handleChange}
                         />
@@ -546,17 +546,17 @@ const RegisterStudentsUnified = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1">
+                    <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
                       Authorization Key
                     </Label>
                     <div className="flex gap-2">
                       <div className="relative flex-1">
-                        <Key className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A]" />
+                        <Key className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A] dark:text-[#EEB38C]/40" />
                         <Input
                           name="password"
                           type="text"
                           placeholder="Secure credential"
-                          className={`pl-9 font-mono rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED]/20 text-[#5A270F] font-bold ${errors.password ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
+                          className={`pl-9 font-mono rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED] dark:bg-background/20 text-[#5A270F] dark:text-[#EEB38C] font-bold ${errors.password ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                           value={formData.password}
                           onChange={handleChange}
                         />
@@ -570,7 +570,7 @@ const RegisterStudentsUnified = () => {
                         type="button"
                         variant="outline"
                         onClick={generatePassword}
-                        className="rounded-xl border-[#EEB38C] hover:bg-[#EEB38C]/20 text-[#6C3B1C] font-bold transition-all"
+                        className="rounded-xl border-[#EEB38C] hover:bg-[#EEB38C]/20 text-[#6C3B1C] dark:text-[#EEB38C]/80 font-bold transition-all"
                       >
                         <Zap className="h-4 w-4 mr-2 text-[#DF8142]" />
                         Auto
@@ -581,20 +581,20 @@ const RegisterStudentsUnified = () => {
                   <div className="pt-6 border-t border-[#EEB38C]/20">
                     <div className="flex items-center gap-2 mb-6">
                       <Calendar className="h-4 w-4 text-[#DF8142]" />
-                      <h3 className="text-xs font-black uppercase tracking-widest text-[#5A270F]">
+                      <h3 className="text-xs font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C]">
                         Academic Period
                       </h3>
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                       <div className="space-y-2">
-                        <Label className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1">
+                        <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
                           Batch
                         </Label>
                         <Input
                           name="batch"
                           type="number"
                           placeholder="2024"
-                          className={`rounded-xl border-[#EEB38C] bg-[#EFEDED]/20 font-bold ${errors.batch ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
+                          className={`rounded-xl border-[#EEB38C] bg-[#EFEDED] dark:bg-background/20 font-bold ${errors.batch ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                           value={formData.batch}
                           onChange={handleChange}
                         />
@@ -605,14 +605,14 @@ const RegisterStudentsUnified = () => {
                         )}
                       </div>
                       <div className="space-y-2">
-                        <Label className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1">
+                        <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
                           Year
                         </Label>
                         <Input
                           name="year"
                           type="number"
                           placeholder="1"
-                          className={`rounded-xl border-[#EEB38C] bg-[#EFEDED]/20 font-bold ${errors.year ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
+                          className={`rounded-xl border-[#EEB38C] bg-[#EFEDED] dark:bg-background/20 font-bold ${errors.year ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                           value={formData.year}
                           onChange={handleChange}
                         />
@@ -623,14 +623,14 @@ const RegisterStudentsUnified = () => {
                         )}
                       </div>
                       <div className="space-y-2">
-                        <Label className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1">
+                        <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
                           Semester
                         </Label>
                         <Input
                           name="semester"
                           type="number"
                           placeholder="1"
-                          className={`rounded-xl border-[#EEB38C] bg-[#EFEDED]/20 font-bold ${errors.semester ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
+                          className={`rounded-xl border-[#EEB38C] bg-[#EFEDED] dark:bg-background/20 font-bold ${errors.semester ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
                           value={formData.semester}
                           onChange={handleChange}
                         />
@@ -643,7 +643,7 @@ const RegisterStudentsUnified = () => {
                     </div>
                   </div>
 
-                  <div className="bg-[#EFEDED]/30 p-6 rounded-2xl border border-[#EEB38C] space-y-4">
+                  <div className="bg-[#EFEDED] dark:bg-background/30 p-6 rounded-2xl border border-[#EEB38C] space-y-4">
                     <div className="flex items-start gap-4">
                       <input
                         id="agreedToTerms"
@@ -660,11 +660,11 @@ const RegisterStudentsUnified = () => {
                       <div className="flex flex-col gap-1">
                         <label
                           htmlFor="agreedToTerms"
-                          className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] cursor-pointer"
+                          className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] cursor-pointer"
                         >
                           Accept Operational Protocols
                         </label>
-                        <p className="text-[10px] text-[#92664A] font-medium leading-relaxed">
+                        <p className="text-[10px] text-[#92664A] dark:text-[#EEB38C]/40 font-medium leading-relaxed">
                           By initializing this node, you confirm that you understand the rules and agree to use this system responsibly and lawfully, as outlined in the{" "}
                           <Link
                             to="/terms"
@@ -730,7 +730,7 @@ const RegisterStudentsUnified = () => {
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-left">
-                  <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                  <div className="bg-white/5 dark:bg-card/5 p-4 rounded-xl border border-white/10">
                     <p className="text-[9px] uppercase tracking-widest text-[#EEB38C]/50 font-black">
                       Batch
                     </p>
@@ -738,7 +738,7 @@ const RegisterStudentsUnified = () => {
                       {formData.batch || "N/A"}
                     </p>
                   </div>
-                  <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                  <div className="bg-white/5 dark:bg-card/5 p-4 rounded-xl border border-white/10">
                     <p className="text-[9px] uppercase tracking-widest text-[#EEB38C]/50 font-black">
                       Year/Sem
                     </p>
@@ -761,16 +761,16 @@ const RegisterStudentsUnified = () => {
           {/* Bulk Import UI from RegisterStudents... */}
           <div className="grid grid-cols-1 xl:grid-cols-5 gap-10">
             <div className="xl:col-span-2 space-y-10">
-              <div className="bg-white p-12 rounded-[3.5rem] border border-[#EEB38C] shadow-2xl relative overflow-hidden group">
+              <div className="bg-white dark:bg-card p-12 rounded-[3.5rem] border border-[#EEB38C] shadow-2xl relative overflow-hidden group">
                 <div className="text-center space-y-8">
                   <div className="h-24 w-24 bg-[#5A270F] rounded-[2.5rem] flex items-center justify-center text-[#EEB38C] mx-auto shadow-xl ring-4 ring-[#DF8142]/10">
                     <FileSpreadsheet className="h-12 w-12" />
                   </div>
                   <div className="space-y-2">
-                    <h3 className="text-lg font-black text-[#5A270F] tracking-tight">
+                    <h3 className="text-lg font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight">
                       Transmission Source
                     </h3>
-                    <p className="text-xs text-[#92664A] font-medium">
+                    <p className="text-xs text-[#92664A] dark:text-[#EEB38C]/40 font-medium">
                       Upload CSV or XLSX protocols
                     </p>
                   </div>
@@ -788,7 +788,7 @@ const RegisterStudentsUnified = () => {
                     </label>
                     <button
                       onClick={downloadTemplate}
-                      className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-[#92664A] hover:text-[#DF8142] transition-colors"
+                      className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] transition-colors"
                     >
                       <Download className="h-3.5 w-3.5" />
                       Fetch Integration Template
@@ -821,12 +821,12 @@ const RegisterStudentsUnified = () => {
                       )}
                     </div>
                     <div>
-                      <h4 className="text-xs font-black uppercase tracking-widest text-[#5A270F]">
+                      <h4 className="text-xs font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C]">
                         {validationResult.valid
                           ? "Validation Optimal"
                           : "Integrity Failure"}
                       </h4>
-                      <p className="text-[10px] font-bold text-[#92664A] uppercase mt-1">
+                      <p className="text-[10px] font-bold text-[#92664A] dark:text-[#EEB38C]/40 uppercase mt-1">
                         {validationResult.students.length} Units Ready
                       </p>
                       {!validationResult.valid && (
@@ -834,7 +834,7 @@ const RegisterStudentsUnified = () => {
                           {validationResult.errors.map((e, i) => (
                             <p
                               key={i}
-                              className="flex items-center gap-2 text-[9px] text-red-700 bg-white/50 p-2 rounded-lg border border-red-100"
+                              className="flex items-center gap-2 text-[9px] text-red-700 bg-white/50 dark:bg-card/50 p-2 rounded-lg border border-red-100"
                             >
                               <AlertTriangle className="h-3 w-3" />
                               {e}
@@ -850,23 +850,23 @@ const RegisterStudentsUnified = () => {
 
             <div className="xl:col-span-3">
               {preview.length > 0 ? (
-                <div className="bg-white rounded-[3rem] border border-[#D9D9C2] shadow-3xl overflow-hidden flex flex-col max-h-[600px]">
-                  <div className="p-6 border-b bg-[#EFEDED]/50 flex justify-between items-center">
-                    <h3 className="text-xs font-black uppercase tracking-widest text-[#5A270F]">
+                <div className="bg-white dark:bg-card rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 shadow-3xl overflow-hidden flex flex-col max-h-[600px]">
+                  <div className="p-6 border-b bg-[#EFEDED] dark:bg-background/50 flex justify-between items-center">
+                    <h3 className="text-xs font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C]">
                       Pre-Integration Scrutiny
                     </h3>
-                    <span className="text-[10px] font-bold text-[#92664A]">
+                    <span className="text-[10px] font-bold text-[#92664A] dark:text-[#EEB38C]/40">
                       {preview.length} Nodes
                     </span>
                   </div>
                   <div className="flex-1 overflow-auto">
                     <table className="w-full text-left">
-                      <thead className="bg-[#EFEDED]/30 sticky top-0 backdrop-blur-md">
+                      <thead className="bg-[#EFEDED] dark:bg-background/30 sticky top-0 backdrop-blur-md">
                         <tr>
                           {["Identity", "Endpoint", "Protocol"].map((h) => (
                             <th
                               key={h}
-                              className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-[#92664A]"
+                              className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40"
                             >
                               {h}
                             </th>
@@ -877,17 +877,17 @@ const RegisterStudentsUnified = () => {
                         {preview.map((s, i) => (
                           <tr
                             key={i}
-                            className="border-t border-[#EFEDED] hover:bg-[#EFEDED]/30 transition-colors"
+                            className="border-t border-[#EFEDED] hover:bg-[#EFEDED] dark:bg-background/30 transition-colors"
                           >
                             <td className="px-6 py-4">
-                              <p className="text-xs font-black text-[#5A270F] uppercase">
+                              <p className="text-xs font-black text-[#5A270F] dark:text-[#EEB38C] uppercase">
                                 {s.first_name} {s.last_name}
                               </p>
-                              <p className="text-[9px] text-[#92664A] font-bold mt-0.5">
+                              <p className="text-[9px] text-[#92664A] dark:text-[#EEB38C]/40 font-bold mt-0.5">
                                 {s.university_id}
                               </p>
                             </td>
-                            <td className="px-6 py-4 text-xs font-medium text-[#5A270F]/70">
+                            <td className="px-6 py-4 text-xs font-medium text-[#5A270F] dark:text-[#EEB38C]/70">
                               {s.email}
                             </td>
                             <td className="px-6 py-4">
@@ -909,7 +909,7 @@ const RegisterStudentsUnified = () => {
                       <button
                         onClick={handleBulkUpload}
                         disabled={bulkLoading}
-                        className="px-8 py-3 bg-[#DF8142] text-white text-[10px] font-black uppercase rounded-xl hover:bg-white hover:text-[#5A270F] transition-all shadow-lg active:scale-95"
+                        className="px-8 py-3 bg-[#DF8142] text-white text-[10px] font-black uppercase rounded-xl hover:bg-white dark:bg-card hover:text-[#5A270F] dark:text-[#EEB38C] transition-all shadow-lg active:scale-95"
                       >
                         {bulkLoading ? "In Progress..." : "Initialize Nodes"}
                       </button>
@@ -926,7 +926,7 @@ const RegisterStudentsUnified = () => {
                       Integration Segment Complete
                     </h3>
                     <div className="flex justify-center gap-6 mt-6">
-                      <div className="bg-white/5 p-4 rounded-2xl border border-white/10 min-w-[120px]">
+                      <div className="bg-white/5 dark:bg-card/5 p-4 rounded-2xl border border-white/10 min-w-[120px]">
                         <p className="text-3xl font-black text-emerald-400">
                           {uploadResult.success}
                         </p>
@@ -934,7 +934,7 @@ const RegisterStudentsUnified = () => {
                           Success
                         </p>
                       </div>
-                      <div className="bg-white/5 p-4 rounded-2xl border border-white/10 min-w-[120px]">
+                      <div className="bg-white/5 dark:bg-card/5 p-4 rounded-2xl border border-white/10 min-w-[120px]">
                         <p className="text-3xl font-black text-rose-400">
                           {uploadResult.failed}
                         </p>
@@ -953,20 +953,20 @@ const RegisterStudentsUnified = () => {
                     </button>
                     <button
                       onClick={() => setUploadResult(null)}
-                      className="flex-1 py-4 bg-white/10 border border-white/20 rounded-2xl text-[10px] font-black uppercase text-[#EEB38C] hover:bg-white/20 transition-all"
+                      className="flex-1 py-4 bg-white/10 dark:bg-card/10 border border-white/20 rounded-2xl text-[10px] font-black uppercase text-[#EEB38C] hover:bg-white/20 dark:bg-card/20 transition-all"
                     >
                       New Integration
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="h-full min-h-[400px] bg-white rounded-[3rem] border-2 border-dashed border-[#EEB38C] flex flex-col items-center justify-center text-center p-12 space-y-6 shadow-inner">
+                <div className="h-full min-h-[400px] bg-white dark:bg-card rounded-[3rem] border-2 border-dashed border-[#EEB38C] flex flex-col items-center justify-center text-center p-12 space-y-6 shadow-inner">
                   <Database className="h-16 w-16 text-[#EEB38C] animate-pulse" />
                   <div className="max-w-xs">
-                    <h4 className="text-sm font-black text-[#5A270F] uppercase tracking-widest">
+                    <h4 className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-widest">
                       Awaiting Data Segment
                     </h4>
-                    <p className="text-[10px] text-[#92664A] font-medium mt-2 leading-relaxed">
+                    <p className="text-[10px] text-[#92664A] dark:text-[#EEB38C]/40 font-medium mt-2 leading-relaxed">
                       Population of the Nexus through bulk transmission protocol
                       requires a valid CSV source.
                     </p>

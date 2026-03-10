@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 
 import { getUser } from "../../lib/auth";
+import ThemeToggle from "../../components/ui/ThemeToggle";
 
 const adminNavLinks = [
   { name: "Analytics", href: "/admin/analytics", icon: BarChart2 },
@@ -80,7 +81,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#EFEDED] selection:bg-primary/20 selection:text-[#2A1205] relative">
+    <div className="min-h-screen bg-background dark:bg-[#0F0602] lg:bg-[#EFEDED] dark:bg-background lg:dark:bg-[#0F0602] selection:bg-primary/20 selection:text-[#2A1205] relative">
       {/* Mobile Menu Toggle */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -105,9 +106,9 @@ const AdminDashboard = () => {
 
           {/* Refined Admin Sidebar */}
           <aside
-            className={`fixed lg:sticky lg:top-24 inset-y-0 left-0 z-50 lg:z-auto w-full max-w-[300px] lg:w-[280px] bg-[#2A1205] lg:bg-transparent transform transition-transform duration-500 ease-in-out lg:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+            className={`fixed lg:sticky lg:top-24 inset-y-0 left-0 z-50 lg:z-auto w-full max-w-[300px] lg:w-[280px] bg-white dark:bg-card dark:bg-[#2A1205] lg:bg-transparent transform transition-transform duration-500 ease-in-out lg:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
           >
-            <div className="bg-[#2A1205] rounded-3xl lg:rounded-3xl p-6 shadow-xl relative overflow-hidden ring-1 ring-white/10 flex flex-col h-[calc(100vh-80px)] lg:h-[calc(100vh-140px)]">
+            <div className="bg-white dark:bg-card dark:bg-[#2A1205] rounded-3xl lg:rounded-3xl p-6 shadow-xl relative overflow-hidden ring-1 ring-gray-200 dark:ring-white/10 flex flex-col h-[calc(100vh-80px)] lg:h-[calc(100vh-140px)]">
               {/* Architectural Grid Pattern Overlay */}
               <div className="absolute inset-0 opacity-[0.03] pointer-events-none architectural-dot-grid" />
               <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/10 blur-[60px] -translate-y-1/2 translate-x-1/2" />
@@ -115,7 +116,7 @@ const AdminDashboard = () => {
 
               <div className="relative z-10 flex flex-col h-full">
                 {/* Profile Module - Re-imagined */}
-                <div className="flex flex-col items-center text-center pb-6 border-b border-white/5 mb-6">
+                <div className="flex flex-col items-center text-center pb-6 border-b border-gray-200 dark:border-white/5 mb-6">
                   {/* ... profile icon ... */}
                   <div className="relative group p-1 rounded-2xl bg-gradient-to-br from-[#DF8142]/30 to-[#92664A]/30">
                     <div className="absolute inset-0 bg-[#DF8142] blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-700" />
@@ -127,9 +128,9 @@ const AdminDashboard = () => {
                       </span>
                     </div>
                   </div>
-                  <h3 className="mt-4 text-lg font-bold text-white leading-tight tracking-tight px-4">
+                  <h3 className="mt-4 text-lg font-bold text-gray-900 dark:text-white leading-tight tracking-tight px-4 transition-colors">
                     {user?.first_name} <br />
-                    <span className="text-white/60 font-medium">
+                    <span className="text-gray-500 dark:text-white/60 font-medium">
                       {user?.last_name}
                     </span>
                   </h3>
@@ -144,7 +145,7 @@ const AdminDashboard = () => {
                 {isSuperAdmin && (
                   <Link
                     to="/super-admin"
-                    className="mb-6 mx-2 flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[10px] font-bold uppercase tracking-widest text-[#EEB38C] hover:text-white transition-all group"
+                    className="mb-6 mx-2 flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-xl text-[10px] font-bold uppercase tracking-widest text-[#DF8142] dark:text-[#EEB38C] hover:text-[#5A270F] dark:text-[#EEB38C] dark:hover:text-white transition-all group"
                   >
                     <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" />
                     Back to Command
@@ -154,10 +155,10 @@ const AdminDashboard = () => {
                 {/* Navigation Terminal */}
                 <nav className="flex-grow overflow-y-auto pr-2 -mr-2 scrollbar-none space-y-2">
                   <div className="flex items-center justify-between mb-4 px-2">
-                    <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest flex items-center gap-3">
+                    <p className="text-[10px] font-bold text-gray-500 dark:text-white/20 uppercase tracking-widest flex items-center gap-3">
                       <Command className="h-3 w-3" /> Control Modules
                     </p>
-                    <div className="h-px flex-grow ml-4 bg-white/5" />
+                    <div className="h-px flex-grow ml-4 bg-gray-200 dark:bg-white/5" />
                   </div>
                   <div className="space-y-2">
                     {adminNavLinks
@@ -182,17 +183,17 @@ const AdminDashboard = () => {
                           <NavLink
                             key={link.name}
                             to={link.href}
-                            className={`group relative flex items-center px-4 py-3 text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all duration-500 ${
+                            className={`group relative flex items-center px-4 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all duration-500 ${
                               isActive
-                                ? "bg-white text-[#2A1205] shadow-lg -translate-y-0.5"
-                                : "text-white/40 hover:text-white hover:bg-white/5"
+                                ? "bg-[#5A270F] dark:bg-[#EEB38C] text-white dark:text-[#1A0B02] shadow-lg -translate-y-0.5"
+                                : "text-gray-500 dark:text-[#EEB38C]/60 hover:text-white dark:hover:text-[#1A0B02] hover:bg-[#5A270F] dark:hover:bg-[#EEB38C] hover:shadow-xl hover:shadow-[#5A270F]/10 dark:hover:shadow-none"
                             }`}
                           >
                             <link.icon
                               className={`mr-4 h-5 w-5 transition-all duration-500 ${
                                 isActive
-                                  ? "text-[#DF8142] scale-110"
-                                  : "text-white/20 group-hover:text-[#DF8142]/80 group-hover:scale-110"
+                                  ? "text-white dark:text-[#DF8142] scale-110"
+                                  : "text-gray-400 dark:text-[#EEB38C]/40 group-hover:text-white dark:group-hover:text-[#DF8142] group-hover:scale-110"
                               }`}
                             />
                             <span className="relative z-10">{link.name}</span>
@@ -210,8 +211,8 @@ const AdminDashboard = () => {
 
           {/* Main Workspace */}
           <main className="flex-grow w-full lg:max-w-[calc(100%-312px)] min-w-0">
-            <div className="bg-white p-6 sm:p-10 rounded-3xl shadow-sm border border-[#D9D9C2] min-h-[calc(100vh-140px)] relative overflow-hidden flex flex-col">
-              <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-50 relative z-10">
+            <div className="bg-white dark:bg-card p-6 sm:p-10 rounded-3xl shadow-sm border border-[#D9D9C2] dark:border-white/10 min-h-[calc(100vh-140px)] relative overflow-hidden flex flex-col transition-colors duration-500">
+              <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-50 dark:border-white/5 relative z-10 transition-colors">
                 <div className="flex items-center gap-6">
                   <div className="relative group">
                     <div className="absolute inset-0 bg-[#DF8142] blur-lg opacity-10 group-hover:opacity-20 transition-opacity" />
@@ -226,14 +227,17 @@ const AdminDashboard = () => {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142]/90" />
-                      <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                      <p className="text-[10px] font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">
                         Executive Command
                       </p>
                     </div>
-                    <h1 className="text-3xl font-bold text-[#5A270F] tracking-tight leading-none">
+                    <h1 className="text-3xl font-bold text-[#5A270F] dark:text-[#EEB38C] tracking-tight leading-none transition-colors">
                       {getTitle()}
                     </h1>
                   </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <ThemeToggle isScrolled={true} isHomePage={false} />
                 </div>
               </header>
 

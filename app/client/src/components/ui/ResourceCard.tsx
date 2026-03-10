@@ -28,13 +28,13 @@ const fileTypeStyles: {
 } = {
   pdf: {
     bg: "bg-[#DF8142]", // Caramel
-    text: "text-[#5A270F]", // Seal Brown
+    text: "text-[#5A270F] dark:text-[#EEB38C]", // Seal Brown
     icon: FileText,
     light: "bg-[#EEB38C]/20", // Buff
   },
   docx: {
     bg: "bg-[#EEB38C]", // Buff
-    text: "text-[#6C3B1C]", // Kobicha
+    text: "text-[#6C3B1C] dark:text-[#EEB38C]/80", // Kobicha
     icon: FileText,
     light: "bg-[#EEB38C]/10",
   },
@@ -64,13 +64,13 @@ const fileTypeStyles: {
   },
   skp: {
     bg: "bg-[#DF8142]", // Caramel
-    text: "text-[#5A270F]", // Seal Brown
+    text: "text-[#5A270F] dark:text-[#EEB38C]", // Seal Brown
     icon: Package,
     light: "bg-[#DF8142]/10",
   },
   default: {
     bg: "bg-[#92664A]", // Raw Umber
-    text: "text-[#5A270F]",
+    text: "text-[#5A270F] dark:text-[#EEB38C]",
     icon: Layers,
     light: "bg-[#92664A]/10",
   },
@@ -137,7 +137,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
     : "Anonymous Architect";
 
   return (
-    <div className="group relative bg-white rounded-3xl border border-[#EEB38C]/30 shadow-md hover:shadow-[0_20px_40px_-15px_rgba(90,39,15,0.15)] hover:-translate-y-1 transition-all duration-500 flex flex-col overflow-hidden h-full animate-in fade-in slide-in-from-bottom-4">
+    <div className="group relative bg-white dark:bg-card rounded-3xl border border-[#D9D9C2] dark:border-white/10 shadow-md hover:shadow-[0_20px_40px_-15px_rgba(90,39,15,0.15)] dark:hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] hover:-translate-y-1 transition-all duration-500 flex flex-col overflow-hidden h-full animate-in fade-in slide-in-from-bottom-4">
       {/* Visual Header Node */}
       <div className="relative h-40 bg-[#5A270F] overflow-hidden">
         {/* Abstract Background pattern */}
@@ -150,7 +150,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
         <div className="absolute top-6 left-6 z-10">
           <div className="flex items-center gap-3">
             <div
-              className={`h-10 w-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shadow-xl`}
+              className={`h-10 w-10 rounded-xl bg-white/10 dark:bg-card/20 backdrop-blur-md border border-white/20 flex items-center justify-center text-white dark:text-[#EEB38C] shadow-xl`}
             >
               <TypeIcon className="h-5 w-5" />
             </div>
@@ -160,9 +160,9 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
               </span>
               {resource.averageRating !== undefined &&
                 resource.averageRating > 0 && (
-                  <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/10 backdrop-blur-md rounded-lg border border-white/10 w-fit">
+                  <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/10 dark:bg-card/20 backdrop-blur-md rounded-lg border border-white/10 w-fit">
                     <Star className="h-3 w-3 text-[#DF8142] fill-[#DF8142]" />
-                    <span className="text-[10px] font-black text-white">
+                    <span className="text-[10px] font-black text-white dark:text-[#EEB38C]">
                       {resource.averageRating.toFixed(1)}
                     </span>
                   </div>
@@ -179,13 +179,13 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             aria-label={
               isFavorite ? "Remove from favorites" : "Add to favorites"
             }
-            className="absolute top-6 right-6 z-20 p-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg hover:bg-white/20 transition-all active:scale-95 group/fav"
+            className="absolute top-6 right-6 z-20 p-2 rounded-full bg-white/10 dark:bg-card/20 backdrop-blur-md border border-white/20 shadow-lg hover:bg-white/20 dark:hover:bg-card/30 transition-all active:scale-95 group/fav"
           >
             <Heart
               className={`h-4 w-4 transition-all duration-300 ${
                 isFavorite
                   ? "fill-[#DF8142] text-[#DF8142]"
-                  : "text-white group-hover/fav:text-[#DF8142]"
+                  : "text-white dark:text-[#EEB38C] group-hover/fav:text-[#DF8142]"
               }`}
             />
           </button>
@@ -210,22 +210,22 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
       </div>
 
       {/* Content Intelligence Body */}
-      <div className="p-6 pb-2 flex-grow flex flex-col">
-        <h3 className="text-lg font-bold text-[#5A270F] tracking-tight leading-[1.3] mb-4 group-hover:text-[#DF8142] transition-colors">
+      <div className="p-6 pb-2 flex-grow flex flex-col transition-colors duration-500">
+        <h3 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight hover:text-[#DF8142] dark:hover:text-[#DF8142] transition-colors line-clamp-2 leading-tight">
           <Link to={detailPath} className="line-clamp-2">
             {title}
           </Link>
         </h3>
 
-        <div className="flex items-center gap-3 mb-6 p-3 bg-[#EEB38C]/10 rounded-xl border border-[#EEB38C]/30 group-hover:bg-[#DF8142]/5 group-hover:border-[#DF8142]/20 transition-all duration-300">
-          <div className="h-8 w-8 rounded-lg bg-white border border-[#EEB38C]/30 flex items-center justify-center text-[#92664A] shadow-sm">
+        <div className="flex items-center gap-3 mb-6 p-3 bg-[#EEB38C]/10 dark:bg-white/5 rounded-xl border border-[#EEB38C]/30 dark:border-white/10 group-hover:bg-[#DF8142]/5 group-hover:border-[#DF8142]/20 transition-all duration-300">
+          <div className="h-8 w-8 rounded-lg bg-white dark:bg-card dark:bg-[#2A1205] border border-[#EEB38C]/30 dark:border-white/10 flex items-center justify-center text-[#92664A] dark:text-[#EEB38C]/40 shadow-sm">
             <User className="h-4 w-4" />
           </div>
           <div className="overflow-hidden">
-            <p className="text-[8px] font-bold text-[#92664A] uppercase tracking-widest leading-none mb-1">
+            <p className="text-[8px] font-bold text-[#92664A] dark:text-[#92664A] uppercase tracking-widest leading-none mb-1">
               Authority Node
             </p>
-            <p className="text-xs font-bold text-[#6C3B1C] truncate leading-none">
+            <p className="text-xs font-bold text-[#6C3B1C] dark:text-[#EEB38C] truncate leading-none">
               {author || uploaderName}
             </p>
           </div>
@@ -236,13 +236,13 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             keywords.slice(0, 3).map((keyword) => (
               <span
                 key={keyword}
-                className="text-[9px] font-bold uppercase tracking-widest bg-[#F5F5DC] text-[#6C3B1C] px-3 py-1.5 rounded-lg border border-[#92664A]/20 hover:bg-[#5A270F] hover:text-white transition-all duration-300 cursor-default"
+                className="text-[9px] font-bold uppercase tracking-widest bg-[#F5F5DC] dark:bg-white/10 text-[#6C3B1C] dark:text-[#EEB38C] px-3 py-1.5 rounded-lg border border-[#92664A]/20 hover:bg-[#5A270F] dark:hover:bg-primary dark:hover:text-white hover:text-white transition-all duration-300 cursor-default"
               >
                 {keyword}
               </span>
             ))
           ) : (
-            <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400 italic">
+            <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400 dark:text-white/20 italic transition-colors">
               No Metadata Tags
             </span>
           )}
@@ -282,18 +282,18 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
       <div className="mt-auto px-6 pb-6">
         <div className="flex items-center justify-between mb-4 px-1">
           <div className="flex items-center gap-2 group/stat">
-            <div className="h-6 w-6 rounded-lg bg-[#EEB38C]/10 flex items-center justify-center text-[#92664A] group-hover/stat:bg-[#DF8142]/10 group-hover/stat:text-[#DF8142] transition-colors">
+            <div className="h-6 w-6 rounded-lg bg-[#EEB38C]/10 dark:bg-white/10 flex items-center justify-center text-[#92664A] dark:text-[#92664A] group-hover/stat:bg-[#DF8142]/10 group-hover/stat:text-[#DF8142] transition-colors">
               <Download className="h-3 w-3" />
             </div>
-            <span className="text-[10px] font-bold text-[#5A270F] tracking-wider">
+            <span className="text-[10px] font-bold text-[#5A270F] dark:text-[#EEB38C] tracking-wider">
               {downloadCount.toLocaleString()}
             </span>
           </div>
           <div className="flex items-center gap-2 group/stat">
-            <div className="h-6 w-6 rounded-lg bg-[#EEB38C]/10 flex items-center justify-center text-[#92664A] group-hover/stat:bg-[#DF8142]/10 group-hover/stat:text-[#DF8142] transition-colors">
+            <div className="h-6 w-6 rounded-lg bg-[#EEB38C]/10 dark:bg-white/10 flex items-center justify-center text-[#92664A] dark:text-[#92664A] group-hover/stat:bg-[#DF8142]/10 group-hover/stat:text-[#DF8142] transition-colors">
               <Calendar className="h-3 w-3" />
             </div>
-            <span className="text-[10px] font-bold text-[#5A270F] tracking-wider">
+            <span className="text-[10px] font-bold text-[#5A270F] dark:text-[#EEB38C] tracking-wider">
               {new Date(uploadedAt).toLocaleDateString(undefined, {
                 month: "short",
                 year: "numeric",
@@ -311,7 +311,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             )}`}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center gap-2 py-3 bg-[#EEB38C]/20 text-[#6C3B1C] rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-[#5A270F] hover:text-[#EEB38C] transition-all shadow-sm active:scale-95"
+            className="flex items-center justify-center gap-2 py-3 bg-[#EEB38C]/20 dark:bg-white/5 text-[#6C3B1C] dark:text-[#EEB38C] rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-[#5A270F] dark:hover:bg-primary/20 hover:text-[#EEB38C] transition-all shadow-sm active:scale-95 border border-transparent dark:border-white/5"
           >
             <Eye className="h-3.5 w-3.5" />
             Scan

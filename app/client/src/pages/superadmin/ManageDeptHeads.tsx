@@ -141,7 +141,7 @@ const ManageDeptHeads = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] animate-pulse">
         <Cpu className="h-12 w-12 text-primary/90 mb-4 animate-spin" />
-        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-gray-500">
+        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-gray-500 dark:text-white/40">
           Decrypting Authority Matrix...
         </p>
       </div>
@@ -154,7 +154,7 @@ const ManageDeptHeads = () => {
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#DF8142]/20 blur-[100px] -translate-y-1/2 translate-x-1/2 group-hover:bg-[#DF8142]/30 transition-all duration-1000" />
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EEB38C]/20 border border-[#EEB38C]/30 rounded-full text-[10px] font-black uppercase tracking-widest text-[#EEB38C] mb-6 shadow-sm">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EEB38C]/20 border border-[#EEB38C]/30 dark:border-white/5 rounded-full text-[10px] font-black uppercase tracking-widest text-[#EEB38C] mb-6 shadow-sm">
               <ShieldAlert className="h-3 w-3" /> System Developer Interface
             </div>
             <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
@@ -173,7 +173,7 @@ const ManageDeptHeads = () => {
               resetForm();
               setIsModalOpen(true);
             }}
-            className="px-10 py-5 bg-white text-[#2A1205] text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#EEB38C] hover:text-[#2A1205] transition-all shadow-2xl shadow-black/20 active:scale-95 flex items-center gap-4 group"
+            className="px-10 py-5 bg-white dark:bg-card text-[#2A1205] text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#EEB38C] hover:text-[#2A1205] transition-all shadow-2xl shadow-black/20 active:scale-95 flex items-center gap-4 group"
           >
             <UserPlus className="h-5 w-5 group-hover:rotate-12 transition-transform text-[#DF8142] group-hover:text-[#2A1205]" />
             Appoint Dept Head
@@ -184,13 +184,13 @@ const ManageDeptHeads = () => {
       {/* Control Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white p-6 sm:p-8 rounded-[2.5rem] border border-[#D9D9C2] shadow-xl shadow-slate-200/50">
+          <div className="bg-white dark:bg-card p-6 sm:p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-xl shadow-slate-200/50">
             <div className="relative group mb-8">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 group-focus-within:text-primary/90 transition-colors" />
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 dark:text-white/40 group-focus-within:text-primary/90 transition-colors" />
               <input
                 type="text"
                 placeholder="Search Authority Nodes..."
-                className="w-full h-16 pl-16 pr-8 bg-[#EFEDED] border border-[#D9D9C2] rounded-3xl text-sm font-bold focus:ring-4 focus:ring-primary/10 focus:border-primary/90 outline-none transition-all"
+                className="w-full h-16 pl-16 pr-8 bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-3xl text-sm font-bold focus:ring-4 focus:ring-primary/10 focus:border-primary/90 outline-none transition-all"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -200,7 +200,7 @@ const ManageDeptHeads = () => {
               {filteredHeads.map((head) => (
                 <div
                   key={head.id}
-                  className="group relative bg-[#faf9f6] border border-[#D9D9C2] rounded-3xl p-6 hover:border-[#DF8142]/40 hover:shadow-2xl hover:shadow-[#DF8142]/5 transition-all duration-500"
+                  className="group relative bg-[#faf9f6] border border-[#D9D9C2] dark:border-white/10 rounded-3xl p-6 hover:border-[#DF8142]/40 hover:shadow-2xl hover:shadow-[#DF8142]/5 transition-all duration-500"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                     <div className="flex items-center gap-6">
@@ -213,10 +213,10 @@ const ManageDeptHeads = () => {
                           {head.last_name || head.lastName}
                         </h3>
                         <div className="flex flex-wrap items-center gap-3">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] bg-[#EEB38C]/20 px-3 py-1 rounded-full border border-[#EEB38C]/30 shrink-0">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] bg-[#EEB38C]/20 px-3 py-1 rounded-full border border-[#EEB38C]/30 dark:border-white/5 shrink-0">
                             Department Head
                           </span>
-                          <span className="text-[10px] font-bold text-gray-500 truncate">
+                          <span className="text-[10px] font-bold text-gray-500 dark:text-white/40 truncate">
                             {head.email}
                           </span>
                         </div>
@@ -242,9 +242,9 @@ const ManageDeptHeads = () => {
                 </div>
               ))}
               {filteredHeads.length === 0 && (
-                <div className="py-20 text-center bg-[#EFEDED] rounded-[2rem] border border-dashed border-[#D9D9C2]">
+                <div className="py-20 text-center bg-[#EFEDED] dark:bg-background rounded-[2rem] border border-dashed border-[#D9D9C2] dark:border-white/10">
                   <Globe className="h-12 w-12 text-[#EEB38C] mx-auto mb-4" />
-                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-white/40">
                     No Authority Nodes Found
                   </p>
                 </div>
@@ -316,7 +316,7 @@ const ManageDeptHeads = () => {
             className="absolute inset-0 bg-[#2A1205]/60 backdrop-blur-2xl animate-in fade-in duration-500"
             onClick={() => setIsModalOpen(false)}
           />
-          <div className="relative w-full max-w-xl bg-white rounded-[3.5rem] shadow-2xl border border-white overflow-hidden animate-in zoom-in-95 duration-500">
+          <div className="relative w-full max-w-xl bg-white dark:bg-card rounded-[3.5rem] shadow-2xl border border-white overflow-hidden animate-in zoom-in-95 duration-500">
             <div className="bg-gradient-to-br from-[#5A270F] to-[#2A1205] p-12 text-white overflow-hidden relative">
               <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/20 blur-[80px]" />
               <div className="relative z-10">
@@ -336,7 +336,7 @@ const ManageDeptHeads = () => {
             <form onSubmit={handleCreateOrUpdate} className="p-12 space-y-8">
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-2">
+                  <label className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest ml-2">
                     First Name
                   </label>
                   <input
@@ -344,7 +344,7 @@ const ManageDeptHeads = () => {
                     id="firstName"
                     title="First Name"
                     placeholder="Enter first name"
-                    className="w-full h-14 px-6 bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl text-sm font-bold focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 text-[#2A1205]"
+                    className="w-full h-14 px-6 bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 dark:text-white/30 text-[#2A1205]"
                     value={formData.firstName}
                     onChange={(e) =>
                       setFormData({ ...formData, firstName: e.target.value })
@@ -352,7 +352,7 @@ const ManageDeptHeads = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-2">
+                  <label className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest ml-2">
                     Last Name
                   </label>
                   <input
@@ -360,7 +360,7 @@ const ManageDeptHeads = () => {
                     id="lastName"
                     title="Last Name"
                     placeholder="Enter last name"
-                    className="w-full h-14 px-6 bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl text-sm font-bold focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 text-[#2A1205]"
+                    className="w-full h-14 px-6 bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 dark:text-white/30 text-[#2A1205]"
                     value={formData.lastName}
                     onChange={(e) =>
                       setFormData({ ...formData, lastName: e.target.value })
@@ -370,7 +370,7 @@ const ManageDeptHeads = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-2">
+                <label className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest ml-2">
                   Official Email
                 </label>
                 <input
@@ -379,7 +379,7 @@ const ManageDeptHeads = () => {
                   id="email"
                   title="Official Email"
                   placeholder="e.g. head@department.edu"
-                  className="w-full h-14 px-6 bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl text-sm font-bold focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 text-[#2A1205]"
+                  className="w-full h-14 px-6 bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 dark:text-white/30 text-[#2A1205]"
                   value={formData.email}
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
@@ -388,7 +388,7 @@ const ManageDeptHeads = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-2">
+                <label className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest ml-2">
                   Access Key{" "}
                   {modalMode === "edit"
                     ? "(Leave blank to keep current)"
@@ -401,7 +401,7 @@ const ManageDeptHeads = () => {
                     id="password"
                     title="Access Key"
                     placeholder="••••••••"
-                    className="w-full h-14 pl-6 pr-14 bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl text-sm font-bold focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 text-[#2A1205]"
+                    className="w-full h-14 pl-6 pr-14 bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 dark:text-white/30 text-[#2A1205]"
                     value={formData.password}
                     onChange={(e) =>
                       setFormData({ ...formData, password: e.target.value })
@@ -429,7 +429,7 @@ const ManageDeptHeads = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-[#2A1205] transition-colors"
+                  className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-white/40 hover:text-[#2A1205] transition-colors"
                 >
                   Terminate Operation
                 </button>

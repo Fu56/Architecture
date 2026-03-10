@@ -37,6 +37,7 @@ import PostBlog from "./pages/library/PostBlog";
 import Privacy from "./pages/Privacy"; // Added
 import Terms from "./pages/Terms"; // Added
 import ScrollToTop from "./components/utils/ScrollToTop"; // Added
+import { ThemeProvider } from "./context/ThemeContext";
 
 // Placeholder pages for static content
 import AboutUs from "./pages/AboutUs";
@@ -46,7 +47,7 @@ import News from "./pages/News";
 
 const App = () => {
   return (
-    <>
+    <ThemeProvider>
       <ScrollToTop />
       <Routes>
         <Route element={<Layout />}>
@@ -136,7 +137,7 @@ const App = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
-    </>
+    </ThemeProvider>
   );
 };
 

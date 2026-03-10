@@ -458,10 +458,10 @@ const ManageUsers = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
         <div className="relative">
-          <div className="h-16 w-16 border-4 border-[#D9D9C2] border-t-[#DF8142] rounded-full animate-spin" />
+          <div className="h-16 w-16 border-4 border-[#D9D9C2] dark:border-white/10 border-t-[#DF8142] rounded-full animate-spin" />
           <Loader2 className="h-8 w-8 text-[#DF8142] animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         </div>
-        <p className="text-[10px] font-black text-[#92664A] uppercase tracking-[0.4em]">
+        <p className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em]">
           Synchronizing Registry...
         </p>
       </div>
@@ -471,22 +471,22 @@ const ManageUsers = () => {
   return (
     <div className="space-y-8">
       {/* Top Controller */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-[#EFEDED] p-6 rounded-[2.5rem] border border-[#D9D9C2] shadow-sm">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-[#EFEDED] dark:bg-card p-6 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-sm transition-all duration-500">
         <div className="relative w-full md:w-96 group">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#92664A] group-focus-within:text-[#DF8142] transition-colors" />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#92664A] dark:text-foreground/40 group-focus-within:text-[#DF8142] transition-colors" />
           <input
             type="text"
             placeholder="Search specific user node..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-12 pl-12 pr-6 bg-white border border-[#D9D9C2] rounded-2xl text-sm font-bold text-[#5A270F] focus:ring-2 focus:ring-[#DF8142]/20 focus:border-[#DF8142]/90 outline-none transition-all placeholder:text-[#92664A]/50"
+            className="w-full h-12 pl-12 pr-6 bg-white dark:bg-card dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-2xl text-sm font-bold text-[#5A270F] dark:text-white focus:ring-2 focus:ring-[#DF8142]/20 focus:border-[#DF8142]/90 outline-none transition-all placeholder:text-[#92664A] dark:text-[#EEB38C]/40/50 dark:placeholder-white/20"
           />
         </div>
         <div className="flex gap-3 w-full md:w-auto">
           <div className="relative">
             <button
               onClick={() => setIsDownloadFormatOpen(!isDownloadFormatOpen)}
-              className="px-6 py-3 bg-[#EEB38C]/10 text-[#5A270F] text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#EEB38C] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 border border-[#D9D9C2]"
+              className="px-6 py-3 bg-[#EEB38C]/10 dark:bg-primary/10 text-[#5A270F] dark:text-[#EEB38C] text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#EEB38C] dark:hover:bg-primary hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 border border-[#D9D9C2] dark:border-white/10"
             >
               <Download className="h-4 w-4" />
               Download
@@ -495,22 +495,22 @@ const ManageUsers = () => {
               />
             </button>
             {isDownloadFormatOpen && (
-              <div className="absolute top-14 right-0 w-40 bg-white border border-[#D9D9C2] rounded-xl shadow-xl overflow-hidden z-20">
+              <div className="absolute top-14 right-0 w-40 bg-white dark:bg-card border border-[#D9D9C2] dark:border-white/10 rounded-xl shadow-xl overflow-hidden z-20">
                 <button
                   onClick={() => handleDownload("csv")}
-                  className="w-full px-4 py-3 text-left text-xs font-bold text-[#5A270F] hover:bg-[#EFEDED] transition-colors"
+                  className="w-full px-4 py-3 text-left text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:bg-background dark:hover:bg-white/10 dark:bg-card/10 transition-colors"
                 >
                   Export as CSV
                 </button>
                 <button
                   onClick={() => handleDownload("excel")}
-                  className="w-full px-4 py-3 text-left text-xs font-bold text-[#5A270F] hover:bg-[#EFEDED] transition-colors border-t border-[#EFEDED]"
+                  className="w-full px-4 py-3 text-left text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:bg-background dark:hover:bg-white/10 dark:bg-card/10 transition-colors border-t border-[#EFEDED] dark:border-white/5"
                 >
                   Export as Excel
                 </button>
                 <button
                   onClick={() => handleDownload("pdf")}
-                  className="w-full px-4 py-3 text-left text-xs font-bold text-[#5A270F] hover:bg-[#EFEDED] transition-colors border-t border-[#EFEDED]"
+                  className="w-full px-4 py-3 text-left text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:bg-background dark:hover:bg-white/10 dark:bg-card/10 transition-colors border-t border-[#EFEDED] dark:border-white/5"
                 >
                   Export as PDF
                 </button>
@@ -522,7 +522,7 @@ const ManageUsers = () => {
             <button
               onClick={() => setIsBroadcastModalOpen(true)}
               title="Engage Global Intelligence Relay"
-              className="flex-1 md:flex-none px-6 py-3 bg-[#DF8142]/10 text-[#DF8142] text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#DF8142] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3 border border-[#DF8142]/20"
+              className="flex-1 md:flex-none px-6 py-3 bg-[#DF8142]/10 dark:bg-primary/10 text-[#DF8142] dark:text-[#EEB38C] text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#DF8142] dark:hover:bg-primary hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3 border border-[#DF8142]/20 dark:border-white/10"
             >
               <Zap className="h-4 w-4" />
               Global Broadcast
@@ -539,7 +539,7 @@ const ManageUsers = () => {
       </div>
 
       {/* User Registry Table */}
-      <div className="bg-white rounded-[3rem] border border-[#D9D9C2] shadow-2xl shadow-slate-200 overflow-hidden">
+      <div className="bg-white dark:bg-card rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 shadow-2xl dark:shadow-black/20 overflow-hidden transition-all duration-500">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
@@ -561,7 +561,7 @@ const ManageUsers = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-slate-50 dark:divide-white/5">
               {filteredUsers.map((user) => {
                 const roleName =
                   typeof user.role === "string"
@@ -570,7 +570,7 @@ const ManageUsers = () => {
                 return (
                   <tr
                     key={user.id}
-                    className="hover:bg-[#EFEDED]/50 transition-colors group"
+                    className="hover:bg-[#EFEDED] dark:bg-background/50 dark:hover:bg-white/5 dark:bg-card/5 transition-colors group"
                   >
                     <td className="px-10 py-6 whitespace-nowrap">
                       <div className="flex items-center gap-5">
@@ -578,11 +578,11 @@ const ManageUsers = () => {
                           {(user.firstName || user.first_name)?.[0]}
                         </div>
                         <div>
-                          <div className="text-sm font-black text-[#5A270F]">
+                          <div className="text-sm font-black text-[#5A270F] dark:text-foreground">
                             {user.firstName || user.first_name}{" "}
                             {user.lastName || user.last_name}
                           </div>
-                          <div className="text-xs text-[#92664A] font-medium">
+                          <div className="text-xs text-[#92664A] dark:text-foreground/40 font-medium">
                             {user.email}
                           </div>
                           <div className="text-[10px] text-[#DF8142] font-black uppercase tracking-widest mt-0.5">
@@ -595,7 +595,7 @@ const ManageUsers = () => {
                       </div>
                     </td>
                     <td className="px-8 py-6 whitespace-nowrap">
-                      <span className="text-xs font-mono font-black text-gray-500 uppercase tracking-widest bg-[#EFEDED] px-3 py-1 rounded-lg border border-[#D9D9C2]">
+                      <span className="text-xs font-mono font-black text-gray-500 dark:text-foreground/40 uppercase tracking-widest bg-[#EFEDED] dark:bg-white/5 px-3 py-1 rounded-lg border border-[#D9D9C2] dark:border-white/10">
                         {user.university_id ||
                           (user as { universityId?: string }).universityId ||
                           "EXT-NODE"}
@@ -605,10 +605,10 @@ const ManageUsers = () => {
                       <span
                         className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${
                           roleName === "Admin"
-                            ? "bg-[#92664A]/10 text-[#5A270F] border-[#92664A]/20"
+                            ? "bg-[#92664A]/10 dark:bg-primary/10 text-[#5A270F] dark:text-[#EEB38C] border-[#92664A]/20 dark:border-white/10"
                             : roleName === "Faculty"
-                              ? "bg-[#DF8142]/10 text-[#DF8142] border-[#DF8142]/20"
-                              : "bg-[#EFEDED] text-[#5A270F]/80 border-[#D9D9C2]"
+                              ? "bg-[#DF8142]/10 dark:bg-primary/10 text-[#DF8142] dark:text-[#EEB38C] border-[#DF8142]/20 dark:border-white/10"
+                              : "bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C]/80 dark:text-foreground/60 border-[#D9D9C2] dark:border-white/10"
                         }`}
                       >
                         <Shield className="h-3 w-3" />
@@ -629,10 +629,10 @@ const ManageUsers = () => {
                         <span
                           className={`text-[10px] font-black uppercase tracking-widest ${
                             user.status === "active"
-                              ? "text-[#5A270F]"
+                              ? "text-[#5A270F] dark:text-foreground"
                               : user.status === "pending_approval"
-                                ? "text-[#DF8142]"
-                                : "text-rose-600"
+                                ? "text-[#DF8142] dark:text-[#EEB38C]"
+                                : "text-rose-600 dark:text-rose-400"
                           }`}
                         >
                           {user.status === "active"
@@ -650,7 +650,7 @@ const ManageUsers = () => {
                             setSelectedUser(user);
                             setIsNotifyModalOpen(true);
                           }}
-                          className="p-3 text-[#92664A] hover:text-[#DF8142] hover:bg-[#DF8142]/10 rounded-xl transition-all"
+                          className="p-3 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] hover:bg-[#DF8142]/10 rounded-xl transition-all"
                           title="Direct Transmission"
                         >
                           <MessageSquare className="h-4 w-4" />
@@ -676,7 +676,7 @@ const ManageUsers = () => {
                             <>
                               <button
                                 onClick={() => handleOpenEdit(user)}
-                                className="p-3 text-[#92664A] hover:text-[#DF8142] hover:bg-[#DF8142]/10 rounded-xl transition-all"
+                                className="p-3 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] hover:bg-[#DF8142]/10 rounded-xl transition-all"
                                 title="Configure"
                               >
                                 <Edit2 className="h-4 w-4" />
@@ -688,7 +688,7 @@ const ManageUsers = () => {
                               ) && (
                                 <button
                                   onClick={() => handleDelete(user.id)}
-                                  className="p-3 text-[#92664A] hover:text-rose-600 hover:bg-red-50 rounded-xl transition-all"
+                                  className="p-3 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-rose-600 hover:bg-red-50 rounded-xl transition-all"
                                   title="Terminate"
                                 >
                                   <Trash2 className="h-4 w-4" />
@@ -706,10 +706,10 @@ const ManageUsers = () => {
           {filteredUsers.length === 0 && (
             <div className="py-24 text-center">
               <UserIcon className="h-16 w-16 text-slate-100 mx-auto mb-6" />
-              <h3 className="text-xl font-black text-[#5A270F] tracking-tight">
+              <h3 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight">
                 No Specimen Detected
               </h3>
-              <p className="text-xs text-[#92664A] font-medium mt-2">
+              <p className="text-xs text-[#92664A] dark:text-[#EEB38C]/40 font-medium mt-2">
                 The registry contains no matching user nodes.
               </p>
             </div>
@@ -724,7 +724,7 @@ const ManageUsers = () => {
             className="absolute inset-0 bg-[#2A1205]/40 backdrop-blur-xl animate-in fade-in duration-500"
             onClick={() => setIsModalOpen(false)}
           />
-          <div className="relative w-full max-w-lg bg-white rounded-[2rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
+          <div className="relative w-full max-w-lg bg-white dark:bg-card rounded-[2rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white dark:border-white/10 overflow-hidden animate-in zoom-in-95 duration-500">
             <div className="bg-[#5A270F] px-8 py-6 relative overflow-hidden group/modal">
               <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/20 blur-[60px] transition-all group-hover/modal:bg-[#DF8142]/30" />
               <div className="relative z-10 flex justify-between items-start">
@@ -742,7 +742,7 @@ const ManageUsers = () => {
                   type="button"
                   title="Abort Initialization"
                   onClick={() => setIsModalOpen(false)}
-                  className="p-2 hover:bg-white/10 rounded-xl text-[#EEB38C] transition-colors"
+                  className="p-2 hover:bg-white/10 dark:bg-card/10 rounded-xl text-[#EEB38C] transition-colors"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -752,7 +752,7 @@ const ManageUsers = () => {
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-widest ml-1">
                     First Name
                   </label>
                   <div className="relative">
@@ -766,7 +766,7 @@ const ManageUsers = () => {
                         if (errors.firstName)
                           setErrors((prev) => ({ ...prev, firstName: "" }));
                       }}
-                      className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.firstName ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                      className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none ${errors.firstName ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                       placeholder="e.g. John"
                     />
                     {errors.firstName && (
@@ -775,7 +775,7 @@ const ManageUsers = () => {
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                   <label className="text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-widest ml-1">
                     Last Name
                   </label>
                   <div className="relative">
@@ -789,7 +789,7 @@ const ManageUsers = () => {
                         if (errors.lastName)
                           setErrors((prev) => ({ ...prev, lastName: "" }));
                       }}
-                      className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.lastName ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                      className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none ${errors.lastName ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                       placeholder="e.g. Doe"
                     />
                     {errors.lastName && (
@@ -801,7 +801,7 @@ const ManageUsers = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                     University ID
                   </label>
                   <input
@@ -811,11 +811,11 @@ const ManageUsers = () => {
                     value={formData.universityId}
                     onChange={handleInputChange}
                     placeholder="U-ARCH-XXXX"
-                    className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none"
+                    className="w-full bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                     Email Address
                   </label>
                   <div className="relative">
@@ -830,7 +830,7 @@ const ManageUsers = () => {
                         if (errors.email)
                           setErrors((prev) => ({ ...prev, email: "" }));
                       }}
-                      className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.email ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                      className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.email ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                       placeholder="node@nexus.edu"
                     />
                     {errors.email && (
@@ -842,7 +842,7 @@ const ManageUsers = () => {
 
               {modalMode === "create" && (
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                     Initial Authorization Key
                   </label>
                   <div className="relative flex items-center">
@@ -858,13 +858,13 @@ const ManageUsers = () => {
                         if (errors.password)
                           setErrors((prev) => ({ ...prev, password: "" }));
                       }}
-                      className={`w-full bg-[#EFEDED] border rounded-xl pl-4 pr-12 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.password ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                      className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl pl-4 pr-12 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.password ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                     />
                     <button
                       type="button"
                       title="Auto-Generate Secret Key"
                       onClick={generatePassword}
-                      className="absolute right-2 p-1.5 hover:bg-[#DF8142]/10 rounded-lg text-[#92664A] hover:text-[#DF8142] transition-colors"
+                      className="absolute right-2 p-1.5 hover:bg-[#DF8142]/10 rounded-lg text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] transition-colors"
                     >
                       <RefreshCw className="h-4 w-4" />
                     </button>
@@ -881,7 +881,7 @@ const ManageUsers = () => {
               )}
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                   Role Authorization
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -909,7 +909,7 @@ const ManageUsers = () => {
                           className={`flex-1 px-3 py-2 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all ${
                             isSelected
                               ? "bg-[#5A270F] border-[#5A270F] text-white shadow-lg scale-105"
-                              : "bg-white border-[#D9D9C2] text-[#92664A] hover:border-[#DF8142]"
+                              : "bg-white dark:bg-card border-[#D9D9C2] dark:border-white/10 text-[#92664A] dark:text-[#EEB38C]/40 hover:border-[#DF8142]"
                           }`}
                         >
                           {role}
@@ -933,7 +933,7 @@ const ManageUsers = () => {
               <div className="space-y-4 pt-2">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                    <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                       Department
                     </label>
                     <div className="relative">
@@ -944,7 +944,7 @@ const ManageUsers = () => {
                         value={formData.department}
                         onChange={handleInputChange}
                         placeholder="e.g. Design Studio"
-                        className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.department ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                        className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.department ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                       />
                       {errors.department && (
                         <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
@@ -955,7 +955,7 @@ const ManageUsers = () => {
                     ["Faculty", "Admin", "DepartmentHead"].includes(r),
                   ) && (
                     <div className="space-y-1">
-                      <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                      <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                         Worker ID
                       </label>
                       <div className="relative">
@@ -966,7 +966,7 @@ const ManageUsers = () => {
                           value={formData.workerId}
                           onChange={handleInputChange}
                           placeholder="e.g. F-001X"
-                          className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.workerId ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                          className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.workerId ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                         />
                         {errors.workerId && (
                           <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
@@ -978,7 +978,7 @@ const ManageUsers = () => {
 
                 {formData.roleNames.includes("Faculty") && (
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                    <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                       Academic Specialization
                     </label>
                     <div className="relative">
@@ -989,7 +989,7 @@ const ManageUsers = () => {
                         value={formData.specialization}
                         onChange={handleInputChange}
                         placeholder="e.g. Parametric Architecture"
-                        className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.specialization ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                        className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.specialization ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                       />
                       {errors.specialization && (
                         <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
@@ -1001,7 +1001,7 @@ const ManageUsers = () => {
                 {formData.roleNames.includes("Student") && (
                   <div className="grid grid-cols-3 gap-3 pt-2">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                      <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                         Batch
                       </label>
                       <div className="relative">
@@ -1013,7 +1013,7 @@ const ManageUsers = () => {
                           value={formData.batch}
                           onChange={handleInputChange}
                           placeholder="2024"
-                          className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.batch ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                          className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.batch ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                         />
                         {errors.batch && (
                           <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
@@ -1021,7 +1021,7 @@ const ManageUsers = () => {
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                      <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                         Year
                       </label>
                       <div className="relative">
@@ -1033,7 +1033,7 @@ const ManageUsers = () => {
                           value={formData.year}
                           onChange={handleInputChange}
                           placeholder="1"
-                          className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.year ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                          className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.year ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                         />
                         {errors.year && (
                           <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
@@ -1041,7 +1041,7 @@ const ManageUsers = () => {
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                      <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                         Semester
                       </label>
                       <div className="relative">
@@ -1053,7 +1053,7 @@ const ManageUsers = () => {
                           value={formData.semester}
                           onChange={handleInputChange}
                           placeholder="1"
-                          className={`w-full bg-[#EFEDED] border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] focus:border-[#DF8142] transition-all outline-none ${errors.semester ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                          className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.semester ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                         />
                         {errors.semester && (
                           <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
@@ -1068,7 +1068,7 @@ const ManageUsers = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-6 py-3 bg-[#EFEDED] text-[#92664A] text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#D9D9C2] transition-colors"
+                  className="flex-1 px-6 py-3 bg-[#EFEDED] dark:bg-background text-[#92664A] dark:text-[#EEB38C]/40 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#D9D9C2] transition-colors"
                 >
                   Cancel
                 </button>
@@ -1104,7 +1104,7 @@ const ManageUsers = () => {
             className="absolute inset-0 bg-[#2A1205]/40 backdrop-blur-xl animate-in fade-in duration-500"
             onClick={() => setIsNotifyModalOpen(false)}
           />
-          <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
+          <div className="relative w-full max-w-xl bg-white dark:bg-card rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
             <div className="bg-[#5A270F] px-10 py-8 relative overflow-hidden">
               <div className="relative z-10">
                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-2">
@@ -1118,14 +1118,14 @@ const ManageUsers = () => {
 
             <form onSubmit={handleNotifySubmit} className="p-10 space-y-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest ml-1">
                   Briefing Headline
                 </label>
                 <input
                   type="text"
                   required
                   placeholder="Intel objective..."
-                  className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm font-bold outline-none focus:ring-2 focus:ring-primary/20"
+                  className="w-full bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl px-5 py-3 text-sm font-bold outline-none focus:ring-2 focus:ring-primary/20"
                   value={notifyData.title}
                   onChange={(e) =>
                     setNotifyData({ ...notifyData, title: e.target.value })
@@ -1134,14 +1134,14 @@ const ManageUsers = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest ml-1">
                   Narrative Payload
                 </label>
                 <textarea
                   required
                   rows={4}
                   placeholder="Critical intelligence summary..."
-                  className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-none"
+                  className="w-full bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl px-5 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-none"
                   value={notifyData.message}
                   onChange={(e) =>
                     setNotifyData({ ...notifyData, message: e.target.value })
@@ -1153,7 +1153,7 @@ const ManageUsers = () => {
                 <button
                   type="button"
                   onClick={() => setIsNotifyModalOpen(false)}
-                  className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-[#92664A] hover:text-[#5A270F]"
+                  className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:text-[#EEB38C]"
                 >
                   Abort
                 </button>
@@ -1184,7 +1184,7 @@ const ManageUsers = () => {
             className="absolute inset-0 bg-[#2A1205]/40 backdrop-blur-xl animate-in fade-in duration-500"
             onClick={() => setIsBroadcastModalOpen(false)}
           />
-          <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
+          <div className="relative w-full max-w-xl bg-white dark:bg-card rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
             <div className="bg-[#5A270F] px-10 py-8 relative overflow-hidden group/broadcast">
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/20 blur-[50px] transition-all group-hover/broadcast:bg-[#DF8142]/30" />
               <div className="relative z-10 flex justify-between items-start">
@@ -1200,7 +1200,7 @@ const ManageUsers = () => {
                   type="button"
                   title="Abort Broadcast"
                   onClick={() => setIsBroadcastModalOpen(false)}
-                  className="p-2 hover:bg-white/10 rounded-xl text-[#EEB38C] transition-colors"
+                  className="p-2 hover:bg-white/10 dark:bg-card/10 rounded-xl text-[#EEB38C] transition-colors"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -1209,7 +1209,7 @@ const ManageUsers = () => {
 
             <form onSubmit={handleBroadcastSubmit} className="p-10 space-y-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                   Relay Headline
                 </label>
                 <div className="relative">
@@ -1217,7 +1217,7 @@ const ManageUsers = () => {
                     type="text"
                     title="Broadcast Headline"
                     placeholder="Enter universal objective..."
-                    className={`w-full bg-[#EFEDED] border rounded-2xl px-5 py-3 text-sm font-bold text-[#5A270F] outline-none focus:border-[#DF8142] transition-all ${errors.broadcastTitle ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                    className={`w-full bg-[#EFEDED] dark:bg-background border rounded-2xl px-5 py-3 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] outline-none focus:border-[#DF8142] transition-all ${errors.broadcastTitle ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                     value={notifyData.title}
                     onChange={(e) => {
                       setNotifyData({ ...notifyData, title: e.target.value });
@@ -1232,7 +1232,7 @@ const ManageUsers = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-[#92664A] uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                   Broadcast Payload
                 </label>
                 <div className="relative">
@@ -1240,7 +1240,7 @@ const ManageUsers = () => {
                     rows={4}
                     title="Broadcast Content"
                     placeholder="Distribute intelligence to all active nodes..."
-                    className={`w-full bg-[#EFEDED] border rounded-2xl px-5 py-3 text-sm text-[#5A270F] outline-none focus:border-[#DF8142] transition-all resize-none ${errors.broadcastMessage ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                    className={`w-full bg-[#EFEDED] dark:bg-background border rounded-2xl px-5 py-3 text-sm text-[#5A270F] dark:text-[#EEB38C] outline-none focus:border-[#DF8142] transition-all resize-none ${errors.broadcastMessage ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                     value={notifyData.message}
                     onChange={(e) => {
                       setNotifyData({ ...notifyData, message: e.target.value });
@@ -1261,7 +1261,7 @@ const ManageUsers = () => {
                 <button
                   type="button"
                   onClick={() => setIsBroadcastModalOpen(false)}
-                  className="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-[#92664A] hover:text-[#5A270F] transition-colors"
+                  className="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:text-[#EEB38C] transition-colors"
                 >
                   Abort Relay
                 </button>

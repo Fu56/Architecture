@@ -152,22 +152,22 @@ const PostAssignment = () => {
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       <Link
         to={`${basePath}/assignments`}
-        className="inline-flex items-center gap-2 text-[#92664A] hover:text-[#5A270F] font-bold text-sm uppercase tracking-widest mb-10 transition-colors"
+        className="inline-flex items-center gap-2 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:text-[#EEB38C] font-bold text-sm uppercase tracking-widest mb-10 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Assignments
       </Link>
 
       <div className="text-center mb-16">
-        <h1 className="text-5xl font-black text-[#5A270F] tracking-tight mb-4">
+        <h1 className="text-5xl font-black text-[#5A270F] dark:text-white tracking-tighter mb-4 transition-colors italic uppercase">
           Post Assignment
         </h1>
-        <p className="text-xl text-[#92664A] font-medium">
+        <p className="text-[11px] text-[#5A270F]/40 dark:text-[#EEB38C]/40 font-black uppercase tracking-widest transition-colors">
           Create a new academic brief for your students.
         </p>
       </div>
 
-      <div className="bg-white p-10 rounded-[3rem] shadow-2xl border border-[#EEB38C]/30 relative overflow-hidden">
+      <div className="bg-white dark:bg-card p-10 rounded-[3rem] shadow-2xl border border-[#EEB38C]/30 dark:border-white/10 relative overflow-hidden transition-all duration-500">
         {/* Decorative architectural elements */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#5A270F]/5 blur-2xl rounded-full -translate-x-1/2 translate-y-1/2" />
@@ -176,7 +176,7 @@ const PostAssignment = () => {
           <div className="grid md:grid-cols-2 gap-10">
             <div className="space-y-6">
               <div>
-                <label className="flex items-center gap-2 text-xs font-black text-[#92664A] uppercase tracking-widest mb-3 px-1">
+                <label className="flex items-center gap-2 text-xs font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest mb-3 px-1">
                   <FileText className="h-3.5 w-3.5 text-[#DF8142]" /> Assignment Title
                 </label>
                 <input
@@ -184,17 +184,17 @@ const PostAssignment = () => {
                   placeholder="e.g. Master Plan Urban Project - Phase 1"
                   value={metadata.title}
                   onChange={handleMetaChange}
-                  className={`w-full px-6 py-4 bg-[#EFEDED]/50 border ${
+                  className={`w-full px-6 py-4 bg-[#FAF8F4] dark:bg-white/5 border ${
                     errors.title
-                      ? "border-rose-400 bg-red-50/20"
-                      : "border-[#EEB38C]/40"
-                  } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-bold text-[#5A270F] placeholder:text-[#92664A]/30`}
+                      ? "border-rose-400 bg-red-50/10"
+                      : "border-[#D9D9C2] dark:border-white/10"
+                  } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-black uppercase tracking-widest text-[10px] text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/40 dark:placeholder-white/20`}
                 />
                 <FieldError message={errors.title} />
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-xs font-black text-[#92664A] uppercase tracking-widest mb-3 px-1">
+                <label className="flex items-center gap-2 text-xs font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest mb-3 px-1">
                   <Calendar className="h-3.5 w-3.5 text-[#DF8142]" /> Due Date & Time
                 </label>
                 <input
@@ -204,17 +204,17 @@ const PostAssignment = () => {
                   title="Due Date & Time"
                   value={metadata.due_date}
                   onChange={handleMetaChange}
-                  className={`w-full px-6 py-4 bg-[#EFEDED]/50 border ${
+                  className={`w-full px-6 py-4 bg-[#FAF8F4] dark:bg-white/5 border ${
                     errors.due_date
-                      ? "border-rose-400 bg-red-50/20"
-                      : "border-[#EEB38C]/40"
-                  } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-bold text-[#5A270F]`}
+                      ? "border-rose-400 bg-red-50/10"
+                      : "border-[#D9D9C2] dark:border-white/10"
+                  } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-black uppercase tracking-widest text-[10px] text-[#5A270F] dark:text-white`}
                 />
                 <FieldError message={errors.due_date} />
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-xs font-black text-[#92664A] uppercase tracking-widest mb-3 px-1">
+                <label className="flex items-center gap-2 text-xs font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest mb-3 px-1">
                   Target Audience
                 </label>
                 <div className="grid grid-cols-2 gap-4">
@@ -225,11 +225,11 @@ const PostAssignment = () => {
                       title="Target Academic Year"
                       value={metadata.academic_year}
                       onChange={handleMetaChange}
-                      className={`w-full px-6 py-4 bg-[#EFEDED]/50 border ${
+                      className={`w-full px-6 py-4 bg-[#FAF8F4] dark:bg-white/5 border ${
                         errors.academic_year
-                          ? "border-rose-400 bg-red-50/20"
-                          : "border-[#EEB38C]/40"
-                      } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-bold text-[#5A270F]`}
+                          ? "border-rose-400 bg-red-50/10"
+                          : "border-[#D9D9C2] dark:border-white/10"
+                      } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-black uppercase tracking-widest text-[10px] text-[#5A270F] dark:text-white`}
                     >
                       <option value="">Year</option>
                       {[1, 2, 3, 4, 5].map((y) => (
@@ -247,11 +247,11 @@ const PostAssignment = () => {
                       title="Academic Semester"
                       value={metadata.semester}
                       onChange={handleMetaChange}
-                      className={`w-full px-6 py-4 bg-[#EFEDED]/50 border ${
+                      className={`w-full px-6 py-4 bg-[#FAF8F4] dark:bg-white/5 border ${
                         errors.semester
-                          ? "border-rose-400 bg-red-50/20"
-                          : "border-[#EEB38C]/40"
-                      } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-bold text-[#5A270F]`}
+                          ? "border-rose-400 bg-red-50/10"
+                          : "border-[#D9D9C2] dark:border-white/10"
+                      } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-black uppercase tracking-widest text-[10px] text-[#5A270F] dark:text-white`}
                     >
                       <option value="">Semester</option>
                       {[1, 2].map((s) => (
@@ -266,7 +266,7 @@ const PostAssignment = () => {
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-xs font-black text-[#92664A] uppercase tracking-widest mb-3 px-1">
+                <label className="flex items-center gap-2 text-xs font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest mb-3 px-1">
                   Design Stage
                 </label>
                 <select
@@ -275,11 +275,11 @@ const PostAssignment = () => {
                   title="Design Stage"
                   value={metadata.design_stage_id}
                   onChange={handleMetaChange}
-                  className={`w-full px-6 py-4 bg-[#EFEDED]/50 border ${
+                  className={`w-full px-6 py-4 bg-[#FAF8F4] dark:bg-white/5 border ${
                     errors.design_stage_id
-                      ? "border-rose-400 bg-red-50/20"
-                      : "border-[#EEB38C]/40"
-                  } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-bold text-[#5A270F]`}
+                      ? "border-rose-400 bg-red-50/10"
+                      : "border-[#D9D9C2] dark:border-white/10"
+                  } rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-black uppercase tracking-widest text-[10px] text-[#5A270F] dark:text-white`}
                 >
                   <option value="">Select Stage</option>
                   {designStages.map((stage) => (
@@ -294,7 +294,7 @@ const PostAssignment = () => {
 
             <div className="space-y-6">
               <div>
-                <label className="flex items-center gap-2 text-xs font-black text-[#92664A] uppercase tracking-widest mb-3 px-1">
+                <label className="flex items-center gap-2 text-xs font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest mb-3 px-1">
                   <AlignLeft className="h-3.5 w-3.5 text-[#DF8142]" /> Brief Description
                 </label>
                 <textarea
@@ -303,11 +303,11 @@ const PostAssignment = () => {
                   value={metadata.description}
                   onChange={handleMetaChange}
                   rows={8}
-                  className={`w-full px-6 py-4 bg-[#EFEDED]/50 border ${
+                  className={`w-full px-6 py-4 bg-[#FAF8F4] dark:bg-white/5 border ${
                     errors.description
-                      ? "border-rose-400 bg-red-50/20"
-                      : "border-[#EEB38C]/40"
-                  } rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-bold text-[#5A270F] placeholder:text-[#92664A]/30 resize-none min-h-[320px]`}
+                      ? "border-rose-400 bg-red-50/10"
+                      : "border-[#D9D9C2] dark:border-white/10"
+                  } rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all font-black uppercase tracking-widest text-[10px] text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/40 dark:placeholder-white/20 resize-none min-h-[320px]`}
                 />
                 <FieldError message={errors.description} />
               </div>
@@ -315,7 +315,7 @@ const PostAssignment = () => {
           </div>
 
           <div>
-            <label className="flex items-center gap-2 text-xs font-black text-[#92664A] uppercase tracking-widest mb-3 px-1">
+            <label className="flex items-center gap-2 text-xs font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest mb-3 px-1">
               <UploadCloud className="h-3.5 w-3.5 text-[#DF8142]" /> Attachment (Brief PDF/Doc)
             </label>
             <div className="relative group">
@@ -329,17 +329,17 @@ const PostAssignment = () => {
               <div
                 className={`border-2 border-dashed ${
                   errors.file
-                    ? "border-rose-400 bg-red-50/10"
-                    : "border-[#EEB38C]"
-                } rounded-[2.5rem] py-12 text-center group-hover:border-[#DF8142] group-hover:bg-[#EEB38C]/5 transition-all relative overflow-hidden`}
+                    ? "border-rose-400 bg-red-50/5"
+                    : "border-[#D9D9C2] dark:border-white/10"
+                } bg-[#FAF8F4] dark:bg-white/5 rounded-[2.5rem] py-12 text-center group-hover:border-[#DF8142] group-hover:bg-[#EEB38C]/5 dark:group-hover:bg-white/5 dark:bg-card/5 transition-all relative overflow-hidden`}
               >
-                <div className="h-16 w-16 bg-[#EFEDED] rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-[#DF8142]/10 group-hover:text-[#DF8142] transition-all">
-                  <UploadCloud className="h-8 w-8 text-[#92664A]" />
+                <div className="h-16 w-16 bg-white dark:bg-white/5 rounded-2xl shadow-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-[#DF8142]/10 group-hover:text-[#DF8142] transition-all">
+                  <UploadCloud className="h-8 w-8 text-[#5A270F]/40 dark:text-white/60" />
                 </div>
-                <p className="text-lg font-black text-[#5A270F] mb-1">
+                <p className="text-lg font-black text-[#5A270F] dark:text-white mb-1 uppercase italic">
                   {file ? file.name : "Choose brief file"}
                 </p>
-                <p className="text-[#92664A] font-medium text-sm">
+                <p className="text-[#5A270F]/40 dark:text-white/40 font-black uppercase tracking-widest text-[10px]">
                   PDF, DOCX, TXT, MD up to 50MB
                 </p>
               </div>
@@ -350,7 +350,7 @@ const PostAssignment = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex justify-center items-center gap-3 py-6 px-10 bg-[#5A270F] text-white text-xl font-black rounded-[2rem] shadow-2xl shadow-[#5A270F]/20 hover:bg-[#6C3B1C] hover:scale-[1.01] transition-all disabled:opacity-50 active:scale-[0.99]"
+            className="w-full flex justify-center items-center gap-3 py-6 px-10 bg-[#5A270F] text-white text-[10px] uppercase tracking-[0.3em] font-black rounded-[2rem] shadow-[0_20px_50px_rgba(90,39,15,0.3)] hover:bg-[#6C3B1C] hover:-translate-y-1 transition-all disabled:opacity-50 active:scale-[0.99] transition-all duration-300"
           >
             {loading ? (
               <Loader2 className="h-8 w-8 animate-spin" />

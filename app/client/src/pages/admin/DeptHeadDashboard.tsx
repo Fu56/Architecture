@@ -17,6 +17,7 @@ import {
   Bell,
   LayoutDashboard,
 } from "lucide-react";
+import ThemeToggle from "../../components/ui/ThemeToggle";
 
 const DeptHeadDashboard = () => {
   const location = useLocation();
@@ -62,11 +63,11 @@ const DeptHeadDashboard = () => {
           )}
 
           <aside
-            className={`fixed lg:relative inset-y-0 left-0 z-50 lg:z-auto w-80 lg:w-80 flex flex-col gap-6 p-6 lg:p-0 bg-[#faf9f6] lg:bg-transparent transform transition-transform duration-500 ease-in-out lg:translate-x-0 ${
+            className={`fixed lg:relative inset-y-0 left-0 z-50 lg:z-auto w-80 lg:w-80 flex flex-col gap-6 p-6 lg:p-0 bg-white dark:bg-card dark:bg-[#1A0B04] lg:bg-transparent lg:dark:bg-transparent transform transition-transform duration-500 ease-in-out lg:translate-x-0 ${
               isSidebarOpen ? "translate-x-0" : "-translate-x-full"
             }`}
           >
-            <div className="bg-gradient-to-b from-[#5A270F] to-[#2A1205] rounded-[2.5rem] p-8 text-white relative overflow-hidden flex flex-col gap-8 shadow-2xl shadow-[#2A1205]/20 border border-white/5 h-full lg:h-auto">
+            <div className="bg-[#5A270F] dark:bg-[#2A1205] rounded-[2.5rem] p-8 text-white relative overflow-hidden flex flex-col gap-8 shadow-2xl shadow-black/10 dark:shadow-none border border-transparent dark:border-white/5 h-full lg:h-auto transition-colors duration-500">
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#DF8142]/10 blur-3xl -translate-x-1/2 translate-y-1/2" />
 
               <div className="space-y-4 relative z-10">
@@ -90,8 +91,8 @@ const DeptHeadDashboard = () => {
                       className={({ isActive }) =>
                         `flex items-center gap-4 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all group ${
                           isActive
-                            ? "bg-white text-[#5A270F] shadow-xl shadow-black/20"
-                            : "text-[#EEB38C]/60 hover:bg-white/5 hover:text-[#EEB38C]"
+                            ? "bg-white dark:bg-[#EEB38C] text-[#5A270F] dark:text-[#1A0B02] shadow-xl shadow-black/20 dark:shadow-none"
+                            : "text-[#EEB38C]/60 hover:text-[#5A270F] dark:hover:text-[#1A0B02] hover:bg-white dark:hover:bg-[#EEB38C] hover:shadow-xl dark:shadow-none"
                         }`
                       }
                     >
@@ -131,10 +132,10 @@ const DeptHeadDashboard = () => {
                       key={item.to}
                       to={item.to}
                       className={({ isActive }) =>
-                        `flex items-center gap-4 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all ${
+                        `flex items-center gap-4 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all group ${
                           isActive
-                            ? "bg-white text-[#5A270F] shadow-xl shadow-black/20"
-                            : "text-[#EEB38C]/60 hover:bg-white/5 hover:text-[#EEB38C]"
+                            ? "bg-white dark:bg-[#EEB38C] text-[#5A270F] dark:text-[#1A0B02] shadow-xl shadow-black/20 dark:shadow-none"
+                            : "text-[#EEB38C]/60 hover:text-[#5A270F] dark:hover:text-[#1A0B02] hover:bg-white dark:hover:bg-[#EEB38C] hover:shadow-xl dark:shadow-none"
                         }`
                       }
                     >
@@ -162,10 +163,10 @@ const DeptHeadDashboard = () => {
                       key={item.to}
                       to={item.to}
                       className={({ isActive }) =>
-                        `flex items-center gap-4 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all ${
+                        `flex items-center gap-4 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all group ${
                           isActive
-                            ? "bg-white text-[#5A270F] shadow-xl shadow-black/20"
-                            : "text-[#EEB38C]/60 hover:bg-white/5 hover:text-[#EEB38C]"
+                            ? "bg-white dark:bg-[#EEB38C] text-[#5A270F] dark:text-[#1A0B02] shadow-xl shadow-black/20 dark:shadow-none"
+                            : "text-[#EEB38C]/60 hover:text-[#5A270F] dark:hover:text-[#1A0B02] hover:bg-white dark:hover:bg-[#EEB38C] hover:shadow-xl dark:shadow-none"
                         }`
                       }
                     >
@@ -178,7 +179,7 @@ const DeptHeadDashboard = () => {
             </div>
 
             <div className="bg-gradient-to-br from-[#DF8142] to-[#92664A] rounded-[2.5rem] p-8 text-white relative overflow-hidden flex flex-col justify-end min-h-[180px] shadow-lg shadow-[#DF8142]/20 hidden lg:flex">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 blur-3xl" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 dark:bg-card/20 blur-3xl" />
               <ShieldAlert className="h-4 w-4 mb-4 relative z-10 text-white/60" />
               <p className="text-[10px] font-black uppercase tracking-[0.3em] relative z-10 text-[#2A1205]/40">
                 Protocol Level
@@ -195,7 +196,16 @@ const DeptHeadDashboard = () => {
       <main
         className={`flex-1 min-w-0 ${isSettingsPage ? "max-w-6xl w-full" : ""}`}
       >
-        <div className="bg-white p-6 sm:p-10 rounded-3xl shadow-sm border border-[#D9D9C2] min-h-[calc(100vh-140px)] relative overflow-hidden flex flex-col">
+        <div className="bg-white dark:bg-card p-6 sm:p-10 rounded-3xl shadow-sm border border-[#D9D9C2] dark:border-white/10 min-h-[calc(100vh-140px)] relative overflow-hidden flex flex-col transition-colors duration-500">
+          <header className="flex items-center justify-between mb-8 pb-6 border-b border-slate-50 dark:border-white/5">
+            <div className="flex items-center gap-2">
+              <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142]" />
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F]/40 dark:text-white/40">
+                Department Node
+              </p>
+            </div>
+            <ThemeToggle isScrolled={true} isHomePage={false} />
+          </header>
           <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
             <Outlet />
           </div>

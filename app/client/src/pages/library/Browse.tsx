@@ -82,20 +82,20 @@ const Browse = () => {
   }, [initialFilters, fetchResources]);
 
   return (
-    <div className="min-h-screen bg-[#EFEDED] selection:bg-[#DF8142]/20 selection:text-[#5A270F]">
+    <div className="min-h-screen bg-[#EFEDED] dark:bg-background selection:bg-[#DF8142]/20 selection:text-[#5A270F] dark:text-[#EEB38C] transition-colors duration-500">
       {/* Header Section */}
       <div className="relative pt-32 pb-20 overflow-hidden bg-[#5A270F]">
         <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(223,129,66,0.1),transparent_50%)]" />
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(223,129,66,0.1),transparent_50%)] dark:bg-[radial-gradient(circle_at_30%_20%,rgba(223,129,66,0.05),transparent_50%)]" />
           <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_80%,rgba(146,102,74,0.05),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 dark:opacity-5" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <div className="flex justify-between items-center mb-8">
             <button
               onClick={() => window.history.back()}
-              className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-[#EEB38C] hover:text-white transition-all group"
+              className="flex items-center gap-2 px-4 py-2 bg-white/5 dark:bg-card/5 hover:bg-white/10 dark:bg-card/10 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-[#EEB38C] hover:text-white transition-all group"
             >
               <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" />
               Back
@@ -127,7 +127,7 @@ const Browse = () => {
               DESIGN MATRIX
             </span>
           </h1>
-          <p className="max-w-xl mx-auto text-[#92664A] text-base sm:text-lg font-medium leading-relaxed">
+          <p className="max-w-xl mx-auto text-[#92664A] dark:text-[#EEB38C]/60 text-base sm:text-lg font-medium leading-relaxed">
             Access thousands of academic assets, BIM families, and technical
             specifications curated for the modern architect.
           </p>
@@ -149,7 +149,7 @@ const Browse = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10 px-4">
           <div className="flex items-center gap-3">
             <div className="h-2 w-2 rounded-full bg-[#DF8142] animate-pulse" />
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#92664A]">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40">
               {loading
                 ? "Searching Cluster..."
                 : `${totalCount} Assets Isolated`}
@@ -157,7 +157,7 @@ const Browse = () => {
           </div>
 
           {!loading && resources.length > 0 && (
-            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#92664A]/80">
+            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40/80 dark:text-[#EEB38C]/40">
               <Sparkles className="h-3 w-3 text-[#DF8142]" />
               Optimized for Studio Integration
             </div>
@@ -171,7 +171,7 @@ const Browse = () => {
               {[...Array(8)].map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white h-[400px] rounded-3xl animate-pulse border border-[#D9D9C2] shadow-sm"
+                  className="bg-white dark:bg-card h-[400px] rounded-3xl animate-pulse border border-[#D9D9C2] dark:border-white/10 shadow-sm transition-colors duration-500"
                 />
               ))}
             </div>
@@ -203,20 +203,20 @@ const Browse = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-24 bg-[#EFEDED] rounded-3xl border border-[#D9D9C2] border-dashed">
-              <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm border border-[#D9D9C2]">
-                <SearchX className="h-8 w-8 text-gray-400" />
+            <div className="text-center py-24 bg-[#EFEDED] dark:bg-card rounded-3xl border border-[#D9D9C2] dark:border-white/10 border-dashed transition-all duration-500">
+              <div className="h-16 w-16 bg-white dark:bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm border border-[#D9D9C2] dark:border-white/10 transition-colors">
+                <SearchX className="h-8 w-8 text-gray-400 dark:text-white/40" />
               </div>
-              <h3 className="text-xl font-bold text-[#5A270F] mb-2 tracking-tight">
+              <h3 className="text-xl font-bold text-[#5A270F] dark:text-foreground mb-2 tracking-tight transition-colors">
                 No Signals Detected
               </h3>
-              <p className="text-[#92664A] font-medium max-w-xs mx-auto text-sm">
+              <p className="text-[#92664A] dark:text-foreground/60 font-medium max-w-xs mx-auto text-sm transition-colors">
                 The Designer Matrix returned null for your current parameters.
                 Try widening your search nexus.
               </p>
               <button
                 onClick={() => fetchResources({})}
-                className="mt-6 text-[#DF8142] font-bold text-[10px] uppercase tracking-widest hover:text-[#5A270F] transition-colors"
+                className="mt-6 text-[#DF8142] font-bold text-[10px] uppercase tracking-widest hover:text-[#5A270F] dark:text-[#EEB38C] transition-colors"
               >
                 Reset Search Protocols
               </button>

@@ -63,7 +63,7 @@ export const ConfirmDialog = ({
         };
       default:
         return {
-          icon: <CheckCircle className="h-6 w-6 text-[#5A270F]" />,
+          icon: <CheckCircle className="h-6 w-6 text-[#5A270F] dark:text-[#EEB38C]" />,
           iconBg: "bg-[#5A270F]/10",
           confirmBtn: "bg-[#5A270F] hover:bg-[#DF8142] text-white",
         };
@@ -87,7 +87,7 @@ export const ConfirmDialog = ({
       {/* Dialog */}
       <div
         id="confirm-dialog"
-        className={`relative bg-white rounded-3xl shadow-2xl max-w-md w-full transform transition-all duration-300 ${
+        className={`relative bg-white dark:bg-card rounded-3xl shadow-2xl max-w-md w-full transform transition-all duration-300 ${
           isOpen
             ? "scale-100 translate-y-0 opacity-100"
             : "scale-95 translate-y-4 opacity-0"
@@ -96,10 +96,10 @@ export const ConfirmDialog = ({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full hover:bg-[#EFEDED] transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-full hover:bg-[#EFEDED] dark:bg-background transition-colors"
           aria-label="Close dialog"
         >
-          <X className="h-5 w-5 text-[#92664A]" />
+          <X className="h-5 w-5 text-[#92664A] dark:text-[#EEB38C]/40" />
         </button>
 
         {/* Content */}
@@ -112,12 +112,12 @@ export const ConfirmDialog = ({
           </div>
 
           {/* Title */}
-          <h3 className="text-2xl font-black text-[#5A270F] mb-3 tracking-tight uppercase">
+          <h3 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] mb-3 tracking-tight uppercase">
             {title}
           </h3>
 
           {/* Message */}
-          <p className="text-[#92664A] font-medium leading-relaxed mb-8">
+          <p className="text-[#92664A] dark:text-[#EEB38C]/40 font-medium leading-relaxed mb-8">
             {message}
           </p>
 
@@ -125,7 +125,7 @@ export const ConfirmDialog = ({
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 px-6 py-3 bg-[#EFEDED] text-[#5A270F] rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-[#D9D9C2] transition-all duration-300 active:scale-95"
+              className="flex-1 px-6 py-3 bg-[#EFEDED] dark:bg-background text-[#5A270F] dark:text-[#EEB38C] rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-[#D9D9C2] transition-all duration-300 active:scale-95"
             >
               {cancelText}
             </button>

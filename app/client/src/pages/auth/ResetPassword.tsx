@@ -77,15 +77,15 @@ const ResetPassword = () => {
       </div>
 
       <div className="w-full max-w-md relative z-10">
-        <div className="bg-white p-10 rounded-[3rem] shadow-2xl border border-[#D9D9C2]">
+        <div className="bg-white dark:bg-card p-10 rounded-[3rem] shadow-2xl border border-[#D9D9C2] dark:border-white/10">
           <div className="text-center mb-10">
             <div className="mx-auto w-20 h-20 bg-gradient-to-br from-[#DF8142] to-[#92664A] rounded-3xl flex items-center justify-center mb-6 shadow-lg shadow-[#DF8142]/20">
               <ShieldCheck className="h-10 w-10 text-white" />
             </div>
-            <h2 className="text-3xl font-black text-[#5A270F] tracking-tight uppercase">
+            <h2 className="text-3xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight uppercase">
               Set New Key
             </h2>
-            <p className="mt-4 text-xs text-[#92664A] font-bold uppercase tracking-widest">
+            <p className="mt-4 text-xs text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest">
               Secure your architectural node
             </p>
           </div>
@@ -94,12 +94,12 @@ const ResetPassword = () => {
             <div className="space-y-5">
               {/* New Password */}
               <div className="relative group">
-                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#92664A] group-focus-within:text-[#DF8142] transition-colors">
+                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#92664A] dark:text-[#EEB38C]/40 group-focus-within:text-[#DF8142] transition-colors">
                   <Lock className="h-5 w-5" />
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
-                  className="w-full pl-14 pr-14 py-4 bg-[#EFEDED] border-2 border-[#D9D9C2] rounded-2xl text-[#5A270F] font-bold placeholder-[#92664A]/50 focus:outline-none focus:border-[#DF8142] focus:bg-white transition-all"
+                  className="w-full pl-14 pr-14 py-4 bg-[#EFEDED] dark:bg-background border-2 border-[#D9D9C2] dark:border-white/10 rounded-2xl text-[#5A270F] dark:text-[#EEB38C] font-bold placeholder-[#92664A]/50 focus:outline-none focus:border-[#DF8142] focus:bg-white dark:bg-card transition-all"
                   placeholder="New Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -108,7 +108,7 @@ const ResetPassword = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-[#92664A] hover:text-[#DF8142] transition-colors"
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] transition-colors"
                 >
                   {showPassword ? (
                     <EyeOff className="h-5 w-5" />
@@ -120,12 +120,12 @@ const ResetPassword = () => {
 
               {/* Confirm Password */}
               <div className="relative group">
-                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#92664A] group-focus-within:text-[#DF8142] transition-colors">
+                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#92664A] dark:text-[#EEB38C]/40 group-focus-within:text-[#DF8142] transition-colors">
                   <Lock className="h-5 w-5" />
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
-                  className="w-full pl-14 pr-6 py-4 bg-[#EFEDED] border-2 border-[#D9D9C2] rounded-2xl text-[#5A270F] font-bold placeholder-[#92664A]/50 focus:outline-none focus:border-[#DF8142] focus:bg-white transition-all"
+                  className="w-full pl-14 pr-6 py-4 bg-[#EFEDED] dark:bg-background border-2 border-[#D9D9C2] dark:border-white/10 rounded-2xl text-[#5A270F] dark:text-[#EEB38C] font-bold placeholder-[#92664A]/50 focus:outline-none focus:border-[#DF8142] focus:bg-white dark:bg-card transition-all"
                   placeholder="Confirm New Password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}

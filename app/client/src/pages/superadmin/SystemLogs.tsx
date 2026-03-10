@@ -88,7 +88,7 @@ const SystemLogs = () => {
       <div className="bg-gradient-to-br from-[#5A270F] via-[#6C3B1C] to-[#92664A] rounded-[2.5rem] sm:rounded-[3rem] p-6 sm:p-10 text-white relative overflow-hidden shadow-2xl shadow-[#5A270F]/20">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#DF8142]/10 blur-[100px] -translate-y-1/2 translate-x-1/2" />
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EEB38C]/20 border border-[#EEB38C]/30 rounded-full text-[10px] font-black uppercase tracking-widest text-[#EEB38C] mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EEB38C]/20 border border-[#EEB38C]/30 dark:border-white/5 rounded-full text-[10px] font-black uppercase tracking-widest text-[#EEB38C] mb-6">
             <Activity className="h-3 w-3" /> System Audit
           </div>
           <h1 className="text-4xl font-black tracking-tight mb-4">
@@ -105,13 +105,13 @@ const SystemLogs = () => {
       </div>
 
       {/* Control Bar */}
-      <div className="bg-white p-4 rounded-[2rem] border border-[#D9D9C2] shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+      <div className="bg-white dark:bg-card p-4 rounded-[2rem] border border-[#D9D9C2] dark:border-white/10 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
         <div className="relative flex-1 group">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-[#DF8142]" />
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-white/30 group-focus-within:text-[#DF8142]" />
           <input
             type="text"
             placeholder="Search Protocol ID, Action, or Actor..."
-            className="w-full h-12 pl-14 bg-[#EFEDED] rounded-xl text-sm font-bold focus:ring-2 focus:ring-[#DF8142]/20 outline-none transition-all"
+            className="w-full h-12 pl-14 bg-[#EFEDED] dark:bg-background rounded-xl text-sm font-bold focus:ring-2 focus:ring-[#DF8142]/20 outline-none transition-all"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -125,21 +125,21 @@ const SystemLogs = () => {
       </div>
 
       {/* Logs Table */}
-      <div className="bg-white rounded-[2.5rem] border border-[#D9D9C2] overflow-hidden shadow-xl">
+      <div className="bg-white dark:bg-card rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10 overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-[#EFEDED] border-b border-[#D9D9C2]">
+            <thead className="bg-[#EFEDED] dark:bg-background border-b border-[#D9D9C2] dark:border-white/10">
               <tr>
-                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-white/40">
                   Timestamp
                 </th>
-                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-white/40">
                   Action
                 </th>
-                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-white/40">
                   Actor
                 </th>
-                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-white/40">
                   Details
                 </th>
               </tr>
@@ -160,11 +160,11 @@ const SystemLogs = () => {
                     key={log.id}
                     className="hover:bg-[#F5F5DC]/30 transition-colors group"
                   >
-                    <td className="px-8 py-6 text-xs font-mono text-gray-500">
+                    <td className="px-8 py-6 text-xs font-mono text-gray-500 dark:text-white/40">
                       {new Date(log.createdAt).toLocaleString()}
                     </td>
                     <td className="px-8 py-6">
-                      <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#EEB38C]/10 text-[#5A270F] rounded-lg text-[10px] font-black uppercase tracking-widest border border-[#EEB38C]/20">
+                      <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#EEB38C]/10 text-[#5A270F] dark:text-[#EEB38C] rounded-lg text-[10px] font-black uppercase tracking-widest border border-[#EEB38C]/20">
                         {log.action}
                       </span>
                     </td>
@@ -178,7 +178,7 @@ const SystemLogs = () => {
                         </span>
                       </div>
                     </td>
-                    <td className="px-8 py-6 text-sm text-gray-600 font-medium">
+                    <td className="px-8 py-6 text-sm text-gray-600 dark:text-white/50 font-medium">
                       {log.details}
                     </td>
                   </tr>
@@ -188,7 +188,7 @@ const SystemLogs = () => {
                   <td colSpan={4} className="p-12 text-center">
                     <div className="flex flex-col items-center gap-4">
                       <FileText className="h-10 w-10 text-gray-300" />
-                      <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-white/30">
                         No audit records found
                       </p>
                     </div>

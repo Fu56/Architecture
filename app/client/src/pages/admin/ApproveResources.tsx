@@ -64,7 +64,7 @@ const ApproveResources = () => {
           />
         ))}
         {resources.length === 0 && !loading && (
-          <p className="text-gray-500 text-center py-8">
+          <p className="text-gray-500 dark:text-white/40 text-center py-8">
             No pending resources found.
           </p>
         )}
@@ -87,20 +87,20 @@ const ResourceApprovalCard = ({
   const [comment, setComment] = useState("");
 
   return (
-    <div className="p-4 border rounded-lg bg-white shadow-sm">
+    <div className="p-4 border rounded-lg bg-white dark:bg-card shadow-sm">
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="font-semibold text-lg">{resource.title}</h3>
-          <div className="text-sm text-gray-600 mt-1 space-y-1">
+          <div className="text-sm text-gray-600 dark:text-white/50 mt-1 space-y-1">
             <p>
               Uploaded by:{" "}
-              <span className="font-medium text-gray-900">
+              <span className="font-medium text-gray-900 dark:text-white">
                 {resource.uploader.firstName} {resource.uploader.lastName}
               </span>
             </p>
             <p>
               Design Stage:{" "}
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#EEB38C]/20 text-[#5A270F]">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#EEB38C]/20 text-[#5A270F] dark:text-[#EEB38C]">
                 {resource.designStage?.name || "Unspecified"}
               </span>
             </p>
@@ -110,7 +110,7 @@ const ResourceApprovalCard = ({
             </p>
           </div>
         </div>
-        <div className="text-xs text-gray-400">
+        <div className="text-xs text-gray-400 dark:text-white/30">
           {new Date(resource.uploadedAt).toLocaleDateString()}
         </div>
       </div>

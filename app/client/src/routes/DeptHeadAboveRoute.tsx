@@ -16,7 +16,7 @@ export default function DeptHeadAboveRoute() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5A270F] mx-auto"></div>
-          <p className="mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-[#92664A]">
+          <p className="mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-[#EEB38C]/40">
             Verifying authorization level...
           </p>
         </div>

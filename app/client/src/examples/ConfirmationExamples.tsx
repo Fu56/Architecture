@@ -66,7 +66,7 @@ export const ConfirmationExamples = () => {
 
   return (
     <div className="p-8 space-y-6">
-      <h2 className="text-2xl font-black text-[#5A270F] uppercase tracking-tight">
+      <h2 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tight">
         Confirmation Modal Examples
       </h2>
 

@@ -53,11 +53,11 @@ const FlaggedResources = () => {
         {flags.map((flag) => (
           <div
             key={flag.id}
-            className="p-4 border rounded-lg bg-white flex justify-between items-center"
+            className="p-4 border rounded-lg bg-white dark:bg-card flex justify-between items-center"
           >
             <div>
               <h3 className="font-semibold">{flag.resource.title}</h3>
-              <p className="text-sm text-gray-600">Reason: {flag.reason}</p>
+              <p className="text-sm text-gray-600 dark:text-white/50">Reason: {flag.reason}</p>
             </div>
             {isAuthorized && (
               <button

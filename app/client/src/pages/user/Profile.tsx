@@ -153,12 +153,12 @@ const Profile = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-5 duration-700 pb-20">
       {/* Premium Header */}
-      <div className="bg-[#2A1205] rounded-[2.5rem] p-10 sm:p-14 text-white shadow-2xl relative overflow-hidden group border border-white/5">
+      <div className="bg-[#FAF8F4] dark:bg-[#2A1205] rounded-[2.5rem] p-10 sm:p-14 text-[#5A270F] dark:text-white shadow-xl dark:shadow-2xl relative overflow-hidden group border border-black/5 dark:border-white/5 transition-colors duration-500">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#DF8142]/10 blur-[100px] -translate-y-1/2 translate-x-1/2 group-hover:bg-[#DF8142]/20 transition-all duration-1000" />
 
         <div className="relative flex flex-col md:flex-row items-center gap-10 z-10">
-          <div className="h-32 w-32 bg-white/5 backdrop-blur-3xl rounded-[2.5rem] flex items-center justify-center shadow-2xl border border-white/10 group-hover:scale-105 transition-transform duration-500">
-            <span className="text-4xl font-black text-[#EEB38C] uppercase tracking-tighter">
+          <div className="h-32 w-32 bg-[#EFEDED] dark:bg-card/5 backdrop-blur-3xl rounded-[2.5rem] flex items-center justify-center shadow-xl dark:shadow-2xl border border-black/10 dark:border-white/10 group-hover:scale-105 transition-transform duration-500">
+            <span className="text-4xl font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tighter">
               {authUser.first_name?.[0]}
               {authUser.last_name?.[0]}
             </span>
@@ -167,10 +167,10 @@ const Profile = () => {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#DF8142]/10 border border-[#DF8142]/20 rounded-full text-[10px] font-black uppercase tracking-widest text-[#EEB38C] mb-2">
               <Shield className="h-3 w-3" /> System Verified
             </div>
-            <h2 className="text-4xl sm:text-5xl font-black tracking-tighter">
+            <h2 className="text-4xl sm:text-5xl font-black tracking-tighter text-[#5A270F] dark:text-white transition-colors">
               {authUser.first_name} {authUser.last_name}
             </h2>
-            <p className="text-white/40 font-bold uppercase tracking-[0.3em] text-xs">
+            <p className="text-[#5A270F]/40 dark:text-white/40 font-black uppercase tracking-[0.3em] text-[10px]">
               {typeof authUser.role === "object"
                 ? authUser.role.name
                 : authUser.role}{" "}
@@ -183,9 +183,9 @@ const Profile = () => {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
         <div className="md:col-span-8 space-y-10">
           {/* Identity Matrix (Edit Profile) */}
-          <div className="bg-white rounded-[2.5rem] p-8 sm:p-10 shadow-xl shadow-slate-200/50 relative overflow-hidden border border-[#D9D9C2]">
+          <div className="bg-white dark:bg-card rounded-[2.5rem] p-8 sm:p-10 shadow-xl dark:shadow-none relative overflow-hidden border border-[#D9D9C2] dark:border-white/10 transition-all duration-500">
             <div className="flex items-center justify-between mb-10">
-              <h3 className="text-lg font-black text-[#2A1205] flex items-center gap-4 uppercase tracking-tighter">
+              <h3 className="text-lg font-black text-[#5A270F] dark:text-white flex items-center gap-4 uppercase tracking-tighter transition-colors">
                 <div className="p-4 bg-[#5A270F] text-white rounded-2xl shadow-lg">
                   <User className="h-6 w-6" />
                 </div>
@@ -195,8 +195,8 @@ const Profile = () => {
                 onClick={() => setIsEditing(!isEditing)}
                 className={`p-3 rounded-2xl transition-all ${
                   isEditing
-                    ? "bg-red-50 text-red-500"
-                    : "bg-[#EFEDED] text-[#92664A] hover:text-[#5A270F] hover:bg-[#DF8142]/10"
+                    ? "bg-red-50 dark:bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white"
+                    : "bg-[#EFEDED] dark:bg-white/5 text-[#5A270F]/40 dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:hover:text-white hover:bg-[#D9D9C2] dark:hover:bg-white/10"
                 }`}
               >
                 {isEditing ? (
@@ -216,7 +216,7 @@ const Profile = () => {
                   <div className="space-y-2">
                     <label
                       htmlFor="first_name"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#92664A] ml-2"
+                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2 transition-colors"
                     >
                       First Name
                     </label>
@@ -224,7 +224,7 @@ const Profile = () => {
                       <input
                         id="first_name"
                         type="text"
-                        className={`w-full bg-[#EFEDED] border rounded-2xl px-5 py-4 font-bold text-[#5A270F] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.first_name ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                        className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.first_name ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                         value={profileForm.first_name}
                         onChange={(e) => {
                           setProfileForm({
@@ -255,7 +255,7 @@ const Profile = () => {
                   <div className="space-y-2">
                     <label
                       htmlFor="last_name"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#92664A] ml-2"
+                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2"
                     >
                       Last Name
                     </label>
@@ -263,7 +263,7 @@ const Profile = () => {
                       <input
                         id="last_name"
                         type="text"
-                        className={`w-full bg-[#EFEDED] border rounded-2xl px-5 py-4 font-bold text-[#5A270F] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.last_name ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                        className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.last_name ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                         value={profileForm.last_name}
                         onChange={(e) => {
                           setProfileForm({
@@ -294,7 +294,7 @@ const Profile = () => {
                   <div className="space-y-2">
                     <label
                       htmlFor="university_id"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#92664A] ml-2"
+                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2"
                     >
                       University ID
                     </label>
@@ -302,7 +302,7 @@ const Profile = () => {
                       <input
                         id="university_id"
                         type="text"
-                        className={`w-full bg-[#EFEDED] border rounded-2xl px-5 py-4 font-bold text-[#5A270F] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.university_id ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                        className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.university_id ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                         value={profileForm.university_id}
                         onChange={(e) => {
                           setProfileForm({
@@ -337,7 +337,7 @@ const Profile = () => {
                   <div className="space-y-2">
                     <label
                       htmlFor="batch"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#92664A] ml-2"
+                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2"
                     >
                       Batch
                     </label>
@@ -345,7 +345,7 @@ const Profile = () => {
                       <input
                         id="batch"
                         type="number"
-                        className={`w-full bg-[#EFEDED] border rounded-2xl px-5 py-4 font-bold text-[#5A270F] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.batch ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                        className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.batch ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                         value={profileForm.batch}
                         onChange={(e) => {
                           setProfileForm({
@@ -377,7 +377,7 @@ const Profile = () => {
                   <div className="space-y-2">
                     <label
                       htmlFor="year"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#92664A] ml-2"
+                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2"
                     >
                       Year
                     </label>
@@ -385,7 +385,7 @@ const Profile = () => {
                       <input
                         id="year"
                         type="number"
-                        className={`w-full bg-[#EFEDED] border rounded-2xl px-5 py-4 font-bold text-[#5A270F] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.year ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                        className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.year ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                         value={profileForm.year}
                         onChange={(e) => {
                           setProfileForm({
@@ -417,7 +417,7 @@ const Profile = () => {
                   <div className="space-y-2">
                     <label
                       htmlFor="semester"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#92664A] ml-2"
+                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2"
                     >
                       Semester
                     </label>
@@ -425,7 +425,7 @@ const Profile = () => {
                       <input
                         id="semester"
                         type="number"
-                        className={`w-full bg-[#EFEDED] border rounded-2xl px-5 py-4 font-bold text-[#5A270F] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.semester ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                        className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.semester ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                         value={profileForm.semester}
                         onChange={(e) => {
                           setProfileForm({
@@ -457,14 +457,14 @@ const Profile = () => {
                   <div className="space-y-2">
                     <label
                       htmlFor="specialization"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#92664A] ml-2"
+                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2"
                     >
                       Specialization
                     </label>
                     <input
                       id="specialization"
                       type="text"
-                      className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-4 font-bold text-[#5A270F] focus:border-[#DF8142] outline-none transition-all text-sm"
+                      className="w-full bg-[#EFEDED] dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm"
                       value={profileForm.specialization}
                       onChange={(e) =>
                         setProfileForm({
@@ -477,14 +477,14 @@ const Profile = () => {
                   <div className="space-y-2">
                     <label
                       htmlFor="department"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#92664A] ml-2"
+                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2"
                     >
                       Department
                     </label>
                     <input
                       id="department"
                       type="text"
-                      className="w-full bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl px-5 py-4 font-bold text-[#5A270F] focus:border-[#DF8142] outline-none transition-all text-sm"
+                      className="w-full bg-[#EFEDED] dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm"
                       value={profileForm.department}
                       onChange={(e) =>
                         setProfileForm({
@@ -513,62 +513,62 @@ const Profile = () => {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#92664A]">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 transition-colors">
                     Legal First Name
                   </p>
-                  <p className="text-lg font-bold text-[#5A270F] border-b border-[#EFEDED] pb-2">
+                  <p className="text-lg font-bold text-[#5A270F] dark:text-[#EEB38C] border-b border-[#EFEDED] dark:border-white/5 pb-2 transition-colors">
                     {authUser.first_name}
                   </p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#92664A]">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 transition-colors">
                     Legal Last Name
                   </p>
-                  <p className="text-lg font-bold text-[#5A270F] border-b border-[#EFEDED] pb-2">
+                  <p className="text-lg font-bold text-[#5A270F] dark:text-[#EEB38C] border-b border-[#EFEDED] dark:border-white/5 pb-2 transition-colors">
                     {authUser.last_name}
                   </p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#92664A]">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 transition-colors">
                     Comms Frequency
                   </p>
-                  <p className="text-sm font-bold text-[#5A270F] border-b border-[#EFEDED] pb-2 truncate">
+                  <p className="text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] border-b border-[#EFEDED] dark:border-white/5 pb-2 truncate transition-colors">
                     {authUser.email}
                   </p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#92664A]">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 transition-colors">
                     University ID
                   </p>
-                  <p className="text-lg font-bold text-[#5A270F] border-b border-[#EFEDED] pb-2">
+                  <p className="text-lg font-bold text-[#5A270F] dark:text-[#EEB38C] border-b border-[#EFEDED] dark:border-white/5 pb-2 transition-colors">
                     {String(authUser.university_id || "EXT-NODE")}
                   </p>
                 </div>
                 {authUser.role === "Student" && (
                   <>
                     <div className="space-y-1">
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#92664A]">
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 transition-colors">
                         Academic Batch
                       </p>
-                      <p className="text-lg font-bold text-[#5A270F] border-b border-[#EFEDED] pb-2">
+                      <p className="text-lg font-bold text-[#5A270F] dark:text-[#EEB38C] border-b border-[#EFEDED] dark:border-white/5 pb-2 transition-colors">
                         {String(authUser.batch || "N/A")}
                       </p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#92664A]">
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 transition-colors">
                         Academic Year
                       </p>
-                      <p className="text-lg font-bold text-[#5A270F] border-b border-[#EFEDED] pb-2">
+                      <p className="text-lg font-bold text-[#5A270F] dark:text-[#EEB38C] border-b border-[#EFEDED] dark:border-white/5 pb-2 transition-colors">
                         {String(authUser.year || "N/A")}
                       </p>
                     </div>
                   </>
                 )}
                 <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#92664A]">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 transition-colors">
                     Department
                   </p>
-                  <p className="text-lg font-bold text-[#5A270F] border-b border-[#EFEDED] pb-2">
+                  <p className="text-lg font-bold text-[#5A270F] dark:text-[#EEB38C] border-b border-[#EFEDED] dark:border-white/5 pb-2 transition-colors">
                     {String(authUser.department || "Architecture")}
                   </p>
                 </div>
@@ -577,9 +577,9 @@ const Profile = () => {
           </div>
 
           {/* Security Protocols (Change Password) */}
-          <div className="bg-white rounded-[2.5rem] p-8 sm:p-10 shadow-xl shadow-slate-200/50 relative overflow-hidden border border-[#D9D9C2]">
+          <div className="bg-white dark:bg-card rounded-[2.5rem] p-8 sm:p-10 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden border border-[#D9D9C2] dark:border-white/10 transition-all duration-500">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-lg font-black text-[#2A1205] flex items-center gap-4 uppercase tracking-tighter">
+              <h3 className="text-lg font-black text-[#5A270F] dark:text-white flex items-center gap-4 uppercase tracking-tighter transition-colors">
                 <div className="p-4 bg-[#92664A] text-white rounded-2xl shadow-lg">
                   <Key className="h-6 w-6" />
                 </div>
@@ -592,14 +592,14 @@ const Profile = () => {
                 <div className="flex justify-between items-center ml-2">
                   <label
                     htmlFor="currentPassword"
-                    className="text-[10px] font-black uppercase tracking-widest text-[#92664A]"
+                    className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-foreground/40 transition-colors"
                   >
                     Current System Key
                   </label>
                   <button
                     type="button"
                     onClick={() => setShowPasswords(!showPasswords)}
-                    className="text-[9px] font-black uppercase tracking-tighter text-[#DF8142] hover:text-[#5A270F] transition-colors flex items-center gap-1"
+                    className="text-[9px] font-black uppercase tracking-tighter text-[#DF8142] hover:text-[#5A270F] dark:text-[#EEB38C] transition-colors flex items-center gap-1"
                   >
                     {showPasswords ? (
                       <EyeOff className="h-3 w-3" />
@@ -613,7 +613,7 @@ const Profile = () => {
                   <input
                     id="currentPassword"
                     type={showPasswords ? "text" : "password"}
-                    className={`w-full bg-[#EFEDED] border rounded-2xl px-5 py-4 font-bold text-[#5A270F] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.currentPassword ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                    className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.currentPassword ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                     value={passwordForm.currentPassword}
                     onChange={(e) => {
                       setPasswordForm({
@@ -648,7 +648,7 @@ const Profile = () => {
                 <div className="space-y-2">
                   <label
                     htmlFor="newPassword"
-                    className="text-[10px] font-black uppercase tracking-widest text-[#92664A] ml-2"
+                    className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-foreground/40 ml-2 transition-colors"
                   >
                     New Secure Key
                   </label>
@@ -656,7 +656,7 @@ const Profile = () => {
                     <input
                       id="newPassword"
                       type={showPasswords ? "text" : "password"}
-                      className={`w-full bg-[#EFEDED] border rounded-2xl px-5 py-4 font-bold text-[#5A270F] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.newPassword ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                      className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.newPassword ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                       value={passwordForm.newPassword}
                       onChange={(e) => {
                         setPasswordForm({
@@ -690,7 +690,7 @@ const Profile = () => {
                       className={`h-1 flex-1 rounded-full transition-all duration-500 ${passwordForm.newPassword.length >= 6 ? "bg-emerald-500" : "bg-gray-200"}`}
                     />
                     <span
-                      className={`text-[8px] font-black uppercase ${passwordForm.newPassword.length >= 6 ? "text-emerald-600" : "text-gray-400"}`}
+                      className={`text-[8px] font-black uppercase ${passwordForm.newPassword.length >= 6 ? "text-emerald-600" : "text-gray-400 dark:text-white/30"}`}
                     >
                       {passwordForm.newPassword.length >= 6
                         ? "Entropy Secure"
@@ -702,7 +702,7 @@ const Profile = () => {
                 <div className="space-y-2">
                   <label
                     htmlFor="confirmPassword"
-                    className="text-[10px] font-black uppercase tracking-widest text-[#92664A] ml-2"
+                    className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-foreground/40 ml-2 transition-colors"
                   >
                     Confirm Secure Key
                   </label>
@@ -710,7 +710,7 @@ const Profile = () => {
                     <input
                       id="confirmPassword"
                       type={showPasswords ? "text" : "password"}
-                      className={`w-full bg-[#EFEDED] border rounded-2xl px-5 py-4 font-bold text-[#5A270F] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.confirmPassword ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2]"}`}
+                      className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.confirmPassword ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                       value={passwordForm.confirmPassword}
                       onChange={(e) => {
                         setPasswordForm({
@@ -778,18 +778,18 @@ const Profile = () => {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-[2.5rem] border border-[#D9D9C2] shadow-sm">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F] mb-6 flex items-center gap-2">
+          <div className="bg-white dark:bg-card p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-sm transition-all duration-500">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-[#EEB38C] mb-6 flex items-center gap-2 transition-colors">
               <Shield className="h-4 w-4" /> System Info
             </h4>
             <div className="space-y-4">
               <div className="flex justify-between items-center text-[10px] font-bold">
-                <span className="text-gray-400">Node Cluster</span>
-                <span className="text-[#2A1205]">EU-Central-01</span>
+                <span className="text-[#5A270F]/40 dark:text-foreground/40">Node Cluster</span>
+                <span className="text-[#5A270F] dark:text-[#EEB38C]">EU-Central-01</span>
               </div>
               <div className="flex justify-between items-center text-[10px] font-bold">
-                <span className="text-gray-400">Encryption</span>
-                <span className="text-[#2A1205]">AES-256-GCM</span>
+                <span className="text-[#5A270F]/40 dark:text-foreground/40">Encryption</span>
+                <span className="text-[#5A270F] dark:text-[#EEB38C]">AES-256-GCM</span>
               </div>
               <div className="flex justify-between items-center text-[10px] font-bold text-emerald-600">
                 <span>Active Shield</span>
@@ -799,7 +799,7 @@ const Profile = () => {
 
             <button
               onClick={handleLogout}
-              className="mt-8 w-full flex items-center justify-between p-4 bg-red-50 hover:bg-red-500 hover:text-white rounded-[1rem] text-[10px] font-black uppercase tracking-widest text-red-600 transition-all group"
+              className="mt-8 w-full flex items-center justify-between p-4 bg-red-50 dark:bg-red-500/10 hover:bg-red-500 hover:text-white rounded-[1rem] text-[10px] font-black uppercase tracking-widest text-red-600 dark:text-red-400 transition-all group"
             >
               Terminate Session
               <LogOut className="h-4 w-4" />

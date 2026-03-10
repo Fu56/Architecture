@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 
 const AboutUs = () => {
   return (
-    <div className="min-h-screen bg-white selection:bg-[#DF8142]/20">
+    <div className="min-h-screen bg-white dark:bg-card selection:bg-[#DF8142]/20">
       {/* Split Hero Section */}
       <section className="relative overflow-hidden pt-32 pb-24 lg:pt-48 lg:pb-32 bg-slate-950">
         <div className="absolute inset-0 z-0">
@@ -33,7 +33,7 @@ const AboutUs = () => {
                   ARCHITECTURAL SHARE.
                 </span>
               </h1>
-              <p className="max-w-xl text-gray-500 text-xl font-medium leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500">
+              <p className="max-w-xl text-gray-500 dark:text-white/40 text-xl font-medium leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500">
                 We are the architectural pulse of digital intelligence. A
                 centralized repository engineered for students, nurtured by
                 faculty, and scaled for the future of design.
@@ -46,13 +46,13 @@ const AboutUs = () => {
               ].map((item, i) => (
                 <div
                   key={i}
-                  className="bg-white/5 backdrop-blur-3xl border border-white/10 p-10 rounded-[3rem] group hover:bg-white/10 transition-all duration-500"
+                  className="bg-white/5 dark:bg-card/5 backdrop-blur-3xl border border-white/10 p-10 rounded-[3rem] group hover:bg-white/10 dark:bg-card/10 transition-all duration-500"
                 >
                   <item.icon className="h-10 w-10 text-[#DF8142] mb-6 group-hover:scale-110 transition-transform" />
                   <h3 className="text-4xl font-black text-white mb-2 tracking-tight">
                     {item.title}
                   </h3>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C]">
                     {item.label}
                   </p>
                 </div>
@@ -65,15 +65,15 @@ const AboutUs = () => {
       {/* Mission Critical Section */}
       <section className="py-32">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="bg-[#EFEDED] rounded-[4rem] p-12 sm:p-24 border border-[#D9D9C2] relative overflow-hidden text-white">
+          <div className="bg-[#EFEDED] dark:bg-background rounded-[4rem] p-12 sm:p-24 border border-[#D9D9C2] dark:border-white/10 relative overflow-hidden text-white">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/10 blur-[100px] rounded-full" />
 
             <div className="relative z-10 flex flex-col lg:flex-row gap-20">
               <div className="lg:w-1/3">
-                <h2 className="text-4xl sm:text-5xl font-black text-[#5A270F] tracking-tighter mb-6 leading-[0.9]">
+                <h2 className="text-4xl sm:text-5xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter mb-6 leading-[0.9]">
                   MISSION <br /> CRITICAL.
                 </h2>
-                <p className="text-[#5A270F] font-medium">
+                <p className="text-[#5A270F] dark:text-[#EEB38C] font-medium">
                   Engineered to bridge the gap between academic theory and
                   technical implementation through shared intelligence.
                 </p>
@@ -103,14 +103,14 @@ const AboutUs = () => {
                   },
                 ].map((item, i) => (
                   <div key={i} className="flex gap-6 group">
-                    <div className="shrink-0 h-16 w-16 bg-white rounded-2xl flex items-center justify-center border border-[#D9D9C2] shadow-sm group-hover:bg-[#DF8142] transition-all duration-500">
-                      <item.icon className="h-6 w-6 text-gray-500 group-hover:text-white transition-all" />
+                    <div className="shrink-0 h-16 w-16 bg-white dark:bg-card rounded-2xl flex items-center justify-center border border-[#D9D9C2] dark:border-white/10 shadow-sm group-hover:bg-[#DF8142] transition-all duration-500">
+                      <item.icon className="h-6 w-6 text-gray-500 dark:text-white/40 group-hover:text-white transition-all" />
                     </div>
                     <div>
-                      <h4 className="text-xl font-black text-[#5A270F] mb-3 tracking-tight group-hover:text-[#DF8142] transition-colors uppercase text-sm">
+                      <h4 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] mb-3 tracking-tight group-hover:text-[#DF8142] transition-colors uppercase text-sm">
                         {item.title}
                       </h4>
-                      <p className="text-[#5A270F] font-medium leading-relaxed text-sm">
+                      <p className="text-[#5A270F] dark:text-[#EEB38C] font-medium leading-relaxed text-sm">
                         {item.desc}
                       </p>
                     </div>
@@ -170,7 +170,7 @@ const AboutUs = () => {
                 </span>
               </h2>
               <div className="space-y-8">
-                <p className="text-gray-400 text-lg font-medium leading-relaxed italic border-l-4 border-[#DF8142] pl-8">
+                <p className="text-gray-400 dark:text-white/30 text-lg font-medium leading-relaxed italic border-l-4 border-[#DF8142] pl-8">
                   "The most powerful architectural tools aren't built in
                   isolation. They are born at the intersection of spatial
                   creativity and algorithmic precision."
@@ -180,7 +180,7 @@ const AboutUs = () => {
                     <h4 className="text-[#EEB38C] font-black uppercase tracking-widest text-xs">
                       Architecture Students
                     </h4>
-                    <p className="text-gray-500 text-sm leading-relaxed">
+                    <p className="text-gray-500 dark:text-white/40 text-sm leading-relaxed">
                       Defining the spatial logic, resource criticality, and the
                       professional benchmarks that drive the library's curation.
                     </p>
@@ -189,7 +189,7 @@ const AboutUs = () => {
                     <h4 className="text-[#DF8142] font-black uppercase tracking-widest text-xs">
                       Software Students
                     </h4>
-                    <p className="text-gray-500 text-sm leading-relaxed">
+                    <p className="text-gray-500 dark:text-white/40 text-sm leading-relaxed">
                       Implementing the high-performance architecture, secure
                       distribution nodes, and the intuitive user experience
                       layers.
@@ -203,31 +203,31 @@ const AboutUs = () => {
       </section>
 
       {/* Wollo University Legacy Milestone */}
-      <section className="py-32 bg-[#EFEDED]">
+      <section className="py-32 bg-[#EFEDED] dark:bg-background">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="flex flex-col items-center text-center mb-20">
-            <div className="inline-flex items-center gap-3 px-4 py-2 bg-white border border-[#D9D9C2] rounded-full text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F] mb-8">
+            <div className="inline-flex items-center gap-3 px-4 py-2 bg-white dark:bg-card border border-[#D9D9C2] dark:border-white/10 rounded-full text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C] mb-8">
               <Award className="h-3 w-3 text-[#DF8142]" /> Specialized Milestone
             </div>
-            <h2 className="text-5xl sm:text-7xl font-black text-[#5A270F] tracking-tighter leading-[0.9] mb-8">
+            <h2 className="text-5xl sm:text-7xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter leading-[0.9] mb-8">
               THE WOLLO <br /> UNIVERSITY{" "}
               <span className="text-[#DF8142]">LEGACY.</span>
             </h2>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="bg-white p-10 rounded-[3rem] border border-[#D9D9C2] shadow-sm transform hover:-translate-y-2 transition-transform duration-500 group">
+            <div className="bg-white dark:bg-card p-10 rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 shadow-sm transform hover:-translate-y-2 transition-transform duration-500 group">
               <p className="text-[10px] font-black text-[#DF8142] uppercase tracking-[0.3em] mb-4">
                 Historical Origin
               </p>
-              <h3 className="text-2xl font-black text-[#5A270F] mb-6 uppercase tracking-tight">
+              <h3 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] mb-6 uppercase tracking-tight">
                 Prototype Genesis
               </h3>
-              <p className="text-gray-500 font-medium text-sm leading-relaxed mb-8">
+              <p className="text-gray-500 dark:text-white/40 font-medium text-sm leading-relaxed mb-8">
                 The foundational matrix was conceptualized and prototyped during
                 the collaborative research phase of the 2025 graduating class.
               </p>
-              <div className="flex items-center gap-4 text-[#5A270F]">
+              <div className="flex items-center gap-4 text-[#5A270F] dark:text-[#EEB38C]">
                 <Map className="h-5 w-5" />
                 <span className="font-bold tracking-widest text-xs uppercase">
                   March 2025
@@ -256,19 +256,19 @@ const AboutUs = () => {
               </div>
             </div>
 
-            <div className="bg-white p-10 rounded-[3rem] border border-[#D9D9C2] shadow-sm transform hover:-translate-y-2 transition-transform duration-500 group">
+            <div className="bg-white dark:bg-card p-10 rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 shadow-sm transform hover:-translate-y-2 transition-transform duration-500 group">
               <p className="text-[10px] font-black text-[#DF8142] uppercase tracking-[0.3em] mb-4">
                 Final Deployment
               </p>
-              <h3 className="text-2xl font-black text-[#5A270F] mb-6 uppercase tracking-tight">
+              <h3 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] mb-6 uppercase tracking-tight">
                 Global Integration
               </h3>
-              <p className="text-gray-500 font-medium text-sm leading-relaxed mb-8">
+              <p className="text-gray-500 dark:text-white/40 font-medium text-sm leading-relaxed mb-8">
                 The platform's transition from academic prototype to the fully
                 functional Architectural Matrix currently serving the university
                 node.
               </p>
-              <div className="flex items-center gap-4 text-[#5A270F]">
+              <div className="flex items-center gap-4 text-[#5A270F] dark:text-[#EEB38C]">
                 <Globe className="h-5 w-5" />
                 <span className="font-bold tracking-widest text-xs uppercase">
                   February 2026
@@ -278,7 +278,7 @@ const AboutUs = () => {
           </div>
 
           <div className="mt-16 text-center">
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.5em]">
+            <p className="text-[10px] font-black text-gray-400 dark:text-white/30 uppercase tracking-[0.5em]">
               Powered by the Pioneering Synergy of Wollo University
             </p>
           </div>
@@ -286,10 +286,10 @@ const AboutUs = () => {
       </section>
 
       {/* Visionary Section */}
-      <section className="py-32 bg-white overflow-hidden">
+      <section className="py-32 bg-white dark:bg-card overflow-hidden">
         <div className="max-w-[7xl] mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#EFEDED] border border-[#D9D9C2] rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] mb-8">
+            <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] mb-8">
               <Sparkles className="h-3 w-3 text-[#DF8142]" /> The Long-term
               Vision
             </div>
@@ -297,7 +297,7 @@ const AboutUs = () => {
               TOWARDS A GLOBAL <br />
               <span className="text-[#DF8142]">ARCHITECTURAL CDN.</span>
             </h2>
-            <p className="text-xl text-[#5A270F] font-medium leading-relaxed mb-16">
+            <p className="text-xl text-[#5A270F] dark:text-[#EEB38C] font-medium leading-relaxed mb-16">
               We aren't just a library. We are building a global Content
               Delivery Network specifically optimized for heavy architectural
               formats—RFA, SKP, DWG, and high-res PDFs. Our roadmap includes
@@ -315,7 +315,7 @@ const AboutUs = () => {
               </Link>
               <Link
                 to="/explore"
-                className="w-full sm:w-auto px-12 py-6 bg-white border border-[#D9D9C2] text-[#5A270F] font-black uppercase tracking-widest text-xs rounded-full hover:bg-[#EFEDED] transition-all duration-500 flex items-center justify-center gap-3"
+                className="w-full sm:w-auto px-12 py-6 bg-white dark:bg-card border border-[#D9D9C2] dark:border-white/10 text-[#5A270F] dark:text-[#EEB38C] font-black uppercase tracking-widest text-xs rounded-full hover:bg-[#EFEDED] dark:bg-background transition-all duration-500 flex items-center justify-center gap-3"
               >
                 Explore Matrix
               </Link>

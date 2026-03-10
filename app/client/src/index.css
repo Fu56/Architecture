@@ -37,42 +37,42 @@
   }
 
   .dark {
-    --background: 19 71% 15%; /* Darker Seal Brown */
+    --background: 19 71% 7%; /* Near black seal brown */
     --foreground: 30 20% 98%;
 
-    --card: 19 71% 18%;
+    --card: 19 71% 10%;
     --card-foreground: 30 20% 98%;
 
-    --popover: 19 71% 18%;
+    --popover: 19 71% 10%;
     --popover-foreground: 30 20% 98%;
 
     --primary: 24 70% 57%;
     --primary-foreground: 19 71% 21%;
 
-    --secondary: 23 59% 27%; /* Kobicha */
-    --secondary-foreground: 30 20% 98%;
+    --secondary: 23 59% 27%;
+    --secondary-foreground: 24 71% 74%;
 
-    --muted: 23 59% 27%;
-    --muted-foreground: 24 30% 70%;
+    --muted: 23 59% 20%;
+    --muted-foreground: 24 30% 60%;
 
-    --accent: 23 59% 27%;
-    --accent-foreground: 30 20% 98%;
+    --accent: 24 70% 57%;
+    --accent-foreground: 19 71% 98%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 23 59% 27%;
-    --input: 23 59% 27%;
+    --border: 19 71% 15%;
+    --input: 19 71% 15%;
     --ring: 24 70% 57%;
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border transition-colors duration-200;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
   }
 }
 
@@ -94,9 +94,7 @@ h4,
   font-family: "Poppins", sans-serif;
 }
 
-body {
-  @apply bg-[#faf9f6]/90 text-gray-900 antialiased; /* Warm off-white */
-}
+/* Body resets already handled in layer base */
 
 .glass-nav {
   @apply bg-white/70 backdrop-blur-xl border-b border-white/20 sticky top-0 z-50;
@@ -138,7 +136,7 @@ body {
 }
 
 .premium-card {
-  @apply bg-white rounded-2xl border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-1;
+  @apply bg-white dark:bg-card rounded-2xl border border-gray-100 dark:border-white/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-1;
 }
 
 .btn-primary {
@@ -155,11 +153,11 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-50;
+  @apply bg-gray-50 dark:bg-black;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-[#eeb38c] rounded-full border-4 border-solid border-gray-50; /* Buff */
+  @apply bg-[#eeb38c] rounded-full border-4 border-solid border-gray-50 dark:border-black; /* Buff */
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -167,7 +165,7 @@ body {
 }
 
 .text-gradient {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-[#DF8142] to-[#5A270F];
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-[#DF8142] to-[#5A270F] dark:to-[#EEB38C];
 }
 
 @keyframes slow-zoom {
@@ -221,7 +219,7 @@ body {
 }
 
 .glass-morphism {
-  @apply bg-white/5 backdrop-blur-3xl border border-white/10;
+  @apply bg-white/5 dark:bg-black/20 backdrop-blur-3xl border border-white/10 dark:border-white/5;
 }
 
 .premium-shadow {

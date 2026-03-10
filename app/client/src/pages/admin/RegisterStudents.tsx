@@ -218,24 +218,24 @@ const RegisterStudents = () => {
   return (
     <div className="space-y-12">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 bg-[#EFEDED] p-10 rounded-[3.5rem] border border-[#D9D9C2] shadow-sm relative overflow-hidden group">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 bg-[#EFEDED] dark:bg-background p-10 rounded-[3.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-sm relative overflow-hidden group">
         <div className="absolute inset-0 bg-gradient-to-r from-[#DF8142]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         <div className="flex items-center gap-6 relative z-10">
           <div className="h-16 w-16 bg-[#5A270F] rounded-[1.8rem] flex items-center justify-center text-white shadow-2xl">
             <Database className="h-7 w-7" />
           </div>
           <div>
-            <h2 className="text-3xl font-black text-[#5A270F] tracking-tighter uppercase">
+            <h2 className="text-3xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase">
               Bulk Nexus Integration
             </h2>
-            <p className="text-xs text-[#92664A] font-bold tracking-[0.2em] uppercase">
+            <p className="text-xs text-[#92664A] dark:text-[#EEB38C]/40 font-bold tracking-[0.2em] uppercase">
               Student Node Population Protocol
             </p>
           </div>
         </div>
         <button
           onClick={downloadTemplate}
-          className="relative z-10 flex items-center gap-3 px-8 py-4 bg-white border-2 border-[#D9D9C2] rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F] hover:border-[#DF8142] hover:text-[#DF8142] transition-all shadow-xl shadow-[#5A270F]/5 active:scale-95"
+          className="relative z-10 flex items-center gap-3 px-8 py-4 bg-white dark:bg-card border-2 border-[#D9D9C2] dark:border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-[#EEB38C] hover:border-[#DF8142] hover:text-[#DF8142] transition-all shadow-xl shadow-[#5A270F]/5 active:scale-95"
         >
           <Download className="h-4 w-4" />
           Fetch Template Protocol
@@ -246,17 +246,17 @@ const RegisterStudents = () => {
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-10">
         <div className="xl:col-span-2 space-y-10">
           {/* Upload Module */}
-          <div className="bg-white p-12 rounded-[3.5rem] border border-[#D9D9C2] shadow-3xl relative overflow-hidden group">
-            <div className="absolute inset-0 bg-[#EFEDED] opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" />
+          <div className="bg-white dark:bg-card p-12 rounded-[3.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-3xl relative overflow-hidden group">
+            <div className="absolute inset-0 bg-[#EFEDED] dark:bg-background opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" />
             <div className="text-center space-y-8">
-              <div className="h-24 w-24 bg-[#EFEDED] rounded-[2.5rem] flex items-center justify-center text-[#EEB38C] mx-auto group-hover:text-[#DF8142] group-hover:bg-[#DF8142]/10 transition-all duration-500">
+              <div className="h-24 w-24 bg-[#EFEDED] dark:bg-background rounded-[2.5rem] flex items-center justify-center text-[#EEB38C] mx-auto group-hover:text-[#DF8142] group-hover:bg-[#DF8142]/10 transition-all duration-500">
                 <FileSpreadsheet className="h-12 w-12" />
               </div>
               <div>
-                <h3 className="text-lg font-black text-[#5A270F] tracking-tight">
+                <h3 className="text-lg font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight">
                   Transmission Source
                 </h3>
-                <p className="text-xs text-[#92664A] font-medium mt-2">
+                <p className="text-xs text-[#92664A] dark:text-[#EEB38C]/40 font-medium mt-2">
                   Upload CSV or XLSX for processing
                 </p>
               </div>
@@ -278,7 +278,7 @@ const RegisterStudents = () => {
               {file && (
                 <div className="flex items-center justify-center gap-3 p-4 bg-[#DF8142]/10 rounded-2xl animate-in slide-in-from-bottom-2">
                   <FileText className="h-4 w-4 text-[#DF8142]" />
-                  <span className="text-[10px] font-black text-[#5A270F] uppercase tracking-widest truncate max-w-[200px]">
+                  <span className="text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-widest truncate max-w-[200px]">
                     {file.name}
                   </span>
                 </div>
@@ -312,7 +312,7 @@ const RegisterStudents = () => {
                     <h3
                       className={`text-sm font-black uppercase tracking-widest ${
                         validationResult.valid
-                          ? "text-[#5A270F]"
+                          ? "text-[#5A270F] dark:text-[#EEB38C]"
                           : "text-rose-950"
                       }`}
                     >
@@ -323,7 +323,7 @@ const RegisterStudents = () => {
                     <p
                       className={`text-[10px] font-bold uppercase tracking-wider mt-1 ${
                         validationResult.valid
-                          ? "text-[#6C3B1C]"
+                          ? "text-[#6C3B1C] dark:text-[#EEB38C]/80"
                           : "text-rose-600"
                       }`}
                     >
@@ -336,7 +336,7 @@ const RegisterStudents = () => {
                       {validationResult.errors.map((error, idx) => (
                         <div
                           key={idx}
-                          className="flex items-center gap-2 p-3 bg-white/50 rounded-xl border border-rose-100/50 text-[10px] font-medium text-rose-800"
+                          className="flex items-center gap-2 p-3 bg-white/50 dark:bg-card/50 rounded-xl border border-rose-100/50 text-[10px] font-medium text-rose-800"
                         >
                           <AlertTriangle className="h-3 w-3" />
                           {error}
@@ -353,20 +353,20 @@ const RegisterStudents = () => {
         {/* Preview & Action Area */}
         <div className="xl:col-span-3 space-y-10">
           {preview.length > 0 && (
-            <div className="bg-white rounded-[4rem] border border-[#D9D9C2] shadow-3xl overflow-hidden flex flex-col h-full max-h-[700px]">
-              <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-[#EFEDED]/50 backdrop-blur-md sticky top-0 z-10">
+            <div className="bg-white dark:bg-card rounded-[4rem] border border-[#D9D9C2] dark:border-white/10 shadow-3xl overflow-hidden flex flex-col h-full max-h-[700px]">
+              <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-[#EFEDED] dark:bg-background/50 backdrop-blur-md sticky top-0 z-10">
                 <div className="flex items-center gap-4">
                   <div className="h-8 w-8 bg-[#5A270F] rounded-lg flex items-center justify-center text-white">
                     <Zap className="h-4 w-4" />
                   </div>
-                  <h3 className="text-sm font-black text-[#5A270F] uppercase tracking-widest">
+                  <h3 className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-widest">
                     Pre-Integration Scrutiny ({preview.length} Units)
                   </h3>
                 </div>
               </div>
               <div className="overflow-auto custom-scrollbar flex-1">
                 <table className="w-full text-left">
-                  <thead className="bg-white/90 backdrop-blur-sm sticky top-0 z-10 border-b border-[#D9D9C2]">
+                  <thead className="bg-white/90 dark:bg-card/90 backdrop-blur-sm sticky top-0 z-10 border-b border-[#D9D9C2] dark:border-white/10">
                     <tr>
                       {[
                         "Identifier",
@@ -376,7 +376,7 @@ const RegisterStudents = () => {
                       ].map((h) => (
                         <th
                           key={h}
-                          className="px-8 py-5 text-[9px] font-black text-gray-500 uppercase tracking-[0.3em]"
+                          className="px-8 py-5 text-[9px] font-black text-gray-500 dark:text-white/40 uppercase tracking-[0.3em]"
                         >
                           {h}
                         </th>
@@ -387,23 +387,23 @@ const RegisterStudents = () => {
                     {preview.map((student, idx) => (
                       <tr
                         key={idx}
-                        className="hover:bg-[#EFEDED]/50 transition-colors group"
+                        className="hover:bg-[#EFEDED] dark:bg-background/50 transition-colors group"
                       >
                         <td className="px-8 py-6">
-                          <span className="text-[10px] font-black text-gray-500 font-mono tracking-widest uppercase bg-[#EFEDED] px-3 py-1.5 rounded-lg border border-[#D9D9C2]">
+                          <span className="text-[10px] font-black text-gray-500 dark:text-white/40 font-mono tracking-widest uppercase bg-[#EFEDED] dark:bg-background px-3 py-1.5 rounded-lg border border-[#D9D9C2] dark:border-white/10">
                             {student.university_id || `TMP-${idx + 1}`}
                           </span>
                         </td>
                         <td className="px-8 py-6">
-                          <div className="text-xs font-black text-[#5A270F] uppercase">
+                          <div className="text-xs font-black text-[#5A270F] dark:text-[#EEB38C] uppercase">
                             {student.first_name} {student.last_name}
                           </div>
-                          <div className="text-[10px] text-[#92664A] font-bold uppercase tracking-widest mt-0.5">
+                          <div className="text-[10px] text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest mt-0.5">
                             Matrix Subject
                           </div>
                         </td>
                         <td className="px-8 py-6">
-                          <div className="text-xs font-medium text-[#5A270F]/80">
+                          <div className="text-xs font-medium text-[#5A270F] dark:text-[#EEB38C]/80">
                             {student.email}
                           </div>
                         </td>
@@ -412,7 +412,7 @@ const RegisterStudents = () => {
                             <span className="px-2 py-1 bg-[#DF8142]/10 text-[#DF8142] text-[9px] font-black rounded-md border border-[#DF8142]/20 uppercase">
                               B:{student.batch || "0"}
                             </span>
-                            <span className="px-2 py-1 bg-[#EFEDED] text-[#92664A] text-[9px] font-black rounded-md border border-[#D9D9C2] uppercase">
+                            <span className="px-2 py-1 bg-[#EFEDED] dark:bg-background text-[#92664A] dark:text-[#EEB38C]/40 text-[9px] font-black rounded-md border border-[#D9D9C2] dark:border-white/10 uppercase">
                               Y:{student.year || "0"}
                             </span>
                           </div>
@@ -431,7 +431,7 @@ const RegisterStudents = () => {
                   <button
                     onClick={handleUpload}
                     disabled={loading}
-                    className="flex items-center gap-4 px-10 py-4 bg-white text-[#5A270F] rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#DF8142] hover:text-white transition-all shadow-2xl shadow-white/5 disabled:opacity-50"
+                    className="flex items-center gap-4 px-10 py-4 bg-white dark:bg-card text-[#5A270F] dark:text-[#EEB38C] rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#DF8142] hover:text-white transition-all shadow-2xl shadow-white/5 disabled:opacity-50"
                   >
                     {loading ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -447,15 +447,15 @@ const RegisterStudents = () => {
 
           {/* Default Hero when no preview */}
           {preview.length === 0 && !uploadResult && (
-            <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-[#EFEDED] rounded-[4rem] border border-dashed border-[#D9D9C2] p-20 text-center space-y-8">
-              <div className="h-32 w-32 bg-white rounded-[3rem] flex items-center justify-center text-slate-100 shadow-2xl mb-4">
+            <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-[#EFEDED] dark:bg-background rounded-[4rem] border border-dashed border-[#D9D9C2] dark:border-white/10 p-20 text-center space-y-8">
+              <div className="h-32 w-32 bg-white dark:bg-card rounded-[3rem] flex items-center justify-center text-slate-100 shadow-2xl mb-4">
                 <Database className="h-16 w-16" />
               </div>
               <div className="max-w-md space-y-4">
-                <h2 className="text-3xl font-black text-[#5A270F] tracking-tighter uppercase leading-none">
+                <h2 className="text-3xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase leading-none">
                   Awaiting Data Sequential
                 </h2>
-                <p className="text-xs text-[#92664A] font-bold uppercase tracking-widest leading-loose">
+                <p className="text-xs text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest leading-loose">
                   Deploy your integration files to populate the Nexus Student
                   Registry. <br />
                   Supports CSV and Excel protocols.
@@ -472,7 +472,7 @@ const RegisterStudents = () => {
               </div>
               <div className="relative z-10 space-y-10">
                 <div className="flex items-center gap-6">
-                  <div className="h-16 w-16 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-emerald-400 ring-1 ring-white/20">
+                  <div className="h-16 w-16 bg-white/10 dark:bg-card/10 backdrop-blur-md rounded-3xl flex items-center justify-center text-emerald-400 ring-1 ring-white/20">
                     <CheckCircle className="h-8 w-8" />
                   </div>
                   <div>
@@ -486,7 +486,7 @@ const RegisterStudents = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-6">
-                  <div className="bg-white/5 border border-white/10 p-6 rounded-3xl">
+                  <div className="bg-white/5 dark:bg-card/5 border border-white/10 p-6 rounded-3xl">
                     <span className="block text-4xl font-black text-white">
                       {uploadResult.success}
                     </span>
@@ -494,7 +494,7 @@ const RegisterStudents = () => {
                       Successful Nodes
                     </span>
                   </div>
-                  <div className="bg-white/5 border border-white/10 p-6 rounded-3xl">
+                  <div className="bg-white/5 dark:bg-card/5 border border-white/10 p-6 rounded-3xl">
                     <span className="block text-4xl font-black text-white">
                       {uploadResult.failed}
                     </span>
@@ -507,7 +507,7 @@ const RegisterStudents = () => {
                 <div className="pt-6 border-t border-white/10 flex flex-wrap gap-4">
                   <button
                     onClick={downloadCredentials}
-                    className="flex-1 flex items-center justify-center gap-4 px-10 py-5 bg-white text-[#5A270F] rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#DF8142] hover:text-white transition-all shadow-xl shadow-white/5"
+                    className="flex-1 flex items-center justify-center gap-4 px-10 py-5 bg-white dark:bg-card text-[#5A270F] dark:text-[#EEB38C] rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#DF8142] hover:text-white transition-all shadow-xl shadow-white/5"
                   >
                     <Download className="h-4 w-4" />
                     Archive Credentials
@@ -518,7 +518,7 @@ const RegisterStudents = () => {
                       setFile(null);
                       setPreview([]);
                     }}
-                    className="flex-1 flex items-center justify-center gap-4 px-10 py-5 bg-white/5 text-white/60 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white/10 hover:text-white transition-all"
+                    className="flex-1 flex items-center justify-center gap-4 px-10 py-5 bg-white/5 dark:bg-card/5 text-white/60 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white/10 dark:bg-card/10 hover:text-white transition-all"
                   >
                     Reset Terminal
                   </button>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const PrivacyPolicy = () => {
   return (
-    <div className="min-h-screen bg-white selection:bg-primary/20">
+    <div className="min-h-screen bg-white dark:bg-card selection:bg-primary/20">
       {/* Minimal High-Tech Header */}
       <header className="bg-[#2A1205] pt-32 pb-24 overflow-hidden relative">
         <div className="absolute inset-0">
@@ -14,7 +14,7 @@ const PrivacyPolicy = () => {
         <div className="max-w-4xl mx-auto px-4 relative z-10 text-center">
           <Link
             to="/"
-            className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] hover:text-primary/80 mb-12 transition-all group"
+            className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] hover:text-primary/80 mb-12 transition-all group"
           >
             <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-1 transition-transform" />
             Main Nexus
@@ -29,7 +29,7 @@ const PrivacyPolicy = () => {
               PROTOCOLS.
             </span>
           </h1>
-          <p className="text-gray-500 font-medium text-lg max-w-2xl mx-auto">
+          <p className="text-gray-500 dark:text-white/40 font-medium text-lg max-w-2xl mx-auto">
             Your data is your architecture. We ensure the structural integrity
             and security of every metadata point collected across the nexus.
           </p>
@@ -41,8 +41,8 @@ const PrivacyPolicy = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
           <div
             className="md:col-span-2 prose prose-slate prose-lg max-w-none 
-                        prose-headings:font-black prose-headings:tracking-tight prose-headings:text-[#5A270F]
-                        prose-p:text-[#5A270F]/80 prose-p:leading-relaxed prose-p:font-medium
+                        prose-headings:font-black prose-headings:tracking-tight prose-headings:text-[#5A270F] dark:text-[#EEB38C]
+                        prose-p:text-[#5A270F] dark:text-[#EEB38C]/80 prose-p:leading-relaxed prose-p:font-medium
                         prose-strong:text-[#2A1205] prose-strong:font-black"
           >
             <section className="mb-16">
@@ -88,21 +88,21 @@ const PrivacyPolicy = () => {
 
           {/* Sidebar Stats/Info */}
           <div className="space-y-8">
-            <div className="bg-[#EFEDED] p-8 rounded-[2.5rem] border border-[#D9D9C2]">
+            <div className="bg-[#EFEDED] dark:bg-background p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10">
               <Shield className="h-8 w-8 text-primary mb-6" />
-              <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F] mb-2">
+              <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] mb-2">
                 GDPR Compliant
               </h3>
-              <p className="text-xs text-[#5A270F] font-medium leading-relaxed">
+              <p className="text-xs text-[#5A270F] dark:text-[#EEB38C] font-medium leading-relaxed">
                 Our nexus operates under global data protection standards.
               </p>
             </div>
-            <div className="bg-[#EFEDED] p-8 rounded-[2.5rem] border border-[#D9D9C2]">
+            <div className="bg-[#EFEDED] dark:bg-background p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10">
               <Eye className="h-8 w-8 text-primary mb-6" />
-              <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F] mb-2">
+              <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] mb-2">
                 Transparency Node
               </h3>
-              <p className="text-xs text-[#5A270F] font-medium leading-relaxed">
+              <p className="text-xs text-[#5A270F] dark:text-[#EEB38C] font-medium leading-relaxed">
                 View all collected metadata from your user dashboard.
               </p>
             </div>
@@ -126,8 +126,8 @@ const PrivacyPolicy = () => {
       </main>
 
       {/* Footer Termination */}
-      <footer className="py-20 bg-[#EFEDED] border-t border-[#D9D9C2] text-center">
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">
+      <footer className="py-20 bg-[#EFEDED] dark:bg-background border-t border-[#D9D9C2] dark:border-white/10 text-center">
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 dark:text-white/30">
           End of Privacy Protocol Transmission
         </p>
       </footer>

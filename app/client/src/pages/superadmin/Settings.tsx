@@ -78,14 +78,14 @@ const Settings = () => {
         <div className="flex items-center gap-8 relative z-10">
           <button
             onClick={() => navigate("/super-admin")}
-            className="h-14 w-14 shrink-0 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl flex items-center justify-center transition-all group/back active:scale-95"
+            className="h-14 w-14 shrink-0 bg-white/10 dark:bg-card/10 hover:bg-white/20 dark:bg-card/20 border border-white/20 rounded-2xl flex items-center justify-center transition-all group/back active:scale-95"
             title="Return to Dashboard"
           >
             <ArrowLeft className="h-6 w-6 group-hover:-translate-x-1 transition-transform text-[#EEB38C]" />
           </button>
 
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EEB38C]/20 border border-[#EEB38C]/30 rounded-full text-[10px] font-black uppercase tracking-widest text-[#EEB38C] mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EEB38C]/20 border border-[#EEB38C]/30 dark:border-white/5 rounded-full text-[10px] font-black uppercase tracking-widest text-[#EEB38C] mb-4">
               <SettingsIcon className="h-3 w-3" /> Core Configuration
             </div>
             <h1
@@ -111,7 +111,7 @@ const Settings = () => {
       {/* Main Settings Panel */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
         <div className="md:col-span-8">
-          <div className="bg-white rounded-[2.5rem] sm:rounded-[3rem] p-6 sm:p-10 shadow-xl shadow-slate-200/50 relative overflow-hidden">
+          <div className="bg-white dark:bg-card rounded-[2.5rem] sm:rounded-[3rem] p-6 sm:p-10 shadow-xl shadow-slate-200/50 relative overflow-hidden">
             <div className="flex items-center justify-between mb-12">
               <h3 className="text-lg font-black text-[#2A1205] flex items-center gap-4 uppercase tracking-tighter">
                 <div className="p-4 bg-[#5A270F] text-white rounded-2xl shadow-lg">
@@ -124,14 +124,14 @@ const Settings = () => {
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* Old Password */}
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-white/40 ml-2">
                   Old Password
                 </label>
                 <div className="relative group">
                   <input
                     type={showPasswords.old ? "text" : "password"}
                     placeholder="old password"
-                    className="w-full h-16 pl-6 pr-14 bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl text-sm font-bold text-[#2A1205] focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400"
+                    className="w-full h-16 pl-6 pr-14 bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl text-sm font-bold text-[#2A1205] focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 dark:text-white/30"
                     value={passwordForm.oldPassword}
                     onChange={(e) =>
                       setPasswordForm({
@@ -144,7 +144,7 @@ const Settings = () => {
                   <button
                     type="button"
                     onClick={() => toggleVisibility("old")}
-                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#5A270F] transition-colors"
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-white/30 hover:text-[#5A270F] dark:text-[#EEB38C] transition-colors"
                   >
                     {showPasswords.old ? (
                       <EyeOff className="h-5 w-5" />
@@ -157,14 +157,14 @@ const Settings = () => {
 
               {/* New Password */}
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-white/40 ml-2">
                   New Password
                 </label>
                 <div className="relative group">
                   <input
                     type={showPasswords.new ? "text" : "password"}
                     placeholder="newpassword"
-                    className="w-full h-16 pl-6 pr-14 bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl text-sm font-bold text-[#2A1205] focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400"
+                    className="w-full h-16 pl-6 pr-14 bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl text-sm font-bold text-[#2A1205] focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 dark:text-white/30"
                     value={passwordForm.newPassword}
                     onChange={(e) =>
                       setPasswordForm({
@@ -177,7 +177,7 @@ const Settings = () => {
                   <button
                     type="button"
                     onClick={() => toggleVisibility("new")}
-                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#5A270F] transition-colors"
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-white/30 hover:text-[#5A270F] dark:text-[#EEB38C] transition-colors"
                   >
                     {showPasswords.new ? (
                       <EyeOff className="h-5 w-5" />
@@ -190,14 +190,14 @@ const Settings = () => {
 
               {/* Confirm Password */}
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-white/40 ml-2">
                   Confirm Password
                 </label>
                 <div className="relative group">
                   <input
                     type={showPasswords.confirm ? "text" : "password"}
                     placeholder="confirm password"
-                    className="w-full h-16 pl-6 pr-14 bg-[#EFEDED] border border-[#D9D9C2] rounded-2xl text-sm font-bold text-[#2A1205] focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400"
+                    className="w-full h-16 pl-6 pr-14 bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl text-sm font-bold text-[#2A1205] focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 dark:text-white/30"
                     value={passwordForm.confirmPassword}
                     onChange={(e) =>
                       setPasswordForm({
@@ -210,7 +210,7 @@ const Settings = () => {
                   <button
                     type="button"
                     onClick={() => toggleVisibility("confirm")}
-                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#5A270F] transition-colors"
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-white/30 hover:text-[#5A270F] dark:text-[#EEB38C] transition-colors"
                   >
                     {showPasswords.confirm ? (
                       <EyeOff className="h-5 w-5" />
@@ -255,17 +255,17 @@ const Settings = () => {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-[2.5rem] border border-[#D9D9C2] shadow-sm">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F] mb-6 flex items-center gap-2">
+          <div className="bg-white dark:bg-card p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-sm">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-[#EEB38C] mb-6 flex items-center gap-2">
               <ShieldCheck className="h-4 w-4" /> System Info
             </h4>
             <div className="space-y-4">
               <div className="flex justify-between items-center text-[10px] font-bold">
-                <span className="text-gray-400">Node Cluster</span>
+                <span className="text-gray-400 dark:text-white/30">Node Cluster</span>
                 <span className="text-[#2A1205]">EU-Central-01</span>
               </div>
               <div className="flex justify-between items-center text-[10px] font-bold">
-                <span className="text-gray-400">Encryption</span>
+                <span className="text-gray-400 dark:text-white/30">Encryption</span>
                 <span className="text-[#2A1205]">AES-256-GCM</span>
               </div>
               <div className="flex justify-between items-center text-[10px] font-bold text-emerald-600">

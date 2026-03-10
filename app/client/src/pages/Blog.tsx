@@ -56,7 +56,7 @@ const Blog = () => {
     });
 
   return (
-    <div className="bg-[#EFEDED] min-h-screen selection:bg-primary/20 selection:text-[#2A1205]">
+    <div className="bg-[#EFEDED] dark:bg-background min-h-screen selection:bg-primary/20 selection:text-[#2A1205]">
       {/* Premium Header */}
       <section className="relative pt-32 pb-48 overflow-hidden bg-[#5A270F]">
         <div className="absolute inset-0 z-0">
@@ -75,7 +75,7 @@ const Blog = () => {
               ARCHITECTURAL NARRATIVES.
             </span>
           </h1>
-          <p className="max-w-2xl mx-auto text-gray-500 text-lg sm:text-xl font-medium leading-relaxed mb-12 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-400">
+          <p className="max-w-2xl mx-auto text-gray-500 dark:text-white/40 text-lg sm:text-xl font-medium leading-relaxed mb-12 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-400">
             Stay updated with the latest trends, research, and technical stories
             from our vibrant architectural community.
           </p>
@@ -83,14 +83,14 @@ const Blog = () => {
           {/* Search Bar Nexus */}
           <div className="max-w-xl mx-auto relative group animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-600">
             <div className="absolute -inset-1 bg-gradient-to-r from-[#DF8142] to-[#92664A] rounded-2xl blur opacity-20 group-focus-within:opacity-40 transition duration-500" />
-            <div className="relative flex items-center bg-white border border-[#D9D9C2] rounded-2xl overflow-hidden shadow-sm group-focus-within:border-[#DF8142] transition-all">
-              <Search className="ml-5 h-5 w-5 text-gray-500" />
+            <div className="relative flex items-center bg-white dark:bg-card border border-[#D9D9C2] dark:border-white/10 rounded-2xl overflow-hidden shadow-sm group-focus-within:border-[#DF8142] transition-all">
+              <Search className="ml-5 h-5 w-5 text-gray-500 dark:text-white/40" />
               <input
                 type="text"
                 placeholder="Search narratives, tags, or metadata..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-4 pr-12 h-16 text-[#5A270F] placeholder:text-gray-500 font-bold outline-none"
+                className="w-full pl-4 pr-12 h-16 text-[#5A270F] dark:text-[#EEB38C] placeholder:text-gray-500 dark:text-white/40 font-bold outline-none"
               />
               <div className="absolute right-4">
                 <button
@@ -98,7 +98,7 @@ const Blog = () => {
                   className={`p-2 rounded-xl transition-all duration-300 relative group ${
                     filterOpen || sortOrder !== "newest"
                       ? "bg-[#DF8142] text-white shadow-lg shadow-[#DF8142]/30"
-                      : "bg-[#EFEDED] text-[#5A270F] hover:bg-[#D9D9C2] hover:text-[#2A1205]"
+                      : "bg-[#EFEDED] dark:bg-background text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#D9D9C2] hover:text-[#2A1205]"
                   }`}
                   aria-label="Filter blogs"
                 >
@@ -107,9 +107,9 @@ const Blog = () => {
 
                 {/* Filter Dropdown */}
                 {filterOpen && (
-                  <div className="absolute right-0 top-full mt-4 w-48 bg-white rounded-2xl shadow-xl border border-[#D9D9C2] overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="absolute right-0 top-full mt-4 w-48 bg-white dark:bg-card rounded-2xl shadow-xl border border-[#D9D9C2] dark:border-white/10 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
                     <div className="p-2 space-y-1">
-                      <p className="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-[#92664A]">
+                      <p className="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40">
                         Sort Order
                       </p>
                       <button
@@ -120,7 +120,7 @@ const Blog = () => {
                         className={`w-full text-left px-3 py-2 text-sm font-bold rounded-xl transition-colors ${
                           sortOrder === "newest"
                             ? "bg-[#DF8142]/10 text-[#DF8142]"
-                            : "text-[#5A270F] hover:bg-[#EFEDED]"
+                            : "text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:bg-background"
                         }`}
                       >
                         Newest First
@@ -133,7 +133,7 @@ const Blog = () => {
                         className={`w-full text-left px-3 py-2 text-sm font-bold rounded-xl transition-colors ${
                           sortOrder === "oldest"
                             ? "bg-[#DF8142]/10 text-[#DF8142]"
-                            : "text-[#5A270F] hover:bg-[#EFEDED]"
+                            : "text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:bg-background"
                         }`}
                       >
                         Oldest First
@@ -154,7 +154,7 @@ const Blog = () => {
             {[...Array(6)].map((_, i) => (
               <div
                 key={i}
-                className="bg-white h-[500px] rounded-[3rem] animate-pulse border border-[#D9D9C2] shadow-xl shadow-slate-200/20"
+                className="bg-white dark:bg-card h-[500px] rounded-[3rem] animate-pulse border border-[#D9D9C2] dark:border-white/10 shadow-xl shadow-slate-200/20"
               />
             ))}
           </div>
@@ -177,7 +177,7 @@ const Blog = () => {
             {filteredBlogs.map((blog) => (
               <article
                 key={blog.id}
-                className="group bg-white rounded-[3rem] overflow-hidden border border-[#D9D9C2] shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:shadow-[#DF8142]/10 hover:-translate-y-2 transition-all duration-500 flex flex-col h-full animate-in fade-in slide-in-from-bottom-8 duration-700"
+                className="group bg-white dark:bg-card rounded-[3rem] overflow-hidden border border-[#D9D9C2] dark:border-white/10 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:shadow-[#DF8142]/10 hover:-translate-y-2 transition-all duration-500 flex flex-col h-full animate-in fade-in slide-in-from-bottom-8 duration-700"
               >
                 {/* Visual Header */}
                 <div className="relative aspect-[16/9] overflow-hidden bg-[#F5F5DC] shrink-0">
@@ -200,7 +200,7 @@ const Blog = () => {
                     {blog.tags.slice(0, 1).map((tag) => (
                       <div
                         key={tag}
-                        className="px-4 py-2 bg-white/90 backdrop-blur-md rounded-xl text-[9px] font-black uppercase tracking-widest text-[#DF8142] shadow-xl"
+                        className="px-4 py-2 bg-white/90 dark:bg-card/90 backdrop-blur-md rounded-xl text-[9px] font-black uppercase tracking-widest text-[#DF8142] shadow-xl"
                       >
                         {tag}
                       </div>
@@ -210,39 +210,39 @@ const Blog = () => {
 
                 {/* Content Matrix */}
                 <div className="p-10 flex-grow flex flex-col">
-                  <div className="flex items-center gap-2 mb-6 text-[10px] font-black uppercase tracking-widest text-gray-400">
+                  <div className="flex items-center gap-2 mb-6 text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-white/30">
                     <Sparkles className="h-3.5 w-3.5 text-[#DF8142]" />{" "}
                     Community Log
                   </div>
 
-                  <h2 className="text-2xl font-black text-[#5A270F] mb-6 group-hover:text-[#DF8142] transition-colors leading-[1.2] tracking-tight">
+                  <h2 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] mb-6 group-hover:text-[#DF8142] transition-colors leading-[1.2] tracking-tight">
                     <Link to={`/blog/${blog.id}`} className="line-clamp-2">
                       {blog.title}
                     </Link>
                   </h2>
 
-                  <p className="text-[#5A270F] font-medium leading-relaxed mb-8 line-clamp-3">
+                  <p className="text-[#5A270F] dark:text-[#EEB38C] font-medium leading-relaxed mb-8 line-clamp-3">
                     {blog.content.replace(/<[^>]*>?/gm, "").substring(0, 180)}
                     ...
                   </p>
 
                   <div className="pt-8 border-t border-slate-50 flex items-center justify-between mt-auto">
                     <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 rounded-2xl bg-[#EFEDED] flex items-center justify-center border border-[#D9D9C2] text-gray-500 group-hover:bg-[#DF8142] group-hover:text-white transition-all duration-300 shadow-sm">
+                      <div className="h-12 w-12 rounded-2xl bg-[#EFEDED] dark:bg-background flex items-center justify-center border border-[#D9D9C2] dark:border-white/10 text-gray-500 dark:text-white/40 group-hover:bg-[#DF8142] group-hover:text-white transition-all duration-300 shadow-sm">
                         <User className="h-5 w-5" />
                       </div>
                       <div className="overflow-hidden">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 leading-none mb-1">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-white/40 leading-none mb-1">
                           Architect
                         </p>
-                        <p className="text-sm font-black text-[#6C3B1C] truncate leading-none">
+                        <p className="text-sm font-black text-[#6C3B1C] dark:text-[#EEB38C]/80 truncate leading-none">
                           {blog.author.firstName} {blog.author.lastName}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex flex-col items-end gap-1">
-                      <div className="flex items-center gap-1.5 text-[9px] text-gray-400 font-black uppercase tracking-[0.15em]">
+                      <div className="flex items-center gap-1.5 text-[9px] text-gray-400 dark:text-white/30 font-black uppercase tracking-[0.15em]">
                         <Calendar className="h-3 w-3" />
                         {new Date(blog.created_at).toLocaleDateString()}
                       </div>
@@ -257,14 +257,14 @@ const Blog = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-32 bg-white rounded-[3rem] border border-[#D9D9C2] shadow-xl shadow-slate-200/20 max-w-4xl mx-auto px-12">
-            <div className="h-24 w-24 bg-[#EFEDED] text-[#EEB38C] rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-sm border border-[#D9D9C2]">
+          <div className="text-center py-32 bg-white dark:bg-card rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 shadow-xl shadow-slate-200/20 max-w-4xl mx-auto px-12">
+            <div className="h-24 w-24 bg-[#EFEDED] dark:bg-background text-[#EEB38C] rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-sm border border-[#D9D9C2] dark:border-white/10">
               <Search className="h-12 w-12" />
             </div>
             <h3 className="text-3xl font-black text-[#2A1205] mb-4 tracking-tight">
               NO NARRATIVES DETECTED.
             </h3>
-            <p className="text-gray-500 text-lg font-medium mb-10 max-w-md mx-auto">
+            <p className="text-gray-500 dark:text-white/40 text-lg font-medium mb-10 max-w-md mx-auto">
               The knowledge nexus returned null for your current filter
               parameters. Try broadening your criteria.
             </p>
@@ -285,7 +285,7 @@ const Blog = () => {
           <h2 className="text-4xl font-black text-white mb-6 uppercase tracking-tight">
             Got a story to tell?
           </h2>
-          <p className="text-gray-500 text-lg font-medium mb-12">
+          <p className="text-gray-500 dark:text-white/40 text-lg font-medium mb-12">
             Share your architectural journey with the global community of design
             minds.
           </p>
@@ -307,7 +307,7 @@ const Blog = () => {
               }
               return "/login";
             })()}
-            className="px-12 py-5 bg-white text-[#5A270F] rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#DF8142] hover:text-white transition-all duration-500 shadow-2xl active:scale-95 flex items-center gap-3 mx-auto w-fit"
+            className="px-12 py-5 bg-white dark:bg-card text-[#5A270F] dark:text-[#EEB38C] rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#DF8142] hover:text-white transition-all duration-500 shadow-2xl active:scale-95 flex items-center gap-3 mx-auto w-fit"
           >
             Create New Narrative <ArrowRight className="h-4 w-4" />
           </Link>

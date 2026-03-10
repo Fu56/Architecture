@@ -169,16 +169,16 @@ const RegisterFaculty = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-20">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/80 backdrop-blur-xl p-8 rounded-3xl border border-[#EEB38C]/30 shadow-md">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/80 dark:bg-card/80 backdrop-blur-xl p-8 rounded-3xl border border-[#EEB38C]/30 dark:border-white/10 shadow-md transition-all duration-500">
         <div className="flex items-center gap-6">
-          <div className="h-12 w-12 bg-[#EEB38C]/20 rounded-xl flex items-center justify-center text-[#DF8142]">
+          <div className="h-12 w-12 bg-[#EEB38C]/20 dark:bg-primary rounded-xl flex items-center justify-center text-[#DF8142] dark:text-white transition-colors">
             <Shield className="h-6 w-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-[#5A270F]">
+            <h2 className="text-2xl font-bold tracking-tight text-[#5A270F] dark:text-foreground">
               Faculty Registration
             </h2>
-            <p className="text-[#6C3B1C] text-sm">
+            <p className="text-[#6C3B1C] dark:text-foreground/60 text-sm">
               Create new faculty credentials and assign permissions.
             </p>
           </div>
@@ -188,10 +188,10 @@ const RegisterFaculty = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Form Section */}
         <div className="lg:col-span-7">
-          <Card className="shadow-2xl shadow-[#5A270F]/5 border-[#EEB38C]/30 rounded-[2.5rem] overflow-hidden">
-            <CardHeader className="bg-[#EFEDED]/50 border-b border-[#EEB38C]/20 p-8">
-              <CardTitle className="text-[#5A270F]">Core Identity</CardTitle>
-              <CardDescription className="text-[#92664A]">
+          <Card className="shadow-2xl shadow-[#5A270F]/5 dark:shadow-black/20 border-[#EEB38C]/30 dark:border-white/10 rounded-[2.5rem] overflow-hidden transition-all duration-500">
+            <CardHeader className="bg-[#EFEDED] dark:bg-background/50 dark:bg-white/5 border-b border-[#EEB38C]/20 dark:border-white/10 p-8">
+              <CardTitle className="text-[#5A270F] dark:text-foreground">Core Identity</CardTitle>
+              <CardDescription className="text-[#92664A] dark:text-foreground/40">
                 Enter the personal and system details for the new faculty
                 member.
               </CardDescription>
@@ -202,7 +202,7 @@ const RegisterFaculty = () => {
                   <div className="space-y-2">
                     <Label
                       htmlFor="first_name"
-                      className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
+                      className="text-[#92664A] dark:text-foreground/60 font-bold uppercase tracking-widest text-[10px] ml-1"
                     >
                       First Name
                     </Label>
@@ -212,7 +212,7 @@ const RegisterFaculty = () => {
                       placeholder="Julian"
                       value={formData.first_name}
                       onChange={handleChange}
-                      className={`rounded-xl border ${errors.first_name ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20 text-red-900 placeholder:text-red-300" : "border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F]"} font-bold transition-all`}
+                      className={`rounded-xl border ${errors.first_name ? "border-red-500 bg-red-50 dark:bg-red-500/10 focus:border-red-500 focus:ring-red-500/20 text-red-900 dark:text-red-400 placeholder:text-red-300 dark:placeholder-red-500/40" : "border-[#D9D9C2] dark:border-white/10 focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED] dark:bg-background/30 dark:bg-white/5 text-[#5A270F] dark:text-white"} font-bold transition-all`}
                     />
                     {errors.first_name && (
                       <p className="text-red-500 text-[10px] uppercase font-bold tracking-wider ml-1 animate-in slide-in-from-top-1">
@@ -223,7 +223,7 @@ const RegisterFaculty = () => {
                   <div className="space-y-2">
                     <Label
                       htmlFor="last_name"
-                      className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
+                      className="text-[#92664A] dark:text-foreground/60 font-bold uppercase tracking-widest text-[10px] ml-1"
                     >
                       Last Name
                     </Label>
@@ -233,7 +233,7 @@ const RegisterFaculty = () => {
                       placeholder="Wright"
                       value={formData.last_name}
                       onChange={handleChange}
-                      className={`rounded-xl border ${errors.last_name ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20 text-red-900 placeholder:text-red-300" : "border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F]"} font-bold transition-all`}
+                      className={`rounded-xl border ${errors.last_name ? "border-red-500 bg-red-50 dark:bg-red-500/10 focus:border-red-500 focus:ring-red-500/20 text-red-900 dark:text-red-400 placeholder:text-red-300 dark:placeholder-red-500/40" : "border-[#D9D9C2] dark:border-white/10 focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED] dark:bg-background/30 dark:bg-white/5 text-[#5A270F] dark:text-white"} font-bold transition-all`}
                     />
                     {errors.last_name && (
                       <p className="text-red-500 text-[10px] uppercase font-bold tracking-wider ml-1 animate-in slide-in-from-top-1">
@@ -246,20 +246,20 @@ const RegisterFaculty = () => {
                 <div className="space-y-2">
                   <Label
                     htmlFor="email"
-                    className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
+                    className="text-[#92664A] dark:text-foreground/60 font-bold uppercase tracking-widest text-[10px] ml-1"
                   >
                     System Email
                   </Label>
                   <div className="relative">
                     <AtSign
-                      className={`absolute left-3 top-2.5 h-4 w-4 ${errors.email ? "text-red-400" : "text-[#92664A]"}`}
+                      className={`absolute left-3 top-2.5 h-4 w-4 ${errors.email ? "text-red-400" : "text-[#92664A] dark:text-[#EEB38C]/40"}`}
                     />
                     <Input
                       id="email"
                       name="email"
                       type="text"
                       placeholder="faculty@studio-nexus.edu"
-                      className={`pl-9 rounded-xl border ${errors.email ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20 text-red-900 placeholder:text-red-300" : "border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F]"} font-bold transition-all`}
+                      className={`pl-9 rounded-xl border ${errors.email ? "border-red-500 bg-red-50 dark:bg-red-500/10 focus:border-red-500 focus:ring-red-500/20 text-red-900 dark:text-red-400 placeholder:text-red-300 dark:placeholder-red-500/40" : "border-[#D9D9C2] dark:border-white/10 focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED] dark:bg-background/30 dark:bg-white/5 text-[#5A270F] dark:text-white"} font-bold transition-all`}
                       value={formData.email}
                       onChange={handleChange}
                     />
@@ -274,21 +274,21 @@ const RegisterFaculty = () => {
                 <div className="space-y-2">
                   <Label
                     htmlFor="password"
-                    className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
+                    className="text-[#92664A] dark:text-foreground/60 font-bold uppercase tracking-widest text-[10px] ml-1"
                   >
                     Authorization Key
                   </Label>
                   <div className="flex gap-2">
                     <div className="relative flex-1">
                       <Key
-                        className={`absolute left-3 top-2.5 h-4 w-4 ${errors.password ? "text-red-400" : "text-[#92664A]"}`}
+                        className={`absolute left-3 top-2.5 h-4 w-4 ${errors.password ? "text-red-400" : "text-[#92664A] dark:text-[#EEB38C]/40"}`}
                       />
                       <Input
                         id="password"
                         name="password"
                         type="text"
                         placeholder="Secure credential"
-                        className={`pl-9 font-mono rounded-xl border ${errors.password ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20 text-red-900 placeholder:text-red-300" : "border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F]"} font-bold transition-all`}
+                        className={`pl-9 font-mono rounded-xl border ${errors.password ? "border-red-500 bg-red-50 dark:bg-red-500/10 focus:border-red-500 focus:ring-red-500/20 text-red-900 dark:text-red-400 placeholder:text-red-300 dark:placeholder-red-500/40" : "border-[#D9D9C2] dark:border-white/10 focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED] dark:bg-background/30 dark:bg-white/5 text-[#5A270F] dark:text-white"} font-bold transition-all`}
                         value={formData.password}
                         onChange={handleChange}
                       />
@@ -301,7 +301,7 @@ const RegisterFaculty = () => {
                         if (errors.password)
                           setErrors((prev) => ({ ...prev, password: "" }));
                       }}
-                      className="rounded-xl border-[#D9D9C2] text-[#6C3B1C] hover:bg-[#EEB38C]/10 transition-all font-bold"
+                      className="rounded-xl border-[#D9D9C2] dark:border-white/10 text-[#6C3B1C] dark:text-[#EEB38C] hover:bg-[#EEB38C]/10 dark:hover:bg-white/5 dark:bg-card/5 transition-all font-bold"
                     >
                       <Zap className="h-4 w-4 mr-2 text-[#DF8142]" />
                       Auto
@@ -314,12 +314,12 @@ const RegisterFaculty = () => {
                   )}
                 </div>
 
-                <div className="pt-6 border-t border-[#EEB38C]/20">
+                <div className="pt-6 border-t border-[#EEB38C]/20 dark:border-white/10">
                   <div className="flex items-center gap-2 mb-6">
-                    <div className="p-2 bg-[#EEB38C]/10 rounded-lg">
+                    <div className="p-2 bg-[#EEB38C]/10 dark:bg-white/5 rounded-lg">
                       <GraduationCap className="h-4 w-4 text-[#DF8142]" />
                     </div>
-                    <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F]">
+                    <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F] dark:text-foreground">
                       Academic Profile
                     </h3>
                   </div>
@@ -327,19 +327,19 @@ const RegisterFaculty = () => {
                     <div className="space-y-2">
                       <Label
                         htmlFor="worker_id"
-                        className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
+                        className="text-[#92664A] dark:text-foreground/60 font-bold uppercase tracking-widest text-[10px] ml-1"
                       >
                         Worker ID
                       </Label>
                       <div className="relative">
                         <Shield
-                          className={`absolute left-3 top-2.5 h-4 w-4 ${errors.worker_id ? "text-red-400" : "text-[#92664A]"}`}
+                          className={`absolute left-3 top-2.5 h-4 w-4 ${errors.worker_id ? "text-red-400" : "text-[#92664A] dark:text-[#EEB38C]/40"}`}
                         />
                         <Input
                           id="worker_id"
                           name="worker_id"
                           placeholder="e.g. F-7728-ARCH"
-                          className={`pl-9 rounded-xl border ${errors.worker_id ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20 text-red-900 placeholder:text-red-300" : "border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F]"} font-bold transition-all`}
+                          className={`pl-9 rounded-xl border ${errors.worker_id ? "border-red-500 bg-red-50 dark:bg-red-500/10 focus:border-red-500 focus:ring-red-500/20 text-red-900 dark:text-red-400 placeholder:text-red-300 dark:placeholder-red-500/40" : "border-[#D9D9C2] dark:border-white/10 focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED] dark:bg-background/30 dark:bg-white/5 text-[#5A270F] dark:text-white"} font-bold transition-all`}
                           value={formData.worker_id}
                           onChange={handleChange}
                         />
@@ -354,19 +354,19 @@ const RegisterFaculty = () => {
                     <div className="space-y-2">
                       <Label
                         htmlFor="department"
-                        className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
+                        className="text-[#92664A] dark:text-foreground/60 font-bold uppercase tracking-widest text-[10px] ml-1"
                       >
                         Department
                       </Label>
                       <div className="relative">
                         <Building2
-                          className={`absolute left-3 top-2.5 h-4 w-4 ${errors.department ? "text-red-400" : "text-[#92664A]"}`}
+                          className={`absolute left-3 top-2.5 h-4 w-4 ${errors.department ? "text-red-400" : "text-[#92664A] dark:text-[#EEB38C]/40"}`}
                         />
                         <Input
                           id="department"
                           name="department"
                           placeholder="e.g. Parametric Architecture"
-                          className={`pl-9 rounded-xl border ${errors.department ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20 text-red-900 placeholder:text-red-300" : "border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F]"} font-bold transition-all`}
+                          className={`pl-9 rounded-xl border ${errors.department ? "border-red-500 bg-red-50 dark:bg-red-500/10 focus:border-red-500 focus:ring-red-500/20 text-red-900 dark:text-red-400 placeholder:text-red-300 dark:placeholder-red-500/40" : "border-[#D9D9C2] dark:border-white/10 focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED] dark:bg-background/30 dark:bg-white/5 text-[#5A270F] dark:text-white"} font-bold transition-all`}
                           value={formData.department}
                           onChange={handleChange}
                         />
@@ -381,19 +381,19 @@ const RegisterFaculty = () => {
                     <div className="space-y-2">
                       <Label
                         htmlFor="specialization"
-                        className="text-[#92664A] font-bold uppercase tracking-widest text-[10px] ml-1"
+                        className="text-[#92664A] dark:text-foreground/60 font-bold uppercase tracking-widest text-[10px] ml-1"
                       >
                         Specialization
                       </Label>
                       <div className="relative">
                         <Briefcase
-                          className={`absolute left-3 top-2.5 h-4 w-4 ${errors.specialization ? "text-red-400" : "text-[#92664A]"}`}
+                          className={`absolute left-3 top-2.5 h-4 w-4 ${errors.specialization ? "text-red-400" : "text-[#92664A] dark:text-[#EEB38C]/40"}`}
                         />
                         <Input
                           id="specialization"
                           name="specialization"
                           placeholder="e.g. Kinetic Structures"
-                          className={`pl-9 rounded-xl border ${errors.specialization ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500/20 text-red-900 placeholder:text-red-300" : "border-[#D9D9C2] focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED]/30 text-[#5A270F]"} font-bold transition-all`}
+                          className={`pl-9 rounded-xl border ${errors.specialization ? "border-red-500 bg-red-50 dark:bg-red-500/10 focus:border-red-500 focus:ring-red-500/20 text-red-900 dark:text-red-400 placeholder:text-red-300 dark:placeholder-red-500/40" : "border-[#D9D9C2] dark:border-white/10 focus:border-[#DF8142] focus:ring-[#DF8142]/10 bg-[#EFEDED] dark:bg-background/30 dark:bg-white/5 text-[#5A270F] dark:text-white"} font-bold transition-all`}
                           value={formData.specialization}
                           onChange={handleChange}
                         />
@@ -408,7 +408,7 @@ const RegisterFaculty = () => {
                 </div>
 
                 <div
-                  className={`bg-[#EFEDED]/50 p-6 rounded-2xl border ${errors.agreedToTerms ? "border-red-500 bg-red-50/50" : "border-[#D9D9C2]"} space-y-4 transition-all`}
+                  className={`bg-[#EFEDED] dark:bg-background/50 dark:bg-white/5 p-6 rounded-2xl border ${errors.agreedToTerms ? "border-red-500 bg-red-50/50 dark:bg-red-500/10" : "border-[#D9D9C2] dark:border-white/10"} space-y-4 transition-all duration-500`}
                 >
                   <div className="flex items-start gap-4 group/terms">
                     <div className="relative flex items-center h-6 pt-0.5">
@@ -416,7 +416,7 @@ const RegisterFaculty = () => {
                         id="agreedToTerms"
                         name="agreedToTerms"
                         type="checkbox"
-                        className={`h-5 w-5 rounded-lg border-2 ${errors.agreedToTerms ? "border-red-500 outline-none ring-2 ring-red-500/20" : "border-[#D9D9C2] text-[#DF8142] focus:ring-[#DF8142]/20"} cursor-pointer accent-[#DF8142]`}
+                        className={`h-5 w-5 rounded-lg border-2 ${errors.agreedToTerms ? "border-red-500 outline-none ring-2 ring-red-500/20" : "border-[#D9D9C2] dark:border-white/10 text-[#DF8142] focus:ring-[#DF8142]/20"} cursor-pointer accent-[#DF8142]`}
                         checked={formData.agreedToTerms}
                         onChange={(e) => {
                           setFormData((prev: FacultyFormData) => ({
@@ -435,12 +435,12 @@ const RegisterFaculty = () => {
                     <div className="flex flex-col gap-1">
                       <label
                         htmlFor="agreedToTerms"
-                        className={`text-[10px] font-black uppercase tracking-widest ${errors.agreedToTerms ? "text-red-700" : "text-[#5A270F]"} leading-snug cursor-pointer`}
+                        className={`text-[10px] font-black uppercase tracking-widest ${errors.agreedToTerms ? "text-red-700" : "text-[#5A270F] dark:text-[#EEB38C]"} leading-snug cursor-pointer`}
                       >
                         Accept Operational Protocols
                       </label>
                       <p
-                        className={`text-[10px] ${errors.agreedToTerms ? "text-red-600" : "text-[#92664A]"} font-medium leading-relaxed`}
+                        className={`text-[10px] ${errors.agreedToTerms ? "text-red-600" : "text-[#92664A] dark:text-[#EEB38C]/40"} font-medium leading-relaxed`}
                       >
                         By initializing this node, you confirm that you understand the rules and agree to use this system responsibly and lawfully, as outlined in the{" "}
                         <Link
@@ -483,7 +483,7 @@ const RegisterFaculty = () => {
             <div className="absolute top-0 right-0 p-32 opacity-20 blur-3xl bg-[#DF8142] rounded-full pointer-events-none" />
             <CardHeader className="p-10 pb-6 relative z-10">
               <div className="flex justify-between items-start">
-                <div className="h-12 w-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/10">
+                <div className="h-12 w-12 bg-white/10 dark:bg-card/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/10">
                   <Award className="h-6 w-6 text-[#DF8142]" />
                 </div>
                 <div className="text-right">
@@ -499,7 +499,7 @@ const RegisterFaculty = () => {
             <CardContent className="px-10 space-y-8 relative z-10">
               <div className="text-center space-y-4">
                 <div className="h-32 w-32 bg-gradient-to-br from-[#DF8142] via-[#6C3B1C] to-[#5A270F] mx-auto rounded-[2rem] flex items-center justify-center text-4xl font-black shadow-2xl border-4 border-[#5A270F] relative group overflow-hidden">
-                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-white/5 dark:bg-card/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                   {formData.first_name?.[0] || formData.last_name?.[0] || "?"}
                 </div>
                 <div className="space-y-1">
@@ -514,7 +514,7 @@ const RegisterFaculty = () => {
               </div>
 
               <div className="space-y-4">
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 group transition-all hover:bg-white/10">
+                <div className="bg-white/5 dark:bg-card/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 group transition-all hover:bg-white/10 dark:bg-card/10">
                   <p className="text-[10px] uppercase tracking-[0.2em] text-[#EEB38C]/60 font-black mb-1">
                     Department
                   </p>
@@ -522,7 +522,7 @@ const RegisterFaculty = () => {
                     {formData.department || "N/A"}
                   </p>
                 </div>
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 group transition-all hover:bg-white/10">
+                <div className="bg-white/5 dark:bg-card/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 group transition-all hover:bg-white/10 dark:bg-card/10">
                   <p className="text-[10px] uppercase tracking-[0.2em] text-[#EEB38C]/60 font-black mb-1">
                     Specialization
                   </p>
@@ -530,11 +530,11 @@ const RegisterFaculty = () => {
                     {formData.specialization || "N/A"}
                   </p>
                 </div>
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 group transition-all hover:bg-white/10">
+                <div className="bg-white/5 dark:bg-card/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 group transition-all hover:bg-white/10 dark:bg-card/10">
                   <p className="text-[10px] uppercase tracking-[0.2em] text-[#EEB38C]/60 font-black mb-1">
                     Worker ID
                   </p>
-                  <p className="text-sm font-bold text-white uppercase tracking-wider">
+                  <p className="text-sm font-bold text-white dark:text-foreground uppercase tracking-wider transition-colors">
                     {formData.worker_id || "NOT ASSIGNED"}
                   </p>
                 </div>
@@ -542,7 +542,7 @@ const RegisterFaculty = () => {
             </CardContent>
             <CardFooter className="border-t border-white/10 pt-4 mt-2">
               <div className="flex justify-between items-center w-full opacity-50">
-                <div className="h-3 w-10 bg-white/20 rounded-full" />
+                <div className="h-3 w-10 bg-white/20 dark:bg-card/20 rounded-full" />
                 <div className="text-[9px] font-mono tracking-widest">
                   SECURE::ENC
                 </div>
@@ -550,18 +550,18 @@ const RegisterFaculty = () => {
             </CardFooter>
           </Card>
 
-          <Card className="mt-8 bg-[#EEB38C]/10 border-[#EEB38C]/20 rounded-3xl shadow-sm relative overflow-hidden group">
+          <Card className="mt-8 bg-[#EEB38C]/10 dark:bg-card border-[#EEB38C]/20 dark:border-white/10 rounded-3xl shadow-sm relative overflow-hidden group transition-all duration-500">
             <div className="absolute top-0 left-0 w-1 h-full bg-[#DF8142]" />
             <CardContent className="p-6">
               <div className="flex items-start gap-4">
-                <div className="p-3 bg-[#DF8142]/10 rounded-xl text-[#DF8142]">
+                <div className="p-3 bg-[#DF8142]/10 dark:bg-primary rounded-xl text-[#DF8142] dark:text-white transition-colors">
                   <Zap className="h-5 w-5" />
                 </div>
                 <div>
-                  <h4 className="text-base font-black text-[#5A270F] uppercase tracking-tight">
+                  <h4 className="text-base font-black text-[#5A270F] dark:text-foreground uppercase tracking-tight transition-colors">
                     Privileged Access
                   </h4>
-                  <p className="text-xs text-[#92664A] font-bold leading-relaxed mt-1">
+                  <p className="text-xs text-[#92664A] dark:text-foreground/60 font-bold leading-relaxed mt-1 transition-colors">
                     Faculty nodes handle assignment creation and resource
                     validation within the system matrix.
                   </p>

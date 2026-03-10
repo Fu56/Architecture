@@ -50,12 +50,12 @@ const Explore = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#EFEDED] selection:bg-primary/20 selection:text-[#2A1205]">
+    <div className="min-h-screen bg-[#EFEDED] dark:bg-[#0F0602] selection:bg-primary/20 selection:text-[#2A1205] transition-colors duration-500">
       {/* Dynamic Hero Section */}
-      <section className="relative pt-32 pb-24 overflow-hidden bg-[#5A270F]">
+      <section className="relative pt-32 pb-24 overflow-hidden bg-[#5A270F] dark:bg-[#1A0B02] transition-colors duration-700">
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(223,129,66,0.2),transparent_50%)]" />
-          <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_80%,rgba(146,102,74,0.1),transparent_50%)]" />
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(223,129,66,0.2),transparent_50%)] dark:bg-[radial-gradient(circle_at_30%_20%,rgba(223,129,66,0.1),transparent_50%)]" />
+          <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_80%,rgba(146,102,74,0.1),transparent_50%)] dark:bg-[radial-gradient(circle_at_70%_80%,rgba(146,102,74,0.05),transparent_50%)]" />
           <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
         </div>
 
@@ -71,7 +71,7 @@ const Explore = () => {
                   ARCHITECT'S MINT.
                 </span>
               </h1>
-              <p className="max-w-xl text-[#92664A] text-xl font-medium leading-relaxed mb-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
+              <p className="max-w-xl text-[#92664A] dark:text-[#EEB38C]/60 text-xl font-medium leading-relaxed mb-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500 transition-colors">
                 A decentralized perimeter for architectural intelligence.
                 Navigate through high-fidelity BIM families, thesis protocols,
                 and technical schemas.
@@ -80,13 +80,13 @@ const Explore = () => {
               <div className="flex flex-wrap gap-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-700">
                 <Link
                   to="/browse"
-                  className="px-8 py-5 bg-[#DF8142] hover:bg-white hover:text-[#5A270F] text-white font-black uppercase tracking-widest text-[10px] rounded-2xl transition-all duration-500 shadow-xl shadow-[#DF8142]/20 flex items-center gap-3 active:scale-95"
+                  className="px-8 py-5 bg-[#DF8142] hover:bg-white dark:bg-card hover:text-[#5A270F] dark:text-[#EEB38C] text-white font-black uppercase tracking-widest text-[10px] rounded-2xl transition-all duration-500 shadow-xl shadow-[#DF8142]/20 flex items-center gap-3 active:scale-95"
                 >
                   Enter Library <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   to="/blog"
-                  className="px-8 py-5 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl transition-all duration-500 flex items-center gap-3"
+                  className="px-8 py-5 bg-white/5 dark:bg-card/5 border border-white/10 hover:bg-white/10 dark:bg-card/10 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl transition-all duration-500 flex items-center gap-3"
                 >
                   Insights Feed
                 </Link>
@@ -101,7 +101,7 @@ const Explore = () => {
                   {[Box, Cpu, Globe, Database].map((Icon, i) => (
                     <div
                       key={i}
-                      className="h-32 w-32 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl flex items-center justify-center group hover:bg-white/10 transition-all duration-500"
+                      className="h-32 w-32 bg-white/5 dark:bg-card/5 backdrop-blur-2xl border border-white/10 rounded-3xl flex items-center justify-center group hover:bg-white/10 dark:bg-card/10 transition-all duration-500"
                     >
                       <Icon className="h-10 w-10 text-[#DF8142] group-hover:scale-110 transition-all duration-500" />
                     </div>
@@ -141,15 +141,15 @@ const Explore = () => {
             ].map((stat, i) => (
               <div
                 key={i}
-                className="bg-white p-8 rounded-[2.5rem] border border-[#D9D9C2] shadow-xl shadow-slate-200/50 flex flex-col items-center text-center group hover:border-[#DF8142]/40 transition-all duration-500"
+                className="bg-white dark:bg-card p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-none flex flex-col items-center text-center group hover:border-[#DF8142]/40 dark:hover:border-[#DF8142]/30 transition-all duration-500"
               >
-                <div className="h-14 w-14 bg-[#EFEDED] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#DF8142] group-hover:text-white transition-all duration-500">
-                  <stat.icon className="h-6 w-6 text-[#92664A] group-hover:text-white" />
+                <div className="h-14 w-14 bg-[#EFEDED] dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#DF8142] group-hover:text-white transition-all duration-500">
+                  <stat.icon className="h-6 w-6 text-[#92664A] dark:text-[#EEB38C]/60 group-hover:text-white transition-colors" />
                 </div>
-                <h4 className="text-4xl font-black text-[#5A270F] tracking-tighter mb-2">
+                <h4 className="text-4xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter mb-2 transition-colors">
                   {stat.value.toLocaleString()}
                 </h4>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#92664A]">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-foreground/40 transition-colors">
                   {stat.label}
                 </p>
               </div>
@@ -163,17 +163,17 @@ const Explore = () => {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="flex flex-col md:flex-row items-end justify-between gap-8 mb-16">
             <div className="max-w-xl">
-              <h2 className="text-4xl sm:text-5xl font-black text-[#5A270F] tracking-tighter mb-4 leading-none">
+              <h2 className="text-4xl sm:text-5xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter mb-4 leading-none transition-colors">
                 THEMATIC CLUSTERS.
               </h2>
-              <p className="text-[#5A270F] font-medium">
+              <p className="text-[#5A270F] dark:text-foreground/60 font-medium transition-colors">
                 Navigate the library through specific design stage nodes. Each
                 cluster contains curated assets tailored for project benchmarks.
               </p>
             </div>
             <Link
               to="/browse"
-              className="text-xs font-black uppercase tracking-widest text-[#DF8142] border-b-2 border-[#DF8142] pb-1 hover:text-[#5A270F] hover:border-[#5A270F] transition-all"
+              className="text-xs font-black uppercase tracking-widest text-[#DF8142] border-b-2 border-[#DF8142] pb-1 hover:text-[#5A270F] dark:text-[#EEB38C] hover:border-[#5A270F] transition-all"
             >
               Full Repository Map
             </Link>
@@ -184,20 +184,20 @@ const Explore = () => {
               <Link
                 key={stage.id}
                 to={`/browse?stage=${stage.id}`}
-                className="group relative bg-white p-10 rounded-[3rem] border border-[#D9D9C2] shadow-lg shadow-slate-200/40 overflow-hidden hover:shadow-2xl hover:shadow-[#DF8142]/30 transition-all duration-500"
+                className="group relative bg-white dark:bg-card p-10 rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 shadow-lg shadow-slate-200/40 dark:shadow-none overflow-hidden hover:shadow-2xl hover:shadow-[#DF8142]/30 dark:hover:border-[#DF8142]/20 transition-all duration-500"
               >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#EFEDED] rounded-bl-[5rem] group-hover:bg-[#DF8142] transition-all duration-500 flex items-center justify-end pr-8 pt-8">
-                  <Sparkles className="h-6 w-6 text-[#EEB38C] group-hover:text-white transition-all" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#EFEDED] dark:bg-white/5 rounded-bl-[5rem] group-hover:bg-[#DF8142] transition-all duration-500 flex items-center justify-end pr-8 pt-8">
+                  <Sparkles className="h-6 w-6 text-[#EEB38C] dark:text-[#EEB38C]/40 group-hover:text-white transition-all" />
                 </div>
 
                 <div className="relative z-10">
                   <span className="text-[10px] font-black uppercase tracking-widest text-[#DF8142] mb-4 block">
                     Segment Node
                   </span>
-                  <h3 className="text-2xl font-black text-[#5A270F] group-hover:text-[#DF8142] transition-colors mb-4 leading-tight">
+                  <h3 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] group-hover:text-[#DF8142] transition-colors mb-4 leading-tight">
                     {stage.name}
                   </h3>
-                  <div className="flex items-center gap-2 text-[#92664A] font-bold text-xs uppercase tracking-widest">
+                  <div className="flex items-center gap-2 text-[#92664A] dark:text-foreground/40 font-bold text-xs uppercase tracking-widest group-hover:text-[#DF8142] transition-colors">
                     Verify Access{" "}
                     <ArrowRight className="h-3 w-3 group-hover:translate-x-2 transition-transform" />
                   </div>
@@ -209,12 +209,12 @@ const Explore = () => {
       </section>
 
       {/* Featured Assets */}
-      <section className="py-24 bg-[#5A270F] overflow-hidden relative">
+      <section className="py-24 bg-[#5A270F] dark:bg-[#1A0B02] transition-colors duration-700 overflow-hidden relative">
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-white underline underline-offset-4 decoration-[#DF8142]/90 mb-8">
+            <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 dark:bg-card/5 border border-white/10 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-white underline underline-offset-4 decoration-[#DF8142]/90 mb-8">
               <Zap className="h-3 w-3 text-[#DF8142]/80" /> High-Voltage Assets
             </div>
             <h2 className="text-4xl sm:text-6xl font-black text-white tracking-tighter mb-4">
@@ -233,7 +233,7 @@ const Explore = () => {
           <div className="mt-16 text-center">
             <Link
               to="/browse"
-              className="inline-flex items-center justify-center px-12 py-6 bg-white text-[#5A270F] font-black uppercase tracking-widest text-xs rounded-[2rem] hover:bg-[#DF8142] hover:text-white transition-all duration-500 shadow-2xl active:scale-95"
+              className="inline-flex items-center justify-center px-12 py-6 bg-white dark:bg-card text-[#5A270F] dark:text-[#EEB38C] font-black uppercase tracking-widest text-xs rounded-[2rem] hover:bg-[#DF8142] hover:text-white transition-all duration-500 shadow-2xl active:scale-95"
             >
               View Complete Cluster Matrix
             </Link>
@@ -242,16 +242,16 @@ const Explore = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 bg-white">
+      <section className="py-32 bg-white dark:bg-card transition-colors duration-700">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 text-center">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-5xl sm:text-7xl font-black text-[#5A270F] tracking-tight leading-[0.9] mb-10">
+            <h2 className="text-5xl sm:text-7xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight leading-[0.9] mb-10 transition-colors">
               READY TO <br />
               <span className="text-[#DF8142] hover:tracking-widest transition-all duration-700 cursor-default">
                 CONTRIBUTE?
               </span>
             </h2>
-            <p className="text-xl text-[#5A270F] font-medium mb-12">
+            <p className="text-xl text-[#5A270F] dark:text-foreground/70 font-medium mb-12 transition-colors">
               Join the inner circle of architectural minds. Securely transmit
               your design protocols, technical briefs, and 3D schemas to our
               global CDN.

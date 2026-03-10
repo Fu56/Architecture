@@ -260,7 +260,7 @@ const ResourceDetails = () => {
     return (
       <div className="flex flex-col justify-center items-center py-40 animate-pulse">
         <Loader2 className="h-16 w-16 animate-spin text-primary mb-6" />
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500">
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500 dark:text-white/40 transition-colors">
           Synchronizing with Matrix...
         </p>
       </div>
@@ -279,12 +279,12 @@ const ResourceDetails = () => {
             <h2 className="text-3xl font-black text-white mb-4 tracking-tight uppercase">
               Node Seizure Detected
             </h2>
-            <p className="mt-2 text-gray-500 font-bold uppercase tracking-widest text-xs max-w-md mx-auto leading-relaxed">
+            <p className="mt-2 text-gray-500 dark:text-white/40 font-bold uppercase tracking-widest text-xs max-w-md mx-auto leading-relaxed">
               {error}
             </p>
             <button
               onClick={() => navigate(-1)}
-              className="mt-10 px-8 py-4 bg-white text-[#5A270F] rounded-xl font-black uppercase tracking-widest text-xs hover:bg-[#DF8142] hover:text-white transition-all transform active:scale-95 shadow-xl"
+              className="mt-10 px-8 py-4 bg-white dark:bg-card text-[#5A270F] dark:text-[#EEB38C] rounded-xl font-black uppercase tracking-widest text-xs hover:bg-[#DF8142] hover:text-white transition-all transform active:scale-95 shadow-xl"
             >
               Emergency Extraction
             </button>
@@ -300,14 +300,14 @@ const ResourceDetails = () => {
     <div
       className={`${
         isNested ? "" : "max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-10"
-      } animate-in fade-in duration-700`}
+      } animate-in fade-in duration-700 transition-colors duration-500`}
     >
       <div className="grid lg:grid-cols-12 gap-12">
         {/* Main Intelligence Content */}
         <div className="lg:col-span-8 space-y-12">
           {/* Header Module */}
-          <div className="bg-white p-6 sm:p-10 rounded-3xl shadow-xl border border-[#D9D9C2] relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/10 rounded-bl-[4rem] -translate-y-8 translate-x-8 group-hover:bg-[#DF8142]/20 transition-colors duration-700" />
+          <div className="bg-white dark:bg-card p-6 sm:p-10 rounded-3xl shadow-xl border border-[#D9D9C2] dark:border-white/10 relative overflow-hidden group transition-all duration-500">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/10 dark:bg-[#DF8142]/5 rounded-bl-[4rem] -translate-y-8 translate-x-8 group-hover:bg-[#DF8142]/20 transition-colors duration-700" />
 
             <div className="relative z-10">
               <div className="flex flex-wrap items-center gap-4 mb-8">
@@ -326,17 +326,17 @@ const ResourceDetails = () => {
                   </span>
                 </button>
                 <div className="h-px w-8 bg-slate-200" />
-                <span className="text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 bg-[#2A1205] text-white rounded-full">
+                  <span className="text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 bg-[#2A1205] dark:bg-primary text-white rounded-full transition-colors">
                   {resource.fileType} Protocol
                 </span>
                 <span
                   className={`text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full flex items-center gap-2 border ${
                     resource.status === "student" ||
                     resource.status === "approved"
-                      ? "bg-[#5A270F]/5 text-emerald-700 border-emerald-100"
+                      ? "bg-[#5A270F]/5 dark:bg-[#EEB38C]/10 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-500/20"
                       : resource.status === "pending"
-                        ? "bg-amber-50 text-amber-700 border-amber-100"
-                        : "bg-red-50 text-rose-700 border-rose-100"
+                        ? "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-100 dark:border-amber-500/20"
+                        : "bg-red-50 dark:bg-red-500/10 text-rose-700 dark:text-rose-400 border-rose-100 dark:border-rose-500/20"
                   }`}
                 >
                   <div
@@ -353,34 +353,34 @@ const ResourceDetails = () => {
                 </span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl font-black text-[#5A270F] tracking-tight leading-tight mb-8 max-w-2xl">
+              <h1 className="text-3xl sm:text-4xl font-black text-[#5A270F] dark:text-foreground tracking-tight leading-tight mb-8 max-w-2xl transition-colors duration-500">
                 {resource.title}
               </h1>
 
               <div className="flex flex-wrap items-center gap-6">
-                <div className="flex items-center gap-4 p-3 bg-[#EFEDED] rounded-2xl border border-[#D9D9C2] hover:border-primary/40 transition-colors cursor-default">
-                  <div className="h-12 w-12 rounded-xl bg-white border border-[#D9D9C2] flex items-center justify-center text-[#92664A] shadow-sm">
+                <div className="flex items-center gap-4 p-3 bg-[#EFEDED] dark:bg-white/5 rounded-2xl border border-[#D9D9C2] dark:border-white/10 hover:border-primary/40 transition-colors cursor-default">
+                  <div className="h-12 w-12 rounded-xl bg-white dark:bg-primary border border-[#D9D9C2] dark:border-white/10 flex items-center justify-center text-[#92664A] dark:text-white shadow-sm transition-colors">
                     <User className="h-6 w-6" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none mb-1">
+                    <p className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest leading-none mb-1">
                       Authority Unit
                     </p>
-                    <p className="text-base font-bold text-[#5A270F] leading-none">
+                    <p className="text-base font-bold text-[#5A270F] dark:text-white leading-none">
                       Architect {resource.author}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 p-3 bg-[#EFEDED] rounded-2xl border border-[#D9D9C2]">
-                  <div className="h-12 w-12 rounded-xl bg-white border border-[#D9D9C2] flex items-center justify-center text-[#DF8142] shadow-sm">
+                <div className="flex items-center gap-4 p-3 bg-[#EFEDED] dark:bg-white/5 rounded-2xl border border-[#D9D9C2] dark:border-white/10 transition-colors">
+                  <div className="h-12 w-12 rounded-xl bg-white dark:bg-primary border border-[#D9D9C2] dark:border-white/10 flex items-center justify-center text-[#DF8142] dark:text-[#EEB38C] shadow-sm transition-colors">
                     <Calendar className="h-6 w-6" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none mb-1">
+                    <p className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest leading-none mb-1">
                       Genesis Date
                     </p>
-                    <p className="text-base font-bold text-[#5A270F] leading-none">
+                    <p className="text-base font-bold text-[#5A270F] dark:text-white leading-none">
                       {new Date(resource.uploadedAt).toLocaleDateString()}
                     </p>
                   </div>
@@ -390,17 +390,17 @@ const ResourceDetails = () => {
           </div>
 
           {resource.adminComment && (
-            <div className="p-6 bg-[#2A1205] rounded-3xl text-white relative overflow-hidden shadow-xl ring-1 ring-white/10">
+            <div className="p-6 bg-[#2A1205] dark:bg-primary/20 rounded-3xl text-white relative overflow-hidden shadow-xl ring-1 ring-white/10 transition-colors duration-500">
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[40px] -translate-y-1/2 translate-x-1/2" />
               <div className="relative z-10 flex items-start gap-5">
-                <div className="h-12 w-12 shrink-0 bg-white/10 rounded-xl flex items-center justify-center text-[#DF8142] border border-white/10">
+                <div className="h-12 w-12 shrink-0 bg-white/10 dark:bg-card/10 rounded-xl flex items-center justify-center text-[#DF8142] dark:text-[#EEB38C] border border-white/10 transition-colors">
                   <ShieldAlert className="h-6 w-6" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-black text-[#DF8142] uppercase tracking-widest mb-2">
+                  <p className="text-[10px] font-black text-[#DF8142] dark:text-[#EEB38C] uppercase tracking-widest mb-2 transition-colors">
                     Operations Directive
                   </p>
-                  <p className="text-base text-gray-400 italic font-medium leading-relaxed">
+                  <p className="text-base text-gray-400 dark:text-foreground/60 italic font-medium leading-relaxed transition-colors">
                     "{resource.adminComment}"
                   </p>
                 </div>
@@ -410,7 +410,7 @@ const ResourceDetails = () => {
 
           {/* Evaluation Matrix or Pending Verification State */}
           {resource.status === "approved" || resource.status === "student" ? (
-            <div className="bg-[#EEB38C]/5 p-8 sm:p-10 rounded-[2.5rem] shadow-xl shadow-[#5A270F]/5 border border-[#EEB38C]/30 animate-in fade-in slide-in-from-bottom-4 duration-700 relative overflow-hidden">
+            <div className="bg-[#EEB38C]/5 dark:bg-[#EEB38C]/5 p-8 sm:p-10 rounded-[2.5rem] shadow-xl shadow-[#5A270F]/5 dark:shadow-black/20 border border-[#EEB38C]/30 dark:border-[#EEB38C]/10 animate-in fade-in slide-in-from-bottom-4 duration-700 relative overflow-hidden transition-all duration-500">
               <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/5 blur-3xl -translate-y-1/2 translate-x-1/2" />
 
               <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-12 pb-10 border-b border-[#EEB38C]/20">
@@ -419,7 +419,7 @@ const ResourceDetails = () => {
                     <div className="p-2 bg-[#5A270F] rounded-lg shadow-lg">
                       <Sparkles className="h-3.5 w-3.5 text-white" />
                     </div>
-                    <h3 className="text-[10px] font-black text-[#5A270F] uppercase tracking-[0.3em]">
+                    <h3 className="text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-[0.3em] transition-colors">
                       Intel Evaluation
                     </h3>
                   </div>
@@ -440,8 +440,8 @@ const ResourceDetails = () => {
                               pendingRating ||
                               userRating ||
                               Math.round(averageRating)) >= star
-                              ? "text-[#DF8142] fill-[#DF8142]"
-                              : "text-[#92664A]/20 group-hover/star:text-[#EEB38C]"
+                              ? "text-[#DF8142] dark:text-[#EEB38C] fill-[#DF8142] dark:fill-[#EEB38C]"
+                              : "text-[#92664A] dark:text-[#EEB38C]/40/20 dark:text-foreground/10 group-hover/star:text-[#EEB38C]"
                           } transition-colors duration-300 drop-shadow-[0_2px_4px_rgba(223,129,66,0.1)]`}
                         />
                       </button>
@@ -452,15 +452,15 @@ const ResourceDetails = () => {
                 <div className="flex items-baseline gap-3">
                   <div className="text-right">
                     <div className="flex items-baseline gap-2 mb-1 justify-end">
-                      <span className="text-6xl font-black text-[#5A270F] tracking-tighter leading-none">
+                      <span className="text-6xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter leading-none transition-colors duration-500">
                         {averageRating.toFixed(1)}
                       </span>
-                      <span className="text-xl font-black text-[#92664A]/60">
+                      <span className="text-xl font-black text-[#92664A] dark:text-[#EEB38C]/40/60 dark:text-foreground/30 transition-colors">
                         / 5.0
                       </span>
                     </div>
-                    <p className="text-[9px] font-black text-[#92664A] uppercase tracking-[0.2em] flex items-center gap-2 justify-end">
-                      <div className="w-1 h-1 rounded-full bg-[#DF8142]" />
+                    <p className="text-[9px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-[0.2em] flex items-center gap-2 justify-end transition-colors">
+                      <div className="w-1 h-1 rounded-full bg-[#DF8142] dark:bg-[#EEB38C]" />
                       Verified Valuations: {ratingCount}
                     </p>
                   </div>
@@ -470,7 +470,7 @@ const ResourceDetails = () => {
               {/* Enhanced Feedback Module */}
               <div className="mt-10 relative z-10 space-y-6">
                 <div className="space-y-2">
-                  <label className="text-[9px] font-black text-[#92664A] uppercase tracking-[0.2em] ml-1">
+                  <label className="text-[9px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.2em] ml-1">
                     Qualitative Intelligence / Feedback (Optional)
                   </label>
                   <textarea
@@ -479,12 +479,12 @@ const ResourceDetails = () => {
                     onChange={(e) => setEvaluationComment(e.target.value)}
                     disabled={submittingEvaluation || !isAuth}
                     placeholder="Provide technical feedback to the community matrix..."
-                    className="w-full bg-white border border-[#EEB38C]/40 rounded-[1.5rem] p-6 text-sm text-[#5A270F] font-bold focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142]/40 transition-all placeholder:text-[#92664A]/30 resize-none shadow-inner"
+                    className="w-full bg-white dark:bg-card dark:bg-white/5 border border-[#EEB38C]/40 dark:border-white/10 rounded-[1.5rem] p-6 text-sm text-[#5A270F] dark:text-white font-bold focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142]/40 dark:focus:border-[#DF8142]/60 transition-all placeholder:text-[#92664A] dark:text-[#EEB38C]/40/30 dark:placeholder-white/20 resize-none shadow-inner"
                   />
                 </div>
 
                 <div className="flex items-center justify-between gap-6">
-                  <p className="text-[10px] text-[#92664A] font-bold italic max-w-sm">
+                  <p className="text-[10px] text-[#92664A] dark:text-foreground/40 font-bold italic max-w-sm transition-colors">
                     Evaluations are verified and logged to the public resource
                     registry permanently.
                   </p>
@@ -493,7 +493,7 @@ const ResourceDetails = () => {
                     disabled={
                       submittingEvaluation || !isAuth || pendingRating === 0
                     }
-                    className="flex-shrink-0 h-14 px-10 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#6C3B1C] transition-all hover:-translate-y-1 shadow-2xl shadow-[#5A270F]/20 active:scale-95 flex items-center justify-center gap-3 disabled:opacity-30 disabled:hover:translate-y-0"
+                    className="flex-shrink-0 h-14 px-10 bg-[#5A270F] dark:bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#6C3B1C] dark:hover:bg-primary/80 transition-all hover:-translate-y-1 shadow-2xl shadow-[#5A270F]/20 dark:shadow-none active:scale-95 flex items-center justify-center gap-3 disabled:opacity-30 disabled:hover:translate-y-0"
                   >
                     {submittingEvaluation ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -508,18 +508,18 @@ const ResourceDetails = () => {
               </div>
             </div>
           ) : (
-            <div className="p-8 bg-[#EFEDED]/50 rounded-3xl border border-dashed border-[#EEB38C]/50 flex items-center gap-6 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-[#EEB38C]/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="h-14 w-14 rounded-2xl bg-white border border-[#EEB38C]/30 flex items-center justify-center text-[#92664A] shadow-inner relative z-10">
+            <div className="p-8 bg-[#EFEDED] dark:bg-background/50 dark:bg-white/5 rounded-3xl border border-dashed border-[#EEB38C]/50 dark:border-white/10 flex items-center gap-6 relative overflow-hidden group transition-all duration-500">
+              <div className="absolute inset-0 bg-[#EEB38C]/5 dark:bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="h-14 w-14 rounded-2xl bg-white dark:bg-primary border border-[#EEB38C]/30 dark:border-white/10 flex items-center justify-center text-[#92664A] dark:text-white shadow-inner relative z-10 transition-colors">
                 <ShieldAlert className="h-7 w-7" />
               </div>
               <div className="relative z-10">
-                <h3 className="text-xs font-black text-[#5A270F] uppercase tracking-[0.2em] mb-1">
+                <h3 className="text-xs font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-[0.2em] mb-1 transition-colors">
                   Evaluation Protocol Locked
                 </h3>
-                <p className="text-[10px] text-[#92664A] font-bold uppercase tracking-widest leading-relaxed">
+                <p className="text-[10px] text-[#92664A] dark:text-white/40 font-bold uppercase tracking-widest leading-relaxed transition-colors">
                   Valuations are enabled following official{" "}
-                  <span className="text-[#DF8142]">verification</span> and
+                  <span className="text-[#DF8142] dark:text-[#EEB38C]">verification</span> and
                   deployment.
                 </p>
               </div>
@@ -527,14 +527,14 @@ const ResourceDetails = () => {
           )}
 
           {/* Content Description */}
-          <div className="bg-white p-8 rounded-3xl shadow-lg border border-[#D9D9C2]">
+          <div className="bg-white dark:bg-card p-8 rounded-3xl shadow-lg border border-[#D9D9C2] dark:border-white/10 transition-all duration-500">
             <div className="flex items-center gap-4 mb-6">
-              <div className="h-1 w-10 bg-[#DF8142] rounded-full" />
-              <h3 className="text-lg font-black text-[#5A270F] uppercase tracking-tight">
+              <div className="h-1 w-10 bg-[#DF8142] dark:bg-primary rounded-full transition-colors" />
+              <h3 className="text-lg font-black text-[#5A270F] dark:text-foreground uppercase tracking-tight transition-colors">
                 Technical Abstract
               </h3>
             </div>
-            <div className="prose prose-slate prose-lg max-w-none prose-p:text-[#5A270F] prose-p:leading-relaxed prose-p:font-medium italic">
+            <div className="prose prose-slate prose-lg max-w-none prose-p:text-[#5A270F] dark:text-[#EEB38C] dark:prose-p:text-foreground/80 prose-p:leading-relaxed prose-p:font-medium italic transition-colors">
               <p>
                 This high-voltage architectural protocol contains verified
                 structural intelligence. Users are advised to inspect the
@@ -547,11 +547,11 @@ const ResourceDetails = () => {
           {/* Nexus of Intelligence (Comments) */}
           <div className="pt-8 space-y-10">
             <div className="flex items-center justify-between">
-              <h2 className="text-3xl font-black text-[#2A1205] tracking-tighter uppercase flex items-center gap-4">
-                <MessageSquare className="h-8 w-8 text-[#DF8142]" />
+              <h2 className="text-3xl font-black text-[#2A1205] dark:text-foreground tracking-tighter uppercase flex items-center gap-4 transition-colors">
+                <MessageSquare className="h-8 w-8 text-[#DF8142] dark:text-primary" />
                 Nexus Intelligence
               </h2>
-              <div className="px-6 py-2 bg-[#EFEDED] rounded-full text-[10px] font-black text-[#5A270F] uppercase tracking-widest border border-[#D9D9C2]">
+              <div className="px-6 py-2 bg-[#EFEDED] dark:bg-white/5 rounded-full text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-widest border border-[#D9D9C2] dark:border-white/10 transition-colors">
                 {comments.length} Logged Pulse(s)
               </div>
             </div>
@@ -565,7 +565,7 @@ const ResourceDetails = () => {
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Input community intelligence..."
-                    className="relative w-full px-8 py-5 bg-white border border-[#D9D9C2] rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] transition-all text-[#5A270F] font-bold placeholder-slate-400"
+                    className="relative w-full px-8 py-5 bg-white dark:bg-card dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] dark:focus:border-[#DF8142]/60 transition-all text-[#5A270F] dark:text-white font-bold placeholder-slate-400 dark:placeholder-white/20"
                   />
                 </div>
                 <button
@@ -581,9 +581,9 @@ const ResourceDetails = () => {
                 </button>
               </form>
             ) : (
-              <div className="p-10 bg-[#EFEDED] rounded-[3rem] border border-[#D9D9C2] border-dashed text-center">
-                <ShieldAlert className="h-10 w-10 text-gray-400 mx-auto mb-4" />
-                <p className="text-[#5A270F] font-bold uppercase tracking-widest text-xs mb-6">
+              <div className="p-10 bg-[#EFEDED] dark:bg-white/5 rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 border-dashed text-center transition-all duration-500">
+                <ShieldAlert className="h-10 w-10 text-gray-400 dark:text-white/20 mx-auto mb-4 transition-colors" />
+                <p className="text-[#5A270F] dark:text-white/40 font-bold uppercase tracking-widest text-xs mb-6 transition-colors">
                   Identity Verification Protocol Required for Transmission
                 </p>
                 <Link
@@ -600,24 +600,24 @@ const ResourceDetails = () => {
                 comments.map((comment: CommentModel) => (
                   <div
                     key={comment.id}
-                    className="bg-white p-8 rounded-[2.5rem] border border-[#D9D9C2] shadow-lg hover:shadow-xl transition-all flex gap-6 items-start group"
+                    className="bg-white dark:bg-card p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-lg hover:shadow-xl transition-all flex gap-6 items-start group"
                   >
-                    <div className="flex-shrink-0 h-16 w-16 rounded-2xl bg-[#5A270F] flex items-center justify-center text-white font-black text-xl shadow-xl group-hover:scale-110 transition-transform">
+                    <div className="flex-shrink-0 h-16 w-16 rounded-2xl bg-[#5A270F] dark:bg-primary border border-transparent dark:border-white/10 flex items-center justify-center text-white font-black text-xl shadow-xl group-hover:scale-110 transition-all duration-500">
                       {(comment.user.first_name || comment.user.firstName)?.[0]}
                     </div>
                     <div className="space-y-3">
                       <div className="flex items-center gap-4">
-                        <p className="font-black text-[#2A1205] text-lg tracking-tight">
+                        <p className="font-black text-[#2A1205] dark:text-foreground text-lg tracking-tight transition-colors">
                           {comment.user.first_name || comment.user.firstName}{" "}
                           {comment.user.last_name || comment.user.lastName}
                         </p>
-                        <span className="h-1.5 w-1.5 bg-primary/90 rounded-full" />
-                        <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest">
+                        <span className="h-1.5 w-1.5 bg-primary/90 dark:bg-primary rounded-full transition-colors" />
+                        <p className="text-[10px] text-gray-500 dark:text-foreground/40 font-black uppercase tracking-widest transition-colors">
                           Log:{" "}
                           {new Date(comment.createdAt).toLocaleDateString()}
                         </p>
                       </div>
-                      <p className="text-[#5A270F] font-medium leading-relaxed text-base">
+                      <p className="text-[#5A270F] dark:text-foreground/80 font-medium leading-relaxed text-base transition-colors">
                         {comment.text}
                       </p>
                     </div>
@@ -625,7 +625,7 @@ const ResourceDetails = () => {
                 ))
               ) : (
                 <div className="text-center py-20 opacity-20 select-none">
-                  <Box className="h-16 w-16 mx-auto text-gray-500 mb-4" />
+                  <Box className="h-16 w-16 mx-auto text-gray-500 dark:text-white/40 mb-4" />
                   <p className="text-xs font-black uppercase tracking-[0.5em] text-[#2A1205]">
                     Awaiting Signal
                   </p>
@@ -637,7 +637,7 @@ const ResourceDetails = () => {
 
         {/* Control Center Sidebar */}
         <div className="lg:col-span-4 space-y-10">
-          <div className="bg-[#2A1205] p-10 rounded-[4rem] shadow-3xl text-white relative overflow-hidden ring-1 ring-white/10">
+          <div className="bg-[#2A1205] dark:bg-card p-10 rounded-[4rem] shadow-3xl text-white relative overflow-hidden ring-1 ring-white/10 dark:ring-white/5 transition-all duration-500">
             <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
             <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/90 to-transparent" />
 
@@ -660,9 +660,9 @@ const ResourceDetails = () => {
                   )}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full h-16 flex justify-center items-center gap-4 bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl text-white hover:bg-white/10 transition-all active:scale-95 group"
+                  className="w-full h-16 flex justify-center items-center gap-4 bg-white/5 dark:bg-white/5 border border-white/10 dark:border-white/10 text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl text-white hover:bg-white/10 dark:hover:bg-white/10 transition-all active:scale-95 group"
                 >
-                  <Eye className="h-5 w-5 text-[#DF8142]/80 group-hover:scale-110 transition-transform" />
+                  <Eye className="h-5 w-5 text-[#DF8142]/80 dark:text-[#EEB38C] group-hover:scale-110 transition-transform" />
                   Scan Matrix
                 </a>
 
@@ -674,7 +674,7 @@ const ResourceDetails = () => {
                   )}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full h-16 flex justify-center items-center gap-4 bg-[#DF8142] text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-[#DF8142]/90 shadow-xl shadow-[#DF8142]/20 transition-all hover:-translate-y-1 active:scale-95"
+                  className="w-full h-16 flex justify-center items-center gap-4 bg-[#DF8142] dark:bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-[#DF8142]/90 dark:hover:bg-primary/80 shadow-xl shadow-[#DF8142]/20 dark:shadow-none transition-all hover:-translate-y-1 active:scale-95"
                 >
                   <Download className="h-6 w-6" />
                   Download Resource
@@ -682,7 +682,7 @@ const ResourceDetails = () => {
 
                 {isAuthorizedManager && (
                   <div className="pt-4 space-y-3">
-                    <div className="h-px bg-white/10 w-full mb-4" />
+                    <div className="h-px bg-white/10 dark:bg-card/10 w-full mb-4" />
                     <p className="text-[9px] font-black text-[#DF8142]/60 uppercase tracking-[0.3em] mb-2 px-1">
                       Management Directives
                     </p>
@@ -760,8 +760,8 @@ const ResourceDetails = () => {
                     className="flex justify-between items-center group py-1"
                   >
                     <div className="flex items-center gap-3">
-                      <item.icon className="h-4 w-4 text-white/20 group-hover:text-[#DF8142]/80 transition-colors" />
-                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 group-hover:text-white transition-colors">
+                      <item.icon className="h-4 w-4 text-white/20 dark:text-white/20 group-hover:text-[#DF8142]/80 dark:group-hover:text-primary transition-colors" />
+                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 dark:text-white/40 group-hover:text-white transition-colors">
                         {item.label}
                       </span>
                     </div>
@@ -777,10 +777,10 @@ const ResourceDetails = () => {
             </div>
           </div>
 
-          {/* Temporal Links Cluster */}
-          <div className="bg-white p-10 rounded-[4rem] shadow-xl border border-[#D9D9C2]">
-            <h3 className="text-xs font-black text-[#2A1205] uppercase tracking-[0.3em] mb-12 flex items-center gap-4">
-              <Clock className="h-5 w-5 text-[#DF8142]" />
+          {/* Related Artifacts Cluster */}
+          <div className="bg-white dark:bg-card p-10 rounded-[4rem] shadow-xl border border-[#D9D9C2] dark:border-white/10 transition-all duration-500">
+            <h3 className="text-xs font-black text-[#2A1205] dark:text-foreground uppercase tracking-[0.3em] mb-12 flex items-center gap-4 transition-colors">
+              <Clock className="h-5 w-5 text-[#DF8142] dark:text-[#EEB38C]" />
               Related Artifacts
             </h3>
             <div className="space-y-10">
@@ -799,14 +799,14 @@ const ResourceDetails = () => {
                     }
                     className="flex items-center gap-6 group"
                   >
-                    <div className="h-16 w-16 shrink-0 bg-[#EFEDED] rounded-2xl flex items-center justify-center text-gray-500 group-hover:bg-[#2A1205] group-hover:text-white transition-all transform group-hover:scale-110 border border-[#D9D9C2] shadow-sm">
+                    <div className="h-16 w-16 shrink-0 bg-[#EFEDED] dark:bg-white/5 rounded-2xl flex items-center justify-center text-gray-500 dark:text-white/40 group-hover:bg-[#2A1205] dark:group-hover:bg-primary group-hover:text-white transition-all transform group-hover:scale-110 border border-[#D9D9C2] dark:border-white/10 shadow-sm">
                       <Layers className="h-7 w-7" />
                     </div>
                     <div className="space-y-1">
-                      <h4 className="text-base font-black text-[#2A1205] group-hover:text-[#DF8142] transition-colors line-clamp-1 leading-tight">
+                      <h4 className="text-base font-black text-[#2A1205] dark:text-white group-hover:text-[#DF8142] transition-colors line-clamp-1 leading-tight">
                         {recent.title}
                       </h4>
-                      <p className="text-[9px] text-gray-500 font-black uppercase tracking-[0.2em]">
+                      <p className="text-[9px] text-gray-500 dark:text-white/40 font-black uppercase tracking-[0.2em] transition-colors">
                         Registry:{" "}
                         {new Date(recent.uploadedAt).toLocaleDateString()}
                       </p>
@@ -814,7 +814,7 @@ const ResourceDetails = () => {
                   </Link>
                 ))
               ) : (
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">
+                <p className="text-[10px] font-black text-gray-400 dark:text-white/20 uppercase tracking-widest text-center transition-colors">
                   No secondary artifacts localized.
                 </p>
               )}
@@ -825,7 +825,7 @@ const ResourceDetails = () => {
           <div className="text-center pt-4">
             <button
               onClick={() => setReporting(true)}
-              className="inline-flex items-center gap-3 text-[9px] font-black text-gray-400 hover:text-red-700 transition-all uppercase tracking-[0.4em] py-3 px-10 border border-[#D9D9C2] rounded-full hover:border-rose-100 hover:bg-red-50/50"
+              className="inline-flex items-center gap-3 text-[9px] font-black text-gray-400 dark:text-white/30 hover:text-red-700 dark:hover:text-rose-400 transition-all uppercase tracking-[0.4em] py-3 px-10 border border-[#D9D9C2] dark:border-white/10 rounded-full hover:border-rose-100 dark:hover:border-rose-500/30 hover:bg-red-50/50 dark:hover:bg-rose-500/5 transition-colors"
             >
               <Flag className="h-3.5 w-3.5" />
               Report Protocol Violation
@@ -837,28 +837,28 @@ const ResourceDetails = () => {
       {/* Security Incident Reporting Modal */}
       {reporting && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[#2A1205]/90 backdrop-blur-xl animate-in fade-in duration-500">
-          <div className="bg-white rounded-[4rem] shadow-3xl p-12 sm:p-20 max-w-2xl w-full border border-[#D9D9C2] animate-in zoom-in-95 duration-500 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-3 bg-red-700" />
+          <div className="bg-white dark:bg-card rounded-[4rem] shadow-3xl p-12 sm:p-20 max-w-2xl w-full border border-[#D9D9C2] dark:border-white/10 animate-in zoom-in-95 duration-500 relative overflow-hidden transition-colors">
+            <div className="absolute top-0 left-0 w-full h-3 bg-red-700 dark:bg-rose-600" />
 
             {reportSuccess ? (
               <div className="text-center py-10 scale-in-center">
-                <div className="h-32 w-32 bg-[#5A270F]/5 text-[#5A270F] rounded-full flex items-center justify-center mx-auto mb-10 border border-emerald-100 shadow-lg">
+                <div className="h-32 w-32 bg-[#5A270F]/5 dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] rounded-full flex items-center justify-center mx-auto mb-10 border border-emerald-100 dark:border-emerald-500/20 shadow-lg transition-colors">
                   <CheckCircle className="h-14 w-14" />
                 </div>
-                <h3 className="text-4xl font-black text-[#2A1205] mb-6 tracking-tighter uppercase">
+                <h3 className="text-4xl font-black text-[#2A1205] dark:text-[#EEB38C] mb-6 tracking-tighter uppercase transition-colors">
                   Signal Received
                 </h3>
-                <p className="text-[#5A270F] font-bold uppercase tracking-[0.2em] text-xs">
+                <p className="text-[#5A270F] dark:text-foreground/40 font-bold uppercase tracking-[0.2em] text-xs transition-colors">
                   The moderator nexus has been alerted.
                 </p>
               </div>
             ) : (
               <>
                 <div className="mb-12">
-                  <h3 className="text-4xl font-black text-[#2A1205] mb-3 tracking-tighter uppercase">
+                  <h3 className="text-4xl font-black text-[#2A1205] dark:text-[#EEB38C] mb-3 tracking-tighter uppercase transition-colors">
                     Isolate Incident
                   </h3>
-                  <p className="text-gray-500 font-bold uppercase tracking-[0.2em] text-[10px]">
+                  <p className="text-gray-500 dark:text-foreground/40 font-bold uppercase tracking-[0.2em] text-[10px] transition-colors">
                     Detail the nature of the architectural breach.
                   </p>
                 </div>
@@ -868,13 +868,13 @@ const ResourceDetails = () => {
                     value={reportReason}
                     onChange={(e) => setReportReason(e.target.value)}
                     placeholder="e.g. Intellectual property disruption, metadata distortion, unauthorized access..."
-                    className="w-full px-10 py-8 bg-[#EFEDED] border border-[#D9D9C2] rounded-[3rem] focus:outline-none focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 transition-all text-[#5A270F] font-bold placeholder-slate-400 min-h-[220px] outline-none text-lg"
+                    className="w-full px-10 py-8 bg-[#EFEDED] dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-[3rem] focus:outline-none focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 dark:focus:border-rose-500/40 transition-all text-[#5A270F] dark:text-white font-bold placeholder-slate-400 dark:placeholder-white/20 min-h-[220px] outline-none text-lg shadow-inner"
                   />
                   <div className="flex gap-6">
                     <button
                       type="button"
                       onClick={() => setReporting(false)}
-                      className="flex-1 py-6 px-4 rounded-3xl text-gray-500 text-[10px] font-black uppercase tracking-widest hover:bg-[#EFEDED] transition-colors"
+                      className="flex-1 py-6 px-4 rounded-3xl text-gray-500 dark:text-white/40 text-[10px] font-black uppercase tracking-widest hover:bg-[#EFEDED] dark:bg-background dark:hover:bg-white/5 dark:bg-card/5 transition-all"
                     >
                       Abort Mission
                     </button>

@@ -176,7 +176,7 @@ const AssignmentDetails = () => {
   }
 
   if (!assignment)
-    return <div className="text-center py-20 text-[#5A270F] font-bold">Assignment not found</div>;
+    return <div className="text-center py-20 text-[#5A270F] dark:text-[#EEB38C] font-bold">Assignment not found</div>;
 
   const isCreatorOrAdmin =
     currentUser?.id === assignment.creator.id ||
@@ -193,13 +193,13 @@ const AssignmentDetails = () => {
     <div className="container mx-auto px-4 py-12 max-w-5xl">
       <Link
         to={`${basePath}/assignments`}
-        className="flex items-center gap-2 text-[#92664A] hover:text-[#5A270F] font-bold text-sm uppercase tracking-widest mb-10 transition-colors"
+        className="flex items-center gap-2 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:text-[#EEB38C] font-bold text-sm uppercase tracking-widest mb-10 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Assignments
       </Link>
 
-      <div className="bg-white rounded-[3rem] p-10 shadow-xl border border-[#EEB38C]/30 mb-10 relative overflow-hidden">
+      <div className="bg-white dark:bg-card rounded-[3rem] p-10 shadow-xl border border-[#EEB38C]/30 dark:border-white/10 mb-10 relative overflow-hidden transition-all duration-500">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
         
         <div className="flex flex-col md:flex-row justify-between items-start gap-8 relative z-10">
@@ -209,7 +209,7 @@ const AssignmentDetails = () => {
                 Brief
               </span>
               {assignment.design_stage && (
-                <span className="px-4 py-1.5 bg-[#EFEDED] text-[#92664A] rounded-full text-xs font-black uppercase tracking-widest border border-[#EEB38C]/40">
+                <span className="px-4 py-1.5 bg-[#EFEDED] dark:bg-white/5 text-[#92664A] dark:text-[#EEB38C] rounded-full text-xs font-black uppercase tracking-widest border border-[#EEB38C]/40 dark:border-white/10">
                   {assignment.design_stage.name}
                 </span>
               )}
@@ -219,26 +219,26 @@ const AssignmentDetails = () => {
                 </span>
               )}
             </div>
-            <h1 className="text-4xl font-black text-[#5A270F] mb-6 leading-tight">
+            <h1 className="text-4xl font-black text-[#5A270F] dark:text-foreground mb-6 leading-tight transition-colors">
               {assignment.title}
             </h1>
-            <div className="prose prose-lg max-w-none text-[#92664A] font-medium leading-relaxed whitespace-pre-wrap">
+            <div className="prose prose-lg max-w-none text-[#92664A] dark:text-foreground/60 font-medium leading-relaxed whitespace-pre-wrap transition-colors">
               {assignment.description || "No description provided."}
             </div>
           </div>
 
           <div className="w-full md:w-80 flex-shrink-0 space-y-4">
-            <div className="bg-[#EFEDED]/50 rounded-3xl p-6 border border-[#EEB38C]/30">
+            <div className="bg-[#EFEDED] dark:bg-background/50 dark:bg-white/5 rounded-3xl p-6 border border-[#EEB38C]/30 dark:border-white/10 transition-colors">
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-[#EEB38C]/20">
+                  <div className="h-12 w-12 bg-white dark:bg-card rounded-2xl flex items-center justify-center shadow-sm border border-[#EEB38C]/20 dark:border-white/10 transition-colors">
                     <Calendar className="h-6 w-6 text-[#DF8142]" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-[#92664A] uppercase tracking-widest">
+                    <p className="text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-widest transition-colors">
                       Due Date
                     </p>
-                    <p className="font-bold text-[#5A270F]">
+                    <p className="font-bold text-[#5A270F] dark:text-[#EEB38C] transition-colors">
                       {assignment.due_date
                         ? new Date(assignment.due_date).toLocaleString([], {
                             dateStyle: "medium",
@@ -249,28 +249,28 @@ const AssignmentDetails = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-[#EEB38C]/20">
+                  <div className="h-12 w-12 bg-white dark:bg-card rounded-2xl flex items-center justify-center shadow-sm border border-[#EEB38C]/20 dark:border-white/10 transition-colors">
                     <User className="h-6 w-6 text-[#DF8142]" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-[#92664A] uppercase tracking-widest">
+                    <p className="text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-widest transition-colors">
                       Instructor
                     </p>
-                    <p className="font-bold text-[#5A270F]">
+                    <p className="font-bold text-[#5A270F] dark:text-[#EEB38C] transition-colors">
                       {assignment.creator.first_name}{" "}
                       {assignment.creator.last_name}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-[#EEB38C]/20">
+                  <div className="h-12 w-12 bg-white dark:bg-card rounded-2xl flex items-center justify-center shadow-sm border border-[#EEB38C]/20 dark:border-white/10 transition-colors">
                     <Clock className="h-6 w-6 text-[#DF8142]" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-[#92664A] uppercase tracking-widest">
+                    <p className="text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-widest transition-colors">
                       Posted On
                     </p>
-                    <p className="font-bold text-[#5A270F]">
+                    <p className="font-bold text-[#5A270F] dark:text-[#EEB38C] transition-colors">
                       {new Date(assignment.created_at).toLocaleDateString()}
                     </p>
                   </div>
@@ -307,10 +307,10 @@ const AssignmentDetails = () => {
 
       {/* Submission Section for Students */}
       {isStudent && (
-        <div className="bg-white rounded-[2.5rem] p-8 border border-[#EEB38C]/30 mb-10 relative overflow-hidden">
+        <div className="bg-white dark:bg-card rounded-[2.5rem] p-8 border border-[#EEB38C]/30 dark:border-white/10 mb-10 relative overflow-hidden transition-all duration-500">
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#5A270F]/5 blur-3xl rounded-full -translate-x-1/2 translate-y-1/2" />
           
-          <h2 className="text-2xl font-black text-[#5A270F] mb-6 flex items-center gap-3 relative z-10">
+          <h2 className="text-2xl font-black text-[#5A270F] dark:text-foreground mb-6 flex items-center gap-3 relative z-10 transition-colors">
             <Upload className="h-6 w-6 text-[#DF8142]" />
             Submit Your Work
           </h2>
@@ -357,16 +357,16 @@ const AssignmentDetails = () => {
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                   disabled={submitting}
                 />
-                <div className="border-2 border-dashed border-[#EEB38C] rounded-[2rem] py-12 text-center group-hover:border-[#DF8142] group-hover:bg-[#DF8142]/5 transition-all">
-                  <div className="h-16 w-16 bg-[#EFEDED] rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-[#DF8142]/10 group-hover:text-[#DF8142] transition-all">
-                    <Upload className="h-8 w-8 text-[#92664A]" />
+                <div className="border-2 border-dashed border-[#EEB38C] dark:border-white/10 rounded-[2rem] py-12 text-center group-hover:border-[#DF8142] group-hover:bg-[#DF8142]/5 dark:group-hover:bg-white/5 dark:bg-card/5 transition-all">
+                  <div className="h-16 w-16 bg-[#EFEDED] dark:bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-[#DF8142]/10 group-hover:text-[#DF8142] transition-all">
+                    <Upload className="h-8 w-8 text-[#92664A] dark:text-foreground/40" />
                   </div>
-                  <p className="text-lg font-black text-[#5A270F] mb-1">
+                  <p className="text-lg font-black text-[#5A270F] dark:text-foreground mb-1 transition-colors">
                     {submissionFile
                       ? submissionFile.name
                       : "Choose your submission file"}
                   </p>
-                  <p className="text-[#92664A] font-medium text-sm">
+                  <p className="text-[#92664A] dark:text-foreground/40 font-medium text-sm transition-colors">
                     All supported file types accepted
                   </p>
                 </div>
@@ -405,8 +405,8 @@ const AssignmentDetails = () => {
       {isCreatorOrAdmin &&
         assignment.submissions &&
         assignment.submissions.length > 0 && (
-          <div className="bg-white rounded-[2.5rem] p-8 border border-[#EEB38C]/30 mb-10 relative overflow-hidden">
-            <h2 className="text-2xl font-black text-[#5A270F] mb-6 flex items-center gap-3 relative z-10">
+          <div className="bg-white dark:bg-card rounded-[2.5rem] p-8 border border-[#EEB38C]/30 dark:border-white/10 mb-10 relative overflow-hidden transition-all duration-500">
+            <h2 className="text-2xl font-black text-[#5A270F] dark:text-foreground mb-6 flex items-center gap-3 relative z-10 transition-colors">
               <User className="h-6 w-6 text-[#DF8142]" />
               Student Submissions
             </h2>
@@ -414,15 +414,15 @@ const AssignmentDetails = () => {
               {assignment.submissions.map((sub) => (
                 <div
                   key={sub.id}
-                  className="bg-[#EFEDED]/50 rounded-2xl p-6 flex justify-between items-center border border-[#EEB38C]/20"
+                  className="bg-[#EFEDED] dark:bg-background/50 dark:bg-white/5 rounded-2xl p-6 flex justify-between items-center border border-[#EEB38C]/20 dark:border-white/10 transition-colors"
                 >
                   <div>
-                    <h4 className="font-bold text-[#5A270F]">
+                    <h4 className="font-bold text-[#5A270F] dark:text-foreground transition-colors">
                       {sub.student
                         ? `${sub.student.first_name} ${sub.student.last_name}`
                         : "Unknown Student"}
                     </h4>
-                    <p className="text-sm text-[#92664A]">
+                    <p className="text-sm text-[#92664A] dark:text-foreground/60 transition-colors">
                       Year {sub.student?.year} | Submitted:{" "}
                       {new Date(sub.submitted_at).toLocaleDateString()}
                     </p>
@@ -446,7 +446,7 @@ const AssignmentDetails = () => {
                       }/download?token=${encodeURIComponent(
                         localStorage.getItem("token") || ""
                       )}`}
-                      className="p-3 bg-white text-[#DF8142] rounded-xl font-bold shadow-sm hover:bg-[#DF8142]/10 border border-[#EEB38C]/20 transition-colors"
+                      className="p-3 bg-white dark:bg-card dark:bg-white/5 text-[#DF8142] dark:text-[#EEB38C] rounded-xl font-bold shadow-sm hover:bg-[#DF8142]/10 border border-[#EEB38C]/20 dark:border-white/10 transition-colors"
                       title="Download to Review"
                     >
                       <Download className="h-5 w-5" />
@@ -474,16 +474,16 @@ const AssignmentDetails = () => {
           </div>
         )}
 
-      <div className="bg-[#EFEDED]/80 rounded-[2.5rem] p-8 border border-[#EEB38C]/40 flex items-center gap-6 relative overflow-hidden">
+      <div className="bg-[#EFEDED] dark:bg-background/80 dark:bg-white/5 rounded-[2.5rem] p-8 border border-[#EEB38C]/40 dark:border-white/10 flex items-center gap-6 relative overflow-hidden transition-all duration-500">
         <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
-        <div className="h-16 w-16 bg-white rounded-3xl flex items-center justify-center shadow-sm text-[#DF8142] relative z-10 border border-[#EEB38C]/20">
+        <div className="h-16 w-16 bg-white dark:bg-card dark:bg-white/5 rounded-3xl flex items-center justify-center shadow-sm text-[#DF8142] dark:text-[#EEB38C] relative z-10 border border-[#EEB38C]/20 dark:border-white/10 transition-colors">
           <FileText className="h-8 w-8" />
         </div>
         <div className="relative z-10">
-          <h3 className="text-xl font-bold text-[#5A270F]">
+          <h3 className="text-xl font-bold text-[#5A270F] dark:text-foreground transition-colors">
             Submission Guidelines
           </h3>
-          <p className="text-[#92664A] font-medium">
+          <p className="text-[#92664A] dark:text-foreground/40 font-medium transition-colors">
             Please follow the instructions above carefully. Submit your work
             before the deadline using the form above.
           </p>

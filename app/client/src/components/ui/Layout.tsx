@@ -24,6 +24,7 @@ import { useSession, authClient } from "../../lib/auth-client";
 import { api } from "../../lib/api";
 import { syncSessionToStorage } from "../../lib/auth";
 import Footer from "./Footer";
+import ThemeToggle from "./ThemeToggle";
 import { Toaster } from "./sonner";
 import { toast } from "../../lib/toast";
 
@@ -141,15 +142,15 @@ const Layout = () => {
   const uploadPath = isAdmin ? "/admin/upload" : "/dashboard/upload";
 
   return (
-    <div className="min-h-screen flex flex-col font-sans selection:bg-[#DF8142]/20 selection:text-[#5A270F]">
+    <div className="min-h-screen flex flex-col font-sans selection:bg-[#DF8142]/20 selection:text-[#5A270F] dark:text-[#EEB38C] dark:selection:text-white transition-colors duration-500">
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-in-out ${
           isScrolled
-            ? "bg-white/80 backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.06)] border-b border-primary/50 py-3"
+            ? "bg-white/80 dark:bg-[#1A0B04]/80 backdrop-blur-3xl shadow-[0_8px_32px_rgba(0,0,0,0.06)] border-b border-primary/50 py-3"
             : `${
                 isHomePage
                   ? "bg-transparent py-6"
-                  : "bg-white/90 backdrop-blur-2xl py-4 border-b border-gray-100/50"
+                  : "bg-white/90 dark:bg-[#1A0B04]/90 backdrop-blur-2xl py-4 border-b border-gray-100 dark:border-white/10/50 dark:border-white/5"
               }`
         }`}
       >
@@ -162,7 +163,7 @@ const Layout = () => {
                   className={`relative p-2.5 rounded-2xl transition-all duration-500 overflow-hidden ${
                     isScrolled || !isHomePage
                       ? "bg-[#DF8142] shadow-[0_12px_24px_-6px_rgba(223,129,66,0.5)]"
-                      : "bg-white/10 backdrop-blur-md border border-white/30"
+                      : "bg-white/10 dark:bg-card/10 backdrop-blur-md border border-white/30"
                   }`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-tr from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity bg-[length:200%_200%] animate-gradient-xy" />
@@ -174,7 +175,7 @@ const Layout = () => {
                   <span
                     className={`text-2xl font-black tracking-tighter leading-none transition-all duration-500 font-display ${
                       isScrolled || !isHomePage
-                        ? "text-[#5A270F] group-hover:text-[#DF8142]"
+                        ? "text-[#5A270F] dark:text-[#EEB38C] group-hover:text-[#DF8142]"
                         : "text-white group-hover:scale-105"
                     }`}
                   >
@@ -184,7 +185,7 @@ const Layout = () => {
                   <span
                     className={`text-[9px] font-black tracking-[0.3em] uppercase transition-all duration-500 ${
                       isScrolled || !isHomePage
-                        ? "text-gray-500"
+                        ? "text-gray-500 dark:text-white/40"
                         : "text-white/70"
                     }`}
                   >
@@ -207,7 +208,7 @@ const Layout = () => {
                           ? "text-[#DF8142]"
                           : "text-white"
                         : isScrolled || !isHomePage
-                          ? "text-[#5A270F]/80 hover:text-[#DF8142]"
+                          ? "text-[#5A270F] dark:text-[#EEB38C]/80 hover:text-[#DF8142]"
                           : "text-white/70 hover:text-white"
                     }`
                   }
@@ -220,7 +221,7 @@ const Layout = () => {
                           className={`absolute inset-0 rounded-full -z-0 transition-all duration-500 ${
                             isScrolled || !isHomePage
                               ? "bg-[#DF8142]/10 shadow-inner shadow-[#DF8142]/50"
-                              : "bg-white/20 backdrop-blur-lg"
+                              : "bg-white/20 dark:bg-card/20 backdrop-blur-lg"
                           }`}
                         />
                       )}
@@ -242,7 +243,7 @@ const Layout = () => {
                   className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-105 ${
                     isScrolled || !isHomePage
                       ? "bg-[#DF8142] text-white hover:bg-[#DF8142]/90 shadow-lg shadow-[#DF8142]/20"
-                      : "bg-white text-[#DF8142] hover:bg-gray-50 shadow-lg"
+                      : "bg-white dark:bg-card text-[#DF8142] hover:bg-gray-50 shadow-lg"
                   }`}
                 >
                   <Upload className="h-4 w-4" />
@@ -256,8 +257,8 @@ const Layout = () => {
                   to={notificationsPath}
                   className={`relative p-2.5 rounded-full transition-all hover:scale-110 ${
                     isScrolled || !isHomePage
-                      ? "text-gray-600 hover:bg-gray-100"
-                      : "text-white hover:bg-white/10"
+                      ? "text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:bg-white/10"
+                      : "text-white hover:bg-white/10 dark:bg-card/10"
                   }`}
                 >
                   <Bell className="h-5 w-5" />
@@ -269,6 +270,9 @@ const Layout = () => {
                 </Link>
               )}
 
+              {/* Theme Toggle */}
+              <ThemeToggle isScrolled={isScrolled} isHomePage={isHomePage} />
+
               {/* User Section */}
               <div className="flex items-center gap-2">
                 {isAuthenticated ? (
@@ -278,7 +282,7 @@ const Layout = () => {
                       className={`flex items-center gap-2 p-1.5 pr-3 rounded-full border transition-all ${
                         isScrolled || !isHomePage
                           ? "border-gray-200 hover:border-[#DF8142]/60 hover:bg-[#DF8142]/10"
-                          : "border-white/20 hover:border-white/40 hover:bg-white/10"
+                          : "border-white/20 hover:border-white/40 hover:bg-white/10 dark:bg-card/10"
                       }`}
                     >
                       <div className="relative h-9 w-9 rounded-full overflow-hidden border-2 border-[#DF8142]/90">
@@ -290,7 +294,7 @@ const Layout = () => {
                         <p
                           className={`text-sm font-bold leading-none ${
                             isScrolled || !isHomePage
-                              ? "text-gray-900"
+                              ? "text-slate-900 dark:text-white"
                               : "text-white"
                           }`}
                         >
@@ -299,7 +303,7 @@ const Layout = () => {
                         <p
                           className={`text-xs ${
                             isScrolled || !isHomePage
-                              ? "text-gray-500"
+                              ? "text-slate-500 dark:text-white/60"
                               : "text-white/60"
                           }`}
                         >
@@ -313,7 +317,7 @@ const Layout = () => {
                           isUserMenuOpen ? "rotate-180" : ""
                         } ${
                           isScrolled || !isHomePage
-                            ? "text-gray-400"
+                            ? "text-slate-400"
                             : "text-white/60"
                         }`}
                       />
@@ -321,7 +325,7 @@ const Layout = () => {
 
                     {/* User Dropdown Menu - Premium Architectural Style */}
                     {isUserMenuOpen && (
-                      <div className="absolute right-0 mt-4 w-72 bg-white/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] border border-white p-3 py-4 animate-in fade-in slide-in-from-top-4 duration-500 z-[100] ring-1 ring-[#5A270F]/5">
+                      <div className="absolute right-0 mt-4 w-72 bg-white/95 dark:bg-[#1A0B04]/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] border border-white dark:border-white/10 p-3 py-4 animate-in fade-in slide-in-from-top-4 duration-500 z-[100] ring-1 ring-[#5A270F]/5">
                         {/* Menu Header */}
                         <div className="px-5 py-6 mb-2 mx-2 rounded-[2rem] bg-[#5A270F] relative overflow-hidden group/header">
                           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[50px] transition-all group-hover/header:bg-primary/40" />
@@ -345,9 +349,9 @@ const Layout = () => {
                             <Link
                               to="/dashboard"
                               onClick={() => setUserMenuOpen(false)}
-                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F] bg-[#EFEDED]/50 hover:bg-[#5A270F] hover:text-white rounded-2xl transition-all group/item"
+                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] bg-[#EFEDED] dark:bg-background/50 dark:bg-white/5 hover:bg-[#5A270F] dark:hover:bg-primary hover:text-white rounded-2xl transition-all group/item"
                             >
-                              <div className="p-2 bg-white rounded-xl shadow-sm text-[#5A270F] group-hover/item:bg-[#92664A] group-hover/item:text-white transition-all">
+                              <div className="p-2 bg-white dark:bg-card dark:bg-[#2A1205] rounded-xl shadow-sm text-[#5A270F] dark:text-[#EEB38C] group-hover/item:bg-[#92664A] dark:group-hover/item:bg-white dark:bg-card group-hover/item:text-white dark:group-hover/item:text-[#5A270F] dark:text-[#EEB38C] transition-all">
                                 <LayoutDashboard className="h-4 w-4" />
                               </div>
                               Personal Console
@@ -360,7 +364,7 @@ const Layout = () => {
                               onClick={() => setUserMenuOpen(false)}
                               className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#DF8142] bg-[#DF8142]/10 hover:bg-[#DF8142] hover:text-white rounded-2xl transition-all group/item"
                             >
-                              <div className="p-2 bg-white rounded-xl shadow-sm text-[#DF8142] group-hover/item:bg-[#DF8142]/90 group-hover/item:text-white transition-all">
+                              <div className="p-2 bg-white dark:bg-card dark:bg-[#2A1205] rounded-xl shadow-sm text-[#DF8142] group-hover/item:bg-[#DF8142]/90 group-hover/item:text-white transition-all">
                                 <ShieldCheck className="h-4 w-4" />
                               </div>
                               Admin Command Center
@@ -371,23 +375,21 @@ const Layout = () => {
                             <Link
                               to="/super-admin"
                               onClick={() => setUserMenuOpen(false)}
-                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F] bg-[#92664A]/10 hover:bg-[#5A270F] hover:text-white rounded-2xl transition-all group/item"
+                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] bg-[#92664A]/10 hover:bg-[#5A270F] hover:text-white rounded-2xl transition-all group/item"
                             >
-                              <div className="p-2 bg-white rounded-xl shadow-sm text-[#5A270F] group-hover/item:bg-[#92664A] group-hover/item:text-white transition-all">
+                              <div className="p-2 bg-white dark:bg-card dark:bg-[#2A1205] rounded-xl shadow-sm text-[#5A270F] dark:text-[#EEB38C] group-hover/item:bg-[#92664A] group-hover/item:text-white transition-all">
                                 <ShieldAlert className="h-4 w-4" />
                               </div>
                               Super Architect Console
                             </Link>
                           )}
-
-                          {/* Saved Resources and System Settings removed for UI optimization */}
                         </div>
 
                         {/* Menu Footer */}
-                        <div className="mt-2 pt-2 border-t border-slate-50 px-1">
+                        <div className="mt-2 pt-2 border-t border-slate-50 dark:border-white/5 px-1">
                           <button
                             onClick={handleLogout}
-                            className="flex items-center gap-4 w-full px-5 py-4 text-sm font-black uppercase tracking-widest text-red-500 hover:bg-red-50 rounded-2xl transition-all"
+                            className="flex items-center gap-4 w-full px-5 py-4 text-sm font-black uppercase tracking-widest text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-2xl transition-all"
                           >
                             <LogOut className="h-4 w-4" />
                             Terminate Session
@@ -400,10 +402,10 @@ const Layout = () => {
                   <div className="flex items-center gap-3">
                     <Link
                       to="/login"
-                      className={`group relative px-8 py-3 text-sm font-black uppercase tracking-widest rounded-full transition-all duration-500 hover:scale-105 active:scale-95 overflow-hidden ${
+                      className={`group relative px-8 py-3 text-sm font-black uppercase tracking-widest rounded-full transition-all duration-500 hover:scale-105 active:scale-95 overflow-hidden shadow-xl ${
                         isScrolled || !isHomePage
-                          ? "bg-[#5A270F] text-white shadow-xl shadow-[#5A270F]/20"
-                          : "bg-white text-[#5A270F] shadow-2xl shadow-white/10"
+                          ? "bg-[#5A270F] text-white shadow-[#5A270F]/20"
+                          : "bg-white dark:bg-card text-[#5A270F] dark:text-[#EEB38C] shadow-white/10"
                       }`}
                     >
                       <div className="absolute inset-0 bg-gradient-to-r from-[#DF8142] to-[#EEB38C] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -421,8 +423,8 @@ const Layout = () => {
                 onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
                 className={`lg:hidden p-2.5 rounded-2xl transition-all ${
                   isScrolled || !isHomePage
-                    ? "text-gray-600 hover:bg-gray-100"
-                    : "text-white hover:bg-white/10"
+                    ? "text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:bg-white/10"
+                    : "text-white hover:bg-white/10 dark:bg-card/10"
                 }`}
               >
                 {isMobileMenuOpen ? (
@@ -436,7 +438,7 @@ const Layout = () => {
 
           {/* Mobile Overlay Menu */}
           <div
-            className={`lg:hidden fixed inset-0 top-[72px] bg-white/95 backdrop-blur-2xl z-[45] transition-all duration-500 ease-in-out ${
+            className={`lg:hidden fixed inset-0 top-[72px] bg-white/95 dark:bg-[#1A0B04]/95 backdrop-blur-2xl z-[45] transition-all duration-500 ease-in-out ${
               isMobileMenuOpen
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-[-10px] pointer-events-none"
@@ -455,8 +457,8 @@ const Layout = () => {
                     className={({ isActive }) =>
                       `px-4 py-4 rounded-2xl text-2xl font-black tracking-tight transition-all ${
                         isActive
-                          ? "text-primary bg-primary/10"
-                          : "text-gray-900"
+                          ? "text-primary bg-primary/10 dark:text-[#EEB38C] dark:bg-white/5"
+                          : "text-gray-900 dark:text-white"
                       }`
                     }
                   >
@@ -469,7 +471,7 @@ const Layout = () => {
                     <Link
                       to={uploadPath}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="px-4 py-4 rounded-2xl text-2xl font-black tracking-tight text-gray-900 flex items-center gap-3"
+                      className="px-4 py-4 rounded-2xl text-2xl font-black tracking-tight text-gray-900 dark:text-white flex items-center gap-3 transition-colors"
                     >
                       <Upload className="h-6 w-6" />
                       Upload
@@ -477,7 +479,7 @@ const Layout = () => {
                     <Link
                       to={dashboardPath}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="px-4 py-4 rounded-2xl text-2xl font-black tracking-tight text-gray-900 flex items-center gap-3"
+                      className="px-4 py-4 rounded-2xl text-2xl font-black tracking-tight text-gray-900 dark:text-white flex items-center gap-3 transition-colors"
                     >
                       <LayoutDashboard className="h-6 w-6" />
                       Dashboard
@@ -486,7 +488,7 @@ const Layout = () => {
                 )}
               </div>
 
-              <div className="pt-8 border-t border-gray-100">
+              <div className="pt-8 border-t border-gray-100 dark:border-white/10 transition-colors">
                 {!isAuthenticated && (
                   <div className="grid grid-cols-1">
                     <Link
