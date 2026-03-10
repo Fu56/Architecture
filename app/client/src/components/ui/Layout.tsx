@@ -185,7 +185,7 @@ const Layout = () => {
                   <span
                     className={`text-[9px] font-black tracking-[0.3em] uppercase transition-all duration-500 ${
                       isScrolled || !isHomePage
-                        ? "text-gray-500 dark:text-white/40"
+                        ? "text-[#5A270F]/50 dark:text-white/40"
                         : "text-white/70"
                     }`}
                   >
@@ -257,7 +257,7 @@ const Layout = () => {
                   to={notificationsPath}
                   className={`relative p-2.5 rounded-full transition-all hover:scale-110 ${
                     isScrolled || !isHomePage
-                      ? "text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:bg-white/10"
+                      ? "text-[#5A270F]/60 dark:text-white/50 hover:bg-gray-100 dark:bg-white/10"
                       : "text-white hover:bg-white/10 dark:bg-card/10"
                   }`}
                 >
@@ -303,7 +303,7 @@ const Layout = () => {
                         <p
                           className={`text-xs ${
                             isScrolled || !isHomePage
-                              ? "text-slate-500 dark:text-white/60"
+                              ? "text-[#5A270F]/40 dark:text-white/60"
                               : "text-white/60"
                           }`}
                         >

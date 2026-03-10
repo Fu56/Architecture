@@ -203,7 +203,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
         )}
 
         <div className="absolute bottom-4 left-6 z-10">
-          <span className="text-[9px] font-bold uppercase tracking-widest text-[#EEB38C]/40">
+          <span className="text-[9px] font-bold uppercase tracking-widest text-[#5A270F]/50 dark:text-[#EEB38C]/40">
             Node Registry: {String(id).padStart(5, "0")}
           </span>
         </div>
@@ -222,7 +222,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             <User className="h-4 w-4" />
           </div>
           <div className="overflow-hidden">
-            <p className="text-[8px] font-bold text-[#92664A] dark:text-[#92664A] uppercase tracking-widest leading-none mb-1">
+            <p className="text-[8px] font-bold text-[#5A270F]/60 dark:text-[#92664A] uppercase tracking-widest leading-none mb-1">
               Authority Node
             </p>
             <p className="text-xs font-bold text-[#6C3B1C] dark:text-[#EEB38C] truncate leading-none">
@@ -242,7 +242,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
               </span>
             ))
           ) : (
-            <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400 dark:text-white/20 italic transition-colors">
+            <span className="text-[9px] font-bold uppercase tracking-widest text-[#5A270F]/40 dark:text-white/20 italic transition-colors">
               No Metadata Tags
             </span>
           )}

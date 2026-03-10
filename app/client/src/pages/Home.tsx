@@ -318,7 +318,7 @@ const Home = () => {
             </form>
 
             <div className="flex flex-wrap items-center gap-6 animate-in fade-in slide-in-from-bottom-32 duration-1000 delay-700">
-              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/30 italic">
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/50 dark:text-[#EEB38C]/30 italic">
                 EXPLORE INDEX /
               </span>
               {[
@@ -370,7 +370,7 @@ const Home = () => {
                       : stats.totalResources}
                   </p>
                   <div className="flex flex-col">
-                    <p className="text-[11px] font-black uppercase tracking-[0.3em] text-gray-500 dark:text-foreground/40 transition-colors">
+                    <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#5A270F]/50 dark:text-foreground/40 transition-colors">
                       MASTER RESOURCES
                     </p>
                     <span className="text-[10px] font-bold text-[#DF8142] dark:text-[#EEB38C] uppercase tracking-widest mt-1 italic transition-colors">
@@ -395,7 +395,7 @@ const Home = () => {
                       : stats.totalUsers}
                   </p>
                   <div className="flex flex-col">
-                    <p className="text-[11px] font-black uppercase tracking-[0.3em] text-gray-500 dark:text-foreground/40 transition-colors">
+                    <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#5A270F]/50 dark:text-foreground/40 transition-colors">
                       GLOBAL VISIONARIES
                     </p>
                     <span className="text-[10px] font-bold text-[#6C3B1C] dark:text-[#EEB38C]/80/80 dark:text-[#EEB38C]/80 uppercase tracking-widest mt-1 italic transition-colors">
@@ -420,7 +420,7 @@ const Home = () => {
                       : stats.totalDownloads}
                   </p>
                   <div className="flex flex-col">
-                    <p className="text-[11px] font-black uppercase tracking-[0.3em] text-gray-500 dark:text-white/40">
+                    <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#5A270F]/50 dark:text-white/40">
                       STUDIO DEPLOYMENTS
                     </p>
                     <span className="text-[10px] font-bold text-[#DF8142] dark:text-[#EEB38C] uppercase tracking-widest mt-1 italic transition-colors">
@@ -443,7 +443,7 @@ const Home = () => {
                     {stats.facultyCount}+
                   </p>
                   <div className="flex flex-col">
-                    <p className="text-[11px] font-black uppercase tracking-[0.3em] text-gray-500 dark:text-white/40">
+                    <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#5A270F]/50 dark:text-white/40">
                       VERIFIED FACULTY
                     </p>
                     <span className="text-[10px] font-bold text-[#92664A] dark:text-[#EEB38C]/60 uppercase tracking-widest mt-1 italic transition-colors">
@@ -519,13 +519,13 @@ const Home = () => {
                 <div className="flex flex-col gap-4 mb-8">
                   <div className="flex items-center gap-4">
                     <div className="w-2 h-2 rounded-full bg-[#DF8142]/90 shadow-[0_0_8px_rgba(223,129,66,0.3)]" />
-                    <span className="text-xs font-black uppercase tracking-widest text-[#92664A] dark:text-foreground/40 transition-colors">
+                    <span className="text-xs font-black uppercase tracking-widest text-[#5A270F]/50 dark:text-foreground/40 transition-colors">
                       Peer-Reviewed Standard
                     </span>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="w-2 h-2 rounded-full bg-[#DF8142]/90 shadow-[0_0_8px_rgba(223,129,66,0.3)]" />
-                    <span className="text-xs font-black uppercase tracking-widest text-[#92664A] dark:text-foreground/40 transition-colors">
+                    <span className="text-xs font-black uppercase tracking-widest text-[#5A270F]/50 dark:text-foreground/40 transition-colors">
                       Thesis Gold Benchmarks
                     </span>
                   </div>
@@ -561,13 +561,13 @@ const Home = () => {
                 <div className="flex flex-col gap-5 mb-14">
                   <div className="flex items-center gap-4">
                     <div className="w-2 h-2 rounded-full bg-[#92664A] shadow-[0_0_8px_rgba(146,102,74,0.3)]" />
-                    <span className="text-xs font-black uppercase tracking-widest text-gray-500 dark:text-foreground/40 transition-colors">
+                    <span className="text-xs font-black uppercase tracking-widest text-[#5A270F]/50 dark:text-foreground/40 transition-colors">
                       Syllabus Alignment
                     </span>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="w-2 h-2 rounded-full bg-[#92664A] shadow-[0_0_8px_rgba(146,102,74,0.3)]" />
-                    <span className="text-xs font-black uppercase tracking-widest text-gray-500 dark:text-foreground/40 transition-colors">
+                    <span className="text-xs font-black uppercase tracking-widest text-[#5A270F]/50 dark:text-foreground/40 transition-colors">
                       Studio Directives
                     </span>
                   </div>
@@ -684,7 +684,7 @@ const Home = () => {
               <h3 className="text-2xl font-black text-[#2A1205] dark:text-foreground mb-3 uppercase tracking-tight leading-none transition-colors">
                 SYNCHRONIZING DATA
               </h3>
-              <p className="text-gray-500 dark:text-white/40 font-bold uppercase text-xs tracking-widest">
+              <p className="text-[#5A270F]/40 dark:text-white/40 font-bold uppercase text-xs tracking-widest">
                 Fetching latest architectural benchmarks from the CDN...
               </p>
             </div>
@@ -920,7 +920,7 @@ const Home = () => {
                   <h4 className="text-lg font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tight mb-4">
                     ARCH_CORE
                   </h4>
-                  <p className="text-gray-500 dark:text-white/40 text-sm font-bold leading-relaxed">
+                  <p className="text-[#5A270F]/60 dark:text-white/40 text-sm font-bold leading-relaxed">
                     Architecture students defined the library taxonomy, BIM
                     standards, and creative vision.
                   </p>
@@ -933,7 +933,7 @@ const Home = () => {
                   <h4 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tight mb-4">
                     SOFT_LOGIC
                   </h4>
-                  <p className="text-gray-500 dark:text-white/40 text-sm font-bold leading-relaxed">
+                  <p className="text-[#5A270F]/60 dark:text-white/40 text-sm font-bold leading-relaxed">
                     Software engineering students engineered the high-speed CDN,
                     encryption layer, and UX matrix.
                   </p>
@@ -943,7 +943,7 @@ const Home = () => {
               <div className="pt-8 border-t border-[#D9D9C2] dark:border-white/10">
                 <div className="flex items-center gap-12">
                   <div>
-                    <p className="text-[10px] font-black text-gray-400 dark:text-white/30 uppercase tracking-[0.4em] mb-2">
+                    <p className="text-[10px] font-black text-[#5A270F]/40 dark:text-white/30 uppercase tracking-[0.4em] mb-2">
                       PROJECT SCALE
                     </p>
                     <p className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase">
@@ -952,7 +952,7 @@ const Home = () => {
                   </div>
                   <div className="h-12 w-px bg-[#D9D9C2] dark:bg-white/10" />
                   <div>
-                    <p className="text-[10px] font-black text-gray-400 dark:text-white/30 uppercase tracking-[0.4em] mb-2">
+                    <p className="text-[10px] font-black text-[#5A270F]/40 dark:text-white/30 uppercase tracking-[0.4em] mb-2">
                       SYNERGY NODE
                     </p>
                     <p className="text-2xl font-black text-[#DF8142] tracking-tighter uppercase">

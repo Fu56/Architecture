@@ -95,7 +95,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-[#FAF8F4] dark:bg-[#1A0B04] text-[#5A270F]/60 dark:text-gray-400 pt-24 pb-12 overflow-hidden relative transition-colors duration-500">
+    <footer className="bg-[#FAF8F4] dark:bg-[#1A0B04] text-[#5A270F]/80 dark:text-gray-400 pt-24 pb-12 overflow-hidden relative transition-colors duration-500">
       {/* Decorative Blueprint Background */}
       <div className="absolute top-0 left-0 w-full h-full blueprint-grid-dark opacity-[0.02] pointer-events-none" />
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#DF8142]/20 to-transparent" />
@@ -135,7 +135,7 @@ const Footer = () => {
                 <a
                   key={i}
                   href="#"
-                  className="p-4 bg-[#EFEDED] dark:bg-white/5 border border-black/5 dark:border-white/5 rounded-2xl text-[#92664A] dark:text-white/40 hover:bg-[#DF8142] hover:text-white hover:border-[#DF8142]/30 transition-all duration-500 hover:-translate-y-1 group/social dark:hover:text-white"
+                  className="p-4 bg-[#EFEDED] dark:bg-white/5 border border-black/5 dark:border-white/5 rounded-2xl text-[#6C3B1C] dark:text-white/40 hover:bg-[#DF8142] hover:text-white hover:border-[#DF8142]/30 transition-all duration-500 hover:-translate-y-1 group/social dark:hover:text-white"
                   aria-label={social.label}
                 >
                   <social.icon className="h-4 w-4" />
@@ -146,7 +146,7 @@ const Footer = () => {
 
           {/* Navigation Matrix */}
           <div className="lg:col-span-3">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F]/60 dark:text-white/50 mb-8 flex items-center gap-3">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F]/80 dark:text-white/50 mb-8 flex items-center gap-3">
               <div className="w-1.5 h-1.5 rounded-full bg-[#DF8142]" />
               SYSTEM INDEX
             </h3>
@@ -276,7 +276,7 @@ const Footer = () => {
         {/* Bottom Bar - Protocol & Legal */}
         <div className="pt-8 sm:pt-12 border-t border-white/5 flex flex-col lg:flex-row justify-between items-center gap-8 lg:gap-16">
           <div className="flex flex-col items-center lg:items-start gap-4">
-            <p className="text-[9px] font-bold tracking-[0.3em] text-[#92664A] dark:text-[#EEB38C]/40 uppercase">
+            <p className="text-[9px] font-bold tracking-[0.3em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 uppercase">
               &copy; {currentYear} ARCHVAULT DIGITAL ARCHITECTURAL SYSTEMS.
             </p>
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 sm:gap-x-10 gap-y-3 sm:gap-y-4">
