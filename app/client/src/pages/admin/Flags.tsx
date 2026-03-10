@@ -29,7 +29,7 @@ const Flags = () => {
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const user = session?.user as any;
   const role = typeof user?.role === "object" ? user.role.name : user?.role;
-  const isAuthorized = role === "DepartmentHead" || role === "SuperAdmin";
+  const isAuthorized = role === "DepartmentHead";
 
   const fetchFlags = async () => {
     setLoading(true);

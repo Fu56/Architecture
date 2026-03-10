@@ -657,8 +657,7 @@ const ManageUsers = () => {
                         </button>
 
                         {user.status === "pending_approval" &&
-                          (currentRoleName === "DepartmentHead" ||
-                            currentRoleName === "SuperAdmin") && (
+                          currentRoleName === "DepartmentHead" && (
                             <button
                               onClick={() => handleApprove(user.id)}
                               className="p-3 text-[#DF8142] hover:text-[#2A1205] hover:bg-[#5A270F]/5 rounded-xl transition-all"

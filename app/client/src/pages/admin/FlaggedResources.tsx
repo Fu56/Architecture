@@ -1,8 +1,15 @@
 import { useState, useEffect } from "react";
 import { api } from "../../lib/api";
 import type { Flag } from "../../models";
+import { useSession } from "../../lib/auth-client";
 
 const FlaggedResources = () => {
+  const { data: session } = useSession();
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const user = session?.user as any;
+  const role = typeof user?.role === "object" ? user.role.name : user?.role;
+  const isAuthorized = role === "DepartmentHead";
+
   const [flags, setFlags] = useState<Flag[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -12,7 +19,6 @@ const FlaggedResources = () => {
       setLoading(true);
       try {
         const { data } = await api.get("/admin/flags");
-        // The API returns { flags: Flag[] }
         if (data && Array.isArray(data.flags)) {
           setFlags(data.flags);
         } else if (Array.isArray(data)) {
@@ -53,12 +59,14 @@ const FlaggedResources = () => {
               <h3 className="font-semibold">{flag.resource.title}</h3>
               <p className="text-sm text-gray-600">Reason: {flag.reason}</p>
             </div>
-            <button
-              onClick={() => handleResolve(flag.id)}
-              className="px-3 py-1 bg-primary/80 text-white rounded hover:bg-primary"
-            >
-              Mark as Resolved
-            </button>
+            {isAuthorized && (
+              <button
+                onClick={() => handleResolve(flag.id)}
+                className="px-3 py-1 bg-primary/80 text-white rounded hover:bg-primary"
+              >
+                Mark as Resolved
+              </button>
+            )}
           </div>
         ))}
       </div>

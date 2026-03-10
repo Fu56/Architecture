@@ -1,8 +1,15 @@
 import { useState, useEffect } from "react";
 import { api } from "../../lib/api";
 import type { Resource } from "../../models";
+import { useSession } from "../../lib/auth-client";
 
 const ApproveResources = () => {
+  const { data: session } = useSession();
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const user = session?.user as any;
+  const role = typeof user?.role === "object" ? user.role.name : user?.role;
+  const isAuthorized = role === "DepartmentHead";
+
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -53,6 +60,7 @@ const ApproveResources = () => {
             resource={resource}
             onApprove={handleApprove}
             onReject={handleReject}
+            isAuthorized={isAuthorized}
           />
         ))}
         {resources.length === 0 && !loading && (
@@ -69,10 +77,12 @@ const ResourceApprovalCard = ({
   resource,
   onApprove,
   onReject,
+  isAuthorized,
 }: {
   resource: Resource;
   onApprove: (id: number, comment?: string) => void;
   onReject: (id: number, reason?: string) => void;
+  isAuthorized: boolean;
 }) => {
   const [comment, setComment] = useState("");
 
@@ -126,18 +136,22 @@ const ResourceApprovalCard = ({
           >
             Review Resource
           </a>
-          <button
-            onClick={() => onReject(resource.id, comment)}
-            className="px-4 py-2 text-sm font-medium text-red-700 bg-red-50 rounded-md hover:bg-red-100 border border-transparent"
-          >
-            Reject
-          </button>
-          <button
-            onClick={() => onApprove(resource.id, comment)}
-            className="px-4 py-2 text-sm font-medium text-white bg-[#2A1205] rounded-md hover:bg-[#2A1205]/90 shadow-sm"
-          >
-            Approve
-          </button>
+          {isAuthorized && (
+            <>
+              <button
+                onClick={() => onReject(resource.id, comment)}
+                className="px-4 py-2 text-sm font-medium text-red-700 bg-red-50 rounded-md hover:bg-red-100 border border-transparent"
+              >
+                Reject
+              </button>
+              <button
+                onClick={() => onApprove(resource.id, comment)}
+                className="px-4 py-2 text-sm font-medium text-white bg-[#2A1205] rounded-md hover:bg-[#2A1205]/90 shadow-sm"
+              >
+                Approve
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -15,7 +15,15 @@ import {
 import { Link } from "react-router-dom";
 import { toast } from "../../lib/toast";
 
+import { useSession } from "../../lib/auth-client";
+
 const Approvals = () => {
+  const { data: session } = useSession();
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const user = session?.user as any;
+  const role = typeof user?.role === "object" ? user.role.name : user?.role;
+  const isAuthorized = role === "DepartmentHead";
+
   const [resources, setResources] = useState<Resource[]>([]);
   const [comments, setComments] = useState<{ [key: number]: string }>({});
   const [loading, setLoading] = useState(true);
@@ -192,18 +200,22 @@ const Approvals = () => {
                   Review Protocol active
                 </div>
                 <div className="flex gap-4 w-full sm:w-auto">
-                  <button
-                    onClick={() => handleDecision(resource.id, "rejected")}
-                    className="flex-1 sm:flex-none h-14 px-10 bg-white border-2 border-rose-200 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl text-rose-600 hover:bg-rose-50 transition-all active:scale-95 flex items-center justify-center gap-3"
-                  >
-                    <X className="h-4 w-4" /> Sequester
-                  </button>
-                  <button
-                    onClick={() => handleDecision(resource.id, "approved")}
-                    className="flex-1 sm:flex-none h-14 px-12 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#6C3B1C] transition-all hover:-translate-y-1 shadow-2xl shadow-[#5A270F]/20 active:scale-95 flex items-center justify-center gap-3"
-                  >
-                    <Check className="h-4 w-4" /> Verify & Deploy
-                  </button>
+                  {isAuthorized && (
+                    <>
+                      <button
+                        onClick={() => handleDecision(resource.id, "rejected")}
+                        className="flex-1 sm:flex-none h-14 px-10 bg-white border-2 border-rose-200 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl text-rose-600 hover:bg-rose-50 transition-all active:scale-95 flex items-center justify-center gap-3"
+                      >
+                        <X className="h-4 w-4" /> Sequester
+                      </button>
+                      <button
+                        onClick={() => handleDecision(resource.id, "approved")}
+                        className="flex-1 sm:flex-none h-14 px-12 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#6C3B1C] transition-all hover:-translate-y-1 shadow-2xl shadow-[#5A270F]/20 active:scale-95 flex items-center justify-center gap-3"
+                      >
+                        <Check className="h-4 w-4" /> Verify & Deploy
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

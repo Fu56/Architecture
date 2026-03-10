@@ -1124,10 +1124,10 @@ export const approveUser = async (req: Request, res: Response) => {
     const requester = (req as any).user;
     const requesterRole = requester?.role?.name || requester?.role;
 
-    if (requesterRole !== "DepartmentHead" && requesterRole !== "SuperAdmin") {
+    if (requesterRole !== "DepartmentHead") {
       return res.status(403).json({
         message:
-          "Security Protocol: Only Department Head or System Developer can authorize pending nodes.",
+          "Security Protocol: Only Department Head can authorize pending nodes.",
       });
     }
 

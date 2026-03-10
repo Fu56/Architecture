@@ -162,8 +162,12 @@ const AdminDashboard = () => {
                       .filter((link) => {
                         if (
                           link.name === "Resource Approvals" ||
-                          link.name === "News & Events"
+                          link.name === "Flagged Content"
                         ) {
+                          // These are strictly for DepartmentHead (who has a separate dashboard)
+                          return false;
+                        }
+                        if (link.name === "News & Events") {
                           return isSuperAdmin;
                         }
                         return true;

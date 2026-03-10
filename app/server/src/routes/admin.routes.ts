@@ -34,44 +34,44 @@ router.use(requireAuth, requireRole(["Admin", "SuperAdmin", "DepartmentHead"]));
 // Resource Approval — restricted to DepartmentHead and SuperAdmin only
 router.get(
   "/resources/pending",
-  requireRole(["DepartmentHead", "SuperAdmin"]),
+  requireRole(["DepartmentHead"]),
   getPendingResources,
 );
 router.patch(
   "/resources/:id/approve",
-  requireRole(["DepartmentHead", "SuperAdmin"]),
+  requireRole(["DepartmentHead"]),
   approveResource,
 );
 router.patch(
   "/resources/:id/reject",
-  requireRole(["DepartmentHead", "SuperAdmin"]),
+  requireRole(["DepartmentHead"]),
   rejectResource,
 );
 router.patch(
   "/resources/:id/archive",
-  requireRole(["DepartmentHead", "SuperAdmin"]),
+  requireRole(["DepartmentHead"]),
   archiveResource,
 );
 router.patch(
   "/resources/:id/restore",
-  requireRole(["DepartmentHead", "SuperAdmin"]),
+  requireRole(["DepartmentHead"]),
   restoreResource,
 );
 router.delete(
   "/resources/:id/permanent",
-  requireRole(["DepartmentHead", "SuperAdmin"]),
+  requireRole(["DepartmentHead"]),
   deleteResource,
 );
 router.get(
   "/resources/archived",
-  requireRole(["DepartmentHead", "SuperAdmin"]),
+  requireRole(["DepartmentHead"]),
   getArchivedResources,
 );
 
-router.get("/flags", getFlags);
+router.get("/flags", requireRole(["DepartmentHead"]), getFlags);
 router.patch(
   "/flags/:id/resolve",
-  requireRole(["DepartmentHead", "SuperAdmin"]),
+  requireRole(["DepartmentHead"]),
   resolveFlag,
 );
 
@@ -82,7 +82,7 @@ router.delete("/users/:id", deleteUser);
 // User Registration Approval — restricted to DepartmentHead and SuperAdmin only
 router.patch(
   "/users/:id/approve",
-  requireRole(["DepartmentHead", "SuperAdmin"]),
+  requireRole(["DepartmentHead"]),
   approveUser,
 );
 router.patch("/users/:id/role", manageUserRole); // Keep specific if needed, or deprecate
