@@ -130,17 +130,28 @@ export const getRegistrationHtml = (
   userName: string,
   email: string,
   password?: string,
+  status?: string,
 ) => {
+  const isPending = status === "pending_approval";
+
   return `
     <div ${emailStyle} style="border: 2px solid #EEB38C; max-width: 600px; margin: 0 auto; background: #white; border-radius: 12px; overflow: hidden;">
         <div ${headerStyle} style="background: #5A270F; color: white; padding: 40px 30px; text-align: center; border-bottom: 4px solid #DF8142;">
-            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #EEB38C; text-transform: uppercase;">Node Integration Complete</p>
-            <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px; color: white;">REGISTRATION FINISHED</h1>
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #EEB38C; text-transform: uppercase;">
+                ${isPending ? "NODE PROVISIONED" : "NODE INTEGRATION COMPLETE"}
+            </p>
+            <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px; color: white;">
+                ${isPending ? "APPROVAL PENDING" : "REGISTRATION FINISHED"}
+            </h1>
         </div>
         <div style="padding: 30px 40px; background: white;">
             <p style="font-size: 16px; color: #5A270F; font-weight: bold;">Salutations, ${userName},</p>
             <p style="font-size: 14px; color: #6C3B1C; line-height: 1.6;">
-                The architectural registry has successfully synchronized your identity. Your digital workspace is now initialized and ready for deployment within the Nexus system.
+                ${
+                  isPending
+                    ? "The architectural registry has provisioned your identity. Your credentials have been generated, but your node is currently awaiting authorization from the Department Head."
+                    : "The architectural registry has successfully synchronized your identity. Your digital workspace is now initialized and ready for deployment within the Nexus system."
+                }
             </p>
             
             <div style="background: #EFEDED; padding: 25px; border-radius: 16px; margin: 30px 0; border: 1px solid #D9D9C2;">
@@ -160,12 +171,18 @@ export const getRegistrationHtml = (
 
             <div style="padding: 20px; background: #DF814210; border-radius: 12px; border: 1px solid #DF814230; margin-bottom: 30px;">
                 <p style="margin: 0; font-size: 13px; color: #5A270F; font-weight: 600; text-align: center;">
-                    <strong>System Access Established:</strong> You can now access all library resources, architectural designs, and assignment modules.
+                    ${
+                      isPending
+                        ? "<strong>Security Protocol:</strong> Access is restricted until Department Head approval. You will receive a synchronization signal once authorized."
+                        : "<strong>System Access Established:</strong> You can now access all library resources, architectural designs, and assignment modules."
+                    }
                 </p>
             </div>
 
             <div style="text-align: center; margin-top: 40px;">
-                <a href="${env.baseUrl}/login" style="display: inline-block; padding: 16px 32px; background-color: #DF8142; color: white; text-decoration: none; border-radius: 12px; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 14px rgba(223, 129, 66, 0.3);">Initialize System Entry</a>
+                <a href="${env.baseUrl}/login" style="display: inline-block; padding: 16px 32px; background-color: #DF8142; color: white; text-decoration: none; border-radius: 12px; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 14px rgba(223, 129, 66, 0.3);">
+                    ${isPending ? "View Login Terminal" : "Initialize System Entry"}
+                </a>
             </div>
             
             <p style="margin-top: 40px; font-size: 11px; color: #92664A; text-align: center; font-weight: bold; font-style: italic;">
@@ -245,6 +262,35 @@ export const getAuthorityGrantHtml = (
 
             <p style="margin-top: 40px; font-size: 12px; color: #64748b; text-align: center;">This is a system-generated alert from the System Architect Level 0.</p>
             <div ${footerStyle}>Authority Matrix Protocol | Root Authorization</div>
+        </div>
+    </div>
+    `;
+};
+
+export const getAccountAuthorizationHtml = (userName: string) => {
+  return `
+    <div ${emailStyle} style="border: 2px solid #5A270F; max-width: 600px; margin: 0 auto; background: #white; border-radius: 12px; overflow: hidden;">
+        <div ${headerStyle} style="background: #2A1205; color: white; padding: 40px 30px; text-align: center; border-bottom: 4px solid #DF8142;">
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #DF8142; text-transform: uppercase;">Node Logic Verified</p>
+            <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px; color: white;">ACCOUNT AUTHORIZED</h1>
+        </div>
+        <div style="padding: 30px 40px; background: white;">
+            <p style="font-size: 16px; color: #5A270F; font-weight: bold;">Greetings, ${userName},</p>
+            <p style="font-size: 14px; color: #6C3B1C; line-height: 1.6;">
+                The Department Head has successfully verified your credentials and authorized your node for full system integration. Your access to the Nexus is now active.
+            </p>
+            
+            <div style="padding: 20px; background: #EFEDED; border-radius: 12px; border: 1px solid #D9D9C2; margin: 30px 0; text-align: center;">
+                <p style="margin: 0; font-size: 13px; color: #5A270F; font-weight: 600;">
+                    You can now log in using the credentials previously transmitted to your node address.
+                </p>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="${env.baseUrl}/login" style="display: inline-block; padding: 16px 32px; background-color: #5A270F; color: white; text-decoration: none; border-radius: 12px; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 14px rgba(90, 39, 15, 0.3);">Initialize Nexus Entry</a>
+            </div>
+            
+            <div ${footerStyle} style="border-top: 1px solid #D9D9C2; color: #92664A; font-weight: 900;">Nexus Security Protocol | Authority Confirmed</div>
         </div>
     </div>
     `;

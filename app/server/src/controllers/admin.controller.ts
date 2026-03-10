@@ -8,6 +8,7 @@ import {
   getRejectionHtml,
   getRegistrationHtml,
   getGenericHtml,
+  getAccountAuthorizationHtml,
 } from "../utils/email";
 
 export const getPendingResources = async (req: Request, res: Response) => {
@@ -876,15 +877,20 @@ export const createUser = async (req: Request, res: Response) => {
       },
     });
 
-    // Notify User only if active
-    if (initialStatus === "active") {
-      await notifyUsers({
-        userIds: [user.id],
-        title: "Account Created",
-        message: `Your account has been created by the administrator.`,
-        html: getRegistrationHtml(`${firstName} ${lastName}`, email, password),
-      });
-    }
+    // Notify User about account provisioning
+    await notifyUsers({
+      userIds: [user.id],
+      title: initialStatus === "active" ? "Account Created" : "Account Provisioned (Pending Approval)",
+      message: initialStatus === "active" 
+        ? "Your account has been created by the administrator."
+        : "Your account has been provisioned and is awaiting approval.",
+      html: getRegistrationHtml(
+        `${firstName} ${lastName}`, 
+        email, 
+        password, 
+        initialStatus
+      ),
+    });
 
     res.status(201).json({ message: "User created successfully", user });
   } catch (error) {
@@ -1141,9 +1147,8 @@ export const approveUser = async (req: Request, res: Response) => {
       userIds: [user.id],
       title: "Account Authorized",
       message: `Your system node has been authorized by the Department Head. You can now access the Nexus.`,
-      html: getRegistrationHtml(
-        `${user.first_name} ${user.last_name}`,
-        user.email,
+      html: getAccountAuthorizationHtml(
+        `${user.first_name} ${user.last_name}`
       ),
     });
 
