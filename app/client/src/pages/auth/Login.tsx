@@ -323,7 +323,7 @@ const Login = () => {
                     htmlFor="agreedToTerms"
                     className="text-xs font-bold text-[#5A270F]/70 leading-relaxed cursor-pointer group-hover/terms:text-[#5A270F] transition-colors"
                   >
-                    I acknowledge and agree to the{" "}
+                    I confirm that I understand the rules and agree to use this system responsibly and lawfully, as outlined in the{" "}
                     <Link
                       to="/terms"
                       className="text-[#DF8142] underline decoration-dotted underline-offset-4 hover:decoration-solid"

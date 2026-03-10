@@ -503,16 +503,14 @@ const Upload = () => {
                       errors.agreedToTerms ? "text-rose-600" : "text-[#92664A]"
                     } font-medium leading-relaxed`}
                   >
-                    By initializing this transmission, you agree to the{" "}
+                    By initializing this transmission, you confirm that you understand the rules and agree to use this system responsibly and lawfully, as outlined in the{" "}
                     <Link
                       to="/terms"
                       className="text-primary underline font-bold"
                     >
                       Terms of Operation
                     </Link>
-                    . This includes strict prohibition of intellectual property
-                    theft, metadata distortion, and unauthorized schematic
-                    access.
+                    . This includes strict prohibition of malicious files, indecent materials, and illegal content under Ethiopian law.
                   </p>
                 </div>
               </div>

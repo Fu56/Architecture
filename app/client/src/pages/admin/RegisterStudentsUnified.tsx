@@ -665,14 +665,14 @@ const RegisterStudentsUnified = () => {
                           Accept Operational Protocols
                         </label>
                         <p className="text-[10px] text-[#92664A] font-medium leading-relaxed">
-                          By initializing this node, you agree to the{" "}
+                          By initializing this node, you confirm that you understand the rules and agree to use this system responsibly and lawfully, as outlined in the{" "}
                           <Link
                             to="/terms"
                             className="text-[#DF8142] underline"
                           >
                             Terms of Operation
                           </Link>
-                          .
+                          . This includes strict prohibition of malicious files, indecent materials, and illegal content under Ethiopian law.
                         </p>
                         {errors.agreedToTerms && (
                           <p className="text-[9px] text-[#DF8142] font-black uppercase mt-1 animate-in fade-in slide-in-from-left-1">

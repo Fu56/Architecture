@@ -80,35 +80,77 @@ const TermsOfService = () => {
                 03. Conduct Benchmarks & Content Safety
               </h2>
               <div className="space-y-6">
-                <p>
-                  Users must not upload malicious code, unauthorized proprietary
-                  content, or assets that violate the integrity of architectural
-                  standards. Every transmission is logged and subject to
-                  community flag protocols.
-                </p>
-                <div className="bg-red-50/50 border-l-4 border-red-500 p-6 rounded-r-2xl my-6">
-                  <p className="font-black text-red-900 uppercase tracking-tight mb-2">
-                    Prohibited Material Protocol:
+                <div className="bg-amber-50 border-l-4 border-amber-500 p-8 rounded-r-3xl my-8 shadow-sm">
+                  <div className="flex items-center gap-3 mb-4">
+                    <ShieldAlert className="h-6 w-6 text-amber-600" />
+                    <h3 className="font-black text-amber-900 uppercase tracking-tight text-lg">
+                      Important Notice – Responsible Use Required
+                    </h3>
+                  </div>
+                  <p className="text-amber-900/80 font-bold leading-relaxed mb-6">
+                    This digital library platform is an academic resource intended exclusively for educational use 
+                    within the Department of Architecture.
                   </p>
-                  <p className="text-red-800/80 text-sm leading-relaxed">
-                    The release of <strong>biased data</strong>, or unwanted
-                    resources including but not limited to
-                    <strong>
-                      {" "}
-                      sexual videos, images, or explicit adult content
-                    </strong>{" "}
-                    is strictly prohibited. Violation will result in immediate
-                    permanent expulsion from the node.
+                  
+                  <div className="space-y-4">
+                    <p className="text-amber-900 font-black uppercase text-xs tracking-widest">
+                      By accessing this system, you agree not to upload, distribute, or share:
+                    </p>
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {[
+                        "Malicious software, viruses, or harmful files",
+                        "Fraudulent or deceptive links",
+                        "Offensive, indecent, or unlawful content",
+                        "Materials that violate copyright or integrity",
+                      ].map((item, i) => (
+                        <li key={i} className="flex items-center gap-2 text-sm text-amber-800/80 font-medium bg-white/50 p-3 rounded-xl border border-amber-200">
+                          <CheckCircle2 className="h-4 w-4 text-amber-500 shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="space-y-6 text-[#5A270F]/80">
+                  <p className="font-bold">
+                    All user activities on this platform are logged and traceable. 
+                    The nexus maintains a zero-tolerance policy regarding the integrity of our digital perimeter.
+                  </p>
+                  
+                  <div className="bg-red-50 border-l-4 border-red-500 p-8 rounded-r-3xl my-8">
+                    <p className="font-black text-red-900 uppercase tracking-tight mb-4 text-sm">
+                      Enforcement Protocols:
+                    </p>
+                    <p className="text-red-800/90 text-sm leading-relaxed mb-4">
+                      Any attempt to upload malicious files, indecent materials, or illegal digital content may result in:
+                    </p>
+                    <ul className="space-y-3 mb-6">
+                      <li className="flex gap-3 text-sm font-bold text-red-900/80">
+                        <span className="h-1.5 w-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />
+                        Immediate suspension or permanent removal of your account
+                      </li>
+                      <li className="flex gap-3 text-sm font-bold text-red-900/80">
+                        <span className="h-1.5 w-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />
+                        Institutional disciplinary action under university regulations
+                      </li>
+                      <li className="flex gap-3 text-sm font-bold text-red-900/80">
+                        <span className="h-1.5 w-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />
+                        Legal liability under Ethiopian law, including:
+                      </li>
+                    </ul>
+                    <div className="bg-white/40 p-5 rounded-2xl border border-red-200 text-[11px] font-bold text-red-900/70 leading-relaxed italic">
+                      Computer Crime Proclamation No. 958/2016 and the Hate Speech and Disinformation 
+                      Prevention and Suppression Proclamation No. 1185/2020, which provide for 
+                      criminal penalties such as fines and imprisonment for cybercrime and illegal 
+                      digital content distribution.
+                    </div>
+                  </div>
+
+                  <p className="bg-[#2A1205] text-white p-6 rounded-2xl text-xs font-black uppercase tracking-[0.2em] text-center">
+                    By proceeding, you confirm that you understand these rules and agree to use this system responsibly and lawfully.
                   </p>
                 </div>
-                <p>
-                  For all interactions, resources, and commentary: messages must
-                  remain professional and legal. Users are strictly forbidden
-                  from engaging in behavior that targets or negatively impacts
-                  <strong> human psychology and personality</strong>. We
-                  maintain a zero-tolerance policy against psychological
-                  manipulation or harassment.
-                </p>
               </div>
             </section>
 
