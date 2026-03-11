@@ -19,6 +19,7 @@ import {
   ArrowRight,
   ChevronDown,
   LayoutDashboard,
+  Sparkles,
 } from "lucide-react";
 import { useSession, authClient } from "../../lib/auth-client";
 import { api } from "../../lib/api";
@@ -277,17 +278,17 @@ const Layout = () => {
               <div className="flex items-center gap-2">
                 {isAuthenticated ? (
                   <div className="relative user-menu-container">
-                    <button
+                      <button
                       onClick={() => setUserMenuOpen(!isUserMenuOpen)}
-                      className={`flex items-center gap-2 p-1.5 pr-3 rounded-full border transition-all ${
+                      className={`flex items-center gap-2 p-1.5 pr-2 sm:pr-3 rounded-full border transition-all ${
                         isScrolled || !isHomePage
                           ? "border-gray-200 hover:border-[#DF8142]/60 hover:bg-[#DF8142]/10"
                           : "border-white/20 hover:border-white/40 hover:bg-white/10 dark:bg-card/10"
                       }`}
                     >
-                      <div className="relative h-9 w-9 rounded-full overflow-hidden border-2 border-[#DF8142]/90">
+                      <div className="relative h-8 w-8 sm:h-9 sm:w-9 rounded-full overflow-hidden border-2 border-[#DF8142]/90">
                         <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#DF8142]/90 to-[#92664A]">
-                          <User className="h-5 w-5 text-white" />
+                          <User className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                         </div>
                       </div>
                       <div className="hidden md:block text-left">
@@ -313,19 +314,19 @@ const Layout = () => {
                         </p>
                       </div>
                       <ChevronDown
-                        className={`h-4 w-4 transition-transform ${
+                        className={`h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform ${
                           isUserMenuOpen ? "rotate-180" : ""
                         } ${
                           isScrolled || !isHomePage
-                            ? "text-slate-400"
+                            ? "text-[#5A270F]/60"
                             : "text-white/60"
                         }`}
                       />
                     </button>
 
-                    {/* User Dropdown Menu - Premium Architectural Style */}
+                     {/* User Dropdown Menu - Premium Architectural Style */}
                     {isUserMenuOpen && (
-                      <div className="absolute right-0 mt-4 w-72 bg-white/95 dark:bg-[#1A0B04]/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] border border-white dark:border-white/10 p-3 py-4 animate-in fade-in slide-in-from-top-4 duration-500 z-[100] ring-1 ring-[#5A270F]/5">
+                      <div className="absolute right-0 sm:right-0 mt-4 w-64 sm:w-72 bg-white/95 dark:bg-[#1A0B04]/95 backdrop-blur-3xl rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] border border-white dark:border-[#DF8142]/20 p-3 py-4 animate-in fade-in max-sm:translate-x-[15%] slide-in-from-top-4 duration-500 z-[100] ring-1 ring-[#5A270F]/5">
                         {/* Menu Header */}
                         <div className="px-5 py-6 mb-2 mx-2 rounded-[2rem] bg-[#5A270F] relative overflow-hidden group/header">
                           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[50px] transition-all group-hover/header:bg-primary/40" />
@@ -419,86 +420,111 @@ const Layout = () => {
               </div>
 
               {/* Mobile Menu Toggle */}
-              <button
+               <button
                 onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-                className={`lg:hidden p-2.5 rounded-2xl transition-all ${
+                className={`lg:hidden p-2.5 rounded-2xl transition-all shadow-md active:scale-95 ${
                   isScrolled || !isHomePage
-                    ? "text-gray-600 dark:text-white/50 hover:bg-gray-100 dark:bg-white/10"
-                    : "text-white hover:bg-white/10 dark:bg-card/10"
+                    ? "text-[#5A270F] bg-white border border-[#D9D9C2] dark:bg-white/5 dark:border-white/10"
+                    : "text-white bg-white/10 backdrop-blur-md border border-white/20"
                 }`}
+                title={isMobileMenuOpen ? "Close Menu" : "Open Menu"}
               >
                 {isMobileMenuOpen ? (
-                  <X className="h-6 w-6" />
+                  <X className="h-6 w-6 animate-in spin-in-90 duration-300" />
                 ) : (
-                  <Menu className="h-6 w-6" />
+                  <Menu className="h-6 w-6 animate-in zoom-in duration-300" />
                 )}
               </button>
             </div>
           </div>
 
           {/* Mobile Overlay Menu */}
-          <div
-            className={`lg:hidden fixed inset-0 top-[72px] bg-white/95 dark:bg-[#1A0B04]/95 backdrop-blur-2xl z-[45] transition-all duration-500 ease-in-out ${
+           <div
+            className={`lg:hidden fixed inset-x-4 top-[84px] max-h-[calc(100vh-120px)] overflow-y-auto bg-white/98 dark:bg-[#1A0B04]/98 backdrop-blur-3xl z-[200] rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)] border border-white dark:border-[#DF8142]/20 transition-all duration-500 ease-in-out ${
               isMobileMenuOpen
                 ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-[-10px] pointer-events-none"
+                : "opacity-0 translate-y-[-20px] pointer-events-none"
             }`}
           >
-            <div className="container mx-auto px-6 py-12 space-y-8">
-              <div className="flex flex-col gap-2">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/90 px-4">
-                  Navigation
-                </span>
+            <div className="p-4 sm:p-6 space-y-6">
+              {/* Premium Header for Mobile Dropdown */}
+              <div className="bg-gradient-to-r from-[#5A270F] to-[#6C3B1C] p-6 rounded-[2rem] text-white relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/20 blur-3xl" />
+                <div className="relative z-10 flex items-center justify-between">
+                  <div>
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#EEB38C] mb-1">
+                      Main Matrix
+                    </h4>
+                    <p className="text-xl font-black uppercase tracking-tighter">
+                      Navigation
+                    </p>
+                  </div>
+                  <Sparkles className="h-6 w-6 text-[#EEB38C] animate-pulse" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-2">
                 {navLinks.map((link) => (
                   <NavLink
                     key={link.name}
                     to={link.href}
                     onClick={() => setMobileMenuOpen(false)}
                     className={({ isActive }) =>
-                      `px-4 py-4 rounded-2xl text-2xl font-black tracking-tight transition-all ${
+                      `px-6 py-4 rounded-2xl text-lg font-black tracking-tight transition-all flex items-center justify-between ${
                         isActive
-                          ? "text-primary bg-primary/10 dark:text-[#EEB38C] dark:bg-white/5"
-                          : "text-gray-900 dark:text-white"
+                          ? "text-[#DF8142] bg-[#DF8142]/5 border border-[#DF8142]/20"
+                          : "text-[#5A270F] dark:text-[#EEB38C] hover:bg-gray-50 dark:hover:bg-white/5"
                       }`
                     }
                   >
                     {link.name}
+                    <ArrowRight className="h-4 w-4 opacity-30" />
                   </NavLink>
                 ))}
 
-                {isAuthenticated && !isSuperAdmin && (
-                  <>
-                    <Link
-                      to={uploadPath}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="px-4 py-4 rounded-2xl text-2xl font-black tracking-tight text-gray-900 dark:text-white flex items-center gap-3 transition-colors"
-                    >
-                      <Upload className="h-6 w-6" />
-                      Upload
-                    </Link>
+                {isAuthenticated && (
+                  <div className="mt-4 pt-4 border-t border-gray-100 dark:border-white/10 space-y-2">
+                    <p className="px-6 text-[9px] font-black text-[#5A270F]/40 dark:text-white/30 uppercase tracking-[0.4em] mb-4">
+                      User Intelligence
+                    </p>
                     <Link
                       to={dashboardPath}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="px-4 py-4 rounded-2xl text-2xl font-black tracking-tight text-gray-900 dark:text-white flex items-center gap-3 transition-colors"
+                      className="px-6 py-4 rounded-2xl text-lg font-black tracking-tight text-[#5A270F] dark:text-white flex items-center gap-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
                     >
-                      <LayoutDashboard className="h-6 w-6" />
+                      <LayoutDashboard className="h-6 w-6 text-[#DF8142]" />
                       Dashboard
                     </Link>
-                  </>
+                    <Link
+                      to={uploadPath}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="px-6 py-4 rounded-2xl text-lg font-black tracking-tight text-[#5A270F] dark:text-white flex items-center gap-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
+                    >
+                      <Upload className="h-6 w-6 text-[#DF8142]" />
+                      Upload Node
+                    </Link>
+                  </div>
                 )}
               </div>
 
-              <div className="pt-8 border-t border-gray-100 dark:border-white/10 transition-colors">
-                {!isAuthenticated && (
-                  <div className="grid grid-cols-1">
-                    <Link
-                      to="/login"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="w-full py-5 text-center font-black text-white bg-primary rounded-2xl shadow-xl shadow-primary/20"
-                    >
-                      Sign In
-                    </Link>
-                  </div>
+              <div className="pt-4">
+                {!isAuthenticated ? (
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center justify-center gap-3 w-full py-5 font-black text-white bg-[#5A270F] rounded-2.5xl shadow-2xl shadow-[#5A270F]/20 uppercase tracking-[0.2em] text-xs"
+                  >
+                    <User className="h-4 w-4" />
+                    Enter Archive
+                  </Link>
+                ) : (
+                   <button
+                    onClick={handleLogout}
+                    className="flex items-center justify-center gap-3 w-full py-5 font-black text-red-500 bg-red-50 dark:bg-red-500/10 rounded-2.5xl uppercase tracking-[0.2em] text-xs"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Terminate Session
+                  </button>
                 )}
               </div>
             </div>

@@ -144,9 +144,9 @@ const Home = () => {
     <div className="flex flex-col min-h-screen selection:bg-primary/20 bg-white dark:bg-background transition-colors duration-500">
       {/* Hero Section */}
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden pt-16">
+      <section className="relative min-h-[90vh] flex items-center pt-16">
         {/* Animated Background */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 overflow-hidden">
           <div className="absolute inset-0 bg-[#5A270F]/40 z-10" />
           <img
             src="/assets/hero.png"
@@ -252,11 +252,11 @@ const Home = () => {
                 </div>
 
                 {/* Live Search Results Dropdown */}
-                {showDropdown && (liveResults.length > 0 || isSearching) && (
-                  <div className="absolute top-full left-0 right-0 mt-4 bg-white/95 dark:bg-[#1A0B04]/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)] border border-white/20 dark:border-white/5 overflow-hidden z-[100] animate-in fade-in slide-in-from-top-4 duration-500">
-                    <div className="p-4 bg-[#5A270F] border-b border-white/10">
+                 {showDropdown && (liveResults.length > 0 || isSearching) && (
+                  <div className="absolute top-full left-0 right-0 mt-4 bg-white/95 dark:bg-[#1A0B04]/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)] border border-white/20 dark:border-[#DF8142]/20 overflow-hidden z-[100] animate-in fade-in slide-in-from-top-4 duration-500">
+                    <div className="p-5 bg-gradient-to-r from-[#5A270F] to-[#6C3B1C] border-b border-[#DF8142]/20">
                       <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#EEB38C] flex items-center gap-3">
-                        <Sparkles className="h-3 w-3" /> Search Intelligence
+                        <Sparkles className="h-3 w-3 animate-pulse" /> Intelligence Matrix Matches
                       </p>
                     </div>
                     <div className="max-h-[400px] overflow-y-auto py-4 scrollbar-none">
