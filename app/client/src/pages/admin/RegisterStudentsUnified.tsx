@@ -11,6 +11,7 @@ import {
   Zap,
   AtSign,
   Calendar,
+  Layers,
   Hash,
   Upload,
   FileSpreadsheet,
@@ -20,20 +21,11 @@ import {
   FileText,
   Database,
   ArrowRight,
+  RefreshCw,
+  XCircle,
 } from "lucide-react";
 import { toast } from "../../lib/toast";
 import { useSession } from "../../lib/auth-client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 interface UserWithRole {
   id: string | number;
@@ -78,6 +70,13 @@ interface RegistrationResult {
   error?: string;
 }
 
+const FieldError = ({ message }: { message?: string }) =>
+  message ? (
+    <p className="flex items-center gap-1.5 text-rose-500 text-[10px] font-black uppercase tracking-wider ml-1 animate-in slide-in-from-top-1 mt-1">
+      <AlertTriangle className="h-3 w-3" /> {message}
+    </p>
+  ) : null;
+
 const RegisterStudentsUnified = () => {
   const { data: session } = useSession();
   const requester = session?.user as UserWithRole | undefined;
@@ -89,9 +88,7 @@ const RegisterStudentsUnified = () => {
 
   const requesterRole = (roleName || "").toLowerCase();
 
-  const [activeTab, setActiveTab] = useState<"individual" | "bulk">(
-    "individual",
-  );
+  const [activeTab, setActiveTab] = useState<"individual" | "bulk">("individual");
 
   // Individual Form State
   const [formData, setFormData] = useState<StudentFormData>({
@@ -106,17 +103,14 @@ const RegisterStudentsUnified = () => {
     agreedToTerms: false,
   });
 
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof StudentFormData, string>>
-  >({});
+  const [errors, setErrors] = useState<Partial<Record<keyof StudentFormData, string>>>({});
+  const [loading, setLoading] = useState(false);
 
   // Bulk State
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<StudentRow[]>([]);
   const [bulkLoading, setBulkLoading] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [validationResult, setValidationResult] =
-    useState<ValidationResult | null>(null);
+  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [uploadResult, setUploadResult] = useState<{
     success: number;
     failed: number;
@@ -125,11 +119,7 @@ const RegisterStudentsUnified = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev: StudentFormData) => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear error when user starts typing
+    setFormData((prev: StudentFormData) => ({ ...prev, [name]: value }));
     if (errors[name as keyof StudentFormData]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
@@ -139,28 +129,23 @@ const RegisterStudentsUnified = () => {
     const newErrors: Partial<Record<keyof StudentFormData, string>> = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!formData.first_name.trim())
-      newErrors.first_name = "Legal identity (First Name) required.";
-    if (!formData.last_name.trim())
-      newErrors.last_name = "Legal identity (Last Name) required.";
-    if (!formData.university_id.trim())
-      newErrors.university_id = "University designation ID required.";
+    if (!formData.first_name.trim()) newErrors.first_name = "First name required.";
+    if (!formData.last_name.trim()) newErrors.last_name = "Last name required.";
+    if (!formData.university_id.trim()) newErrors.university_id = "University ID required.";
     if (!formData.email.trim()) {
-      newErrors.email = "System endpoint (Email) required.";
+      newErrors.email = "Email required.";
     } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Invalid protocol format (Email).";
+      newErrors.email = "Invalid email syntax.";
     }
     if (!formData.password) {
-      newErrors.password = "Authorization key (Password) required.";
+      newErrors.password = "Authorization key required.";
     } else if (formData.password.length < 6) {
-      newErrors.password =
-        "Security breach: Key must be at least 6 characters.";
+      newErrors.password = "Key too short (min 6 chars).";
     }
     if (!formData.batch) newErrors.batch = "Batch period required.";
     if (!formData.year) newErrors.year = "Academic year required.";
     if (!formData.semester) newErrors.semester = "Academic semester required.";
-    if (!formData.agreedToTerms)
-      newErrors.agreedToTerms = "Terms of operation must be accepted.";
+    if (!formData.agreedToTerms) newErrors.agreedToTerms = "Terms must be accepted.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -168,9 +153,8 @@ const RegisterStudentsUnified = () => {
 
   const handleIndividualSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!validateIndividualForm()) {
-      toast.warning("Protocol Breach: Incomplete node specifications.");
+      toast.warning("Validation Failed: Check node specifications.");
       return;
     }
 
@@ -208,23 +192,18 @@ const RegisterStudentsUnified = () => {
       setErrors({});
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      toast.error(
-        error.response?.data?.message ||
-          "Protocol Error: Student registration failed",
-      );
+      toast.error(error.response?.data?.message || "Protocol Error: Student registration failed");
     } finally {
       setLoading(false);
     }
   };
 
   const generatePassword = () => {
-    const chars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
     let password = "";
-    for (let i = 0; i < 12; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
+    for (let i = 0; i < 12; i++) password += chars.charAt(Math.floor(Math.random() * chars.length));
     setFormData((prev: StudentFormData) => ({ ...prev, password }));
+    if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }));
   };
 
   // Bulk Handlers
@@ -243,32 +222,23 @@ const RegisterStudentsUnified = () => {
     setBulkLoading(true);
     try {
       const reader = new FileReader();
-
       reader.onload = async (e) => {
         const data = e.target?.result;
         if (data) {
           const workbook = XLSX.read(data, { type: "array" });
-          const sheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(worksheet) as Record<
-            string,
-            unknown
-          >[];
+          const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet) as Record<string, unknown>[];
 
-          const students: StudentRow[] = jsonData.map(
-            (row: Record<string, unknown>) => ({
-              first_name: row.first_name?.toString() || "",
-              last_name: row.last_name?.toString() || "",
-              email: row.email?.toString() || "",
-              university_id: row.university_id?.toString() || undefined,
-              batch: row.batch ? parseInt(row.batch.toString()) : undefined,
-              year: row.year ? parseInt(row.year.toString()) : undefined,
-              semester: row.semester
-                ? parseInt(row.semester.toString())
-                : undefined,
-              password: row.password?.toString() || undefined,
-            }),
-          );
+          const students: StudentRow[] = jsonData.map((row) => ({
+            first_name: row.first_name?.toString() || "",
+            last_name: row.last_name?.toString() || "",
+            email: row.email?.toString() || "",
+            university_id: row.university_id?.toString() || undefined,
+            batch: row.batch ? parseInt(row.batch.toString()) : undefined,
+            year: row.year ? parseInt(row.year.toString()) : undefined,
+            semester: row.semester ? parseInt(row.semester.toString()) : undefined,
+            password: row.password?.toString() || undefined,
+          }));
 
           setPreview(students);
           validateStudents(students);
@@ -284,37 +254,22 @@ const RegisterStudentsUnified = () => {
   };
 
   const validateStudents = (students: StudentRow[]) => {
-    const errors: string[] = [];
+    const errorsList: string[] = [];
     const validStudents: StudentRow[] = [];
 
     students.forEach((student, index) => {
       const rowErrors: string[] = [];
-      if (!student.first_name)
-        rowErrors.push(
-          `Unit ${index + 1}: Missing source identity (First Name)`,
-        );
-      if (!student.last_name)
-        rowErrors.push(
-          `Unit ${index + 1}: Missing source identity (Last Name)`,
-        );
-      if (!student.email)
-        rowErrors.push(`Unit ${index + 1}: Missing access endpoint (Email)`);
+      if (!student.first_name) rowErrors.push(`Unit ${index + 1}: Missing source identity (First Name)`);
+      if (!student.last_name) rowErrors.push(`Unit ${index + 1}: Missing source identity (Last Name)`);
+      if (!student.email) rowErrors.push(`Unit ${index + 1}: Missing endpoint (Email)`);
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (student.email && !emailRegex.test(student.email)) {
-        rowErrors.push(`Unit ${index + 1}: Invalid protocol format (Email)`);
-      }
-      if (rowErrors.length === 0) {
-        validStudents.push(student);
-      } else {
-        errors.push(...rowErrors);
-      }
+      if (student.email && !emailRegex.test(student.email)) rowErrors.push(`Unit ${index + 1}: Invalid protocol format (Email)`);
+      
+      if (rowErrors.length === 0) validStudents.push(student);
+      else errorsList.push(...rowErrors);
     });
 
-    setValidationResult({
-      valid: errors.length === 0,
-      errors,
-      students: validStudents,
-    });
+    setValidationResult({ valid: errorsList.length === 0, errors: errorsList, students: validStudents });
   };
 
   const handleBulkUpload = async () => {
@@ -335,7 +290,6 @@ const RegisterStudentsUnified = () => {
           requesterRole === "admin"
             ? `Broadcasting update: ${response.data.success} nodes integrated. Authorization required for activation.`
             : `Broadcasting update: ${response.data.success} nodes successfully integrated`;
-
         toast.success(message);
         setFile(null);
         setPreview([]);
@@ -353,9 +307,7 @@ const RegisterStudentsUnified = () => {
     if (!uploadResult?.results) return;
     const headers = "Email,Password,Status,Error\n";
     const csvContent = uploadResult.results
-      .map(
-        (r) => `${r.email},${r.password || "N/A"},${r.status},${r.error || ""}`,
-      )
+      .map((r) => `${r.email},${r.password || "N/A"},${r.status},${r.error || ""}`)
       .join("\n");
     const blob = new Blob([headers + csvContent], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
@@ -367,478 +319,329 @@ const RegisterStudentsUnified = () => {
   };
 
   const downloadTemplate = () => {
-    const headers = [
-      [
-        "first_name",
-        "last_name",
-        "email",
-        "university_id",
-        "batch",
-        "year",
-        "semester",
-        "password",
-      ],
-    ];
-    const example = [
-      [
-        "Julien",
-        "Wright",
-        "julien.wright@example.com",
-        "U12345",
-        2024,
-        1,
-        1,
-        "pass123",
-      ],
-    ];
-
+    const headers = [["first_name", "last_name", "email", "university_id", "batch", "year", "semester", "password"]];
+    const example = [["Julien", "Wright", "julien.wright@example.com", "U12345", 2024, 1, 1, "pass123"]];
     const worksheet = XLSX.utils.aoa_to_sheet([...headers, ...example]);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Integration Template");
-
-    // Generate and download XLSX
     XLSX.writeFile(workbook, "nexus_integration_template.xlsx");
     toast.success("Operational Matrix Template synchronized.");
   };
 
-  return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-20 bg-[#EFEDED] dark:bg-background/30 p-4 rounded-[3rem]">
-      {/* Unified Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white dark:bg-card p-8 rounded-[2.5rem] border border-[#EEB38C] shadow-xl relative overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#DF8142]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-        <div className="flex items-center gap-6 relative z-10">
-          <div className="h-16 w-16 bg-[#5A270F] rounded-2xl flex items-center justify-center text-white shadow-2xl">
-            <GraduationCap className="h-8 w-8" />
-          </div>
-          <div>
-            <h2 className="text-3xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase">
-              Student Integration
-            </h2>
-            <p className="text-xs text-[#92664A] dark:text-[#EEB38C]/40 font-bold tracking-[0.2em] uppercase">
-              {activeTab === "individual"
-                ? "Manual Identity Entry"
-                : "Bulk Node Population Protocol"}
-            </p>
-          </div>
-        </div>
+  const inputBase = (hasError: boolean) =>
+    `w-full rounded-[0.875rem] border-2 px-4 py-3.5 text-sm font-bold outline-none transition-all duration-300 ${
+      hasError
+        ? "border-rose-400 bg-rose-50 dark:bg-rose-900/10 text-rose-800 dark:text-rose-300 ring-4 ring-rose-400/10"
+        : "border-[#D9D9C2]/60 dark:border-white/10 bg-white dark:bg-white/5 text-[#5A270F] dark:text-white focus:border-[#DF8142] focus:ring-4 focus:ring-[#DF8142]/10"
+    }`;
 
-        {/* Tab Switcher */}
-        <div className="flex bg-[#EFEDED] dark:bg-background p-1.5 rounded-2xl border border-[#EEB38C] relative z-10">
-          <button
-            onClick={() => setActiveTab("individual")}
-            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-              activeTab === "individual"
-                ? "bg-white dark:bg-card text-[#5A270F] dark:text-[#EEB38C] shadow-lg"
-                : "text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:text-[#EEB38C]"
-            }`}
-          >
-            Individual
-          </button>
-          <button
-            onClick={() => setActiveTab("bulk")}
-            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-              activeTab === "bulk"
-                ? "bg-white dark:bg-card text-[#5A270F] dark:text-[#EEB38C] shadow-lg"
-                : "text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:text-[#EEB38C]"
-            }`}
-          >
-            Bulk Integrate
-          </button>
+  return (
+    <div className="max-w-7xl mx-auto space-y-8 pb-20">
+      {/* ── Unified Page Header ── */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] rounded-[2.5rem] p-10 shadow-[0_30px_80px_-20px_rgba(90,39,15,0.5)]">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-[#DF8142]/20 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+          <div className="flex items-center gap-6">
+            <div className="h-16 w-16 bg-white/10 border border-white/10 backdrop-blur-md rounded-[1.5rem] flex items-center justify-center shadow-2xl">
+              <GraduationCap className="h-8 w-8 text-[#EEB38C]" />
+            </div>
+            <div>
+              <div className="flex items-center gap-3 mb-1">
+                <div className="h-[1px] w-8 bg-[#EEB38C]/40" />
+                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#EEB38C]/70">Institutional Registry</p>
+              </div>
+              <h2 className="text-4xl font-black tracking-tighter text-white uppercase leading-none">
+                Student <span className="text-[#DF8142] italic">Integration</span>
+              </h2>
+              <p className="text-sm text-[#EEB38C]/60 font-medium mt-2">
+                {activeTab === "individual" 
+                  ? "Initialize individual student nodes within the system registry." 
+                  : "Deploy bulk student population protocols via encrypted data matrix."}
+              </p>
+            </div>
+          </div>
+
+          {/* Tab Switcher */}
+          <div className="flex bg-black/20 backdrop-blur-md p-1.5 rounded-[1.25rem] border border-white/10 self-start lg:self-center">
+            <button
+              onClick={() => setActiveTab("individual")}
+              className={`flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
+                activeTab === "individual"
+                  ? "bg-[#FAF8F4] text-[#5A270F] shadow-xl scale-105"
+                  : "text-white/60 hover:text-white"
+              }`}
+            >
+              <UserPlus className="h-4 w-4" /> Individual
+            </button>
+            <button
+              onClick={() => setActiveTab("bulk")}
+              className={`flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
+                activeTab === "bulk"
+                  ? "bg-[#FAF8F4] text-[#5A270F] shadow-xl scale-105 ml-1"
+                  : "text-white/60 hover:text-white ml-1"
+              }`}
+            >
+              <Database className="h-4 w-4" /> Bulk Pop
+            </button>
+          </div>
         </div>
       </div>
 
       {activeTab === "individual" ? (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-in fade-in slide-in-from-bottom-4 duration-500">
-          {/* Individual Form Content */}
-          <div className="lg:col-span-7">
-            <Card className="shadow-2xl shadow-[#5A270F]/5 border-[#EEB38C]/30 dark:border-white/5 rounded-[2.5rem] overflow-hidden">
-              <CardHeader className="bg-[#5A270F] border-b border-[#EEB38C]/20 p-8">
-                <CardTitle className="text-[#EEB38C] uppercase tracking-tight font-black flex items-center gap-3">
-                  <UserPlus className="h-6 w-6 text-[#DF8142]" />
-                  Core Identity
-                </CardTitle>
-                <CardDescription className="text-[#EEB38C]/60 font-medium font-mono text-[10px] uppercase tracking-widest">
-                  Initializing student node in the Nexus architecture.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-8">
-                <form onSubmit={handleIndividualSubmit} className="space-y-6">
-                  {/* Grid fields from RegisterStudent... */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
-                        First Name
-                      </Label>
-                      <Input
-                        name="first_name"
-                        placeholder="Julian"
-                        value={formData.first_name}
-                        onChange={handleChange}
-                        className={`rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED] dark:bg-background/20 text-[#5A270F] dark:text-[#EEB38C] font-bold ${errors.first_name ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
-                      />
-                      {errors.first_name && (
-                        <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
-                          {errors.first_name}
-                        </p>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
-                        Last Name
-                      </Label>
-                      <Input
-                        name="last_name"
-                        placeholder="Wright"
-                        value={formData.last_name}
-                        onChange={handleChange}
-                        className={`rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED] dark:bg-background/20 text-[#5A270F] dark:text-[#EEB38C] font-bold ${errors.last_name ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
-                      />
-                      {errors.last_name && (
-                        <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
-                          {errors.last_name}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
-                        University ID
-                      </Label>
-                      <div className="relative">
-                        <Hash className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A] dark:text-[#EEB38C]/40" />
-                        <Input
-                          name="university_id"
-                          placeholder="U-ARCH-001"
-                          className={`pl-9 rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED] dark:bg-background/20 text-[#5A270F] dark:text-[#EEB38C] font-bold ${errors.university_id ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
-                          value={formData.university_id}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      {errors.university_id && (
-                        <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
-                          {errors.university_id}
-                        </p>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
-                        System Email
-                      </Label>
-                      <div className="relative">
-                        <AtSign className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A] dark:text-[#EEB38C]/40" />
-                        <Input
-                          name="email"
-                          type="email"
-                          placeholder="student@nexus.edu"
-                          className={`pl-9 rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED] dark:bg-background/20 text-[#5A270F] dark:text-[#EEB38C] font-bold ${errors.email ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
-                          value={formData.email}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      {errors.email && (
-                        <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
-                          {errors.email}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start animate-in fade-in slide-in-from-bottom-6 duration-700">
+          {/* Individual Form Panel */}
+          <div className="lg:col-span-7 space-y-6">
+            {/* Identity Section */}
+            <div className="bg-[#FAF8F4] dark:bg-[#1A0B04] rounded-[2rem] border border-[#D9D9C2]/40 dark:border-white/5 shadow-[0_8px_30px_-8px_rgba(90,39,15,0.08)] overflow-hidden">
+              <div className="flex items-center gap-4 px-8 py-6 border-b border-[#D9D9C2]/40 dark:border-white/5 bg-gradient-to-r from-[#5A270F]/5 to-transparent">
+                <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] text-[#EEB38C] text-xs font-black shadow-lg shadow-[#5A270F]/20">01</div>
+                <h4 className="text-xs font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C]">Core Identity</h4>
+                <div className="h-[1px] flex-1 bg-gradient-to-r from-[#D9D9C2] to-transparent dark:from-white/10" />
+              </div>
+              <div className="p-8 space-y-6">
+                <div className="grid grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
-                      Authorization Key
-                    </Label>
-                    <div className="flex gap-2">
-                      <div className="relative flex-1">
-                        <Key className="absolute left-3 top-2.5 h-4 w-4 text-[#92664A] dark:text-[#EEB38C]/40" />
-                        <Input
-                          name="password"
-                          type="text"
-                          placeholder="Secure credential"
-                          className={`pl-9 font-mono rounded-xl border-[#EEB38C] focus:border-[#DF8142] bg-[#EFEDED] dark:bg-background/20 text-[#5A270F] dark:text-[#EEB38C] font-bold ${errors.password ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
-                          value={formData.password}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      {errors.password && (
-                        <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
-                          {errors.password}
-                        </p>
-                      )}
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={generatePassword}
-                        className="rounded-xl border-[#EEB38C] hover:bg-[#EEB38C]/20 text-[#6C3B1C] dark:text-[#EEB38C]/80 font-bold transition-all"
-                      >
-                        <Zap className="h-4 w-4 mr-2 text-[#DF8142]" />
-                        Auto
-                      </Button>
+                    <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1">First Name</label>
+                    <input name="first_name" placeholder="Julian" value={formData.first_name} onChange={handleChange} className={inputBase(!!errors.first_name)} />
+                    <FieldError message={errors.first_name} />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1">Last Name</label>
+                    <input name="last_name" placeholder="Wright" value={formData.last_name} onChange={handleChange} className={inputBase(!!errors.last_name)} />
+                    <FieldError message={errors.last_name} />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-5">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1">University ID</label>
+                    <div className="relative">
+                      <Hash className={`absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 ${errors.university_id ? "text-rose-400" : "text-[#92664A]/50"}`} />
+                      <input name="university_id" placeholder="U-ARCH-001" value={formData.university_id} onChange={handleChange} className={`${inputBase(!!errors.university_id)} pl-11 font-mono`} />
+                    </div>
+                    <FieldError message={errors.university_id} />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1">System Email</label>
+                    <div className="relative">
+                      <AtSign className={`absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 ${errors.email ? "text-rose-400" : "text-[#92664A]/50"}`} />
+                      <input name="email" type="email" placeholder="student@nexus.edu" value={formData.email} onChange={handleChange} className={`${inputBase(!!errors.email)} pl-11`} />
+                    </div>
+                    <FieldError message={errors.email} />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1">Authorization Key</label>
+                  <div className="flex gap-3">
+                    <div className="relative flex-1">
+                      <Key className={`absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 ${errors.password ? "text-rose-400" : "text-[#92664A]/50"}`} />
+                      <input name="password" type="text" placeholder="Secure credential" value={formData.password} onChange={handleChange} className={`${inputBase(!!errors.password)} pl-11 font-mono`} />
+                    </div>
+                    <button type="button" onClick={generatePassword} className="px-5 py-3.5 bg-[#5A270F] text-[#EEB38C] rounded-[0.875rem] hover:bg-[#1A0B04] transition-all border border-white/5 shadow-lg active:scale-95">
+                      <RefreshCw className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <FieldError message={errors.password} />
+                </div>
+              </div>
+            </div>
+
+            {/* Academic Period Section */}
+            <div className="bg-[#FAF8F4] dark:bg-[#1A0B04] rounded-[2rem] border border-[#D9D9C2]/40 dark:border-white/5 shadow-[0_8px_30px_-8px_rgba(90,39,15,0.08)] overflow-hidden">
+              <div className="flex items-center gap-4 px-8 py-6 border-b border-[#D9D9C2]/40 dark:border-white/5 bg-gradient-to-r from-[#5A270F]/5 to-transparent">
+                <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] text-[#EEB38C] text-xs font-black shadow-lg shadow-[#5A270F]/20">02</div>
+                <h4 className="text-xs font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C]">Academic Period</h4>
+                <div className="h-[1px] flex-1 bg-gradient-to-r from-[#D9D9C2] to-transparent dark:from-white/10" />
+              </div>
+              <div className="p-8">
+                <div className="grid grid-cols-3 gap-5">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1">Batch</label>
+                    <div className="relative">
+                      <Layers className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[#92664A]/40" />
+                      <input name="batch" type="number" placeholder="2024" value={formData.batch} onChange={handleChange} className={`${inputBase(!!errors.batch)} pl-11 font-mono`} />
                     </div>
                   </div>
-
-                  <div className="pt-6 border-t border-[#EEB38C]/20">
-                    <div className="flex items-center gap-2 mb-6">
-                      <Calendar className="h-4 w-4 text-[#DF8142]" />
-                      <h3 className="text-xs font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C]">
-                        Academic Period
-                      </h3>
-                    </div>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="space-y-2">
-                        <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
-                          Batch
-                        </Label>
-                        <Input
-                          name="batch"
-                          type="number"
-                          placeholder="2024"
-                          className={`rounded-xl border-[#EEB38C] bg-[#EFEDED] dark:bg-background/20 font-bold ${errors.batch ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
-                          value={formData.batch}
-                          onChange={handleChange}
-                        />
-                        {errors.batch && (
-                          <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
-                            {errors.batch}
-                          </p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
-                          Year
-                        </Label>
-                        <Input
-                          name="year"
-                          type="number"
-                          placeholder="1"
-                          className={`rounded-xl border-[#EEB38C] bg-[#EFEDED] dark:bg-background/20 font-bold ${errors.year ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
-                          value={formData.year}
-                          onChange={handleChange}
-                        />
-                        {errors.year && (
-                          <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
-                            {errors.year}
-                          </p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest text-[10px] ml-1">
-                          Semester
-                        </Label>
-                        <Input
-                          name="semester"
-                          type="number"
-                          placeholder="1"
-                          className={`rounded-xl border-[#EEB38C] bg-[#EFEDED] dark:bg-background/20 font-bold ${errors.semester ? "border-[#DF8142] shadow-[0_0_0_1px_#DF8142]" : ""}`}
-                          value={formData.semester}
-                          onChange={handleChange}
-                        />
-                        {errors.semester && (
-                          <p className="text-[9px] text-[#DF8142] font-black uppercase ml-1 mt-1 animate-in fade-in slide-in-from-top-1">
-                            {errors.semester}
-                          </p>
-                        )}
-                      </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1">Year</label>
+                    <div className="relative">
+                      <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[#92664A]/40" />
+                      <input name="year" type="number" placeholder="1" value={formData.year} onChange={handleChange} className={`${inputBase(!!errors.year)} pl-11 font-mono`} />
                     </div>
                   </div>
-
-                  <div className="bg-[#EFEDED] dark:bg-background/30 p-6 rounded-2xl border border-[#EEB38C] space-y-4">
-                    <div className="flex items-start gap-4">
-                      <input
-                        id="agreedToTerms"
-                        type="checkbox"
-                        className={`h-5 w-5 rounded-lg border-2 text-[#DF8142] accent-[#DF8142] ${errors.agreedToTerms ? "border-[#DF8142] shadow-[0_0_4px_#DF8142]" : "border-[#EEB38C]"}`}
-                        checked={formData.agreedToTerms}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            agreedToTerms: e.target.checked,
-                          }))
-                        }
-                      />
-                      <div className="flex flex-col gap-1">
-                        <label
-                          htmlFor="agreedToTerms"
-                          className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] cursor-pointer"
-                        >
-                          Accept Operational Protocols
-                        </label>
-                        <p className="text-[10px] text-[#92664A] dark:text-[#EEB38C]/40 font-medium leading-relaxed">
-                          By initializing this node, you confirm that you understand the rules and agree to use this system responsibly and lawfully, as outlined in the{" "}
-                          <Link
-                            to="/terms"
-                            className="text-[#DF8142] underline"
-                          >
-                            Terms of Operation
-                          </Link>
-                          . This includes strict prohibition of malicious files, indecent materials, and illegal content under Ethiopian law.
-                        </p>
-                        {errors.agreedToTerms && (
-                          <p className="text-[9px] text-[#DF8142] font-black uppercase mt-1 animate-in fade-in slide-in-from-left-1">
-                            {errors.agreedToTerms}
-                          </p>
-                        )}
-                      </div>
-                    </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1">Semester</label>
+                    <input name="semester" type="number" placeholder="1" value={formData.semester} onChange={handleChange} className={`${inputBase(!!errors.semester)} font-mono`} />
                   </div>
+                </div>
+              </div>
+            </div>
 
-                  <Button
-                    type="submit"
-                    className="w-full bg-[#DF8142] hover:bg-[#5A270F] text-white py-8 rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] shadow-xl shadow-[#DF8142]/20 transition-all active:scale-[0.98]"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    ) : (
-                      <UserPlus className="h-4 w-4 mr-2" />
-                    )}
-                    Initialize Student Node
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+            {/* Terms */}
+            <div className={`rounded-[1.5rem] border-2 p-6 transition-all duration-300 ${errors.agreedToTerms ? "border-rose-400 bg-rose-50/60" : "border-[#D9D9C2]/60 bg-[#FAF8F4] dark:bg-[#1A0B04]"}`}>
+              <div className="flex items-start gap-4">
+                <div className="relative flex items-center h-6 pt-0.5">
+                  <input
+                    id="agreedToTerms"
+                    type="checkbox"
+                    className="h-5 w-5 rounded-lg border-2 border-[#D9D9C2] cursor-pointer accent-[#DF8142]"
+                    checked={formData.agreedToTerms}
+                    onChange={(e) => {
+                      setFormData((prev) => ({ ...prev, agreedToTerms: e.target.checked }));
+                      if (errors.agreedToTerms) setErrors((prev) => ({ ...prev, agreedToTerms: undefined }));
+                    }}
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="agreedToTerms" className={`text-[10px] font-black uppercase tracking-widest cursor-pointer ${errors.agreedToTerms ? "text-rose-700" : "text-[#5A270F] dark:text-[#EEB38C]"}`}>
+                    Accept Operational Protocols
+                  </label>
+                  <p className="text-[10px] text-[#92664A] dark:text-[#EEB38C]/40 font-medium leading-relaxed">
+                    By initializing this node, you agree to the{" "}
+                    <Link to="/terms" className="text-[#DF8142] underline">Terms of Operation</Link>. Prohibits malicious files and illegal content.
+                  </p>
+                  <FieldError message={errors.agreedToTerms} />
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={handleIndividualSubmit}
+              disabled={loading}
+              className="w-full py-5 bg-[#5A270F] text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-[1.25rem] hover:bg-[#1A0B04] transition-all flex items-center justify-center gap-3 shadow-[0_20px_40px_-12px_rgba(90,39,15,0.4)] disabled:opacity-50 active:scale-95 group overflow-hidden relative"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer" />
+              {loading ? <Loader2 className="h-4 w-4 animate-spin text-[#EEB38C]" /> : <UserPlus className="h-4 w-4 text-[#DF8142]" />}
+              Initialize Student Node
+            </button>
           </div>
 
-          {/* Individual ID Preview */}
-          <div className="lg:col-span-5 sticky top-10">
-            <Card className="bg-[#5A270F] text-white border-[#EEB38C]/20 shadow-2xl rounded-[3rem] overflow-hidden relative">
-              <div className="absolute top-0 right-0 p-32 opacity-20 blur-3xl bg-[#DF8142] rounded-full pointer-events-none" />
-              <CardHeader className="p-10 pb-6 relative z-10">
-                <div className="flex justify-between items-start">
-                  <Award className="h-8 w-8 text-[#DF8142]" />
+          {/* ID Preview Sidebar */}
+          <div className="lg:col-span-5 sticky top-10 space-y-6">
+            <div className="bg-[#5A270F] rounded-[3rem] overflow-hidden shadow-[0_40px_80px_-20px_rgba(90,39,15,0.5)] border border-white/5 relative">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/25 blur-[100px] rounded-full pointer-events-none" />
+              <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+              
+              <div className="relative z-10 p-10">
+                <div className="flex justify-between items-start mb-8">
+                  <div className="h-12 w-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/10 shadow-inner">
+                    <Award className="h-6 w-6 text-[#DF8142]" />
+                  </div>
                   <div className="text-right">
-                    <p className="text-[10px] uppercase font-black tracking-[0.3em] text-[#EEB38C]">
-                      Access Level
-                    </p>
-                    <p className="text-2xl font-black tracking-tighter text-white uppercase">
-                      Student
+                    <p className="text-[10px] uppercase font-black tracking-[0.3em] text-[#EEB38C]/60">Access Level</p>
+                    <p className="text-2xl font-black tracking-tighter text-white">STUDENT</p>
+                  </div>
+                </div>
+
+                <div className="text-center space-y-4 mb-10">
+                  <div className="h-32 w-32 bg-gradient-to-br from-[#DF8142] via-[#6C3B1C] to-[#5A270F] mx-auto rounded-[2rem] flex items-center justify-center text-5xl font-black text-white shadow-2xl border-4 border-white/10 transition-transform hover:scale-105 duration-500">
+                    {formData.first_name?.[0]?.toUpperCase() || "?"}
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-black tracking-tight uppercase text-white">
+                      {formData.first_name || "Student"} {formData.last_name || "Member"}
+                    </h3>
+                    <p className="text-[10px] text-[#EEB38C]/40 font-bold uppercase tracking-[0.3em] mt-1">
+                      {formData.email || "email: pending"}
                     </p>
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent className="px-10 space-y-8 relative z-10 text-center">
-                <div className="h-32 w-32 bg-gradient-to-br from-[#DF8142] via-[#6C3B1C] to-[#5A270F] mx-auto rounded-[2rem] flex items-center justify-center text-4xl font-black shadow-2xl border-4 border-[#5A270F]">
-                  {formData.first_name?.[0] || "?"}
-                </div>
-                <div>
-                  <h3 className="text-2xl font-black tracking-tight uppercase">
-                    {formData.first_name || "Student"} {formData.last_name}
-                  </h3>
-                  <p className="text-[10px] text-[#EEB38C]/40 font-black uppercase tracking-[0.2em]">
-                    {formData.email || "ID: PENDING"}
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 gap-4 text-left">
-                  <div className="bg-white/5 dark:bg-card/5 p-4 rounded-xl border border-white/10">
-                    <p className="text-[9px] uppercase tracking-widest text-[#EEB38C]/50 font-black">
-                      Batch
-                    </p>
-                    <p className="text-sm font-bold">
-                      {formData.batch || "N/A"}
-                    </p>
+
+                <div className="space-y-3">
+                  <div className="bg-white/5 rounded-2xl p-5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#EEB38C]/40 font-black mb-1">University ID</p>
+                    <p className="text-sm font-bold text-white font-mono">{formData.university_id || "not_assigned"}</p>
                   </div>
-                  <div className="bg-white/5 dark:bg-card/5 p-4 rounded-xl border border-white/10">
-                    <p className="text-[9px] uppercase tracking-widest text-[#EEB38C]/50 font-black">
-                      Year/Sem
-                    </p>
-                    <p className="text-sm font-bold">
-                      {formData.year || "0"} / {formData.semester || "0"}
-                    </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-white/5 rounded-2xl p-5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-[#EEB38C]/40 font-black mb-1">Batch</p>
+                      <p className="text-base font-black text-[#DF8142]">{formData.batch || "—"}</p>
+                    </div>
+                    <div className="bg-white/5 rounded-2xl p-5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-[#EEB38C]/40 font-black mb-1">Year/Sem</p>
+                      <p className="text-base font-black text-white">{formData.year || "?"} / {formData.semester || "?"}</p>
+                    </div>
                   </div>
                 </div>
-              </CardContent>
-              <CardFooter className="border-t border-white/10 bg-black/10 pt-4">
-                <p className="text-[9px] font-mono tracking-widest opacity-40 uppercase">
-                  Secure Node Protocol::ARCH-S
-                </p>
-              </CardFooter>
-            </Card>
+
+                <div className="mt-8 pt-6 border-t border-white/10 flex justify-between items-center opacity-40 italic">
+                  <div className="h-2 w-10 bg-[#EEB38C] rounded-full" />
+                  <p className="text-[9px] font-mono tracking-widest text-white">SECURE::ENC::ARCH</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-[#EEB38C]/15 to-[#DF8142]/5 rounded-[1.5rem] border border-[#DF8142]/20 p-6 flex items-start gap-4 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-1 h-full bg-[#DF8142]" />
+              <div className="p-3 bg-[#DF8142]/15 rounded-xl">
+                <Zap className="h-5 w-5 text-[#DF8142]" />
+              </div>
+              <div>
+                <h4 className="text-sm font-black text-[#5A270F] uppercase tracking-tight">System Registry</h4>
+                <p className="text-xs text-[#92664A] font-medium leading-relaxed mt-1">Student nodes must undergo verification by the Department Head before full system activation.</p>
+              </div>
+            </div>
           </div>
         </div>
       ) : (
-        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          {/* Bulk Import UI from RegisterStudents... */}
+        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-700">
+          {/* Bulk Tab View */}
           <div className="grid grid-cols-1 xl:grid-cols-5 gap-10">
-            <div className="xl:col-span-2 space-y-10">
-              <div className="bg-white dark:bg-card p-12 rounded-[3.5rem] border border-[#EEB38C] shadow-2xl relative overflow-hidden group">
-                <div className="text-center space-y-8">
-                  <div className="h-24 w-24 bg-[#5A270F] rounded-[2.5rem] flex items-center justify-center text-[#EEB38C] mx-auto shadow-xl ring-4 ring-[#DF8142]/10">
-                    <FileSpreadsheet className="h-12 w-12" />
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight">
-                      Transmission Source
-                    </h3>
-                    <p className="text-xs text-[#92664A] dark:text-[#EEB38C]/40 font-medium">
-                      Upload CSV or XLSX protocols
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-4">
-                    <label className="cursor-pointer">
-                      <span className="flex items-center justify-center gap-4 px-10 py-5 bg-[#DF8142] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#5A270F] transition-all shadow-xl shadow-[#DF8142]/20">
-                        <Upload className="h-4 w-4" /> Load Matrix
-                      </span>
-                      <input
-                        type="file"
-                        accept=".csv,.xlsx,.xls"
-                        className="sr-only"
-                        onChange={handleFileChange}
-                      />
-                    </label>
-                    <button
-                      onClick={downloadTemplate}
-                      className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] transition-colors"
-                    >
-                      <Download className="h-3.5 w-3.5" />
-                      Fetch Integration Template
-                    </button>
-                  </div>
-                  {file && (
-                    <div className="p-4 bg-[#DF8142]/10 rounded-2xl flex items-center justify-center gap-3">
-                      <FileText className="h-4 w-4 text-[#DF8142]" />
-                      <span className="text-[10px] font-black uppercase tracking-widest truncate">
-                        {file.name}
-                      </span>
-                    </div>
-                  )}
+            <div className="xl:col-span-2 space-y-6">
+              <div className="bg-[#FAF8F4] dark:bg-[#1A0B04] p-12 rounded-[3.5rem] border border-[#D9D9C2]/60 dark:border-white/10 shadow-2xl text-center space-y-8 relative group overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-b from-[#EFEDED]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="h-28 w-28 bg-[#5A270F] rounded-[2.5rem] flex items-center justify-center text-[#EEB38C] mx-auto shadow-2xl relative z-10">
+                  <FileSpreadsheet className="h-12 w-12" />
                 </div>
+                <div className="relative z-10">
+                  <h3 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight uppercase">Bulk Registry Load</h3>
+                  <p className="text-xs text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest mt-2 px-10">Deploy CSV or Excel protocols for fast matrix population.</p>
+                </div>
+                
+                <div className="flex flex-col gap-4 relative z-10 px-6">
+                  <label className="cursor-pointer group">
+                    <span className="flex items-center justify-center gap-4 px-10 py-5 bg-[#DF8142] text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.3em] hover:bg-[#5A270F] transition-all duration-300 shadow-2xl shadow-[#DF8142]/30 active:scale-95">
+                      <Upload className="h-4 w-4" /> Load Matrix File
+                    </span>
+                    <input type="file" accept=".csv,.xlsx,.xls" className="sr-only" onChange={handleFileChange} />
+                  </label>
+                  <button onClick={downloadTemplate} className="text-[10px] font-black uppercase tracking-widest text-[#92664A] hover:text-[#5A270F] dark:text-[#EEB38C]/40 dark:hover:text-[#EEB38C] flex items-center justify-center gap-2 transition-colors">
+                    <Download className="h-4 w-4" /> Get Protocol Template
+                  </button>
+                </div>
+
+                {file && (
+                  <div className="p-4 bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/20 rounded-2xl flex items-center justify-center gap-3 animate-in slide-in-from-top-2">
+                    <FileText className="h-4 w-4 text-emerald-600" />
+                    <span className="text-[10px] font-black uppercase text-emerald-700 truncate max-w-[220px] tracking-widest">{file.name}</span>
+                  </div>
+                )}
               </div>
 
-              {/* Validation Results UI... */}
               {validationResult && (
-                <div
-                  className={`p-8 rounded-[2.5rem] border shadow-2xl ${validationResult.valid ? "bg-emerald-50 border-emerald-100" : "bg-orange-50 border-[#EEB38C]"}`}
-                >
-                  <div className="flex items-start gap-5">
-                    <div
-                      className={`h-10 w-10 rounded-xl flex items-center justify-center text-white ${validationResult.valid ? "bg-emerald-600" : "bg-red-600"}`}
-                    >
-                      {validationResult.valid ? (
-                        <CheckCircle className="h-5 w-5" />
-                      ) : (
-                        <AlertTriangle className="h-5 w-5 text-[#DF8142]" />
-                      )}
+                <div className={`p-10 rounded-[2.5rem] border-2 shadow-2xl animate-in zoom-in-95 duration-500 ${validationResult.valid ? "bg-emerald-50/50 border-emerald-200" : "bg-rose-50 border-rose-200"}`}>
+                  <div className="flex items-start gap-6">
+                    <div className={`h-14 w-14 rounded-2xl flex items-center justify-center text-white shadow-xl ${validationResult.valid ? "bg-emerald-600" : "bg-rose-600"}`}>
+                      {validationResult.valid ? <CheckCircle className="h-7 w-7" /> : <XCircle className="h-7 w-7" />}
                     </div>
-                    <div>
-                      <h4 className="text-xs font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C]">
-                        {validationResult.valid
-                          ? "Validation Optimal"
-                          : "Integrity Failure"}
+                    <div className="space-y-3 flex-1 pt-1">
+                      <h4 className={`text-sm font-black uppercase tracking-widest ${validationResult.valid ? "text-emerald-950" : "text-rose-950"}`}>
+                        {validationResult.valid ? "Validation Optimal" : "Protocol Corruption"}
                       </h4>
-                      <p className="text-[10px] font-bold text-[#92664A] dark:text-[#EEB38C]/40 uppercase mt-1">
-                        {validationResult.students.length} Units Ready
+                      <p className={`text-[10px] font-bold uppercase tracking-widest leading-relaxed ${validationResult.valid ? "text-emerald-700" : "text-rose-700"}`}>
+                        {validationResult.valid 
+                          ? `${validationResult.students.length} Student segments verified for deployment.` 
+                          : `${validationResult.errors.length} Integrity errors detected in transmission file.`}
                       </p>
                       {!validationResult.valid && (
-                        <div className="mt-4 space-y-2 max-h-40 overflow-auto pr-2">
-                          {validationResult.errors.map((e, i) => (
-                            <p
-                              key={i}
-                              className="flex items-center gap-2 text-[9px] text-red-700 bg-white/50 dark:bg-card/50 p-2 rounded-lg border border-red-100"
-                            >
-                              <AlertTriangle className="h-3 w-3" />
-                              {e}
-                            </p>
+                        <div className="max-h-48 overflow-y-auto mt-4 pr-3 custom-scrollbar space-y-2">
+                          {validationResult.errors.map((err, i) => (
+                            <div key={i} className="bg-white/60 p-3 rounded-xl border border-rose-200 text-[10px] font-bold text-rose-800 flex items-center gap-2">
+                              <AlertTriangle className="h-3 w-3" /> {err}
+                            </div>
                           ))}
                         </div>
                       )}
@@ -850,126 +653,118 @@ const RegisterStudentsUnified = () => {
 
             <div className="xl:col-span-3">
               {preview.length > 0 ? (
-                <div className="bg-white dark:bg-card rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 shadow-3xl overflow-hidden flex flex-col max-h-[600px]">
-                  <div className="p-6 border-b bg-[#EFEDED] dark:bg-background/50 flex justify-between items-center">
-                    <h3 className="text-xs font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C]">
-                      Pre-Integration Scrutiny
-                    </h3>
-                    <span className="text-[10px] font-bold text-[#92664A] dark:text-[#EEB38C]/40">
-                      {preview.length} Nodes
-                    </span>
+                <div className="bg-[#FAF8F4] dark:bg-[#1A0B04] rounded-[3.5rem] border border-[#D9D9C2]/60 dark:border-white/10 shadow-3xl overflow-hidden flex flex-col h-full max-h-[750px] animate-in fade-in slide-in-from-right-6 duration-700">
+                  <div className="p-8 border-b border-[#D9D9C2]/40 dark:border-white/5 bg-gradient-to-r from-[#5A270F]/5 to-transparent flex items-center justify-between sticky top-0 z-20 backdrop-blur-md">
+                    <div className="flex items-center gap-4">
+                      <div className="h-10 w-10 bg-[#5A270F] rounded-xl flex items-center justify-center text-[#EEB38C] shadow-lg">
+                        <Zap className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-[0.2em]">Transmission Preview</h4>
+                        <p className="text-[10px] font-bold text-[#92664A] uppercase tracking-widest mt-0.5">{preview.length} Pending Integrations</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1 overflow-auto">
+
+                  <div className="overflow-auto flex-1 custom-scrollbar">
                     <table className="w-full text-left">
-                      <thead className="bg-[#EFEDED] dark:bg-background/30 sticky top-0 backdrop-blur-md">
+                      <thead className="bg-[#FAF8F4] dark:bg-[#1A0B04] border-b border-[#D9D9C2]/40 sticky top-0 z-10 transition-colors">
                         <tr>
-                          {["Identity", "Endpoint", "Protocol"].map((h) => (
-                            <th
-                              key={h}
-                              className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40"
-                            >
-                              {h}
-                            </th>
+                          {["Identity", "Endpoint", "Protocol Data"].map(h => (
+                            <th key={h} className="px-10 py-5 text-[9px] font-black text-[#92664A] uppercase tracking-[0.4em]">{h}</th>
                           ))}
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody className="divide-y divide-[#D9D9C2]/20">
                         {preview.map((s, i) => (
-                          <tr
-                            key={i}
-                            className="border-t border-[#EFEDED] hover:bg-[#EFEDED] dark:bg-background/30 transition-colors"
-                          >
-                            <td className="px-6 py-4">
-                              <p className="text-xs font-black text-[#5A270F] dark:text-[#EEB38C] uppercase">
-                                {s.first_name} {s.last_name}
-                              </p>
-                              <p className="text-[9px] text-[#92664A] dark:text-[#EEB38C]/40 font-bold mt-0.5">
-                                {s.university_id}
-                              </p>
+                          <tr key={i} className="hover:bg-white/50 group transition-colors">
+                            <td className="px-10 py-6">
+                              <p className="text-xs font-black text-[#5A270F] dark:text-white uppercase tracking-tight group-hover:text-[#DF8142] transition-colors">{s.first_name} {s.last_name}</p>
+                              <p className="text-[9px] font-black text-[#92664A]/40 uppercase tracking-widest mt-1">ID: {s.university_id || "PENDING"}</p>
                             </td>
-                            <td className="px-6 py-4 text-xs font-medium text-[#5A270F] dark:text-[#EEB38C]/70">
-                              {s.email}
+                            <td className="px-10 py-6">
+                              <p className="text-xs font-bold text-[#5A270F]/70 dark:text-white/60">{s.email}</p>
                             </td>
-                            <td className="px-6 py-4">
-                              <span className="text-[9px] font-black uppercase bg-[#DF8142]/10 text-[#DF8142] px-2 py-1 rounded">
-                                B:{s.batch}
-                              </span>
+                            <td className="px-10 py-6">
+                              <div className="flex gap-2">
+                                <span className="px-2.5 py-1 bg-[#DF8142]/10 text-[#DF8142] text-[9px] font-black rounded-lg border border-[#DF8142]/20 whitespace-nowrap uppercase">B:{s.batch || "?"}</span>
+                                <span className="px-2.5 py-1 bg-[#5A270F]/5 text-[#5A270F]/60 text-[9px] font-black rounded-lg border border-[#5A270F]/10 whitespace-nowrap uppercase">Y:{s.year || "?"}</span>
+                              </div>
                             </td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
+
                   {validationResult?.valid && (
-                    <div className="p-6 bg-[#5A270F] flex justify-between items-center">
-                      <p className="text-[9px] font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
-                        <ArrowRight className="h-4 w-4" /> Ready for Sequential
-                        Deployment
-                      </p>
+                    <div className="p-10 bg-[#5A270F] border-t border-white/10 flex justify-between items-center mt-auto">
+                      <div className="flex items-center gap-3">
+                        <ArrowRight className="h-5 w-5 text-[#DF8142] animate-pulse" />
+                        <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.3em]">Ready for Massive Deployment</span>
+                      </div>
                       <button
                         onClick={handleBulkUpload}
                         disabled={bulkLoading}
-                        className="px-8 py-3 bg-[#DF8142] text-white text-[10px] font-black uppercase rounded-xl hover:bg-white dark:bg-card hover:text-[#5A270F] dark:text-[#EEB38C] transition-all shadow-lg active:scale-95"
+                        className="px-10 py-4 bg-[#FAF8F4] text-[#5A270F] rounded-[1rem] text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#DF8142] hover:text-white transition-all shadow-2xl active:scale-95 disabled:opacity-50 flex items-center gap-3"
                       >
-                        {bulkLoading ? "In Progress..." : "Initialize Nodes"}
+                        {bulkLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
+                        Execute Pop Protocol
                       </button>
                     </div>
                   )}
                 </div>
-              ) : uploadResult ? (
-                <div className="bg-[#5A270F] p-12 rounded-[3.5rem] text-white shadow-3xl text-center space-y-8 animate-in zoom-in-95">
-                  <div className="h-20 w-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto ring-4 ring-emerald-500/10">
-                    <CheckCircle className="h-10 w-10 text-emerald-400" />
+              ) : (
+                <div className="h-full min-h-[500px] flex flex-col items-center justify-center bg-[#FAF8F4] dark:bg-card/5 rounded-[3.5rem] border-3 border-dashed border-[#D9D9C2]/40 dark:border-white/5 p-20 text-center space-y-8 animate-in fade-in duration-1000">
+                  <div className="h-32 w-32 bg-white dark:bg-card/10 rounded-[3rem] flex items-center justify-center text-[#D9D9C2]/60 shadow-2xl border border-white/10 relative overflow-hidden group">
+                    <Database className="h-14 w-14 transition-transform group-hover:scale-110 duration-500" />
+                    <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-[#DF8142]/30 to-transparent" />
                   </div>
-                  <div>
-                    <h3 className="text-2xl font-black uppercase tracking-tight">
-                      Integration Segment Complete
-                    </h3>
-                    <div className="flex justify-center gap-6 mt-6">
-                      <div className="bg-white/5 dark:bg-card/5 p-4 rounded-2xl border border-white/10 min-w-[120px]">
-                        <p className="text-3xl font-black text-emerald-400">
-                          {uploadResult.success}
-                        </p>
-                        <p className="text-[9px] font-black uppercase text-white/40 tracking-widest mt-1">
-                          Success
-                        </p>
-                      </div>
-                      <div className="bg-white/5 dark:bg-card/5 p-4 rounded-2xl border border-white/10 min-w-[120px]">
-                        <p className="text-3xl font-black text-rose-400">
-                          {uploadResult.failed}
-                        </p>
-                        <p className="text-[9px] font-black uppercase text-white/40 tracking-widest mt-1">
-                          Failed
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex gap-4 pt-6">
-                    <button
-                      onClick={downloadCredentials}
-                      className="flex-1 py-4 bg-[#DF8142] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#DF8142]/20 hover:bg-[#5A270F] transition-all"
-                    >
-                      Archive Credentials
-                    </button>
-                    <button
-                      onClick={() => setUploadResult(null)}
-                      className="flex-1 py-4 bg-white/10 dark:bg-card/10 border border-white/20 rounded-2xl text-[10px] font-black uppercase text-[#EEB38C] hover:bg-white/20 dark:bg-card/20 transition-all"
-                    >
-                      New Integration
-                    </button>
+                  <div className="max-w-md space-y-4">
+                    <h3 className="text-3xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase leading-tight">Waiting for Matrix Data</h3>
+                    <p className="text-xs text-[#92664A] dark:text-[#EEB38C]/30 font-bold uppercase tracking-[0.2em] leading-relaxed">
+                      Initialize the transmission process by loading a CSV or Excel student population protocol.
+                    </p>
                   </div>
                 </div>
-              ) : (
-                <div className="h-full min-h-[400px] bg-white dark:bg-card rounded-[3rem] border-2 border-dashed border-[#EEB38C] flex flex-col items-center justify-center text-center p-12 space-y-6 shadow-inner">
-                  <Database className="h-16 w-16 text-[#EEB38C] animate-pulse" />
-                  <div className="max-w-xs">
-                    <h4 className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-widest">
-                      Awaiting Data Segment
-                    </h4>
-                    <p className="text-[10px] text-[#92664A] dark:text-[#EEB38C]/40 font-medium mt-2 leading-relaxed">
-                      Population of the Nexus through bulk transmission protocol
-                      requires a valid CSV source.
-                    </p>
+              )}
+
+              {/* Upload Result Terminal */}
+              {uploadResult && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-3xl bg-[#1A0B04]/70 animate-in fade-in duration-500">
+                  <div className="bg-[#FAF8F4] w-full max-w-2xl rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/20 overflow-hidden animate-in zoom-in-95 duration-500">
+                    <div className="bg-gradient-to-br from-[#5A270F] to-[#1A0B04] p-10 text-center relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[80px] rounded-full" />
+                      <div className="relative z-10 space-y-4">
+                        <div className="h-20 w-20 bg-emerald-500/20 rounded-[2rem] flex items-center justify-center text-emerald-400 mx-auto border border-emerald-500/30">
+                          <CheckCircle className="h-10 w-10" />
+                        </div>
+                        <h3 className="text-3xl font-black text-white tracking-tighter uppercase">Integration Sequence Complete</h3>
+                        <p className="text-[10px] font-black tracking-[0.4em] text-emerald-400/70 uppercase">Nexus Segments Population Terminal</p>
+                      </div>
+                    </div>
+                    
+                    <div className="p-12 space-y-10">
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="bg-[#5A270F]/5 p-8 rounded-[2rem] border-2 border-[#5A270F]/10 text-center group transition-all hover:bg-[#5A270F] hover:scale-105 duration-500">
+                          <span className="block text-5xl font-black text-[#5A270F] group-hover:text-white transition-colors">{uploadResult.success}</span>
+                          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#92664A] group-hover:text-white/50 mt-2 block transition-colors">Nodes Activated</span>
+                        </div>
+                        <div className="bg-[#5A270F]/5 p-8 rounded-[2rem] border-2 border-[#5A270F]/10 text-center group transition-all hover:bg-rose-600 hover:scale-105 duration-500">
+                          <span className="block text-5xl font-black text-[#5A270F] group-hover:text-white transition-colors">{uploadResult.failed}</span>
+                          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#92664A] group-hover:text-white/50 mt-2 block transition-colors">Packet Drops</span>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-4">
+                        <button onClick={downloadCredentials} className="flex-1 flex items-center justify-center gap-4 py-5 bg-[#5A270F] text-white rounded-[1.25rem] text-[11px] font-black uppercase tracking-[0.3em] hover:bg-[#1A0B04] transition-all shadow-xl active:scale-95">
+                          <Download className="h-5 w-5 text-[#EEB38C]" /> Archive Credentials
+                        </button>
+                        <button onClick={() => {setUploadResult(null); setFile(null); setPreview([]);}} className="flex-1 py-5 border-2 border-[#D9D9C2] text-[#92664A] rounded-[1.25rem] text-[11px] font-black uppercase tracking-[0.3em] hover:bg-[#FAF8F4] transition-all active:scale-95">
+                          Terminate Terminal
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
