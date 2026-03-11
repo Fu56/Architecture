@@ -81,7 +81,7 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#0F0602] lg:bg-[#EFEDED] dark:bg-background lg:dark:bg-[#0F0602] transition-colors duration-500 relative">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="flex flex-col lg:flex-row gap-8 items-start relative">
+        <div className="flex flex-col lg:flex-row items-start relative">
           
           {/* Mobile Menu Toggle */}
           <button
@@ -113,7 +113,7 @@ const AdminDashboard = () => {
           <aside
             className={`fixed lg:sticky lg:top-24 inset-y-0 left-0 z-50 lg:z-auto w-80 flex flex-col gap-6 p-6 lg:p-0 bg-white dark:bg-[#1A0B04] lg:bg-transparent transform transition-all duration-500 ease-in-out ${
               isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-            } ${isSidebarVisible ? "lg:w-80 lg:opacity-100" : "lg:w-0 lg:opacity-0 lg:pointer-events-none"}`}
+            } ${isSidebarVisible ? "lg:w-80 lg:opacity-100 lg:mr-8" : "lg:w-0 lg:opacity-0 lg:mr-0 lg:pointer-events-none overflow-hidden"}`}
           >
             <div className="bg-gradient-to-b from-[#5A270F] via-[#6C3B1C] to-[#2A1205] dark:from-[#1A0B04] dark:to-black rounded-[2.5rem] p-8 text-white relative overflow-hidden flex flex-col gap-8 shadow-2xl shadow-[#5A270F]/20 dark:shadow-none border border-white/5 h-full lg:h-auto min-h-[85vh]">
               {/* Pattern Overlays */}
@@ -187,7 +187,7 @@ const AdminDashboard = () => {
           </aside>
 
           {/* Main Integrated Workspace */}
-          <main className={`flex-grow min-w-0 transition-all duration-500 ${isSidebarVisible ? "lg:max-w-[calc(100%-344px)]" : "lg:max-w-full"}`}>
+          <main className={`flex-grow min-w-0 transition-all duration-500 ${isSidebarVisible ? "lg:max-w-[calc(100%-352px)]" : "lg:max-w-full"}`}>
             <div className="bg-white dark:bg-card p-6 sm:p-10 rounded-3xl shadow-sm border border-[#D9D9C2] dark:border-white/10 min-h-[calc(100vh-140px)] relative overflow-hidden flex flex-col transition-colors duration-500">
               <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-50 dark:border-white/5 relative z-10 transition-colors">
                 <div className="flex items-center gap-6">

@@ -38,7 +38,7 @@ const DeptHeadDashboard = () => {
 
   return (
     <div
-      className={`relative flex flex-col lg:flex-row min-h-[calc(100vh-100px)] gap-8 animate-in fade-in duration-700 ${isSettingsPage ? "justify-center" : ""}`}
+      className={`relative flex flex-col lg:flex-row min-h-[calc(100vh-100px)] animate-in fade-in duration-700 ${isSettingsPage ? "justify-center" : ""}`}
     >
       {/* Mobile Menu Toggle */}
       {!isSettingsPage && (
@@ -80,7 +80,7 @@ const DeptHeadDashboard = () => {
           <aside
             className={`fixed lg:relative inset-y-0 left-0 z-50 lg:z-auto w-80 lg:w-80 flex flex-col gap-6 p-6 lg:p-0 bg-white dark:bg-card dark:bg-[#1A0B04] lg:bg-transparent lg:dark:bg-transparent transform transition-all duration-500 ease-in-out ${
               isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-            } ${isSidebarVisible ? "lg:w-80 lg:opacity-100" : "lg:w-0 lg:opacity-0 lg:pointer-events-none"}`}
+            } ${isSidebarVisible ? "lg:w-80 lg:opacity-100 lg:mr-8" : "lg:w-0 lg:opacity-0 lg:mr-0 lg:pointer-events-none overflow-hidden"}`}
           >
             <div className="bg-gradient-to-b from-[#5A270F] via-[#6C3B1C] to-[#2A1205] dark:from-[#1A0B04] dark:to-black rounded-[2.5rem] p-8 text-white relative overflow-hidden flex flex-col gap-8 shadow-2xl shadow-black/10 dark:shadow-none border border-white/5 h-full lg:h-auto min-h-[85vh] transition-colors duration-500">
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#DF8142]/10 blur-3xl -translate-x-1/2 translate-y-1/2" />
@@ -219,7 +219,7 @@ const DeptHeadDashboard = () => {
 
       {/* Main Content Node */}
       <main
-        className={`flex-1 min-w-0 transition-all duration-500 ${isSettingsPage ? "max-w-6xl w-full" : isSidebarVisible ? "" : "lg:max-w-full"}`}
+        className={`flex-1 min-w-0 transition-all duration-500 ${isSettingsPage ? "max-w-6xl w-full" : isSidebarVisible ? "lg:max-w-[calc(100%-352px)]" : "lg:max-w-full"}`}
       >
         <div className="bg-white dark:bg-card p-6 sm:p-10 rounded-3xl shadow-sm border border-[#D9D9C2] dark:border-white/10 min-h-[calc(100vh-140px)] relative overflow-hidden flex flex-col transition-colors duration-500">
           <header className={`flex items-center justify-between mb-8 pb-6 border-b border-slate-50 dark:border-white/5 ${!isSidebarVisible && !isSettingsPage ? "pl-2" : ""}`}>
