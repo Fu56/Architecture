@@ -314,7 +314,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             className="flex items-center justify-center gap-2 py-4 bg-[#5A270F]/5 dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 border border-[#BCAF9C] dark:border-white/5"
           >
             <Eye className="h-4 w-4" />
-            Scan
+            View
           </a>
           <a
             href={`${
@@ -326,7 +326,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             className="flex items-center justify-center gap-2 py-4 bg-[#DF8142] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#5A270F] transition-all shadow-md shadow-[#DF8142]/20 active:scale-95 hover:-translate-y-0.5"
           >
             <Download className="h-4 w-4" />
-            Inbound
+            Download
           </a>
         </div>
       </div>
