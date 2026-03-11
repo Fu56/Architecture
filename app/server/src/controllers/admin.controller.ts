@@ -9,6 +9,8 @@ import {
   getRegistrationHtml,
   getGenericHtml,
   getAccountAuthorizationHtml,
+  getArchiveNotificationHtml,
+  getRestoreNotificationHtml,
 } from "../utils/email";
 
 export const getPendingResources = async (req: Request, res: Response) => {
@@ -65,7 +67,19 @@ export const getPendingResources = async (req: Request, res: Response) => {
 export const approveResource = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { comment } = req.body; // Optional approval comment
+    const { comment } = req.body;
+
+    // ── Identify the dept head who is taking action ──────────────────
+    const reviewerId = (req as any).user?.id;
+    const reviewerData = reviewerId
+      ? await prisma.user.findUnique({
+          where: { id: reviewerId },
+          select: { first_name: true, last_name: true },
+        })
+      : null;
+    const reviewerName = reviewerData
+      ? `${reviewerData.first_name || ""} ${reviewerData.last_name || ""}`.trim()
+      : "Department Head";
 
     const resource = await prisma.resource.update({
       where: { id: Number(id) },
@@ -74,35 +88,43 @@ export const approveResource = async (req: Request, res: Response) => {
         approved_at: new Date(),
         admin_comment: comment,
       } as any,
-      include: { uploader: true },
+      include: {
+        uploader: {
+          select: { id: true, first_name: true, last_name: true, email: true },
+        },
+      },
     });
 
-    // Notify uploader
+    // ── Notify the uploader (in-app + email) ─────────────────────────
     if (resource.uploader_id && resource.uploader) {
       const uploader = resource.uploader as any;
-      const title = "Resource Approved";
-      const message = `Your resource "${resource.title}" has been approved.${
-        comment ? " Comment: " + comment : ""
+      const uploaderName =
+        `${uploader.first_name || ""} ${uploader.last_name || ""}`.trim() ||
+        "User";
+
+      const title = "✅ Resource Approved";
+      const message = `Your resource "${resource.title}" has been reviewed and approved by ${reviewerName}.${
+        comment ? ` Note: ${comment}` : ""
       }`;
 
-      // Internal & Email Notification
       await notifyUsers({
         userIds: [resource.uploader_id],
         title,
         message,
         resourceId: resource.id,
         html: getApprovalHtml(
-          uploader.first_name || "User",
+          uploaderName,
           resource.title,
           resource.id,
           comment,
+          reviewerName,
         ),
       });
 
-      // Global Broadcast: Notify everyone about the new asset
+      // Global broadcast — new resource is now live
       await notifyAll(
-        "New Resource Verified",
-        `A new architectural artifact "${resource.title}" by ${uploader.first_name || "a verified architect"} is now live in the matrix.`,
+        "New Resource Available",
+        `A new architectural resource "${resource.title}" has been verified by ${reviewerName} and is now live in the repository.`,
       );
     }
 
@@ -116,7 +138,19 @@ export const approveResource = async (req: Request, res: Response) => {
 export const rejectResource = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { reason } = req.body; // Optional rejection reason
+    const { reason } = req.body;
+
+    // ── Identify the dept head who is taking action ──────────────────
+    const reviewerId = (req as any).user?.id;
+    const reviewerData = reviewerId
+      ? await prisma.user.findUnique({
+          where: { id: reviewerId },
+          select: { first_name: true, last_name: true },
+        })
+      : null;
+    const reviewerName = reviewerData
+      ? `${reviewerData.first_name || ""} ${reviewerData.last_name || ""}`.trim()
+      : "Department Head";
 
     const resource = await prisma.resource.update({
       where: { id: Number(id) },
@@ -125,26 +159,35 @@ export const rejectResource = async (req: Request, res: Response) => {
         rejected_at: new Date(),
         admin_comment: reason,
       } as any,
-      include: { uploader: true },
+      include: {
+        uploader: {
+          select: { id: true, first_name: true, last_name: true, email: true },
+        },
+      },
     });
 
+    // ── Notify the uploader (in-app + email) ─────────────────────────
     if (resource.uploader_id && resource.uploader) {
       const uploader = resource.uploader as any;
-      const title = "Resource Rejected";
-      const message = `Your resource "${resource.title}" was rejected. ${
-        reason ? "Reason: " + reason : ""
+      const uploaderName =
+        `${uploader.first_name || ""} ${uploader.last_name || ""}`.trim() ||
+        "User";
+
+      const title = "❌ Resource Requires Revision";
+      const message = `Your resource "${resource.title}" was reviewed by ${reviewerName} and requires revisions.${
+        reason ? ` Reason: ${reason}` : ""
       }`;
 
-      // Internal & Email Notification
       await notifyUsers({
         userIds: [resource.uploader_id],
         title,
         message,
         resourceId: resource.id,
         html: getRejectionHtml(
-          uploader.first_name || "User",
+          uploaderName,
           resource.title,
           reason,
+          reviewerName,
         ),
       });
     }
@@ -231,11 +274,29 @@ export const getStats = async (req: Request, res: Response) => {
 export const archiveResource = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const { reason } = req.body; // Optional archive reason
     const resourceId = Number(id);
 
-    // 1. Fetch resource to get current file path
+    // ── Identify reviewer ───────────────────────────────────────────
+    const reviewerId = (req as any).user?.id;
+    const reviewerData = reviewerId
+      ? await prisma.user.findUnique({
+          where: { id: reviewerId },
+          select: { first_name: true, last_name: true },
+        })
+      : null;
+    const reviewerName = reviewerData
+      ? `${reviewerData.first_name || ""} ${reviewerData.last_name || ""}`.trim()
+      : "Department Head";
+
+    // 1. Fetch resource to get current file path and uploader
     const resource = await prisma.resource.findUnique({
       where: { id: resourceId },
+      include: {
+        uploader: {
+          select: { id: true, first_name: true, last_name: true, email: true },
+        },
+      },
     });
 
     if (!resource) {
@@ -249,7 +310,6 @@ export const archiveResource = async (req: Request, res: Response) => {
       const fileName = path.basename(resource.file_path);
       const archiveDir = path.join(process.cwd(), "storage", "archive");
 
-      // Ensure directory exists
       if (!fs.existsSync(archiveDir)) {
         fs.mkdirSync(archiveDir, { recursive: true });
       }
@@ -260,7 +320,6 @@ export const archiveResource = async (req: Request, res: Response) => {
         fs.renameSync(resource.file_path, newFilePath);
       } catch (moveError) {
         console.error("Failed to move file to archive:", moveError);
-        // Continue even if file move fails? Maybe not.
         return res
           .status(500)
           .json({ message: "Failed to move file to system archive" });
@@ -277,6 +336,29 @@ export const archiveResource = async (req: Request, res: Response) => {
       },
     });
 
+    // 4. Notify uploader (in-app + email)
+    if (resource.uploader_id && resource.uploader) {
+      const uploader = resource.uploader as any;
+      const uploaderName =
+        `${uploader.first_name || ""} ${uploader.last_name || ""}`.trim() ||
+        "User";
+
+      await notifyUsers({
+        userIds: [resource.uploader_id],
+        title: "📦 Resource Archived",
+        message: `Your resource "${resource.title}" has been moved to the system archive by ${reviewerName}.${
+          reason ? ` Reason: ${reason}` : ""
+        }`,
+        resourceId: resource.id,
+        html: getArchiveNotificationHtml(
+          uploaderName,
+          resource.title,
+          reviewerName,
+          reason,
+        ),
+      });
+    }
+
     res.json({
       message: "Resource archived and stored in system archive",
       resource: updatedResource,
@@ -292,9 +374,26 @@ export const restoreResource = async (req: Request, res: Response) => {
     const { id } = req.params;
     const resourceId = Number(id);
 
-    // 1. Fetch resource
+    // ── Identify reviewer ───────────────────────────────────────────
+    const reviewerId = (req as any).user?.id;
+    const reviewerData = reviewerId
+      ? await prisma.user.findUnique({
+          where: { id: reviewerId },
+          select: { first_name: true, last_name: true },
+        })
+      : null;
+    const reviewerName = reviewerData
+      ? `${reviewerData.first_name || ""} ${reviewerData.last_name || ""}`.trim()
+      : "Department Head";
+
+    // 1. Fetch resource (with uploader)
     const resource = await prisma.resource.findUnique({
       where: { id: resourceId },
+      include: {
+        uploader: {
+          select: { id: true, first_name: true, last_name: true, email: true },
+        },
+      },
     });
 
     if (!resource) {
@@ -329,6 +428,27 @@ export const restoreResource = async (req: Request, res: Response) => {
         file_path: newFilePath,
       },
     });
+
+    // 4. Notify uploader (in-app + email)
+    if (resource.uploader_id && resource.uploader) {
+      const uploader = resource.uploader as any;
+      const uploaderName =
+        `${uploader.first_name || ""} ${uploader.last_name || ""}`.trim() ||
+        "User";
+
+      await notifyUsers({
+        userIds: [resource.uploader_id],
+        title: "🔄 Resource Restored",
+        message: `Your resource "${resource.title}" has been restored from the archive by ${reviewerName} and is now live again.`,
+        resourceId: resource.id,
+        html: getRestoreNotificationHtml(
+          uploaderName,
+          resource.title,
+          resource.id,
+          reviewerName,
+        ),
+      });
+    }
 
     res.json({
       message: "Resource restored successfully",

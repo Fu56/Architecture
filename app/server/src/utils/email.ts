@@ -66,6 +66,7 @@ export const getApprovalHtml = (
   resourceTitle: string,
   resourceId: string | number,
   comment?: string,
+  reviewerName?: string,
 ) => {
   return `
     <div ${emailStyle}>
@@ -76,10 +77,15 @@ export const getApprovalHtml = (
         <div style="padding: 0 20px;">
             <p>Dear ${userName},</p>
             <p>Your contribution "<strong>${resourceTitle}</strong>" has passed technical validation and is now live in the global repository.</p>
+            ${reviewerName ? `
+            <div style="background: #f0fdf4; padding: 16px 20px; border-left: 4px solid #22c55e; margin: 20px 0; border-radius: 0 8px 8px 0; display: flex; align-items: center; gap: 10px;">
+              <p style="margin: 0; font-size: 11px; font-weight: 900; color: #166534; text-transform: uppercase; letter-spacing: 1px;">Reviewed & Approved by</p>
+              <p style="margin: 6px 0 0 0; font-size: 15px; font-weight: 800; color: #15803d;">${reviewerName}</p>
+            </div>` : ''}
             ${
               comment
                 ? `<div style="background: #f8fafc; padding: 20px; border-left: 4px solid #4f46e5; margin: 25px 0; border-radius: 0 8px 8px 0;">
-                     <p style="margin: 0 0 5px 0; font-size: 10px; font-weight: 900; color: #4f46e5; text-transform: uppercase; letter-spacing: 1px;">Admin Directive</p>
+                     <p style="margin: 0 0 5px 0; font-size: 10px; font-weight: 900; color: #4f46e5; text-transform: uppercase; letter-spacing: 1px;">Department Head Note</p>
                      <p style="margin: 0; font-weight: 500;">${comment}</p>
                    </div>`
                 : ""
@@ -98,6 +104,7 @@ export const getRejectionHtml = (
   userName: string,
   resourceTitle: string,
   reason?: string,
+  reviewerName?: string,
 ) => {
   return `
     <div ${emailStyle}>
@@ -107,11 +114,16 @@ export const getRejectionHtml = (
         </div>
         <div style="padding: 0 20px;">
             <p>Dear ${userName},</p>
-            <p>Unfortunately, your submission "<strong>${resourceTitle}</strong>" was neutralized and not approved for repository integration.</p>
+            <p>Unfortunately, your submission "<strong>${resourceTitle}</strong>" was reviewed and requires revisions before it can be approved for repository integration.</p>
+            ${reviewerName ? `
+            <div style="background: #fef2f2; padding: 16px 20px; border-left: 4px solid #dc2626; margin: 20px 0; border-radius: 0 8px 8px 0;">
+              <p style="margin: 0; font-size: 11px; font-weight: 900; color: #991b1b; text-transform: uppercase; letter-spacing: 1px;">Reviewed by</p>
+              <p style="margin: 6px 0 0 0; font-size: 15px; font-weight: 800; color: #b91c1c;">${reviewerName}</p>
+            </div>` : ''}
             ${
               reason
                 ? `<div style="background: #fff1f2; padding: 20px; border-left: 4px solid #be123c; margin: 25px 0; border-radius: 0 8px 8px 0;">
-                     <p style="margin: 0 0 5px 0; font-size: 10px; font-weight: 900; color: #be123c; text-transform: uppercase; letter-spacing: 1px;">Neutralization Logic</p>
+                     <p style="margin: 0 0 5px 0; font-size: 10px; font-weight: 900; color: #be123c; text-transform: uppercase; letter-spacing: 1px;">Revision Required</p>
                      <p style="margin: 0; font-weight: 500;">${reason}</p>
                    </div>`
                 : ""
@@ -415,6 +427,72 @@ export const getRatingNotificationHtml = (
             </div>
             
             <div ${footerStyle}>Automated Valuation Protocol | Level 2 Intelligence</div>
+        </div>
+    </div>
+    `;
+};
+
+// ─── Archive Notification ──────────────────────────────────────────────────
+export const getArchiveNotificationHtml = (
+  userName: string,
+  resourceTitle: string,
+  reviewerName?: string,
+  reason?: string,
+) => {
+  return `
+    <div ${emailStyle} style="border: 2px solid #b45309;">
+        <div ${headerStyle} style="background: #431407; border-bottom: 4px solid #d97706;">
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #fbbf24; text-transform: uppercase;">System Archive Protocol</p>
+            <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px;">RESOURCE ARCHIVED</h1>
+        </div>
+        <div style="padding: 0 20px;">
+            <p>Dear ${userName},</p>
+            <p>Your resource "<strong>${resourceTitle}</strong>" has been moved to the system archive and is no longer publicly visible in the repository.</p>
+            ${reviewerName ? `
+            <div style="background: #fffbeb; padding: 16px 20px; border-left: 4px solid #d97706; margin: 20px 0; border-radius: 0 8px 8px 0;">
+              <p style="margin: 0; font-size: 11px; font-weight: 900; color: #92400e; text-transform: uppercase; letter-spacing: 1px;">Action taken by</p>
+              <p style="margin: 6px 0 0 0; font-size: 15px; font-weight: 800; color: #b45309;">${reviewerName}</p>
+            </div>` : ''}
+            ${reason ? `
+            <div style="background: #fffbeb; padding: 20px; border-left: 4px solid #d97706; margin: 25px 0; border-radius: 0 8px 8px 0;">
+                <p style="margin: 0 0 5px 0; font-size: 10px; font-weight: 900; color: #b45309; text-transform: uppercase; letter-spacing: 1px;">Archive Reason</p>
+                <p style="margin: 0; font-weight: 500;">${reason}</p>
+            </div>` : ''}
+            <p style="margin-top: 30px;">If you believe this was done in error, please contact the Department Head directly.</p>
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="${env.baseUrl}/dashboard" ${buttonStyle} style="background-color: #d97706;">View Your Dashboard</a>
+            </div>
+            <div ${footerStyle}>Automated Archive Protocol | Level 3 Security</div>
+        </div>
+    </div>
+    `;
+};
+
+// ─── Restore Notification ──────────────────────────────────────────────────
+export const getRestoreNotificationHtml = (
+  userName: string,
+  resourceTitle: string,
+  resourceId: string | number,
+  reviewerName?: string,
+) => {
+  return `
+    <div ${emailStyle} style="border: 2px solid #0ea5e9;">
+        <div ${headerStyle} style="background: #0c4a6e; border-bottom: 4px solid #0ea5e9;">
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #7dd3fc; text-transform: uppercase;">Resource Restoration Protocol</p>
+            <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px;">RESOURCE RESTORED</h1>
+        </div>
+        <div style="padding: 0 20px;">
+            <p>Dear ${userName},</p>
+            <p>Great news — your resource "<strong>${resourceTitle}</strong>" has been successfully restored from the archive and is now live again in the repository.</p>
+            ${reviewerName ? `
+            <div style="background: #f0f9ff; padding: 16px 20px; border-left: 4px solid #0ea5e9; margin: 20px 0; border-radius: 0 8px 8px 0;">
+              <p style="margin: 0; font-size: 11px; font-weight: 900; color: #075985; text-transform: uppercase; letter-spacing: 1px;">Restored by</p>
+              <p style="margin: 6px 0 0 0; font-size: 15px; font-weight: 800; color: #0369a1;">${reviewerName}</p>
+            </div>` : ''}
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="${env.baseUrl}/resources/${resourceId}" ${buttonStyle} style="background-color: #0ea5e9;">View Your Resource</a>
+            </div>
+            <div ${footerStyle}>Restoration Protocol | Level 2 Authorization</div>
         </div>
     </div>
     `;
