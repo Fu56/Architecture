@@ -476,50 +476,63 @@ const ManageUsers = () => {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-in fade-in duration-1000">
+      <div className="flex items-center gap-6 mb-2">
+        <div className="h-14 w-14 bg-[#5A270F] rounded-[1.25rem] flex items-center justify-center text-[#EEB38C] shadow-2xl">
+          <Shield className="h-7 w-7" />
+        </div>
+        <div>
+          <h1 className="text-4xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase italic">
+            Nexus Registry <span className="not-italic text-[#DF8142]">Authority</span>
+          </h1>
+          <p className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-[0.5em]">
+            Central Identity Management Matrix
+          </p>
+        </div>
+      </div>
       {/* Top Controller */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-[#EFEDED] dark:bg-card p-6 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-sm transition-all duration-500">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-white dark:bg-[#1A0B04] p-8 rounded-[3rem] border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-2xl shadow-[#5A270F]/5 transition-all duration-700">
         <div className="relative w-full md:w-96 group">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#92664A] dark:text-foreground/40 group-focus-within:text-[#DF8142] transition-colors" />
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-[#92664A] dark:text-[#EEB38C]/70 group-focus-within:text-[#DF8142] transition-colors" />
           <input
             type="text"
             placeholder="Search specific user node..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-12 pl-12 pr-6 bg-white dark:bg-card dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-2xl text-sm font-bold text-[#5A270F] dark:text-white focus:ring-2 focus:ring-[#DF8142]/20 focus:border-[#DF8142]/90 outline-none transition-all placeholder:text-[#92664A] dark:text-[#EEB38C]/40/50 dark:placeholder-white/20"
+            className="w-full h-14 pl-14 pr-6 bg-[#EFEDED] dark:bg-white/5 border border-transparent focus:border-[#DF8142] rounded-[1.5rem] text-[13px] font-black text-[#5A270F] dark:text-white placeholder:text-[#92664A] dark:placeholder-white/50 transition-all outline-none uppercase tracking-tight"
           />
         </div>
-        <div className="flex gap-3 w-full md:w-auto">
+        <div className="flex flex-wrap gap-4 w-full md:w-auto">
           <div className="relative">
             <button
               onClick={() => setIsDownloadFormatOpen(!isDownloadFormatOpen)}
-              className="px-6 py-3 bg-[#EEB38C]/10 dark:bg-primary/10 text-[#5A270F] dark:text-[#EEB38C] text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#EEB38C] dark:hover:bg-primary hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 border border-[#D9D9C2] dark:border-white/10"
+              className="h-14 px-8 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3 border border-[#BCAF9C] dark:border-white/10"
             >
               <Download className="h-4 w-4" />
-              Download
+              Download Registry
               <ChevronDown
-                className={`h-3 w-3 transition-transform ${isDownloadFormatOpen ? "rotate-180" : ""}`}
+                className={`h-3.5 w-3.5 transition-transform ${isDownloadFormatOpen ? "rotate-180" : ""}`}
               />
             </button>
             {isDownloadFormatOpen && (
-              <div className="absolute top-14 right-0 w-40 bg-white dark:bg-card border border-[#D9D9C2] dark:border-white/10 rounded-xl shadow-xl overflow-hidden z-20">
+              <div className="absolute top-16 right-0 w-48 bg-white dark:bg-[#1A0B04] border border-[#BCAF9C] dark:border-[#DF8142]/20 rounded-2xl shadow-2xl overflow-hidden z-20 p-1">
                 <button
                   onClick={() => handleDownload("csv")}
-                  className="w-full px-4 py-3 text-left text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:bg-background dark:hover:bg-white/10 dark:bg-card/10 transition-colors"
+                  className="w-full px-5 py-3.5 text-left text-[9px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:hover:bg-[#DF8142] dark:hover:text-white rounded-xl transition-all"
                 >
-                  Export as CSV
+                  Export CSV Node
                 </button>
                 <button
                   onClick={() => handleDownload("excel")}
-                  className="w-full px-4 py-3 text-left text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:bg-background dark:hover:bg-white/10 dark:bg-card/10 transition-colors border-t border-[#EFEDED] dark:border-white/5"
+                  className="w-full px-5 py-3.5 text-left text-[9px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:hover:bg-[#DF8142] dark:hover:text-white rounded-xl transition-all"
                 >
-                  Export as Excel
+                  Export Excel Grid
                 </button>
                 <button
                   onClick={() => handleDownload("pdf")}
-                  className="w-full px-4 py-3 text-left text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:bg-background dark:hover:bg-white/10 dark:bg-card/10 transition-colors border-t border-[#EFEDED] dark:border-white/5"
+                  className="w-full px-5 py-3.5 text-left text-[9px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:hover:bg-[#DF8142] dark:hover:text-white rounded-xl transition-all"
                 >
-                  Export as PDF
+                  Export PDF Document
                 </button>
               </div>
             )}
@@ -528,16 +541,15 @@ const ManageUsers = () => {
             currentRoleName === "SuperAdmin") && (
             <button
               onClick={() => setIsBroadcastModalOpen(true)}
-              title="Engage Global Intelligence Relay"
-              className="flex-1 md:flex-none px-6 py-3 bg-[#DF8142]/10 dark:bg-primary/10 text-[#DF8142] dark:text-[#EEB38C] text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#DF8142] dark:hover:bg-primary hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3 border border-[#DF8142]/20 dark:border-white/10"
+              className="h-14 px-8 bg-gradient-to-r from-[#DF8142] to-[#EEB38C] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:scale-[1.02] transition-all shadow-xl shadow-[#DF8142]/20 active:scale-95 flex items-center justify-center gap-3"
             >
               <Zap className="h-4 w-4" />
-              Global Broadcast
+              Broadcaster
             </button>
           )}
           <button
             onClick={handleOpenCreate}
-            className="flex-1 md:flex-none px-8 py-3 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#6C3B1C] transition-all hover:-translate-y-1 shadow-2xl shadow-[#5A270F]/20 active:scale-95 flex items-center justify-center gap-3"
+            className="h-14 px-10 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#1A0B04] hover:scale-[1.02] transition-all shadow-2xl shadow-[#5A270F]/30 active:scale-95 flex items-center justify-center gap-3"
           >
             <UserPlus className="h-4 w-4" />
             Initialize Node
@@ -546,25 +558,25 @@ const ManageUsers = () => {
       </div>
 
       {/* User Registry Table */}
-      <div className="bg-white dark:bg-card rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 shadow-2xl dark:shadow-black/20 overflow-hidden transition-all duration-500">
+      <div className="bg-white dark:bg-[#1A0B04] rounded-[3.5rem] border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-2xl shadow-[#5A270F]/5 overflow-hidden transition-all duration-700">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-[#5A270F]">
-                <th className="px-10 py-6 text-left text-[10px] font-black text-[#EEB38C] uppercase tracking-[0.3em]">
+                <th className="px-10 py-7 text-left text-[10px] font-black text-[#EEB38C] uppercase tracking-[0.4em]">
                   User Specimen
                 </th>
-                <th className="px-8 py-6 text-left text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">
+                <th className="px-8 py-7 text-left text-[10px] font-black text-white/70 uppercase tracking-[0.4em]">
                   Identity ID
                 </th>
-                <th className="px-8 py-6 text-left text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">
+                <th className="px-8 py-7 text-left text-[10px] font-black text-white/70 uppercase tracking-[0.4em]">
                   Role Cluster
                 </th>
-                <th className="px-8 py-6 text-left text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">
+                <th className="px-8 py-7 text-left text-[10px] font-black text-white/70 uppercase tracking-[0.4em]">
                   Status
                 </th>
-                <th className="px-10 py-6 text-right text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">
-                  Directives
+                <th className="px-10 py-7 text-right text-[10px] font-black text-white/70 uppercase tracking-[0.4em]">
+                  Operations
                 </th>
               </tr>
             </thead>
@@ -577,47 +589,36 @@ const ManageUsers = () => {
                 return (
                   <tr
                     key={user.id}
-                    className="hover:bg-[#EFEDED] dark:bg-background/50 dark:hover:bg-white/5 dark:bg-card/5 transition-colors group"
+                    className="hover:bg-[#EFEDED] dark:hover:bg-white/5 transition-all duration-300 group"
                   >
-                    <td className="px-10 py-6 whitespace-nowrap">
-                      <div className="flex items-center gap-5">
-                        <div className="h-12 w-12 flex-shrink-0 bg-[#5A270F] rounded-2xl flex items-center justify-center text-white text-lg font-black shadow-lg group-hover:bg-[#DF8142] transition-colors">
+                    <td className="px-10 py-8 whitespace-nowrap">
+                      <div className="flex items-center gap-6">
+                        <div className="h-14 w-14 bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
                           {(user.firstName || user.first_name)?.[0]}
                         </div>
                         <div>
-                          <div className="text-sm font-black text-[#5A270F] dark:text-foreground">
+                          <div className="text-[15px] font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight mb-1">
                             {user.firstName || user.first_name}{" "}
                             {user.lastName || user.last_name}
                           </div>
-                          <div className="text-xs text-[#92664A] dark:text-foreground/40 font-medium">
+                          <div className="text-[10px] text-[#92664A] dark:text-white/70 font-black uppercase tracking-widest leading-none mb-1.5">
                             {user.email}
                           </div>
-                          <div className="text-[10px] text-[#DF8142] font-black uppercase tracking-widest mt-0.5">
-                            {user.department || "Architecture"}{" "}
-                            {user.specialization &&
-                              roleName === "Faculty" &&
-                              `• ${user.specialization}`}
+                          <div className="text-[9px] text-[#DF8142] font-black uppercase tracking-[0.3em] flex items-center gap-2">
+                             <span className="h-1 w-1 rounded-full bg-[#DF8142]" /> {user.department || "Architecture"}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-8 py-6 whitespace-nowrap">
-                      <span className="text-xs font-mono font-black text-gray-500 dark:text-foreground/40 uppercase tracking-widest bg-[#EFEDED] dark:bg-white/5 px-3 py-1 rounded-lg border border-[#D9D9C2] dark:border-white/10">
+                      <span className="text-xs font-mono font-black text-gray-700 dark:text-white/80 uppercase tracking-widest bg-[#EFEDED] dark:bg-white/5 px-3 py-1 rounded-lg border border-[#D9D9C2] dark:border-white/10">
                         {user.university_id ||
                           (user as { universityId?: string }).universityId ||
                           "EXT-NODE"}
                       </span>
                     </td>
-                    <td className="px-8 py-6 whitespace-nowrap">
-                      <span
-                        className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${
-                          roleName === "Admin"
-                            ? "bg-[#92664A]/10 dark:bg-primary/10 text-[#5A270F] dark:text-[#EEB38C] border-[#92664A]/20 dark:border-white/10"
-                            : roleName === "Faculty"
-                              ? "bg-[#DF8142]/10 dark:bg-primary/10 text-[#DF8142] dark:text-[#EEB38C] border-[#DF8142]/20 dark:border-white/10"
-                              : "bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C]/80 dark:text-foreground/60 border-[#D9D9C2] dark:border-white/10"
-                        }`}
-                      >
+                    <td className="px-8 py-8 whitespace-nowrap">
+                      <span className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] bg-[#5A270F] dark:bg-[#EEB38C] text-white dark:text-[#5A270F] shadow-lg shadow-[#5A270F]/10">
                         <Shield className="h-3 w-3" />
                         {roleName}
                       </span>
@@ -636,10 +637,10 @@ const ManageUsers = () => {
                         <span
                           className={`text-[10px] font-black uppercase tracking-widest ${
                             user.status === "active"
-                              ? "text-[#5A270F] dark:text-foreground"
+                              ? "text-[#5A270F] dark:text-white/90"
                               : user.status === "pending_approval"
                                 ? "text-[#DF8142] dark:text-[#EEB38C]"
-                                : "text-rose-600 dark:text-rose-400"
+                                : "text-rose-600 dark:text-rose-500"
                           }`}
                         >
                           {user.status === "active"
@@ -732,24 +733,26 @@ const ManageUsers = () => {
             onClick={() => setIsModalOpen(false)}
           />
           <div className="relative w-full max-w-md bg-white dark:bg-card rounded-[2rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white dark:border-white/10 overflow-hidden animate-in zoom-in-95 duration-500">
-            <div className="bg-[#5A270F] px-6 py-5 relative overflow-hidden group/modal">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/20 blur-[60px] transition-all group-hover/modal:bg-[#DF8142]/30" />
+            <div className="bg-[#5A270F] px-8 py-7 relative overflow-hidden group/modal">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/20 blur-[80px] group-hover/modal:bg-[#DF8142]/30 transition-all duration-700" />
               <div className="relative z-10 flex justify-between items-start">
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-1">
-                    Registry Update
+                  <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#EEB38C] mb-2 opacity-60">
+                    Authority Directive
                   </p>
-                  <h3 className="text-2xl font-black text-white leading-tight">
-                    {modalMode === "create"
-                      ? "Initialize User Node"
-                      : "Configure Specimen"}
+                  <h3 className="text-3xl font-black text-white tracking-tighter uppercase leading-none italic">
+                    {modalMode === "create" ? (
+                      <>Init <span className="not-italic text-[#EEB38C]">Node</span></>
+                    ) : (
+                      <>Configure <span className="not-italic text-[#EEB38C]">Specimen</span></>
+                    )}
                   </h3>
                 </div>
                 <button
                   type="button"
-                  title="Abort Initialization"
                   onClick={() => setIsModalOpen(false)}
-                  className="p-2 hover:bg-white/10 dark:bg-card/10 rounded-xl text-[#EEB38C] transition-colors"
+                  title="Close Modal"
+                  className="p-3 bg-white/10 hover:bg-[#DF8142] rounded-2xl text-white transition-all shadow-xl active:scale-90"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -759,7 +762,7 @@ const ManageUsers = () => {
             <form onSubmit={handleSubmit} className="p-5 space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
                     First Name
                   </label>
                   <div className="relative">
@@ -782,7 +785,7 @@ const ManageUsers = () => {
                   </div>
                 </div>
                 <div className="space-y-1">
-                   <label className="text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-widest ml-1">
+                   <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
                     Last Name
                   </label>
                   <div className="relative">
@@ -808,7 +811,7 @@ const ManageUsers = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
                     University ID
                   </label>
                   <input
@@ -822,7 +825,7 @@ const ManageUsers = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
                     Email Address
                   </label>
                   <div className="relative">
@@ -849,7 +852,7 @@ const ManageUsers = () => {
 
               {modalMode === "create" && (
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
                     Initial Authorization Key
                   </label>
                   <div className="relative flex items-center">
@@ -888,7 +891,7 @@ const ManageUsers = () => {
               )}
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
                   Role Authorization
                 </label>
                 <div className="flex flex-wrap gap-1.5">
@@ -940,7 +943,7 @@ const ManageUsers = () => {
               <div className="space-y-3 pt-1">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
+                    <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
                       Department
                     </label>
                     <div className="relative">
@@ -962,7 +965,7 @@ const ManageUsers = () => {
                     ["Faculty", "Admin", "DepartmentHead"].includes(r),
                   ) && (
                     <div className="space-y-1">
-                      <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
+                      <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
                         Worker ID
                       </label>
                       <div className="relative">
@@ -985,7 +988,7 @@ const ManageUsers = () => {
 
                 {formData.roleNames.includes("Faculty") && (
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
+                    <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
                       Academic Specialization
                     </label>
                     <div className="relative">
@@ -1008,7 +1011,7 @@ const ManageUsers = () => {
                 {formData.roleNames.includes("Student") && (
                   <div className="grid grid-cols-3 gap-2 pt-1">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
+                      <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
                         Batch
                       </label>
                       <div className="relative">
@@ -1028,7 +1031,7 @@ const ManageUsers = () => {
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
+                      <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
                         Year
                       </label>
                       <div className="relative">
@@ -1048,7 +1051,7 @@ const ManageUsers = () => {
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
+                      <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
                         Semester
                       </label>
                       <div className="relative">
@@ -1074,7 +1077,7 @@ const ManageUsers = () => {
                 {(currentRoleName === "DepartmentHead" || currentRoleName === "SuperAdmin") && modalMode === "edit" && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
+                      <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
                         Node Status
                       </label>
                       <select
@@ -1092,7 +1095,7 @@ const ManageUsers = () => {
 
                     {formData.status === "suspended" && (
                       <div className="space-y-1 md:col-span-2">
-                        <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
+                        <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
                           Suspension Directive Reason *
                         </label>
                         <div className="relative">

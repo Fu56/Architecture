@@ -28,25 +28,25 @@ const fileTypeStyles: {
 } = {
   pdf: {
     bg: "bg-[#DF8142]", // Caramel
-    text: "text-[#5A270F] dark:text-[#EEB38C]", // Seal Brown
+    text: "text-white", 
     icon: FileText,
-    light: "bg-[#EEB38C]/20", // Buff
+    light: "bg-[#EEB38C]/10", // Buff
   },
   docx: {
     bg: "bg-[#EEB38C]", // Buff
-    text: "text-[#6C3B1C] dark:text-[#EEB38C]/80", // Kobicha
+    text: "text-[#5A270F]", // Seal Brown
     icon: FileText,
     light: "bg-[#EEB38C]/10",
   },
   jpeg: {
     bg: "bg-[#5A270F]", // Seal Brown
-    text: "text-white",
+    text: "text-[#EEB38C]", // Buff
     icon: Package,
     light: "bg-[#5A270F]/5",
   },
   png: {
     bg: "bg-[#5A270F]", // Seal Brown
-    text: "text-white",
+    text: "text-[#EEB38C]", // Buff
     icon: Package,
     light: "bg-[#5A270F]/5",
   },
@@ -58,19 +58,19 @@ const fileTypeStyles: {
   },
   rfa: {
     bg: "bg-[#92664A]", // Raw Umber
-    text: "text-[#F5F5DC]", // Beige/White-ish
+    text: "text-white", 
     icon: Package,
     light: "bg-[#92664A]/10",
   },
   skp: {
     bg: "bg-[#DF8142]", // Caramel
-    text: "text-[#5A270F] dark:text-[#EEB38C]", // Seal Brown
+    text: "text-white",
     icon: Package,
     light: "bg-[#DF8142]/10",
   },
   default: {
     bg: "bg-[#92664A]", // Raw Umber
-    text: "text-[#5A270F] dark:text-[#EEB38C]",
+    text: "text-white",
     icon: Layers,
     light: "bg-[#92664A]/10",
   },
@@ -137,9 +137,9 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
     : "Anonymous Architect";
 
   return (
-    <div className="group relative bg-[#FDFCFB] dark:bg-card rounded-[2.5rem] border border-[#BCAF9C] dark:border-white/10 shadow-lg shadow-[#5A270F]/5 hover:shadow-[0_25px_50px_-12px_rgba(90,39,15,0.2)] dark:hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] hover:-translate-y-1 transition-all duration-500 flex flex-col overflow-hidden h-full animate-in fade-in slide-in-from-bottom-4">
+    <div className="group relative bg-[#FDFCFB] dark:bg-card rounded-[2.5rem] border border-[#BCAF9C] dark:border-white/10 shadow-lg shadow-[#5A270F]/5 hover:shadow-[0_25px_50px_-12px_rgba(90,39,15,0.2)] dark:hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] hover:-translate-y-1 transition-all duration-500 flex flex-col h-full animate-in fade-in slide-in-from-bottom-4">
       {/* Visual Header Node */}
-      <div className="relative h-40 bg-[#5A270F] overflow-hidden">
+      <div className="relative h-40 bg-[#5A270F] rounded-t-[2.5rem] overflow-hidden">
         {/* Abstract Background pattern */}
         <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
         <div
@@ -203,7 +203,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
         )}
 
         <div className="absolute bottom-4 left-6 z-10">
-          <span className="text-[9px] font-bold uppercase tracking-widest text-[#5A270F]/50 dark:text-[#EEB38C]/40">
+          <span className="text-[9px] font-bold uppercase tracking-widest text-[#5A270F]/80 dark:text-[#EEB38C]/60">
             Node Registry: {String(id).padStart(5, "0")}
           </span>
         </div>
@@ -222,7 +222,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             <User className="h-4 w-4" />
           </div>
           <div className="overflow-hidden">
-            <p className="text-[8px] font-black text-[#5A270F]/80 dark:text-[#92664A] uppercase tracking-widest leading-none mb-1">
+            <p className="text-[8px] font-black text-[#5A270F] dark:text-[#EEB38C]/80 uppercase tracking-widest leading-none mb-1">
               Authority Node
             </p>
             <p className="text-xs font-black text-[#5A270F] dark:text-[#EEB38C] truncate leading-none">
@@ -236,7 +236,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             keywords.slice(0, 3).map((keyword) => (
               <span
                 key={keyword}
-                className="text-[9px] font-black uppercase tracking-[0.15em] bg-white dark:bg-white/10 text-[#5A270F] dark:text-[#EEB38C] px-3 py-2 rounded-lg border border-[#BCAF9C] dark:border-white/10 hover:bg-[#5A270F] dark:hover:bg-primary dark:hover:text-white hover:text-white transition-all duration-300 cursor-default shadow-sm"
+                className="text-[9px] font-black uppercase tracking-[0.15em] bg-white dark:bg-white/10 text-[#5A270F] dark:text-[#EEB38C] px-3 py-2 rounded-lg border border-[#BCAF9C] dark:border-white/10 hover:bg-[#DF8142] dark:hover:bg-[#DF8142] hover:text-white dark:hover:text-white transition-all duration-300 cursor-default shadow-sm"
               >
                 {keyword}
               </span>
@@ -269,7 +269,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
                   Matrix State: {resource.status}
                 </span>
                 {resource.adminComment && (
-                  <span className="text-white/40 font-medium italic truncate max-w-[90px]">
+                  <span className="text-white/70 font-medium italic truncate max-w-[90px]">
                     Directive logged
                   </span>
                 )}
@@ -282,18 +282,18 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
       <div className="mt-auto px-6 pb-6">
         <div className="flex items-center justify-between mb-4 px-1">
           <div className="flex items-center gap-2 group/stat">
-            <div className="h-6 w-6 rounded-lg bg-[#EEB38C]/10 dark:bg-white/10 flex items-center justify-center text-[#92664A] dark:text-[#92664A] group-hover/stat:bg-[#DF8142]/10 group-hover/stat:text-[#DF8142] transition-colors">
+            <div className="h-6 w-6 rounded-lg bg-[#DF8142]/10 dark:bg-[#DF8142]/5 flex items-center justify-center text-[#DF8142] group-hover/stat:bg-[#DF8142] group-hover/stat:text-white transition-all duration-300">
               <Download className="h-3 w-3" />
             </div>
-            <span className="text-[10px] font-bold text-[#5A270F] dark:text-[#EEB38C] tracking-wider">
+            <span className="text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] tracking-[0.2em]">
               {downloadCount.toLocaleString()}
             </span>
           </div>
           <div className="flex items-center gap-2 group/stat">
-            <div className="h-6 w-6 rounded-lg bg-[#EEB38C]/10 dark:bg-white/10 flex items-center justify-center text-[#92664A] dark:text-[#92664A] group-hover/stat:bg-[#DF8142]/10 group-hover/stat:text-[#DF8142] transition-colors">
+            <div className="h-6 w-6 rounded-lg bg-[#5A270F]/10 dark:bg-white/5 flex items-center justify-center text-[#5A270F] dark:text-[#92664A] group-hover/stat:bg-[#5A270F] group-hover/stat:text-white transition-all duration-300">
               <Calendar className="h-3 w-3" />
             </div>
-            <span className="text-[10px] font-bold text-[#5A270F] dark:text-[#EEB38C] tracking-wider">
+            <span className="text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] tracking-[0.2em]">
               {new Date(uploadedAt).toLocaleDateString(undefined, {
                 month: "short",
                 year: "numeric",
@@ -302,7 +302,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+         <div className="grid grid-cols-2 gap-3">
           <a
             href={`${
               import.meta.env.VITE_API_URL
@@ -311,10 +311,10 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             )}`}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center gap-2 py-4 bg-[#5A270F]/5 dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 border border-[#BCAF9C] dark:border-white/5"
+            className="flex items-center justify-center gap-2 py-4 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#5A270F] dark:hover:bg-[#DF8142] hover:text-white transition-all shadow-sm active:scale-95 border border-[#BCAF9C] dark:border-white/10"
           >
             <Eye className="h-4 w-4" />
-            View
+            View State
           </a>
           <a
             href={`${
@@ -323,7 +323,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
               localStorage.getItem("token") || "",
             )}`}
             download
-            className="flex items-center justify-center gap-2 py-4 bg-[#DF8142] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#5A270F] transition-all shadow-md shadow-[#DF8142]/20 active:scale-95 hover:-translate-y-0.5"
+            className="flex items-center justify-center gap-2 py-4 bg-[#DF8142] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#5A270F] transition-all shadow-xl shadow-[#DF8142]/20 active:scale-95 hover:-translate-y-0.5"
           >
             <Download className="h-4 w-4" />
             Download
