@@ -30,6 +30,16 @@ const Explore = () => {
   const [recentResources, setRecentResources] = useState<Resource[]>([]);
 
   useEffect(() => {
+    const FONT_LINK_ID = "explore-page-fonts";
+    if (!document.getElementById(FONT_LINK_ID)) {
+      const link = document.createElement("link");
+      link.id = FONT_LINK_ID;
+      link.rel = "stylesheet";
+      link.href =
+        "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap";
+      document.head.appendChild(link);
+    }
+
     const fetchData = async () => {
       try {
         const [statsRes, stagesRes, resourcesRes] = await Promise.all([
@@ -50,7 +60,7 @@ const Explore = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#EFEDED] dark:bg-[#0F0602] selection:bg-primary/20 selection:text-[#2A1205] transition-colors duration-500">
+    <div className="min-h-screen bg-[#FAF8F4] dark:bg-[#0F0602] font-inter selection:bg-[#DF8142]/20 selection:text-[#5A270F] transition-colors duration-500">
       {/* Dynamic Hero Section */}
       <section className="relative pt-32 pb-24 overflow-hidden bg-[#5A270F] dark:bg-[#1A0B02] transition-colors duration-700">
         <div className="absolute inset-0">
@@ -65,7 +75,7 @@ const Explore = () => {
               <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#DF8142]/10 border border-[#DF8142]/20 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-[#DF8142] mb-8 animate-in fade-in slide-in-from-top-4 duration-1000">
                 <Compass className="h-3 w-3" /> Navigation Nexus
               </div>
-              <h1 className="text-6xl sm:text-8xl font-black text-white tracking-tighter mb-8 leading-[0.85] animate-in fade-in slide-in-from-left-4 duration-1000 delay-200">
+              <h1 className="text-6xl sm:text-8xl font-black text-white tracking-tighter mb-8 leading-[0.85] animate-in fade-in slide-in-from-left-4 duration-1000 delay-200 font-space-grotesk">
                 UNCOVER THE <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#EEB38C] to-[#DF8142]">
                   ARCHITECT'S MINT.
@@ -143,13 +153,13 @@ const Explore = () => {
                 key={i}
                 className="bg-white dark:bg-card p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-none flex flex-col items-center text-center group hover:border-[#DF8142]/40 dark:hover:border-[#DF8142]/30 transition-all duration-500"
               >
-                <div className="h-14 w-14 bg-[#EFEDED] dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#DF8142] group-hover:text-white transition-all duration-500">
-                  <stat.icon className="h-6 w-6 text-[#92664A] dark:text-[#EEB38C]/60 group-hover:text-white transition-colors" />
+                <div className="h-14 w-14 bg-[#FAF8F4] dark:bg-white/5 border border-[#EEB38C]/30 dark:border-white/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#DF8142] group-hover:text-white transition-all duration-500">
+                  <stat.icon className="h-6 w-6 text-[#DF8142] dark:text-[#EEB38C]/60 group-hover:text-white transition-colors" />
                 </div>
-                <h4 className="text-4xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter mb-2 transition-colors">
+                <h4 className="text-4xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter mb-2 transition-colors font-space-grotesk">
                   {stat.value.toLocaleString()}
                 </h4>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-foreground/40 transition-colors">
+                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#92664A] dark:text-foreground/40 transition-colors">
                   {stat.label}
                 </p>
               </div>
@@ -163,7 +173,7 @@ const Explore = () => {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="flex flex-col md:flex-row items-end justify-between gap-8 mb-16">
             <div className="max-w-xl">
-              <h2 className="text-4xl sm:text-5xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter mb-4 leading-none transition-colors">
+              <h2 className="text-4xl sm:text-5xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter mb-4 leading-none transition-colors font-space-grotesk">
                 THEMATIC CLUSTERS.
               </h2>
               <p className="text-[#5A270F] dark:text-foreground/60 font-medium transition-colors">
@@ -186,15 +196,15 @@ const Explore = () => {
                 to={`/browse?stage=${stage.id}`}
                 className="group relative bg-white dark:bg-card p-10 rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 shadow-lg shadow-slate-200/40 dark:shadow-none overflow-hidden hover:shadow-2xl hover:shadow-[#DF8142]/30 dark:hover:border-[#DF8142]/20 transition-all duration-500"
               >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#EFEDED] dark:bg-white/5 rounded-bl-[5rem] group-hover:bg-[#DF8142] transition-all duration-500 flex items-center justify-end pr-8 pt-8">
-                  <Sparkles className="h-6 w-6 text-[#EEB38C] dark:text-[#EEB38C]/40 group-hover:text-white transition-all" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#FDFCFB] dark:bg-white/5 rounded-bl-[5rem] group-hover:bg-[#DF8142] transition-all duration-500 flex items-center justify-end pr-8 pt-8 border-l border-b border-[#EEB38C]/20 dark:border-transparent">
+                  <Sparkles className="h-6 w-6 text-[#DF8142] dark:text-[#EEB38C]/40 group-hover:text-white transition-all" />
                 </div>
 
                 <div className="relative z-10">
                   <span className="text-[10px] font-black uppercase tracking-widest text-[#DF8142] mb-4 block">
                     Segment Node
                   </span>
-                  <h3 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] group-hover:text-[#DF8142] transition-colors mb-4 leading-tight">
+                  <h3 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] group-hover:text-[#DF8142] transition-colors mb-4 leading-tight font-space-grotesk">
                     {stage.name}
                   </h3>
                   <div className="flex items-center gap-2 text-[#92664A] dark:text-foreground/40 font-bold text-xs uppercase tracking-widest group-hover:text-[#DF8142] transition-colors">
@@ -217,7 +227,7 @@ const Explore = () => {
             <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/5 dark:bg-card/5 border border-white/10 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-white underline underline-offset-4 decoration-[#DF8142]/90 mb-8">
               <Zap className="h-3 w-3 text-[#DF8142]/80" /> High-Voltage Assets
             </div>
-            <h2 className="text-4xl sm:text-6xl font-black text-white tracking-tighter mb-4">
+            <h2 className="text-4xl sm:text-6xl font-black text-white tracking-tighter mb-4 font-space-grotesk">
               RECENTLY ISOLATED.
             </h2>
           </div>
@@ -245,7 +255,7 @@ const Explore = () => {
       <section className="py-32 bg-white dark:bg-card transition-colors duration-700">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 text-center">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-5xl sm:text-7xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight leading-[0.9] mb-10 transition-colors">
+            <h2 className="text-5xl sm:text-7xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight leading-[0.9] mb-10 transition-colors font-space-grotesk">
               READY TO <br />
               <span className="text-[#DF8142] hover:tracking-widest transition-all duration-700 cursor-default">
                 CONTRIBUTE?
