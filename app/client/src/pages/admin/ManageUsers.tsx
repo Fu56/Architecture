@@ -75,6 +75,7 @@ const ManageUsers = () => {
   });
   const [processing, setProcessing] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [confirmDeleteUser, setConfirmDeleteUser] = useState<User | null>(null);
 
   // Download Format Dropdown State
   const [isDownloadFormatOpen, setIsDownloadFormatOpen] = useState(false);
@@ -164,20 +165,21 @@ const ManageUsers = () => {
     }
   };
 
-  const handleDelete = async (id: string | number) => {
-    if (
-      !window.confirm(
-        "Are you sure you want to terminate this user node? This operation is irreversible.",
-      )
-    )
-      return;
+  const handleDelete = (user: User) => {
+    setConfirmDeleteUser(user);
+  };
+
+  const executeDelete = async () => {
+    if (!confirmDeleteUser) return;
+    const id = confirmDeleteUser.id;
+    setConfirmDeleteUser(null);
     try {
       await api.delete(`/admin/users/${id}`);
-      toast.success("User node terminated successfully");
+      toast.success("User node terminated successfully.");
       setUsers(users.filter((u) => u.id !== id));
     } catch (err: unknown) {
       console.error("Delete error", err);
-      toast.error("Protocol Breach: Failed to terminate user node");
+      toast.error("Protocol Breach: Failed to terminate user node.");
     }
   };
 
@@ -714,7 +716,7 @@ const ManageUsers = () => {
                                 currentRoleName === "Admin"
                               ) && (
                                 <button
-                                  onClick={() => handleDelete(user.id)}
+                                  onClick={() => handleDelete(user)}
                                   className="p-3 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-rose-600 hover:bg-red-50 rounded-xl transition-all"
                                   title="Terminate"
                                 >
@@ -1304,6 +1306,74 @@ const ManageUsers = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Delete Confirmation Modal */}
+      {confirmDeleteUser && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-[#1A0B04]/70 backdrop-blur-2xl animate-in fade-in duration-500"
+            onClick={() => setConfirmDeleteUser(null)}
+          />
+          <div className="relative w-full max-w-md bg-[#FAF8F4] dark:bg-[#1A0B04] rounded-[2rem] shadow-[0_50px_100px_-20px_rgba(26,11,4,0.6)] border border-rose-900/20 dark:border-rose-500/10 overflow-hidden animate-in zoom-in-95 duration-500">
+            {/* Header */}
+            <div className="bg-gradient-to-br from-rose-900 to-[#5A270F] px-10 py-9 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-rose-500/20 blur-[80px] rounded-full" />
+              <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2.5 bg-rose-500/20 rounded-xl border border-rose-400/20">
+                    <Trash2 className="h-5 w-5 text-rose-300" />
+                  </div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.6em] text-rose-300/80">
+                    Irreversible Action
+                  </p>
+                </div>
+                <h3 className="text-2xl font-black text-white tracking-tight uppercase leading-tight">
+                  Terminate <span className="text-rose-400 italic">Node</span>
+                </h3>
+              </div>
+            </div>
+
+            {/* Body */}
+            <div className="p-10 space-y-8">
+              <div className="space-y-3">
+                <p className="text-sm font-bold text-[#5A270F] dark:text-white/80 leading-relaxed">
+                  You are about to permanently delete the following user node from the registry:
+                </p>
+                <div className="p-5 bg-rose-50 dark:bg-rose-900/10 border-2 border-rose-200/60 dark:border-rose-500/20 rounded-[1.25rem] space-y-1">
+                  <p className="text-sm font-black text-[#5A270F] dark:text-white tracking-tight">
+                    {confirmDeleteUser.firstName || confirmDeleteUser.first_name}{" "}
+                    {confirmDeleteUser.lastName || confirmDeleteUser.last_name}
+                  </p>
+                  <p className="text-[11px] font-bold text-rose-600/70 dark:text-rose-400/60">
+                    {confirmDeleteUser.email}
+                  </p>
+                </div>
+                <p className="text-[11px] font-bold text-rose-600/70 dark:text-rose-400/60 uppercase tracking-widest">
+                  ⚠ This action cannot be undone.
+                </p>
+              </div>
+
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => setConfirmDeleteUser(null)}
+                  className="flex-1 py-4 rounded-[1rem] text-[11px] font-black uppercase tracking-[0.3em] text-[#92664A] dark:text-[#EEB38C]/50 hover:text-[#5A270F] dark:hover:text-[#EEB38C] transition-all border-2 border-[#D9D9C2]/40 dark:border-white/5 hover:border-[#D9D9C2] dark:hover:border-white/10 bg-transparent"
+                >
+                  Abort
+                </button>
+                <button
+                  type="button"
+                  onClick={executeDelete}
+                  className="flex-[2] py-4 bg-gradient-to-r from-rose-700 to-rose-900 text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-[1rem] hover:from-rose-800 hover:to-rose-950 transition-all flex items-center justify-center gap-3 active:scale-95 shadow-[0_15px_35px_-10px_rgba(190,18,60,0.5)] group"
+                >
+                  <Trash2 className="h-4 w-4 group-hover:animate-pulse" />
+                  Confirm Termination
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
