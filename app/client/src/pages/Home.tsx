@@ -484,8 +484,7 @@ const Home = () => {
       {/* Explore Platform Sections - Architectural Ecosystem */}
       <section className="py-44 bg-white dark:bg-background relative overflow-hidden transition-colors duration-500">
         {/* Architectural Grid Background */}
-        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none" 
-             style={{ backgroundImage: 'linear-gradient(#5A270F 1px, transparent 1px), linear-gradient(90deg, #5A270F 1px, transparent 1px)', backgroundSize: '80px 80px' }} />
+        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none architectural-ecosystem-grid" />
         
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
           <div className="text-center mb-32">

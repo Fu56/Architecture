@@ -14,6 +14,7 @@ import {
   AlertCircle,
   Eye,
   EyeOff,
+  Zap,
 } from "lucide-react";
 import { api } from "../../lib/api";
 import { toast } from "../../lib/toast";
@@ -151,658 +152,338 @@ const Profile = () => {
   if (!authUser) return null; // Should be handled by ProtectedRoute
 
   return (
-    <div className="max-w-4xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-5 duration-700 pb-20">
-      {/* Premium Header */}
-      <div className="bg-[#FAF8F4] dark:bg-[#2A1205] rounded-[2.5rem] p-10 sm:p-14 text-[#5A270F] dark:text-white shadow-xl dark:shadow-2xl relative overflow-hidden group border border-black/5 dark:border-white/5 transition-colors duration-500">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#DF8142]/10 blur-[100px] -translate-y-1/2 translate-x-1/2 group-hover:bg-[#DF8142]/20 transition-all duration-1000" />
-
-        <div className="relative flex flex-col md:flex-row items-center gap-10 z-10">
-          <div className="h-32 w-32 bg-[#EFEDED] dark:bg-card/5 backdrop-blur-3xl rounded-[2.5rem] flex items-center justify-center shadow-xl dark:shadow-2xl border border-black/10 dark:border-white/10 group-hover:scale-105 transition-transform duration-500">
-            <span className="text-4xl font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tighter">
-              {authUser.first_name?.[0]}
-              {authUser.last_name?.[0]}
-            </span>
-          </div>
-          <div className="text-center md:text-left space-y-2">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#DF8142]/10 border border-[#DF8142]/20 rounded-full text-[10px] font-black uppercase tracking-widest text-[#EEB38C] mb-2">
-              <Shield className="h-3 w-3" /> System Verified
+    <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 pb-32 transition-colors duration-500">
+      {/* Premium Command Header */}
+      <div className="bg-[#5A270F] rounded-[3.5rem] p-12 sm:p-16 text-white shadow-2xl relative overflow-hidden group border border-white/5 transition-colors duration-500">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#DF8142]/20 blur-[120px] -translate-y-1/2 translate-x-1/2 group-hover:bg-[#DF8142]/30 transition-all duration-1000" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#EEB38C]/10 blur-[80px] translate-y-1/2 -translate-x-1/2" />
+        
+        <div className="relative flex flex-col md:flex-row items-center gap-12 z-10">
+          <div className="relative">
+            <div className="h-40 w-40 bg-white/5 backdrop-blur-2xl rounded-[3rem] flex items-center justify-center shadow-2xl border border-white/10 group-hover:scale-110 transition-transform duration-700">
+              <span className="text-5xl font-black text-[#EEB38C] uppercase tracking-tighter italic transition-colors">
+                {authUser.first_name?.[0]}
+                {authUser.last_name?.[0]}
+              </span>
             </div>
-            <h2 className="text-4xl sm:text-5xl font-black tracking-tighter text-[#5A270F] dark:text-white transition-colors">
-              {authUser.first_name} {authUser.last_name}
+            <div className="absolute -bottom-2 -right-2 h-10 w-10 bg-[#DF8142] rounded-2xl flex items-center justify-center border-4 border-[#5A270F] shadow-lg animate-pulse">
+              <Shield className="h-5 w-5 text-white" />
+            </div>
+          </div>
+          
+          <div className="text-center md:text-left space-y-3">
+            <div className="inline-flex items-center gap-2 px-5 py-2 bg-[#DF8142]/20 border border-[#DF8142]/30 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-4 transition-colors">
+              <div className="h-2 w-2 rounded-full bg-[#DF8142] animate-ping" />
+              Node Authority Verified
+            </div>
+            <h2 className="text-5xl sm:text-6xl font-black tracking-tighter text-white italic transition-colors">
+              {authUser.first_name} <span className="text-[#DF8142] not-italic">{authUser.last_name}</span>
             </h2>
-            <p className="text-[#5A270F]/40 dark:text-white/40 font-black uppercase tracking-[0.3em] text-[10px]">
-              {typeof authUser.role === "object"
-                ? authUser.role.name
-                : authUser.role}{" "}
-              • ArchVault Node 01
-            </p>
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-2">
+              <p className="text-[#EEB38C]/60 font-black uppercase tracking-[0.4em] text-[10px] bg-white/5 px-4 py-2 rounded-xl border border-white/5 transition-colors">
+                {typeof authUser.role === "object" ? authUser.role.name : authUser.role} Protocol
+              </p>
+              <div className="h-1 w-8 bg-white/10 rounded-full" />
+              <p className="text-[#EEB38C]/40 font-black uppercase tracking-[0.4em] text-[10px] transition-colors">
+                 Cluster: Nexus-Alpha-01
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
-        <div className="md:col-span-8 space-y-10">
-          {/* Identity Matrix (Edit Profile) */}
-          <div className="bg-white dark:bg-card rounded-[2.5rem] p-8 sm:p-10 shadow-xl dark:shadow-none relative overflow-hidden border border-[#D9D9C2] dark:border-white/10 transition-all duration-500">
-            <div className="flex items-center justify-between mb-10">
-              <h3 className="text-lg font-black text-[#5A270F] dark:text-white flex items-center gap-4 uppercase tracking-tighter transition-colors">
-                <div className="p-4 bg-[#5A270F] text-white rounded-2xl shadow-lg">
-                  <User className="h-6 w-6" />
-                </div>
-                Identity Matrix
-              </h3>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="lg:col-span-8 space-y-12">
+          {/* Identity Matrix Configuration */}
+          <div className="bg-white dark:bg-card rounded-[3rem] p-10 sm:p-12 shadow-2xl shadow-[#5A270F]/5 dark:shadow-none relative overflow-hidden border border-[#D9D9C2] dark:border-white/10 transition-all duration-500">
+            <div className="flex items-center justify-between mb-12">
+              <div className="space-y-1">
+                <h3 className="text-2xl font-black text-[#5A270F] dark:text-white uppercase tracking-tighter italic flex items-center gap-4 transition-colors">
+                  Identity <span className="text-[#DF8142] not-italic">Matrix</span>
+                </h3>
+                <p className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.3em] transition-colors">Recalibrate Node Parameters</p>
+              </div>
+              
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className={`p-3 rounded-2xl transition-all ${
+                className={`flex items-center gap-3 px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all ${
                   isEditing
-                    ? "bg-red-50 dark:bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white"
-                    : "bg-[#EFEDED] dark:bg-white/5 text-[#5A270F]/40 dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:hover:text-white hover:bg-[#D9D9C2] dark:hover:bg-white/10"
+                    ? "bg-rose-500 text-white hover:bg-rose-600 shadow-xl shadow-rose-500/20"
+                    : "bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#D9D9C2] dark:hover:bg-white/10"
                 }`}
               >
                 {isEditing ? (
-                  <X className="h-5 w-5" />
+                  <>
+                    <X className="h-4 w-4" /> Cancel Re-sync
+                  </>
                 ) : (
-                  <Edit3 className="h-5 w-5" />
+                  <>
+                    <Edit3 className="h-4 w-4" /> Edit Profile
+                  </>
                 )}
               </button>
             </div>
 
             {isEditing ? (
-              <form
-                onSubmit={handleProfileSubmit}
-                className="space-y-6 animate-in fade-in duration-500"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="first_name"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2 transition-colors"
-                    >
-                      First Name
-                    </label>
-                    <div className="relative group">
-                      <input
-                        id="first_name"
-                        type="text"
-                        className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.first_name ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
-                        value={profileForm.first_name}
-                        onChange={(e) => {
-                          setProfileForm({
-                            ...profileForm,
-                            first_name: e.target.value,
-                          });
-                          if (errors.first_name)
-                            setErrors((prev) => ({ ...prev, first_name: "" }));
-                        }}
-                        onBlur={() =>
-                          !profileForm.first_name.trim() &&
-                          setErrors((prev) => ({
-                            ...prev,
-                            first_name: "Identifier Required",
-                          }))
-                        }
-                      />
-                      {errors.first_name && (
-                        <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-pulse" />
-                      )}
+              <form onSubmit={handleProfileSubmit} className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-500">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                  {[
+                    { id: "first_name", label: "Legal First Name", value: profileForm.first_name, placeholder: "e.g. Elias" },
+                    { id: "last_name", label: "Legal Last Name", value: profileForm.last_name, placeholder: "e.g. Thorne" },
+                    { id: "university_id", label: "University Identifier", value: profileForm.university_id, placeholder: "U-ARCH-XXXX" }
+                  ].map((field) => (
+                    <div key={field.id} className="space-y-2">
+                      <label 
+                        htmlFor={field.id}
+                        className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/60 ml-2 transition-colors"
+                      >
+                        {field.label}
+                      </label>
+                      <div className="relative group">
+                        <input
+                          id={field.id}
+                          type="text"
+                          title={field.label}
+                          value={field.value as string}
+                          onChange={(e) => {
+                            setProfileForm({ ...profileForm, [field.id]: e.target.value });
+                            if (errors[field.id]) setErrors((prev) => ({ ...prev, [field.id]: "" }));
+                          }}
+                          className={`w-full bg-[#EFEDED] dark:bg-background border rounded-2xl px-6 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] focus:ring-4 focus:ring-[#DF8142]/5 outline-none transition-all text-sm ${
+                            errors[field.id] ? "border-[#DF8142]" : "border-[#D9D9C2] dark:border-white/10"
+                          }`}
+                          placeholder={field.placeholder}
+                        />
+                        {errors[field.id] && (
+                          <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142]" />
+                        )}
+                      </div>
                     </div>
-                    {errors.first_name && (
-                      <p className="text-[9px] text-[#DF8142] font-black uppercase ml-2 mt-1 animate-in fade-in slide-in-from-top-1">
-                        {errors.first_name}
-                      </p>
-                    )}
-                  </div>
+                  ))}
+
                   <div className="space-y-2">
-                    <label
-                      htmlFor="last_name"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2"
-                    >
-                      Last Name
-                    </label>
-                    <div className="relative group">
-                      <input
-                        id="last_name"
-                        type="text"
-                        className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.last_name ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
-                        value={profileForm.last_name}
-                        onChange={(e) => {
-                          setProfileForm({
-                            ...profileForm,
-                            last_name: e.target.value,
-                          });
-                          if (errors.last_name)
-                            setErrors((prev) => ({ ...prev, last_name: "" }));
-                        }}
-                        onBlur={() =>
-                          !profileForm.last_name.trim() &&
-                          setErrors((prev) => ({
-                            ...prev,
-                            last_name: "Identifier Required",
-                          }))
-                        }
-                      />
-                      {errors.last_name && (
-                        <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-pulse" />
-                      )}
-                    </div>
-                    {errors.last_name && (
-                      <p className="text-[9px] text-[#DF8142] font-black uppercase ml-2 mt-1 animate-in fade-in slide-in-from-top-1">
-                        {errors.last_name}
-                      </p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="university_id"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2"
-                    >
-                      University ID
-                    </label>
-                    <div className="relative group">
-                      <input
-                        id="university_id"
-                        type="text"
-                        className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.university_id ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
-                        value={profileForm.university_id}
-                        onChange={(e) => {
-                          setProfileForm({
-                            ...profileForm,
-                            university_id: e.target.value,
-                          });
-                          if (errors.university_id)
-                            setErrors((prev) => ({
-                              ...prev,
-                              university_id: "",
-                            }));
-                        }}
-                        placeholder="U-ID Required"
-                        onBlur={() =>
-                          !profileForm.university_id.trim() &&
-                          setErrors((prev) => ({
-                            ...prev,
-                            university_id: "ID Sync Conflict",
-                          }))
-                        }
-                      />
-                      {errors.university_id && (
-                        <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-pulse" />
-                      )}
-                    </div>
-                    {errors.university_id && (
-                      <p className="text-[9px] text-[#DF8142] font-black uppercase ml-2 mt-1 animate-in fade-in slide-in-from-top-1">
-                        {errors.university_id}
-                      </p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="batch"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2"
-                    >
-                      Batch
-                    </label>
-                    <div className="relative group">
-                      <input
-                        id="batch"
-                        type="number"
-                        className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.batch ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
-                        value={profileForm.batch}
-                        onChange={(e) => {
-                          setProfileForm({
-                            ...profileForm,
-                            batch: e.target.value,
-                          });
-                          if (errors.batch)
-                            setErrors((prev) => ({ ...prev, batch: "" }));
-                        }}
-                        onBlur={() =>
-                          profileForm.batch &&
-                          isNaN(Number(profileForm.batch)) &&
-                          setErrors((prev) => ({
-                            ...prev,
-                            batch: "Invalid Batch Sequence",
-                          }))
-                        }
-                      />
-                      {errors.batch && (
-                        <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-pulse" />
-                      )}
-                    </div>
-                    {errors.batch && (
-                      <p className="text-[9px] text-[#DF8142] font-black uppercase ml-2 mt-1 animate-in fade-in slide-in-from-top-1">
-                        {errors.batch}
-                      </p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="year"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2"
-                    >
-                      Year
-                    </label>
-                    <div className="relative group">
-                      <input
-                        id="year"
-                        type="number"
-                        className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.year ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
-                        value={profileForm.year}
-                        onChange={(e) => {
-                          setProfileForm({
-                            ...profileForm,
-                            year: e.target.value,
-                          });
-                          if (errors.year)
-                            setErrors((prev) => ({ ...prev, year: "" }));
-                        }}
-                        onBlur={() =>
-                          profileForm.year &&
-                          isNaN(Number(profileForm.year)) &&
-                          setErrors((prev) => ({
-                            ...prev,
-                            year: "Invalid Year Format",
-                          }))
-                        }
-                      />
-                      {errors.year && (
-                        <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-pulse" />
-                      )}
-                    </div>
-                    {errors.year && (
-                      <p className="text-[9px] text-[#DF8142] font-black uppercase ml-2 mt-1 animate-in fade-in slide-in-from-top-1">
-                        {errors.year}
-                      </p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="semester"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2"
-                    >
-                      Semester
-                    </label>
-                    <div className="relative group">
-                      <input
-                        id="semester"
-                        type="number"
-                        className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.semester ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
-                        value={profileForm.semester}
-                        onChange={(e) => {
-                          setProfileForm({
-                            ...profileForm,
-                            semester: e.target.value,
-                          });
-                          if (errors.semester)
-                            setErrors((prev) => ({ ...prev, semester: "" }));
-                        }}
-                        onBlur={() =>
-                          profileForm.semester &&
-                          isNaN(Number(profileForm.semester)) &&
-                          setErrors((prev) => ({
-                            ...prev,
-                            semester: "Invalid Semester",
-                          }))
-                        }
-                      />
-                      {errors.semester && (
-                        <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-pulse" />
-                      )}
-                    </div>
-                    {errors.semester && (
-                      <p className="text-[9px] text-[#DF8142] font-black uppercase ml-2 mt-1 animate-in fade-in slide-in-from-top-1">
-                        {errors.semester}
-                      </p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="specialization"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2"
-                    >
-                      Specialization
-                    </label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/60 ml-2 transition-colors">Academic Batch</label>
                     <input
-                      id="specialization"
-                      type="text"
-                      className="w-full bg-[#EFEDED] dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm"
-                      value={profileForm.specialization}
-                      onChange={(e) =>
-                        setProfileForm({
-                          ...profileForm,
-                          specialization: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label
-                      htmlFor="department"
-                      className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40 ml-2"
-                    >
-                      Department
-                    </label>
-                    <input
-                      id="department"
-                      type="text"
-                      className="w-full bg-[#EFEDED] dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm"
-                      value={profileForm.department}
-                      onChange={(e) =>
-                        setProfileForm({
-                          ...profileForm,
-                          department: e.target.value,
-                        })
-                      }
+                      type="number"
+                      title="Academic Batch"
+                      placeholder="e.g. 2024"
+                      value={profileForm.batch}
+                      onChange={(e) => setProfileForm({ ...profileForm, batch: e.target.value })}
+                      className="w-full bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl px-6 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all text-sm outline-none"
                     />
                   </div>
                 </div>
-                <div className="flex justify-end pt-4">
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 pt-4">
+                   {[
+                    { id: "year", label: "Year", value: profileForm.year },
+                    { id: "semester", label: "Semester", value: profileForm.semester },
+                    { id: "department", label: "Department", value: profileForm.department, disabled: true }
+                  ].map((field) => (
+                    <div key={field.id} className="space-y-2">
+                      <label 
+                        htmlFor={field.id}
+                        className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/60 ml-2 transition-colors"
+                      >
+                        {field.label}
+                      </label>
+                      <input
+                        id={field.id}
+                        type="text"
+                        title={field.label}
+                        placeholder={field.label}
+                        value={field.value as string}
+                        disabled={field.disabled}
+                        onChange={(e) => setProfileForm({ ...profileForm, [field.id]: e.target.value })}
+                        className={`w-full bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl px-6 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all text-sm outline-none ${
+                          field.disabled ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex justify-end pt-8 border-t border-[#D9D9C2] dark:border-white/10">
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex items-center gap-3 px-8 py-4 bg-[#5A270F] text-white rounded-2xl font-black uppercase tracking-widest hover:bg-[#6C3B1C] transition-all shadow-xl active:scale-[0.98] disabled:opacity-50 text-xs"
+                    className="flex items-center gap-4 px-10 py-5 bg-[#5A270F] text-white rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-[#6C3B1C] hover:scale-105 transition-all shadow-2xl active:scale-[0.98] disabled:opacity-50 text-[11px] transition-colors"
                   >
                     {loading ? (
                       <RefreshCw className="h-4 w-4 animate-spin" />
                     ) : (
-                      <Save className="h-4 w-4" />
+                      <Save className="h-4 w-4 text-[#DF8142]" />
                     )}
-                    Sync Identity Matrix
+                    Synchronize Identity Matrix
                   </button>
                 </div>
               </form>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 transition-colors">
-                    Legal First Name
-                  </p>
-                  <p className="text-lg font-bold text-[#5A270F] dark:text-[#EEB38C] border-b border-[#EFEDED] dark:border-white/5 pb-2 transition-colors">
-                    {authUser.first_name}
-                  </p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 transition-colors">
-                    Legal Last Name
-                  </p>
-                  <p className="text-lg font-bold text-[#5A270F] dark:text-[#EEB38C] border-b border-[#EFEDED] dark:border-white/5 pb-2 transition-colors">
-                    {authUser.last_name}
-                  </p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 transition-colors">
-                    Comms Frequency
-                  </p>
-                  <p className="text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] border-b border-[#EFEDED] dark:border-white/5 pb-2 truncate transition-colors">
-                    {authUser.email}
-                  </p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 transition-colors">
-                    University ID
-                  </p>
-                  <p className="text-lg font-bold text-[#5A270F] dark:text-[#EEB38C] border-b border-[#EFEDED] dark:border-white/5 pb-2 transition-colors">
-                    {String(authUser.university_id || "EXT-NODE")}
-                  </p>
-                </div>
-                {authUser.role === "Student" && (
-                  <>
-                    <div className="space-y-1">
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 transition-colors">
-                        Academic Batch
-                      </p>
-                      <p className="text-lg font-bold text-[#5A270F] dark:text-[#EEB38C] border-b border-[#EFEDED] dark:border-white/5 pb-2 transition-colors">
-                        {String(authUser.batch || "N/A")}
-                      </p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 transition-colors">
-                        Academic Year
-                      </p>
-                      <p className="text-lg font-bold text-[#5A270F] dark:text-[#EEB38C] border-b border-[#EFEDED] dark:border-white/5 pb-2 transition-colors">
-                        {String(authUser.year || "N/A")}
-                      </p>
-                    </div>
-                  </>
-                )}
-                <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 transition-colors">
-                    Department
-                  </p>
-                  <p className="text-lg font-bold text-[#5A270F] dark:text-[#EEB38C] border-b border-[#EFEDED] dark:border-white/5 pb-2 transition-colors">
-                    {String(authUser.department || "Architecture")}
-                  </p>
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 animate-in fade-in duration-700">
+                {[
+                  { label: "Legal Profile Name", value: `${authUser.first_name} ${authUser.last_name}`, icon: User },
+                  { label: "Matrix Comms", value: authUser.email, icon: RefreshCw },
+                  { label: "Registry Node ID", value: String(authUser.university_id || "EXT-NODE"), icon: Shield },
+                  { label: "Departmental Sector", value: String(authUser.department || "Architecture"), icon: Shield },
+                  { label: "Academic Batch", value: String(authUser.batch || "N/A"), hide: authUser.role !== "Student" },
+                  { label: "Cycle Position", value: `Year ${authUser.year || "N/A"} / Sem ${authUser.semester || "N/A"}`, hide: authUser.role !== "Student" }
+                ].filter(i => !i.hide).map((item, i) => (
+                  <div key={i} className="group space-y-3">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-[#EEB38C]/40 group-hover:text-[#DF8142] transition-colors">{item.label}</p>
+                    <p className="text-xl font-black text-[#5A270F] dark:text-white border-b-2 border-[#EFEDED] dark:border-white/5 pb-3 transition-all group-hover:border-[#DF8142]/30 dark:group-hover:text-[#EEB38C]">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
               </div>
             )}
           </div>
 
-          {/* Security Protocols (Change Password) */}
-          <div className="bg-white dark:bg-card rounded-[2.5rem] p-8 sm:p-10 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden border border-[#D9D9C2] dark:border-white/10 transition-all duration-500">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-lg font-black text-[#5A270F] dark:text-white flex items-center gap-4 uppercase tracking-tighter transition-colors">
-                <div className="p-4 bg-[#92664A] text-white rounded-2xl shadow-lg">
-                  <Key className="h-6 w-6" />
-                </div>
-                Access Control
-              </h3>
+          {/* Security Command Center */}
+          <div className="bg-[#FAF8F4] dark:bg-card/50 rounded-[3rem] p-10 sm:p-12 shadow-xl relative overflow-hidden border border-[#D9D9C2] dark:border-white/10 transition-all duration-500">
+            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none architectural-grid" />
+            <div className="flex items-center justify-between mb-10 relative z-10">
+              <div className="space-y-1">
+                <h3 className="text-2xl font-black text-[#5A270F] dark:text-white uppercase tracking-tighter italic flex items-center gap-4 transition-colors">
+                  Access <span className="text-[#DF8142] not-italic">Control</span>
+                </h3>
+                <p className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.3em] transition-colors">Recalibrate Gateway Security</p>
+              </div>
+              <div className="p-4 bg-[#5A270F] text-white rounded-2xl shadow-xl transition-colors">
+                <Key className="h-6 w-6 text-[#DF8142]" />
+              </div>
             </div>
 
-            <form onSubmit={handlePasswordSubmit} className="space-y-6">
-              <div className="space-y-2">
+            <form onSubmit={handlePasswordSubmit} className="space-y-8 relative z-10">
+              <div className="space-y-3">
                 <div className="flex justify-between items-center ml-2">
-                  <label
-                    htmlFor="currentPassword"
-                    className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-foreground/40 transition-colors"
-                  >
-                    Current System Key
-                  </label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-foreground/40 transition-colors">Current Terminal Key</label>
                   <button
                     type="button"
                     onClick={() => setShowPasswords(!showPasswords)}
-                    className="text-[9px] font-black uppercase tracking-tighter text-[#DF8142] hover:text-[#5A270F] dark:text-[#EEB38C] transition-colors flex items-center gap-1"
+                    className="text-[9px] font-black uppercase tracking-widest text-[#DF8142] hover:text-[#5A270F] dark:text-[#EEB38C] transition-colors flex items-center gap-2"
                   >
-                    {showPasswords ? (
-                      <EyeOff className="h-3 w-3" />
-                    ) : (
-                      <Eye className="h-3 w-3" />
-                    )}
-                    {showPasswords ? "Hide" : "Show"} Key
+                    {showPasswords ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                    {showPasswords ? "Mask" : "Scan"} Keys
                   </button>
                 </div>
                 <div className="relative">
                   <input
-                    id="currentPassword"
                     type={showPasswords ? "text" : "password"}
-                    className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.currentPassword ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
                     value={passwordForm.currentPassword}
                     onChange={(e) => {
-                      setPasswordForm({
-                        ...passwordForm,
-                        currentPassword: e.target.value,
-                      });
-                      if (errors.currentPassword)
-                        setErrors((prev) => ({ ...prev, currentPassword: "" }));
+                      setPasswordForm({ ...passwordForm, currentPassword: e.target.value });
+                      if (errors.currentPassword) setErrors((prev) => ({ ...prev, currentPassword: "" }));
                     }}
-                    onBlur={() =>
-                      !passwordForm.currentPassword &&
-                      setErrors((prev) => ({
-                        ...prev,
-                        currentPassword: "Verification Key Required",
-                      }))
-                    }
-                    placeholder="Enter Master Key"
-                    required
+                    className={`w-full bg-white dark:bg-background border rounded-2xl px-6 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] focus:ring-4 focus:ring-[#DF8142]/5 outline-none transition-all text-sm shadow-inner transition-colors ${
+                      errors.currentPassword ? "border-[#DF8142]" : "border-[#D9D9C2] dark:border-white/10"
+                    }`}
+                    placeholder="Enter Master Passphrase"
                   />
                   {errors.currentPassword && (
-                    <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-bounce" />
-                  )}
-                </div>
-                {errors.currentPassword && (
-                  <p className="text-[9px] text-[#DF8142] font-black uppercase ml-2 mt-1 animate-in fade-in slide-in-from-top-1">
-                    {errors.currentPassword}
-                  </p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label
-                    htmlFor="newPassword"
-                    className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-foreground/40 ml-2 transition-colors"
-                  >
-                    New Secure Key
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="newPassword"
-                      type={showPasswords ? "text" : "password"}
-                      className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.newPassword ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
-                      value={passwordForm.newPassword}
-                      onChange={(e) => {
-                        setPasswordForm({
-                          ...passwordForm,
-                          newPassword: e.target.value,
-                        });
-                        if (errors.newPassword)
-                          setErrors((prev) => ({ ...prev, newPassword: "" }));
-                      }}
-                      onBlur={() =>
-                        passwordForm.newPassword.length < 6 &&
-                        setErrors((prev) => ({
-                          ...prev,
-                          newPassword: "Insufficient Entropy: Min 6 chars",
-                        }))
-                      }
-                      placeholder="Min 6 chars"
-                      required
-                    />
-                    {errors.newPassword && (
-                      <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-bounce" />
-                    )}
-                  </div>
-                  {errors.newPassword && (
-                    <p className="text-[9px] text-[#DF8142] font-black uppercase ml-2 mt-1 animate-in fade-in slide-in-from-top-1">
-                      {errors.newPassword}
-                    </p>
-                  )}
-                  <div className="flex items-center gap-2 ml-2 mt-1">
-                    <div
-                      className={`h-1 flex-1 rounded-full transition-all duration-500 ${passwordForm.newPassword.length >= 6 ? "bg-emerald-500" : "bg-gray-200"}`}
-                    />
-                    <span
-                      className={`text-[8px] font-black uppercase ${passwordForm.newPassword.length >= 6 ? "text-emerald-600" : "text-gray-400 dark:text-white/30"}`}
-                    >
-                      {passwordForm.newPassword.length >= 6
-                        ? "Entropy Secure"
-                        : "Weak Entropy"}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label
-                    htmlFor="confirmPassword"
-                    className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-foreground/40 ml-2 transition-colors"
-                  >
-                    Confirm Secure Key
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="confirmPassword"
-                      type={showPasswords ? "text" : "password"}
-                      className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-2xl px-5 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] outline-none transition-all text-sm pr-12 ${errors.confirmPassword ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
-                      value={passwordForm.confirmPassword}
-                      onChange={(e) => {
-                        setPasswordForm({
-                          ...passwordForm,
-                          confirmPassword: e.target.value,
-                        });
-                        if (errors.confirmPassword)
-                          setErrors((prev) => ({
-                            ...prev,
-                            confirmPassword: "",
-                          }));
-                      }}
-                      onBlur={() =>
-                        passwordForm.confirmPassword !==
-                          passwordForm.newPassword &&
-                        setErrors((prev) => ({
-                          ...prev,
-                          confirmPassword:
-                            "Protocol Mismatch: Keys do not match",
-                        }))
-                      }
-                      placeholder="Match Keys"
-                      required
-                    />
-                    {errors.confirmPassword && (
-                      <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-bounce" />
-                    )}
-                  </div>
-                  {errors.confirmPassword && (
-                    <p className="text-[9px] text-[#DF8142] font-black uppercase ml-2 mt-1 animate-in fade-in slide-in-from-top-1">
-                      {errors.confirmPassword}
-                    </p>
+                    <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142]" />
                   )}
                 </div>
               </div>
-              <div className="pt-4">
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                {[
+                  { id: "newPassword", label: "Initialize New Secure Key", placeholder: "Min 12 entropy chars" },
+                  { id: "confirmPassword", label: "Verify New Secure Key", placeholder: "Re-scan key" }
+                ].map((field) => (
+                  <div key={field.id} className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-foreground/40 ml-2 transition-colors">{field.label}</label>
+                    <div className="relative">
+                      <input
+                        type={showPasswords ? "text" : "password"}
+                        value={(field.id === "newPassword" ? passwordForm.newPassword : passwordForm.confirmPassword) as string}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (field.id === "newPassword") setPasswordForm({ ...passwordForm, newPassword: val });
+                          else setPasswordForm({ ...passwordForm, confirmPassword: val });
+                          if (errors[field.id]) setErrors((prev) => ({ ...prev, [field.id]: "" }));
+                        }}
+                        className={`w-full bg-white dark:bg-background border rounded-2xl px-6 py-4 font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] focus:ring-4 focus:ring-[#DF8142]/5 outline-none transition-all text-sm shadow-inner transition-colors ${
+                          errors[field.id] ? "border-[#DF8142]" : "border-[#D9D9C2] dark:border-white/10"
+                        }`}
+                        placeholder={field.placeholder}
+                      />
+                    </div>
+                    {field.id === "newPassword" && (
+                      <div className="flex items-center gap-3 ml-2 pt-1 transition-colors">
+                        <div className="flex-grow h-1.5 bg-[#EFEDED] dark:bg-white/5 rounded-full overflow-hidden">
+                           <div 
+                              className={`h-full transition-all duration-1000 ${
+                                passwordForm.newPassword.length >= 12 ? "bg-emerald-500 w-full" : 
+                                passwordForm.newPassword.length >= 6 ? "bg-[#DF8142] w-1/2" : "bg-rose-500 w-1/4"
+                              }`} 
+                            />
+                        </div>
+                        <span className="text-[8px] font-black uppercase tracking-widest text-[#92664A] transition-colors">
+                          {passwordForm.newPassword.length >= 12 ? "High Entropy" : "Insufficient"}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="pt-6">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-3 h-14 bg-[#5A270F] text-white rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-[#6C3B1C] transition-all shadow-xl active:scale-[0.98] disabled:opacity-50 text-[11px]"
+                  className="w-full h-16 bg-[#5A270F] text-white rounded-2xl font-black uppercase tracking-[0.3em] hover:bg-[#6C3B1C] transition-all shadow-2xl active:scale-[0.98] disabled:opacity-50 text-[11px] flex items-center justify-center gap-4 transition-colors"
                 >
-                  {loading ? (
-                    <RefreshCw className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <CheckCircle className="h-4 w-4 text-[#EEB38C]" />
-                  )}
-                  Update Credentials
+                  {loading ? <RefreshCw className="h-5 w-5 animate-spin" /> : <CheckCircle className="h-5 w-5 text-[#DF8142]" />}
+                  Recalibrate Access Credentials
                 </button>
               </div>
             </form>
           </div>
         </div>
 
-        {/* Info Sidebar */}
-        <div className="md:col-span-4 space-y-8">
-          <div className="bg-gradient-to-br from-[#92664A] to-[#6C3B1C] rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-xl shadow-[#6C3B1C]/20 border border-white/5">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#EEB38C]/10 blur-3xl" />
-            <Key className="h-10 w-10 mb-6 relative z-10 text-[#EEB38C]" />
-            <h3 className="text-xl font-black mb-2 relative z-10 text-white">
-              Security Protocol
-            </h3>
-            <p className="text-[#EEB38C]/60 text-[10px] font-bold uppercase tracking-widest leading-relaxed relative z-10">
-              Passphrase changes will terminate all other active sessions for
-              this node. Use high-entropy keys for maximum protection.
+        {/* Intelligence Sidebar */}
+        <div className="lg:col-span-4 space-y-10">
+          <div className="bg-gradient-to-br from-[#5A270F] to-[#2A1205] rounded-[3rem] p-10 text-white relative overflow-hidden shadow-2xl border border-white/5 group transition-colors">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            <Shield className="h-12 w-12 mb-8 text-[#DF8142] animate-pulse" />
+            <h3 className="text-2xl font-black mb-4 tracking-tighter italic transition-colors">Security <span className="text-[#DF8142]">Protocol</span></h3>
+            <p className="text-[#EEB38C]/60 text-xs font-bold uppercase tracking-widest leading-relaxed transition-colors">
+              Updating your terminal key will immediately terminate all other active communication sessions for this node across the Nexus Matrix.
             </p>
+            <div className="mt-8 pt-8 border-t border-white/10 flex items-center justify-between">
+              <span className="text-[10px] font-black uppercase tracking-widest text-[#EEB38C]/40 transition-colors">Last Recalibration</span>
+              <span className="text-[10px] font-black text-white italic transition-colors">Active Node</span>
+            </div>
           </div>
 
-          <div className="bg-white dark:bg-card p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-sm transition-all duration-500">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-[#EEB38C] mb-6 flex items-center gap-2 transition-colors">
-              <Shield className="h-4 w-4" /> System Info
-            </h4>
+          <div className="bg-white dark:bg-card p-10 rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 shadow-xl transition-all duration-500 space-y-8">
             <div className="space-y-4">
-              <div className="flex justify-between items-center text-[10px] font-bold">
-                <span className="text-[#5A270F]/40 dark:text-foreground/40">Node Cluster</span>
-                <span className="text-[#5A270F] dark:text-[#EEB38C]">EU-Central-01</span>
-              </div>
-              <div className="flex justify-between items-center text-[10px] font-bold">
-                <span className="text-[#5A270F]/40 dark:text-foreground/40">Encryption</span>
-                <span className="text-[#5A270F] dark:text-[#EEB38C]">AES-256-GCM</span>
-              </div>
-              <div className="flex justify-between items-center text-[10px] font-bold text-emerald-600">
-                <span>Active Shield</span>
-                <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              </div>
+               <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#92664A] dark:text-[#EEB38C]/60 flex items-center gap-3 transition-colors">
+                <Zap className="h-4 w-4 text-[#DF8142]" /> System Matrix Info
+              </h4>
+              {[
+                { label: "Node Cluster", value: "Alpha-EU-01" },
+                { label: "Encryption Grade", value: "AES-256-GCM" },
+                { label: "Matrix Sync", value: "99.9% Latency" },
+                { label: "Operational State", value: "Active", special: true }
+              ].map((info, i) => (
+                <div key={i} className="flex justify-between items-center py-2 border-b border-[#EFEDED] dark:border-white/5 last:border-0 transition-colors">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-[#92664A]/60 dark:text-white/20 transition-colors">{info.label}</span>
+                  <span className={`text-[10px] font-black uppercase italic transition-colors ${info.special ? "text-emerald-500 flex items-center gap-2" : "text-[#5A270F] dark:text-[#EEB38C]"}`}>
+                    {info.special && <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />}
+                    {info.value}
+                  </span>
+                </div>
+              ))}
             </div>
 
             <button
               onClick={handleLogout}
-              className="mt-8 w-full flex items-center justify-between p-4 bg-red-50 dark:bg-red-500/10 hover:bg-red-500 hover:text-white rounded-[1rem] text-[10px] font-black uppercase tracking-widest text-red-600 dark:text-red-400 transition-all group"
+              className="w-full h-14 bg-rose-500/5 hover:bg-rose-500 text-rose-500 hover:text-white border border-rose-500/20 rounded-2xl flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all group"
             >
+              <LogOut className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
               Terminate Session
-              <LogOut className="h-4 w-4" />
             </button>
           </div>
         </div>

@@ -251,14 +251,14 @@ const Upload = () => {
                       onChange={handleFileChange}
                     />
                   </label>
-                  <p className="pl-1 font-medium italic">or drag-and-drop</p>
+                  <p className="pl-1 font-black italic">or drag-and-drop</p>
                 </div>
                 {file ? (
-                  <p className="text-sm text-primary font-bold mt-2 bg-primary/10 py-2 px-4 rounded-full inline-block">
+                  <p className="text-[10px] text-white font-black mt-2 bg-[#5A270F] py-2.5 px-6 rounded-full inline-block shadow-lg animate-bounce">
                     {file.name}
                   </p>
                 ) : (
-                  <p className="text-[10px] text-gray-500 dark:text-white/40 font-bold uppercase tracking-widest">
+                  <p className="text-[10px] text-[#92664A] dark:text-[#EEB38C]/40 font-black uppercase tracking-[0.3em]">
                     MAX PAYLOAD: 5GB • ARCHITECTURAL SCHEMATICS
                   </p>
                 )}
@@ -283,11 +283,11 @@ const Upload = () => {
                   placeholder="e.g. Urban Nexus Schematic"
                   value={metadata.title}
                   onChange={handleMetaChange}
-                  className={`w-full px-6 py-3.5 bg-[#FAF8F4] dark:bg-white/5 border ${
+                  className={`w-full px-6 py-4 bg-[#FAF8F4] dark:bg-background border ${
                     errors.title
-                      ? "border-rose-400 bg-red-50/10"
+                      ? "border-[#DF8142] ring-2 ring-[#DF8142]/10"
                       : "border-[#D9D9C2] dark:border-white/10"
-                  } rounded-xl text-[#5A270F] dark:text-[#EEB38C] font-bold focus:outline-none focus:border-primary/90 focus:bg-white dark:focus:bg-white/10 transition-all outline-none`}
+                  } rounded-2xl text-[#5A270F] dark:text-[#EEB38C] font-black focus:outline-none focus:border-[#DF8142] focus:bg-white dark:focus:bg-white/5 transition-all outline-none shadow-inner`}
                 />
                 <FieldError message={errors.title} />
               </div>
@@ -302,11 +302,11 @@ const Upload = () => {
                     placeholder="Principal Architect"
                     value={metadata.author}
                     onChange={handleMetaChange}
-                    className={`w-full px-6 py-3.5 bg-[#FAF8F4] dark:bg-white/5 border ${
+                    className={`w-full px-6 py-4 bg-[#FAF8F4] dark:bg-background border ${
                       errors.author
-                        ? "border-rose-400 bg-red-50/10"
+                        ? "border-[#DF8142] ring-2 ring-[#DF8142]/10"
                         : "border-[#D9D9C2] dark:border-white/10"
-                    } rounded-xl text-[#5A270F] dark:text-[#EEB38C] font-bold focus:outline-none focus:border-primary/90 focus:bg-white dark:focus:bg-white/10 transition-all outline-none`}
+                    } rounded-2xl text-[#5A270F] dark:text-[#EEB38C] font-black focus:outline-none focus:border-[#DF8142] focus:bg-white dark:focus:bg-white/5 transition-all outline-none shadow-inner`}
                   />
                   <FieldError message={errors.author} />
                 </div>
@@ -319,11 +319,11 @@ const Upload = () => {
                     placeholder="Urban, Design, Matrix"
                     value={metadata.keywords}
                     onChange={handleMetaChange}
-                    className={`w-full px-6 py-3.5 bg-[#FAF8F4] dark:bg-white/5 border ${
+                    className={`w-full px-6 py-4 bg-[#FAF8F4] dark:bg-background border ${
                       errors.keywords
-                        ? "border-rose-400 bg-red-50/10"
+                        ? "border-[#DF8142] ring-2 ring-[#DF8142]/10"
                         : "border-[#D9D9C2] dark:border-white/10"
-                    } rounded-xl text-[#5A270F] dark:text-[#EEB38C] font-bold focus:outline-none focus:border-primary/90 focus:bg-white dark:focus:bg-white/10 transition-all outline-none`}
+                    } rounded-2xl text-[#5A270F] dark:text-[#EEB38C] font-black focus:outline-none focus:border-[#DF8142] focus:bg-white dark:focus:bg-white/5 transition-all outline-none shadow-inner`}
                   />
                   <FieldError message={errors.keywords} />
                 </div>
@@ -340,11 +340,11 @@ const Upload = () => {
                     title="Course Type"
                     value={metadata.design_stage_id}
                     onChange={handleMetaChange}
-                    className={`w-full px-6 py-3.5 bg-[#FAF8F4] dark:bg-white/5 border ${
+                    className={`w-full px-6 py-4 bg-[#FAF8F4] dark:bg-background border ${
                       errors.design_stage_id
-                        ? "border-rose-400 bg-red-50/10"
+                        ? "border-[#DF8142] ring-2 ring-[#DF8142]/10"
                         : "border-[#D9D9C2] dark:border-white/10"
-                    } rounded-xl text-[#5A270F] dark:text-[#EEB38C] font-bold focus:outline-none focus:border-primary/90 focus:bg-white dark:focus:bg-white/10 transition-all appearance-none cursor-pointer`}
+                    } rounded-2xl text-[#5A270F] dark:text-[#EEB38C] font-black focus:outline-none focus:border-[#DF8142] focus:bg-white dark:focus:bg-white/5 transition-all appearance-none cursor-pointer shadow-inner`}
                   >
                     <option value="" disabled>
                       Select Course Type
@@ -371,11 +371,11 @@ const Upload = () => {
                       placeholder="Enter Course name"
                       value={metadata.customStageName}
                       onChange={handleMetaChange}
-                      className={`w-full px-6 py-3.5 bg-primary/50 border ${
+                      className={`w-full px-6 py-4 bg-[#5A270F]/5 dark:bg-background border ${
                         errors.customStageName
-                          ? "border-rose-400 bg-red-50/20"
-                          : "border-primary/20"
-                      } rounded-xl text-[#5A270F] dark:text-[#EEB38C] font-bold focus:outline-none focus:border-primary/90 focus:bg-white dark:bg-card transition-all outline-none animate-in fade-in slide-in-from-top-2`}
+                          ? "border-[#DF8142] ring-2 ring-[#DF8142]/10"
+                          : "border-[#D9D9C2] dark:border-white/10"
+                      } rounded-2xl text-[#5A270F] dark:text-[#EEB38C] font-black focus:outline-none focus:border-[#DF8142] focus:bg-white dark:bg-card transition-all outline-none animate-in fade-in slide-in-from-top-2 shadow-inner`}
                     />
                     <FieldError message={errors.customStageName} />
                   </div>
@@ -390,11 +390,11 @@ const Upload = () => {
                     placeholder="1-5"
                     value={metadata.forYearStudents}
                     onChange={handleMetaChange}
-                    className={`w-full px-6 py-3.5 bg-[#FAF8F4] dark:bg-white/5 border ${
+                    className={`w-full px-6 py-4 bg-[#FAF8F4] dark:bg-background border ${
                       errors.forYearStudents
-                        ? "border-rose-400 bg-red-50/10"
+                        ? "border-[#DF8142] ring-2 ring-[#DF8142]/10"
                         : "border-[#D9D9C2] dark:border-white/10"
-                    } rounded-xl text-[#5A270F] dark:text-[#EEB38C] font-bold focus:outline-none focus:border-primary/90 focus:bg-white dark:focus:bg-white/10 transition-all outline-none`}
+                    } rounded-2xl text-[#5A270F] dark:text-[#EEB38C] font-black focus:outline-none focus:border-[#DF8142] focus:bg-white dark:focus:bg-white/5 transition-all outline-none shadow-inner`}
                   />
                   <FieldError message={errors.forYearStudents} />
                 </div>
@@ -408,11 +408,11 @@ const Upload = () => {
                     placeholder="1-2"
                     value={metadata.semester}
                     onChange={handleMetaChange}
-                    className={`w-full px-6 py-3.5 bg-[#FAF8F4] dark:bg-white/5 border ${
+                    className={`w-full px-6 py-4 bg-[#FAF8F4] dark:bg-background border ${
                       errors.semester
-                        ? "border-rose-400 bg-red-50/10"
+                        ? "border-[#DF8142] ring-2 ring-[#DF8142]/10"
                         : "border-[#D9D9C2] dark:border-white/10"
-                    } rounded-xl text-[#5A270F] dark:text-[#EEB38C] font-bold focus:outline-none focus:border-primary/90 focus:bg-white dark:focus:bg-white/10 transition-all outline-none`}
+                    } rounded-2xl text-[#5A270F] dark:text-[#EEB38C] font-black focus:outline-none focus:border-[#DF8142] focus:bg-white dark:focus:bg-white/5 transition-all outline-none shadow-inner`}
                   />
                   <FieldError message={errors.semester} />
                 </div>
@@ -426,11 +426,11 @@ const Upload = () => {
                     placeholder="Year"
                     value={metadata.batch}
                     onChange={handleMetaChange}
-                    className={`w-full px-6 py-3.5 bg-[#FAF8F4] dark:bg-white/5 border ${
+                    className={`w-full px-6 py-4 bg-[#FAF8F4] dark:bg-background border ${
                       errors.batch
-                        ? "border-rose-400 bg-red-50/10"
+                        ? "border-[#DF8142] ring-2 ring-[#DF8142]/10"
                         : "border-[#D9D9C2] dark:border-white/10"
-                    } rounded-xl text-[#5A270F] dark:text-[#EEB38C] font-bold focus:outline-none focus:border-primary/90 focus:bg-white dark:focus:bg-white/10 transition-all outline-none`}
+                    } rounded-2xl text-[#5A270F] dark:text-[#EEB38C] font-black focus:outline-none focus:border-[#DF8142] focus:bg-white dark:focus:bg-white/5 transition-all outline-none shadow-inner`}
                   />
                   <FieldError message={errors.batch} />
                 </div>
@@ -523,16 +523,16 @@ const Upload = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center gap-3 py-4 px-4 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-xl hover:bg-[#6C3B1C] transition-all shadow-xl active:scale-95 disabled:opacity-50"
+              className="w-full flex justify-center items-center gap-4 py-5 px-4 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-[#6C3B1C] hover:scale-[1.01] transition-all shadow-2xl active:scale-95 disabled:opacity-50 italic group/submit"
             >
               {loading ? (
                 <>
-                  <Loader2 className="h-5 w-5 animate-spin" /> Transmitting...
+                  <Loader2 className="h-5 w-5 animate-spin" /> Synchronizing Digital Core...
                 </>
               ) : (
                 <>
-                  Upload Resource
-                  <Sparkles className="h-5 w-5" />
+                  Initialize Transmission
+                  <Sparkles className="h-5 w-5 text-[#DF8142] group-hover/submit:rotate-12 transition-transform" />
                 </>
               )}
             </button>

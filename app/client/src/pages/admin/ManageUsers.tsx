@@ -2,21 +2,23 @@ import { useState, useEffect } from "react";
 import { api } from "../../lib/api";
 import type { User } from "../../models";
 import {
-  Loader2,
-  UserPlus,
-  Edit2,
-  Trash2,
   Shield,
-  User as UserIcon,
   Search,
-  MessageSquare,
-  Zap,
-  CheckCircle,
-  RefreshCw,
   Download,
-  ChevronDown,
+  UserPlus,
+  RefreshCw,
   AlertCircle,
   X,
+  Zap,
+  CheckCircle2,
+  Trash2,
+  ChevronDown,
+  Loader2,
+  Edit2,
+  User as UserIcon,
+  Bell,
+  Terminal,
+  Mail,
 } from "lucide-react";
 import { toast } from "../../lib/toast";
 import { useSession } from "../../lib/auth-client";
@@ -30,6 +32,15 @@ interface UserWithRole {
   name?: string;
   role?: { name: string } | string;
 }
+
+const FieldError = ({ message }: { message?: string }) => {
+  if (!message) return null;
+  return (
+    <p className="text-[8px] text-[#DF8142] font-black uppercase ml-1 mt-1 transition-all animate-in fade-in slide-in-from-top-1">
+      {message}
+    </p>
+  );
+};
 
 const ManageUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -349,7 +360,7 @@ const ManageUsers = () => {
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -669,7 +680,7 @@ const ManageUsers = () => {
                           className="p-3 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] hover:bg-[#DF8142]/10 rounded-xl transition-all"
                           title="Direct Transmission"
                         >
-                          <MessageSquare className="h-4 w-4" />
+                          <Mail className="h-4 w-4" />
                         </button>
 
                         {user.status === "pending_approval" &&
@@ -679,7 +690,7 @@ const ManageUsers = () => {
                               className="p-3 text-[#DF8142] hover:text-[#2A1205] hover:bg-[#5A270F]/5 rounded-xl transition-all"
                               title="Authorize Node"
                             >
-                              <CheckCircle className="h-4 w-4" />
+                              <CheckCircle2 className="h-4 w-4" />
                             </button>
                           )}
 
@@ -737,22 +748,27 @@ const ManageUsers = () => {
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-[#2A1205]/40 backdrop-blur-xl animate-in fade-in duration-500"
+            className="absolute inset-0 bg-[#1A0B04]/60 backdrop-blur-2xl animate-in fade-in duration-700"
             onClick={() => setIsModalOpen(false)}
           />
-          <div className="relative w-full max-w-md bg-white dark:bg-card rounded-[2rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white dark:border-white/10 overflow-hidden animate-in zoom-in-95 duration-500">
-            <div className="bg-[#5A270F] px-8 py-7 relative overflow-hidden group/modal">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/20 blur-[80px] group-hover/modal:bg-[#DF8142]/30 transition-all duration-700" />
-              <div className="relative z-10 flex justify-between items-start">
+          <div className="relative w-full max-w-4xl bg-[#FAF8F4] dark:bg-[#1A0B04] rounded-[2.5rem] shadow-[0_50px_100px_-20px_rgba(26,11,4,0.5)] border border-[#D9D9C2]/20 dark:border-white/5 overflow-hidden animate-in zoom-in-95 duration-500 flex flex-col max-h-[95vh]">
+            {/* Modal Header */}
+            <div className="bg-[#5A270F] px-12 py-10 relative overflow-hidden group/modal border-b border-[#DF8142]/30 flex-shrink-0">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-[#DF8142]/20 blur-[120px] rounded-full group-hover/modal:bg-[#DF8142]/30 transition-all duration-1000" />
+              <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-white/5 rounded-full blur-3xl" />
+              <div className="relative z-10 flex justify-between items-end">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#EEB38C] mb-2 opacity-60">
-                    Authority Directive
-                  </p>
-                  <h3 className="text-3xl font-black text-white tracking-tighter uppercase leading-none italic">
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className="h-[2px] w-10 bg-gradient-to-r from-[#DF8142] to-transparent" />
+                    <p className="text-[11px] font-black uppercase tracking-[0.8em] text-[#EEB38C] drop-shadow-sm">
+                      Registry Management
+                    </p>
+                  </div>
+                  <h3 className="text-4xl font-black text-white tracking-tighter uppercase leading-none font-space-grotesk">
                     {modalMode === "create" ? (
-                      <>Init <span className="not-italic text-[#EEB38C]">Node</span></>
+                      <>NODE <span className="text-[#DF8142] italic">INITIALIZATION</span></>
                     ) : (
-                      <>Configure <span className="not-italic text-[#EEB38C]">Specimen</span></>
+                      <>SPECIMEN <span className="text-[#DF8142] italic">RECONFIGURATION</span></>
                     )}
                   </h3>
                 </div>
@@ -760,209 +776,173 @@ const ManageUsers = () => {
                   type="button"
                   onClick={() => setIsModalOpen(false)}
                   title="Close Modal"
-                  className="p-3 bg-white/10 hover:bg-[#DF8142] rounded-2xl text-white transition-all shadow-xl active:scale-90"
+                  className="p-4 bg-white/5 hover:bg-[#DF8142] hover:rotate-90 rounded-[1.25rem] text-white transition-all duration-500 shadow-2xl active:scale-90 group border border-white/10"
                 >
-                  <X className="h-5 w-5" />
+                  <X className="h-6 w-6 group-hover:scale-110" />
                 </button>
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-5 space-y-3">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
-                    First Name
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="firstName"
-                      name="firstName"
-                      title="First Name"
-                      value={formData.firstName}
-                      onChange={(e) => {
-                        handleInputChange(e);
-                        if (errors.firstName)
-                          setErrors((prev) => ({ ...prev, firstName: "" }));
-                      }}
-                      className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none ${errors.firstName ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
-                      placeholder="e.g. John"
-                    />
-                    {errors.firstName && (
-                      <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
-                    )}
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto custom-scrollbar p-12 space-y-12 bg-transparent">
+              {/* Section 01: Identity Core */}
+              <div className="space-y-8">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] text-[#EEB38C] text-xs font-black shadow-lg shadow-[#5A270F]/20">01</div>
+                  <h4 className="text-xs font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] font-space-grotesk">Identity Core Protocol</h4>
+                  <div className="h-[1px] flex-1 bg-gradient-to-r from-[#D9D9C2] to-transparent dark:from-white/10" />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
+                  <div className="space-y-3 group">
+                    <label htmlFor="firstName" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Forename Signature</label>
+                    <div className="relative">
+                      <input
+                        id="firstName"
+                        name="firstName"
+                        title="First Name"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] group-hover:shadow-[0_8px_20px_-6px_rgba(26,11,4,0.12)] ${errors.firstName ? 'border-[#DF8142] ring-4 ring-[#DF8142]/10' : 'border-[#D9D9C2]/60 dark:border-white/10 font-inter'}`}
+                        placeholder="e.g. John"
+                      />
+                      {errors.firstName && <AlertCircle className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-bounce" />}
+                    </div>
+                    <FieldError message={errors.firstName} />
+                  </div>
+
+                  <div className="space-y-3 group">
+                    <label htmlFor="lastName" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Surname Signature</label>
+                    <div className="relative">
+                      <input
+                        id="lastName"
+                        name="lastName"
+                        title="Last Name"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] group-hover:shadow-[0_8px_20px_-6px_rgba(26,11,4,0.12)] ${errors.lastName ? 'border-[#DF8142] ring-4 ring-[#DF8142]/10' : 'border-[#D9D9C2]/60 dark:border-white/10 font-inter'}`}
+                        placeholder="e.g. Doe"
+                      />
+                      {errors.lastName && <AlertCircle className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-bounce" />}
+                    </div>
+                    <FieldError message={errors.lastName} />
+                  </div>
+
+                  <div className="space-y-3 group">
+                    <label htmlFor="universityId" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Institutional UID</label>
+                    <div className="relative">
+                      <input
+                        id="universityId"
+                        name="universityId"
+                        title="University Identifier"
+                        value={formData.universityId}
+                        onChange={handleInputChange}
+                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] group-hover:shadow-[0_8px_20px_-6px_rgba(26,11,4,0.12)] ${errors.universityId ? 'border-[#DF8142] ring-4 ring-[#DF8142]/10' : 'border-[#D9D9C2]/60 dark:border-white/10 font-mono'}`}
+                        placeholder="U-ARCH-XXXX"
+                      />
+                    </div>
+                    <FieldError message={errors.universityId} />
+                  </div>
+
+                  <div className="space-y-3 group">
+                    <label htmlFor="email" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Network Communications</label>
+                    <div className="relative">
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        title="Email Communications"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] group-hover:shadow-[0_8px_20px_-6px_rgba(26,11,4,0.12)] ${errors.email ? 'border-[#DF8142] ring-4 ring-[#DF8142]/10' : 'border-[#D9D9C2]/60 dark:border-white/10 font-inter'}`}
+                        placeholder="node@nexus.edu"
+                      />
+                    </div>
+                    <FieldError message={errors.email} />
                   </div>
                 </div>
-                <div className="space-y-1">
-                   <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
-                    Last Name
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="lastName"
-                      name="lastName"
-                      title="Last Name"
-                      value={formData.lastName}
-                      onChange={(e) => {
-                        handleInputChange(e);
-                        if (errors.lastName)
-                          setErrors((prev) => ({ ...prev, lastName: "" }));
-                      }}
-                      className={`w-full bg-[#EFEDED] dark:bg-white/5 border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none ${errors.lastName ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
-                      placeholder="e.g. Doe"
-                    />
-                    {errors.lastName && (
-                      <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
-                    )}
+
+                {modalMode === "create" && (
+                  <div className="space-y-3 group">
+                    <label htmlFor="password" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Primary Access Directive</label>
+                    <div className="relative flex items-center">
+                      <input
+                        id="password"
+                        type="text"
+                        name="password"
+                        title="Initial Authorization Key"
+                        placeholder="Generate secure cipher..."
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] pl-6 pr-16 py-5 text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] group-hover:shadow-[0_8px_20px_-6px_rgba(26,11,4,0.12)] ${errors.password ? 'border-[#DF8142] ring-4 ring-[#DF8142]/10' : 'border-[#D9D9C2]/60 dark:border-white/10 font-mono'}`}
+                      />
+                      <button
+                        type="button"
+                        title="Auto-Generate Secret Key"
+                        onClick={generatePassword}
+                        className="absolute right-4 p-2.5 bg-[#5A270F] text-white rounded-[0.75rem] hover:bg-[#1A0B04] transition-all shadow-xl active:scale-90 border border-white/5"
+                      >
+                        <RefreshCw className="h-4 w-4" />
+                      </button>
+                    </div>
+                    <FieldError message={errors.password} />
                   </div>
-                </div>
+                )}
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
-                    University ID
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="universityId"
-                      name="universityId"
-                      title="University Identifier"
-                      value={formData.universityId}
-                      onChange={(e) => {
-                        handleInputChange(e);
-                        if (errors.universityId)
-                          setErrors((prev) => ({ ...prev, universityId: "" }));
-                      }}
-                      placeholder="U-ARCH-XXXX"
-                      className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.universityId ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
-                    />
-                    {errors.universityId && (
-                      <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
-                    )}
-                  </div>
+              {/* Section 02: Clearance Level Protocols */}
+              <div className="space-y-8">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] text-[#EEB38C] text-xs font-black shadow-lg shadow-[#5A270F]/20">02</div>
+                  <h4 className="text-xs font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] font-space-grotesk">Authorization Clearance Matrix</h4>
+                  <div className="h-[1px] flex-1 bg-gradient-to-r from-[#D9D9C2] to-transparent dark:from-white/10" />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      title="Email Communications"
-                      value={formData.email}
-                      onChange={(e) => {
-                        handleInputChange(e);
-                        if (errors.email)
-                          setErrors((prev) => ({ ...prev, email: "" }));
-                      }}
-                      className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.email ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
-                      placeholder="node@nexus.edu"
-                    />
-                    {errors.email && (
-                      <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {modalMode === "create" && (
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
-                    Initial Authorization Key
-                  </label>
-                  <div className="relative flex items-center">
-                    <input
-                      id="password"
-                      type="text"
-                      name="password"
-                      title="Initial Authorization Key"
-                      placeholder="Enter security key"
-                      value={formData.password}
-                      onChange={(e) => {
-                        handleInputChange(e);
-                        if (errors.password)
-                          setErrors((prev) => ({ ...prev, password: "" }));
-                      }}
-                      className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl pl-4 pr-12 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.password ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
-                    />
-                    <button
-                      type="button"
-                      title="Auto-Generate Secret Key"
-                      onClick={generatePassword}
-                      className="absolute right-2 p-1.5 hover:bg-[#DF8142]/10 rounded-lg text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] transition-colors"
-                    >
-                      <RefreshCw className="h-4 w-4" />
-                    </button>
-                    {errors.password && (
-                      <AlertCircle className="absolute right-10 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
-                    )}
-                  </div>
-                  {errors.password && (
-                    <p className="text-[8px] text-[#DF8142] font-black uppercase ml-1">
-                      {errors.password}
-                    </p>
-                  )}
-                </div>
-              )}
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
-                  Role Authorization
-                </label>
-                <div className="flex flex-wrap gap-1.5">
+                
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                   {["Student", "Faculty", "Admin", "DepartmentHead"]
-                    .filter(
-                      (role) =>
-                        role !== "DepartmentHead" ||
-                        currentRoleName === "SuperAdmin",
-                    )
+                    .filter((role) => role !== "DepartmentHead" || currentRoleName === "SuperAdmin")
                     .map((role) => {
                       const isSelected = formData.roleNames.includes(role);
                       return (
                         <button
                           key={role}
                           type="button"
-                          title={`Assign ${role} Role`}
                           onClick={() => {
                             const newRoles = isSelected
                               ? formData.roleNames.filter((r) => r !== role)
                               : [...formData.roleNames, role];
                             setFormData({ ...formData, roleNames: newRoles });
-                            if (errors.roles)
-                              setErrors((prev) => ({ ...prev, roles: "" }));
                           }}
-                          className={`flex-1 px-3 py-2 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all ${
+                          className={`group relative overflow-hidden px-5 py-6 rounded-[1.25rem] border-2 transition-all duration-500 active:scale-95 ${
                             isSelected
-                              ? "bg-[#5A270F] border-[#5A270F] text-white shadow-lg scale-105"
-                              : "bg-white dark:bg-card border-[#D9D9C2] dark:border-white/10 text-[#92664A] dark:text-[#EEB38C]/40 hover:border-[#DF8142]"
+                              ? "bg-[#5A270F] border-[#5A270F] text-white shadow-[0_20px_40px_-10px_rgba(90,39,15,0.4)]"
+                              : "bg-white dark:bg-white/5 border-[#D9D9C2]/60 dark:border-white/10 text-[#92664A] dark:text-[#EEB38C]/40 hover:border-[#DF8142] hover:bg-[#DF8142]/5"
                           }`}
                         >
-                          {role}
+                          {isSelected && (
+                            <div className="absolute top-0 right-0 w-12 h-12 bg-white/10 blur-xl rounded-full translate-x-1/2 -translate-y-1/2" />
+                          )}
+                          <div className={`text-[10px] font-black uppercase tracking-[0.2em] relative z-10 transition-colors duration-500 ${isSelected ? "text-[#EEB38C]" : "group-hover:text-[#DF8142]"}`}>
+                            {role}
+                          </div>
+                          <div className={`mt-1.5 h-1 w-6 rounded-full transition-all duration-500 ${isSelected ? "bg-[#DF8142] w-12" : "bg-transparent"}`} />
                         </button>
                       );
                     })}
                 </div>
-                {errors.roles && (
-                  <p className="text-[8px] text-[#DF8142] font-black uppercase ml-1">
-                    {errors.roles}
-                  </p>
-                )}
-                {modalMode === "create" && currentRoleName === "Admin" && (
-                  <p className="text-[8px] text-[#DF8142] font-black uppercase ml-1 italic opacity-80">
-                    * Admin initialization requires Department Head approval.
-                  </p>
-                )}
+                <FieldError message={errors.roles} />
               </div>
 
-              {/* Advanced Signal Matrix (Dynamic Fields) */}
-              <div className="space-y-3 pt-1">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
-                      Department
-                    </label>
+              {/* Section 03: Strategic Sector Assignment */}
+              <div className="space-y-8">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] text-[#EEB38C] text-xs font-black shadow-lg shadow-[#5A270F]/20">03</div>
+                  <h4 className="text-xs font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] font-space-grotesk">Strategic Sector Assignment</h4>
+                  <div className="h-[1px] flex-1 bg-gradient-to-r from-[#D9D9C2] to-transparent dark:from-white/10" />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
+                  <div className="space-y-3 group">
+                    <label htmlFor="department" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Tactical Division</label>
                     <div className="relative">
                       <input
                         id="department"
@@ -970,90 +950,68 @@ const ManageUsers = () => {
                         title="Department/Sector"
                         value={formData.department}
                         onChange={handleInputChange}
-                        placeholder="e.g. Design Studio"
+                        placeholder="e.g. Architectural Systems"
                         disabled={currentRoleName === "DepartmentHead" && modalMode === "edit"}
-                        className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.department ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"} ${currentRoleName === "DepartmentHead" && modalMode === "edit" ? "opacity-60 cursor-not-allowed" : ""}`}
+                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] ${errors.department ? "border-[#DF8142] ring-4 ring-[#DF8142]/10" : "border-[#D9D9C2]/60 dark:border-white/10 font-inter"} ${currentRoleName === "DepartmentHead" && modalMode === "edit" ? "opacity-60 cursor-not-allowed bg-[#EFEDED]/20" : ""}`}
                         required
                       />
                       {errors.department && (
-                        <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
+                        <AlertCircle className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-bounce" />
                       )}
                     </div>
                   </div>
-                  {formData.roleNames.some((r) =>
-                    ["Faculty", "Admin", "DepartmentHead"].includes(r),
-                  ) && (
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
-                        Worker ID
-                      </label>
+
+                  {formData.roleNames.some((r) => ["Faculty", "Admin", "DepartmentHead"].includes(r)) && (
+                    <div className="space-y-3 group">
+                      <label htmlFor="workerId" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Tactical ID Code</label>
                       <div className="relative">
                         <input
                           id="workerId"
                           name="workerId"
-                          title="Institutional Personnel ID"
+                          title="Staff ID"
                           value={formData.workerId}
                           onChange={handleInputChange}
-                          placeholder="e.g. F-001X"
-                          className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.workerId ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
+                          placeholder="e.g. FAC-X01"
+                          className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] ${errors.workerId ? "border-[#DF8142] ring-4 ring-[#DF8142]/10" : "border-[#D9D9C2]/60 dark:border-white/10 font-mono"}`}
                         />
-                        {errors.workerId && (
-                          <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
-                        )}
                       </div>
                     </div>
                   )}
-                </div>
 
-                {formData.roleNames.includes("Faculty") && (
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
-                      Academic Specialization
-                    </label>
-                    <div className="relative">
-                      <input
-                        id="specialization"
-                        name="specialization"
-                        title="Faculty Specialization"
-                        value={formData.specialization}
-                        onChange={handleInputChange}
-                        placeholder="e.g. Parametric Architecture"
-                        className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.specialization ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
-                      />
-                      {errors.specialization && (
-                        <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {formData.roleNames.includes("Student") && (
-                  <div className="grid grid-cols-3 gap-2 pt-1">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
-                        Batch
-                      </label>
+                  {formData.roleNames.includes("Faculty") && (
+                    <div className="space-y-3 group md:col-span-2">
+                      <label htmlFor="specialization" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Intellectual Domain</label>
                       <div className="relative">
+                        <input
+                          id="specialization"
+                          name="specialization"
+                          title="Professional Specialization"
+                          value={formData.specialization}
+                          onChange={handleInputChange}
+                          placeholder="e.g. Parametric Design"
+                          className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] ${errors.specialization ? "border-[#DF8142] ring-4 ring-[#DF8142]/10" : "border-[#D9D9C2]/60 dark:border-white/10 font-inter"}`}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {formData.roleNames.includes("Student") && (
+                    <div className="grid grid-cols-3 gap-6 md:col-span-2">
+                       <div className="space-y-3 group">
+                        <label htmlFor="batch" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Phase Batch</label>
                         <input
                           id="batch"
                           name="batch"
                           type="number"
-                          title="Admission Batch"
+                          title="Batch Year"
                           value={formData.batch}
                           onChange={handleInputChange}
                           placeholder="2024"
-                          className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.batch ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
+                          className="w-full bg-white dark:bg-white/5 border-2 border-[#D9D9C2]/60 dark:border-white/10 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none font-mono"
                         />
-                        {errors.batch && (
-                          <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
-                        )}
                       </div>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
-                        Year
-                      </label>
-                      <div className="relative">
+                      <div className="space-y-3 group">
+                        <label htmlFor="year" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Cycle Year</label>
                         <input
                           id="year"
                           name="year"
@@ -1062,18 +1020,11 @@ const ManageUsers = () => {
                           value={formData.year}
                           onChange={handleInputChange}
                           placeholder="1"
-                          className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.year ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
+                          className="w-full bg-white dark:bg-white/5 border-2 border-[#D9D9C2]/60 dark:border-white/10 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none font-mono"
                         />
-                        {errors.year && (
-                          <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
-                        )}
                       </div>
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
-                        Semester
-                      </label>
-                      <div className="relative">
+                      <div className="space-y-3 group">
+                        <label htmlFor="semester" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Term Sem</label>
                         <input
                           id="semester"
                           name="semester"
@@ -1082,94 +1033,76 @@ const ManageUsers = () => {
                           value={formData.semester}
                           onChange={handleInputChange}
                           placeholder="1"
-                          className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.semester ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
+                          className="w-full bg-white dark:bg-white/5 border-2 border-[#D9D9C2]/60 dark:border-white/10 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none font-mono"
                         />
-                        {errors.semester && (
-                          <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
-                        )}
                       </div>
                     </div>
-                  </div>
-                )}
-                
-                {/* Status and Suspension Controls */}
+                  )}
+                </div>
+
                 {(currentRoleName === "DepartmentHead" || currentRoleName === "SuperAdmin") && modalMode === "edit" && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
-                        Node Status
-                      </label>
-                      <select
-                        name="status"
-                        title="Node Status"
-                        value={formData.status}
-                        onChange={handleInputChange}
-                        className="w-full bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none"
-                      >
-                        <option value="active">Active (Authorized)</option>
-                        <option value="pending_approval">Pending Approval</option>
-                        <option value="suspended">Suspended (Terminated)</option>
-                      </select>
+                  <div className="mt-6 p-8 bg-gradient-to-br from-[#5A270F]/5 to-transparent rounded-[2rem] border-2 border-[#5A270F]/10 space-y-8">
+                    <div className="space-y-3 group">
+                      <label htmlFor="status" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Operational Status Directive</label>
+                      <div className="relative">
+                        <select
+                          id="status"
+                          name="status"
+                          title="Node Status"
+                          value={formData.status}
+                          onChange={handleInputChange}
+                          className="w-full bg-white dark:bg-white/10 border-2 border-[#D9D9C2]/60 dark:border-white/10 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none shadow-sm cursor-pointer appearance-none font-inter"
+                        >
+                          <option value="active">Active (Fully Authorized)</option>
+                          <option value="pending_approval">Pending Clearance</option>
+                          <option value="suspended">Suspended (Access Revoked)</option>
+                        </select>
+                        <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 h-5 w-5 text-[#92664A] pointer-events-none" />
+                      </div>
                     </div>
 
                     {formData.status === "suspended" && (
-                      <div className="space-y-1 md:col-span-2">
-                        <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
-                          Suspension Directive Reason *
-                        </label>
-                        <div className="relative">
-                          <textarea
-                            name="suspendReason"
-                            value={formData.suspendReason}
-                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                               handleInputChange(e as unknown as React.ChangeEvent<HTMLInputElement>);
-                               if (errors.suspendReason) setErrors(prev => ({ ...prev, suspendReason: "" }));
-                            }}
-                            rows={2}
-                            placeholder="Enter the reason for account suspension. This will be transmitted to the user."
-                            className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none resize-none ${errors.suspendReason ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
-                          />
-                          {errors.suspendReason && (
-                            <AlertCircle className="absolute right-3 top-4 h-4 w-4 text-[#DF8142]" />
-                          )}
-                        </div>
-                        {errors.suspendReason && (
-                          <p className="text-[8px] text-[#DF8142] font-black uppercase ml-1">
-                            {errors.suspendReason}
-                          </p>
-                        )}
+                      <div className="space-y-3 group animate-in slide-in-from-top-4">
+                        <label htmlFor="suspendReason" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Revocation Justification Protocol *</label>
+                        <textarea
+                          id="suspendReason"
+                          name="suspendReason"
+                          title="Suspension Directive"
+                          value={formData.suspendReason || ""}
+                          onChange={handleInputChange}
+                          placeholder="Provide detailed logs for node suspension..."
+                          className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none h-32 shadow-sm resize-none ${errors.suspendReason ? "border-[#DF8142] ring-4 ring-[#DF8142]/10" : "border-[#D9D9C2]/60 dark:border-white/10"}`}
+                        />
+                        <FieldError message={errors.suspendReason} />
                       </div>
                     )}
                   </div>
                 )}
               </div>
 
-              <div className="pt-3 flex gap-2">
+              {/* Action Vector Footer */}
+              <div className="flex gap-6 pt-12 border-t border-[#D9D9C2]/40 dark:border-white/5">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-2 bg-[#EFEDED] dark:bg-background text-[#92664A] dark:text-[#EEB38C]/40 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#D9D9C2] transition-colors"
+                  className="flex-1 py-5 rounded-2xl text-[11px] font-black uppercase tracking-[0.3em] text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:hover:text-[#EEB38C] transition-all border border-transparent hover:border-[#D9D9C2] dark:hover:border-white/10"
                 >
-                  Cancel
+                  Abort Protocol
                 </button>
                 <button
                   type="submit"
                   disabled={processing}
-                  title={
-                    modalMode === "create"
-                      ? "Finalize Node Initialization"
-                      : "Deploy Registry Updates"
-                  }
-                  className="flex-1 px-4 py-2 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#6C3B1C] transition-all shadow-xl shadow-[#5A270F]/20 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-[2] py-5 bg-[#5A270F] text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#1A0B04] transition-all flex items-center justify-center gap-4 active:scale-95 disabled:opacity-50 shadow-[0_20px_40px_-12px_rgba(90,39,15,0.4)] group overflow-hidden relative"
                 >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer" />
                   {processing ? (
-                    <RefreshCw className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-5 w-5 animate-spin text-[#EEB38C]" />
                   ) : (
-                    <CheckCircle className="h-4 w-4" />
+                    <>
+                      <Zap className="h-4 w-4 text-[#DF8142] group-hover:animate-pulse" />
+                      {modalMode === "create" ? "COMMIT INITIALIZATION" : "AUTHORIZE MODIFICATIONS"}
+                    </>
                   )}
-                  {modalMode === "create"
-                    ? "Initialize Node"
-                    : "Confirm Update"}
                 </button>
               </div>
             </form>
@@ -1179,49 +1112,56 @@ const ManageUsers = () => {
 
       {/* Notification Dispatch Modal */}
       {isNotifyModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-[#2A1205]/40 backdrop-blur-xl animate-in fade-in duration-500"
+            className="absolute inset-0 bg-[#2A1205]/60 backdrop-blur-md animate-in fade-in duration-300"
             onClick={() => setIsNotifyModalOpen(false)}
           />
-          <div className="relative w-full max-w-xl bg-white dark:bg-card rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
-            <div className="bg-[#5A270F] px-10 py-8 relative overflow-hidden">
+          <div className="relative w-full max-w-xl bg-white dark:bg-[#1A0B04] rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)] border border-[#D9D9C2] dark:border-[#DF8142]/20 overflow-hidden animate-in zoom-in-95 duration-500">
+            <div className="bg-[#5A270F] px-10 py-10 relative overflow-hidden group/notify">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/10 blur-[60px] group-hover/notify:bg-[#DF8142]/20 transition-all duration-1000" />
               <div className="relative z-10">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-2">
-                  Communication Protocol
-                </p>
-                <h3 className="text-2xl font-black text-white leading-tight">
-                  Direct Briefing: {selectedUser?.firstName}
+                <div className="flex items-center gap-3 mb-3">
+                  <Terminal className="h-4 w-4 text-[#EEB38C] animate-pulse" />
+                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#EEB38C]/80">
+                    Direct Intelligence Briefing
+                  </p>
+                </div>
+                <h3 className="text-2xl font-black text-white leading-tight italic">
+                  Briefing Target: <span className="not-italic text-[#DF8142]">{selectedUser?.first_name || selectedUser?.firstName}</span>
                 </h3>
               </div>
             </div>
 
-            <form onSubmit={handleNotifySubmit} className="p-10 space-y-6">
+            <form onSubmit={handleNotifySubmit} className="p-10 space-y-8">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest ml-1">
-                  Briefing Headline
+                <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.2em] ml-2">
+                  Objective Headline
                 </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Intel objective..."
-                  className="w-full bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl px-5 py-3 text-sm font-bold outline-none focus:ring-2 focus:ring-primary/20"
-                  value={notifyData.title}
-                  onChange={(e) =>
-                    setNotifyData({ ...notifyData, title: e.target.value })
-                  }
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    required
+                    placeholder="Enter briefing objective..."
+                    className="w-full bg-[#FAF8F4] dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-2xl px-6 py-4 text-xs font-black text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all shadow-inner"
+                    value={notifyData.title}
+                    onChange={(e) =>
+                      setNotifyData({ ...notifyData, title: e.target.value })
+                    }
+                  />
+                  <Bell className="absolute right-5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#92664A]/30" />
+                </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest ml-1">
-                  Narrative Payload
+                <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.2em] ml-2">
+                  Intelligence Payload
                 </label>
                 <textarea
                   required
                   rows={4}
-                  placeholder="Critical intelligence summary..."
-                  className="w-full bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl px-5 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-none"
+                  placeholder="Inscribe critical mission parameters..."
+                  className="w-full bg-[#FAF8F4] dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-2xl px-6 py-4 text-xs font-black text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all shadow-inner resize-none h-32"
                   value={notifyData.message}
                   onChange={(e) =>
                     setNotifyData({ ...notifyData, message: e.target.value })
@@ -1229,25 +1169,25 @@ const ManageUsers = () => {
                 />
               </div>
 
-              <div className="pt-4 flex justify-end gap-3">
+              <div className="pt-4 flex gap-4">
                 <button
                   type="button"
                   onClick={() => setIsNotifyModalOpen(false)}
-                  className="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:text-[#EEB38C]"
+                  className="flex-1 py-4 text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:hover:text-[#EEB38C] transition-colors"
                 >
-                  Abort
+                  Abort Mission
                 </button>
                 <button
                   type="submit"
                   disabled={processing}
-                  className="px-8 py-2.5 bg-[#DF8142] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#DF8142]/90 transition-all shadow-lg shadow-[#DF8142]/20 flex items-center gap-2"
+                  className="flex-[2] py-4 bg-[#DF8142] text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-[#E99158] transition-all shadow-xl shadow-[#DF8142]/20 flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50"
                 >
                   {processing ? (
-                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <>
-                      <Zap className="h-3 w-3" />
-                      Authorize Transmission
+                      <Zap className="h-4 w-4" />
+                      Engage Transmission
                     </>
                   )}
                 </button>
@@ -1259,45 +1199,48 @@ const ManageUsers = () => {
 
       {/* Global Broadcast Modal */}
       {isBroadcastModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-[#2A1205]/40 backdrop-blur-xl animate-in fade-in duration-500"
+            className="absolute inset-0 bg-[#2A1205]/60 backdrop-blur-md animate-in fade-in duration-300"
             onClick={() => setIsBroadcastModalOpen(false)}
           />
-          <div className="relative w-full max-w-xl bg-white dark:bg-card rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white overflow-hidden animate-in zoom-in-95 duration-500">
-            <div className="bg-[#5A270F] px-10 py-8 relative overflow-hidden group/broadcast">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/20 blur-[50px] transition-all group-hover/broadcast:bg-[#DF8142]/30" />
+          <div className="relative w-full max-w-xl bg-white dark:bg-[#1A0B04] rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)] border border-[#D9D9C2] dark:border-[#DF8142]/20 overflow-hidden animate-in zoom-in-95 duration-500">
+            <div className="bg-[#5A270F] px-10 py-10 relative overflow-hidden group/broadcast">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/10 blur-[80px] group-hover/broadcast:bg-[#DF8142]/20 transition-all duration-1000" />
               <div className="relative z-10 flex justify-between items-start">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-2">
-                    Emergency Broadcast
-                  </p>
-                  <h3 className="text-2xl font-black text-white leading-tight">
-                    Global Intelligence Relay
+                  <div className="flex items-center gap-3 mb-3">
+                    <Zap className="h-4 w-4 text-[#DF8142] animate-pulse" />
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#EEB38C]/80">
+                      Emergency Global Broadcast
+                    </p>
+                  </div>
+                  <h3 className="text-3xl font-black text-white leading-tight italic">
+                    Nexus <span className="not-italic text-[#DF8142]">Syndicate</span> Relay
                   </h3>
                 </div>
                 <button
                   type="button"
                   title="Abort Broadcast"
                   onClick={() => setIsBroadcastModalOpen(false)}
-                  className="p-2 hover:bg-white/10 dark:bg-card/10 rounded-xl text-[#EEB38C] transition-colors"
+                  className="p-3 bg-white/5 hover:bg-[#DF8142] rounded-xl text-white transition-all active:scale-95"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
             </div>
 
-            <form onSubmit={handleBroadcastSubmit} className="p-10 space-y-6">
+            <form onSubmit={handleBroadcastSubmit} className="p-10 space-y-8">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
-                  Relay Headline
+                <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.2em] ml-2">
+                  Universal Objective
                 </label>
                 <div className="relative">
                   <input
                     type="text"
                     title="Broadcast Headline"
-                    placeholder="Enter universal objective..."
-                    className={`w-full bg-[#EFEDED] dark:bg-background border rounded-2xl px-5 py-3 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] outline-none focus:border-[#DF8142] transition-all ${errors.broadcastTitle ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
+                    placeholder="Enter universal directive headline..."
+                    className={`w-full bg-[#FAF8F4] dark:bg-white/5 border rounded-2xl px-6 py-4 text-xs font-black text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all shadow-inner ${errors.broadcastTitle ? "border-[#DF8142] ring-2 ring-[#DF8142]/10" : "border-[#D9D9C2] dark:border-white/10"}`}
                     value={notifyData.title}
                     onChange={(e) => {
                       setNotifyData({ ...notifyData, title: e.target.value });
@@ -1306,21 +1249,21 @@ const ManageUsers = () => {
                     }}
                   />
                   {errors.broadcastTitle && (
-                    <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
+                    <AlertCircle className="absolute right-5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
                   )}
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
-                  Broadcast Payload
+                <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.2em] ml-2">
+                  Wide-Spectrum Payload
                 </label>
                 <div className="relative">
                   <textarea
                     rows={4}
                     title="Broadcast Content"
-                    placeholder="Distribute intelligence to all active nodes..."
-                    className={`w-full bg-[#EFEDED] dark:bg-background border rounded-2xl px-5 py-3 text-sm text-[#5A270F] dark:text-[#EEB38C] outline-none focus:border-[#DF8142] transition-all resize-none ${errors.broadcastMessage ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
+                    placeholder="Distribute critical intelligence to all active nodes within the Nexus..."
+                    className={`w-full bg-[#FAF8F4] dark:bg-white/5 border rounded-2xl px-6 py-4 text-xs font-black text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all shadow-inner resize-none h-40 ${errors.broadcastMessage ? "border-[#DF8142] ring-2 ring-[#DF8142]/10" : "border-[#D9D9C2] dark:border-white/10"}`}
                     value={notifyData.message}
                     onChange={(e) => {
                       setNotifyData({ ...notifyData, message: e.target.value });
@@ -1332,31 +1275,30 @@ const ManageUsers = () => {
                     }}
                   />
                   {errors.broadcastMessage && (
-                    <AlertCircle className="absolute right-4 top-3 h-4 w-4 text-[#DF8142]" />
+                    <AlertCircle className="absolute right-5 top-5 h-4 w-4 text-[#DF8142]" />
                   )}
                 </div>
               </div>
 
-              <div className="pt-4 flex justify-end gap-3">
+              <div className="pt-4 flex gap-4">
                 <button
                   type="button"
                   onClick={() => setIsBroadcastModalOpen(false)}
-                  className="px-6 py-3 text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:text-[#EEB38C] transition-colors"
+                  className="flex-1 py-4 text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:hover:text-[#EEB38C] transition-colors"
                 >
-                  Abort Relay
+                  Cancel Relay
                 </button>
                 <button
                   type="submit"
                   disabled={processing}
-                  title="Initiate Global Transmission"
-                  className="px-8 py-3 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#6C3B1C] transition-all shadow-xl shadow-[#5A270F]/20 active:scale-95 flex items-center gap-3 disabled:opacity-50"
+                  className="flex-[2] py-4 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-[#1A0B04] hover:shadow-[0_20px_40px_-10px_rgba(90,39,15,0.4)] transition-all flex items-center justify-center gap-4 active:scale-95 disabled:opacity-50"
                 >
                   {processing ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-5 w-5 animate-spin text-[#EEB38C]" />
                   ) : (
                     <>
-                      <Zap className="h-4 w-4" />
-                      Engage Wide-Spectrum Broadcast
+                      <Zap className="h-4 w-4 text-[#DF8142]" />
+                      Engage Global Broadcast
                     </>
                   )}
                 </button>
