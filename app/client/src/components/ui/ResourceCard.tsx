@@ -137,7 +137,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
     : "Anonymous Architect";
 
   return (
-    <div className="group relative bg-white dark:bg-card rounded-3xl border border-[#D9D9C2] dark:border-white/10 shadow-md hover:shadow-[0_20px_40px_-15px_rgba(90,39,15,0.15)] dark:hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] hover:-translate-y-1 transition-all duration-500 flex flex-col overflow-hidden h-full animate-in fade-in slide-in-from-bottom-4">
+    <div className="group relative bg-[#FDFCFB] dark:bg-card rounded-[2.5rem] border border-[#BCAF9C] dark:border-white/10 shadow-lg shadow-[#5A270F]/5 hover:shadow-[0_25px_50px_-12px_rgba(90,39,15,0.2)] dark:hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] hover:-translate-y-1 transition-all duration-500 flex flex-col overflow-hidden h-full animate-in fade-in slide-in-from-bottom-4">
       {/* Visual Header Node */}
       <div className="relative h-40 bg-[#5A270F] overflow-hidden">
         {/* Abstract Background pattern */}
@@ -211,21 +211,21 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
 
       {/* Content Intelligence Body */}
       <div className="p-6 pb-2 flex-grow flex flex-col transition-colors duration-500">
-        <h3 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight hover:text-[#DF8142] dark:hover:text-[#DF8142] transition-colors line-clamp-2 leading-tight">
+        <h3 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight hover:text-[#DF8142] dark:hover:text-[#DF8142] transition-colors line-clamp-2 leading-tight font-space-grotesk">
           <Link to={detailPath} className="line-clamp-2">
             {title}
           </Link>
         </h3>
 
-        <div className="flex items-center gap-3 mb-6 p-3 bg-[#EEB38C]/10 dark:bg-white/5 rounded-xl border border-[#EEB38C]/30 dark:border-white/10 group-hover:bg-[#DF8142]/5 group-hover:border-[#DF8142]/20 transition-all duration-300">
-          <div className="h-8 w-8 rounded-lg bg-white dark:bg-card dark:bg-[#2A1205] border border-[#EEB38C]/30 dark:border-white/10 flex items-center justify-center text-[#92664A] dark:text-[#EEB38C]/40 shadow-sm">
+        <div className="flex items-center gap-3 mb-6 p-3 bg-[#EEB38C]/15 dark:bg-white/5 rounded-2xl border border-[#EEB38C]/40 dark:border-white/10 group-hover:bg-[#DF8142]/10 group-hover:border-[#DF8142]/30 transition-all duration-300">
+          <div className="h-8 w-8 rounded-lg bg-white dark:bg-[#2A1205] border border-[#EEB38C]/40 dark:border-white/10 flex items-center justify-center text-[#DF8142] dark:text-[#EEB38C]/40 shadow-sm">
             <User className="h-4 w-4" />
           </div>
           <div className="overflow-hidden">
-            <p className="text-[8px] font-bold text-[#5A270F]/60 dark:text-[#92664A] uppercase tracking-widest leading-none mb-1">
+            <p className="text-[8px] font-black text-[#5A270F]/80 dark:text-[#92664A] uppercase tracking-widest leading-none mb-1">
               Authority Node
             </p>
-            <p className="text-xs font-bold text-[#6C3B1C] dark:text-[#EEB38C] truncate leading-none">
+            <p className="text-xs font-black text-[#5A270F] dark:text-[#EEB38C] truncate leading-none">
               {author || uploaderName}
             </p>
           </div>
@@ -236,7 +236,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             keywords.slice(0, 3).map((keyword) => (
               <span
                 key={keyword}
-                className="text-[9px] font-bold uppercase tracking-widest bg-[#F5F5DC] dark:bg-white/10 text-[#6C3B1C] dark:text-[#EEB38C] px-3 py-1.5 rounded-lg border border-[#92664A]/20 hover:bg-[#5A270F] dark:hover:bg-primary dark:hover:text-white hover:text-white transition-all duration-300 cursor-default"
+                className="text-[9px] font-black uppercase tracking-[0.15em] bg-white dark:bg-white/10 text-[#5A270F] dark:text-[#EEB38C] px-3 py-2 rounded-lg border border-[#BCAF9C] dark:border-white/10 hover:bg-[#5A270F] dark:hover:bg-primary dark:hover:text-white hover:text-white transition-all duration-300 cursor-default shadow-sm"
               >
                 {keyword}
               </span>
@@ -311,9 +311,9 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             )}`}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center gap-2 py-3 bg-[#EEB38C]/20 dark:bg-white/5 text-[#6C3B1C] dark:text-[#EEB38C] rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-[#5A270F] dark:hover:bg-primary/20 hover:text-[#EEB38C] transition-all shadow-sm active:scale-95 border border-transparent dark:border-white/5"
+            className="flex items-center justify-center gap-2 py-4 bg-[#5A270F]/5 dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 border border-[#BCAF9C] dark:border-white/5"
           >
-            <Eye className="h-3.5 w-3.5" />
+            <Eye className="h-4 w-4" />
             Scan
           </a>
           <a
@@ -323,10 +323,10 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
               localStorage.getItem("token") || "",
             )}`}
             download
-            className="flex items-center justify-center gap-2 py-3 bg-[#DF8142] text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-[#C97439] transition-all shadow-md active:scale-95 hover:-translate-y-0.5"
+            className="flex items-center justify-center gap-2 py-4 bg-[#DF8142] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#5A270F] transition-all shadow-md shadow-[#DF8142]/20 active:scale-95 hover:-translate-y-0.5"
           >
-            <Download className="h-3.5 w-3.5" />
-            Download
+            <Download className="h-4 w-4" />
+            Inbound
           </a>
         </div>
       </div>
