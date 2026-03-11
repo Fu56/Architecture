@@ -497,3 +497,39 @@ export const getRestoreNotificationHtml = (
     </div>
     `;
 };
+
+// ─── Suspension Notification ──────────────────────────────────────────────────
+export const getSuspendedHtml = (
+  userName: string,
+  reviewerName: string,
+  reason?: string,
+) => {
+  return `
+    <div ${emailStyle} style="border: 2px solid #be123c;">
+        <div ${headerStyle} style="background: #450a0a; border-bottom-color: #be123c;">
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #fb7185; text-transform: uppercase;">Node Terminated</p>
+            <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px;">ACCOUNT SUSPENDED</h1>
+        </div>
+        <div style="padding: 0 20px;">
+            <p>Dear ${userName},</p>
+            <p>We are writing to inform you that your system connectivity to the Nexus has been suspended by the administration.</p>
+            
+            <div style="background: #fef2f2; padding: 16px 20px; border-left: 4px solid #dc2626; margin: 20px 0; border-radius: 0 8px 8px 0;">
+              <p style="margin: 0; font-size: 11px; font-weight: 900; color: #991b1b; text-transform: uppercase; letter-spacing: 1px;">Action Authorized by</p>
+              <p style="margin: 6px 0 0 0; font-size: 15px; font-weight: 800; color: #b91c1c;">${reviewerName}</p>
+            </div>
+            
+            ${
+              reason
+                ? `<div style="background: #fff1f2; padding: 20px; border-left: 4px solid #be123c; margin: 25px 0; border-radius: 0 8px 8px 0;">
+                     <p style="margin: 0 0 5px 0; font-size: 10px; font-weight: 900; color: #be123c; text-transform: uppercase; letter-spacing: 1px;">Reason for Suspension</p>
+                     <p style="margin: 0; font-weight: 500;">${reason}</p>
+                   </div>`
+                : ""
+            }
+            <p style="margin-top: 30px;">If you believe this is an error, please contact the Department Head or Super Administrator to appeal this decision.</p>
+            <div ${footerStyle}>Automated Security Protocol | Critical Alert</div>
+        </div>
+    </div>
+    `;
+};

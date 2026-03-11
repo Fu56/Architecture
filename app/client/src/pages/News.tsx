@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import "./News.css";
 import { Link } from "react-router-dom";
 import {
   Megaphone,
@@ -154,8 +155,7 @@ const News = () => {
 
   return (
     <div
-      style={{ fontFamily: "'Inter', 'Space Grotesk', system-ui, sans-serif" }}
-      className={`min-h-screen transition-colors duration-500 selection:bg-[#DF8142]/20 ${
+      className={`font-inter min-h-screen transition-colors duration-500 selection:bg-[#DF8142]/20 ${
         isLight ? "bg-[#FAF8F4]" : "bg-[#100704]"
       }`}
     >
@@ -176,12 +176,7 @@ const News = () => {
           <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#EEB38C]/30 to-transparent" />
           {/* Subtle grid */}
           <div
-            className="absolute inset-0 opacity-[0.04]"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(238,179,140,1) 1px, transparent 1px), linear-gradient(90deg, rgba(238,179,140,1) 1px, transparent 1px)",
-              backgroundSize: "60px 60px",
-            }}
+            className="absolute inset-0 opacity-[0.04] news-bg-grid"
           />
         </div>
 
@@ -217,8 +212,7 @@ const News = () => {
 
           {/* Headline */}
           <h1
-            style={{ fontFamily: "'Space Grotesk', 'Inter', sans-serif" }}
-            className="text-5xl sm:text-7xl lg:text-8xl font-black text-white tracking-tighter mb-6 leading-[0.9] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200"
+            className="font-space-grotesk text-5xl sm:text-7xl lg:text-8xl font-black text-white tracking-tighter mb-6 leading-[0.9] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200"
           >
             CHRONICLES
             <br />
@@ -296,8 +290,7 @@ const News = () => {
                           <Calendar className="h-8 w-8 text-[#DF8142] group-hover:scale-110 transition-transform duration-300" />
                         </div>
                         <p
-                          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                          className={`text-3xl font-black tracking-tight leading-none mb-1 ${
+                          className={`font-space-grotesk text-3xl font-black tracking-tight leading-none mb-1 ${
                             isLight ? "text-[#5A270F]" : "text-[#EEB38C]"
                           }`}
                         >
@@ -350,9 +343,8 @@ const News = () => {
                     </div>
 
                     {/* Title */}
-                    <h2
-                      style={{ fontFamily: "'Space Grotesk', 'Inter', sans-serif" }}
-                      className={`text-2xl sm:text-3xl font-black tracking-tight leading-tight mb-5 group-hover:text-[#DF8142] transition-colors duration-300 ${
+                    <h2 
+                      className={`font-space-grotesk text-2xl sm:text-3xl font-black tracking-tight leading-tight mb-5 group-hover:text-[#DF8142] transition-colors duration-300 ${
                         isLight ? "text-[#3D1A06]" : "text-[#F5E6D8]"
                       }`}
                     >
@@ -423,8 +415,7 @@ const News = () => {
                   <Search className={`h-10 w-10 ${isLight ? "text-[#B8967A]" : "text-white/30"}`} />
                 </div>
                 <h3
-                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                  className={`text-2xl font-black mb-3 ${isLight ? "text-[#3D1A06]" : "text-[#EEB38C]"}`}
+                  className={`font-space-grotesk text-2xl font-black mb-3 ${isLight ? "text-[#3D1A06]" : "text-[#EEB38C]"}`}
                 >
                   No Signals Found
                 </h3>
@@ -469,8 +460,7 @@ const News = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search news & events..."
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                  className={`w-full h-14 rounded-2xl pl-11 pr-10 text-sm font-semibold outline-none transition-all duration-200 placeholder:font-medium border ${
+                  className={`font-inter w-full h-14 rounded-2xl pl-11 pr-10 text-sm font-semibold outline-none transition-all duration-200 placeholder:font-medium border ${
                     isLight
                       ? "bg-[#FAF6F0] border-[#DDD0C0] text-[#3D1A06] placeholder:text-[#B8967A] focus:bg-white focus:border-[#DF8142] focus:ring-4 focus:ring-[#DF8142]/10"
                       : "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#DF8142]/70 focus:ring-4 focus:ring-[#DF8142]/10"
@@ -514,8 +504,7 @@ const News = () => {
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/5 rounded-tr-[4rem] -translate-x-10 translate-y-10 group-hover:-translate-x-6 group-hover:translate-y-6 transition-transform duration-700 pointer-events-none" />
 
               <h3
-                style={{ fontFamily: "'Space Grotesk', 'Inter', sans-serif" }}
-                className="text-2xl font-black mb-3 relative z-10 leading-tight text-white"
+                className="font-space-grotesk text-2xl font-black mb-3 relative z-10 leading-tight text-white"
               >
                 THE STUDIO <br /> DIGEST.
               </h3>
@@ -545,8 +534,7 @@ const News = () => {
                         : emailValidation === "valid"
                         ? "bg-white border-emerald-400 text-[#3D1A06] placeholder:text-[#B8967A] focus:ring-4 focus:ring-emerald-400/20"
                         : "bg-white border-white/30 text-[#3D1A06] placeholder:text-[#B8967A] focus:border-white focus:ring-4 focus:ring-white/20"
-                    }`}
-                    style={{ height: "52px", fontFamily: "'Inter', sans-serif" }}
+                    } input-height font-inter`}
                   />
                   {/* Inline validation icon */}
                   {emailTouched && newsletterEmail && !subscribing && !subscribed && (
@@ -594,8 +582,7 @@ const News = () => {
                     subscribed
                       ? "bg-emerald-600 text-white shadow-emerald-600/30"
                       : "bg-white text-[#C56A2A] hover:bg-[#3D1A06] hover:text-white disabled:opacity-50 shadow-white/30"
-                  }`}
-                  style={{ height: "52px" }}
+                  } input-height`}
                 >
                   {subscribing ? (
                     <>
@@ -634,8 +621,7 @@ const News = () => {
               </div>
 
               <h3
-                style={{ fontFamily: "'Space Grotesk', 'Inter', sans-serif" }}
-                className={`text-sm font-black uppercase tracking-widest mb-2 ${
+                className={`font-space-grotesk text-sm font-black uppercase tracking-widest mb-2 ${
                   isLight ? "text-[#3D1A06]" : "text-white"
                 }`}
               >

@@ -60,6 +60,7 @@ const ManageUsers = () => {
     specialization: "",
     department: "",
     workerId: "",
+    suspendReason: "",
   });
   const [processing, setProcessing] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -101,6 +102,7 @@ const ManageUsers = () => {
       specialization: "",
       department: "",
       workerId: "",
+      suspendReason: "",
     });
     setSelectedUser(null);
     setErrors({});
@@ -134,6 +136,7 @@ const ManageUsers = () => {
       specialization: user.specialization || "",
       department: user.department || "",
       workerId: user.workerId || user.worker_id || "",
+      suspendReason: "",
     });
     setModalMode("edit");
     setIsModalOpen(true);
@@ -251,6 +254,10 @@ const ManageUsers = () => {
       if (!formData.batch) newErrors.batch = "Batch required.";
       if (!formData.year) newErrors.year = "Year required.";
       if (!formData.semester) newErrors.semester = "Semester required.";
+    }
+
+    if (formData.status === "suspended" && !formData.suspendReason.trim()) {
+      newErrors.suspendReason = "Suspension reason required for this operation.";
     }
 
     setErrors(newErrors);
@@ -724,9 +731,9 @@ const ManageUsers = () => {
             className="absolute inset-0 bg-[#2A1205]/40 backdrop-blur-xl animate-in fade-in duration-500"
             onClick={() => setIsModalOpen(false)}
           />
-          <div className="relative w-full max-w-lg bg-white dark:bg-card rounded-[2rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white dark:border-white/10 overflow-hidden animate-in zoom-in-95 duration-500">
-            <div className="bg-[#5A270F] px-8 py-6 relative overflow-hidden group/modal">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/20 blur-[60px] transition-all group-hover/modal:bg-[#DF8142]/30" />
+          <div className="relative w-full max-w-md bg-white dark:bg-card rounded-[2rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] border border-white dark:border-white/10 overflow-hidden animate-in zoom-in-95 duration-500">
+            <div className="bg-[#5A270F] px-6 py-5 relative overflow-hidden group/modal">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/20 blur-[60px] transition-all group-hover/modal:bg-[#DF8142]/30" />
               <div className="relative z-10 flex justify-between items-start">
                 <div>
                   <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-1">
@@ -749,8 +756,8 @@ const ManageUsers = () => {
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="p-5 space-y-3">
+              <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-widest ml-1">
                     First Name
@@ -799,7 +806,7 @@ const ManageUsers = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                     University ID
@@ -884,7 +891,7 @@ const ManageUsers = () => {
                 <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                   Role Authorization
                 </label>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {["Student", "Faculty", "Admin", "DepartmentHead"]
                     .filter(
                       (role) =>
@@ -930,8 +937,8 @@ const ManageUsers = () => {
               </div>
 
               {/* Advanced Signal Matrix (Dynamic Fields) */}
-              <div className="space-y-4 pt-2">
-                <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-3 pt-1">
+                <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
                     <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                       Department
@@ -999,7 +1006,7 @@ const ManageUsers = () => {
                 )}
 
                 {formData.roleNames.includes("Student") && (
-                  <div className="grid grid-cols-3 gap-3 pt-2">
+                  <div className="grid grid-cols-3 gap-2 pt-1">
                     <div className="space-y-1">
                       <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
                         Batch
@@ -1062,13 +1069,64 @@ const ManageUsers = () => {
                     </div>
                   </div>
                 )}
+                
+                {/* Status and Suspension Controls */}
+                {(currentRoleName === "DepartmentHead" || currentRoleName === "SuperAdmin") && modalMode === "edit" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
+                        Node Status
+                      </label>
+                      <select
+                        name="status"
+                        title="Node Status"
+                        value={formData.status}
+                        onChange={handleInputChange}
+                        className="w-full bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none"
+                      >
+                        <option value="active">Active (Authorized)</option>
+                        <option value="pending_approval">Pending Approval</option>
+                        <option value="suspended">Suspended (Terminated)</option>
+                      </select>
+                    </div>
+
+                    {formData.status === "suspended" && (
+                      <div className="space-y-1 md:col-span-2">
+                        <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest ml-1">
+                          Suspension Directive Reason *
+                        </label>
+                        <div className="relative">
+                          <textarea
+                            name="suspendReason"
+                            value={formData.suspendReason}
+                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                               handleInputChange(e as unknown as React.ChangeEvent<HTMLInputElement>);
+                               if (errors.suspendReason) setErrors(prev => ({ ...prev, suspendReason: "" }));
+                            }}
+                            rows={2}
+                            placeholder="Enter the reason for account suspension. This will be transmitted to the user."
+                            className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none resize-none ${errors.suspendReason ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
+                          />
+                          {errors.suspendReason && (
+                            <AlertCircle className="absolute right-3 top-4 h-4 w-4 text-[#DF8142]" />
+                          )}
+                        </div>
+                        {errors.suspendReason && (
+                          <p className="text-[8px] text-[#DF8142] font-black uppercase ml-1">
+                            {errors.suspendReason}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
-              <div className="pt-4 flex gap-3">
+              <div className="pt-3 flex gap-2">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-6 py-3 bg-[#EFEDED] dark:bg-background text-[#92664A] dark:text-[#EEB38C]/40 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#D9D9C2] transition-colors"
+                  className="flex-1 px-4 py-2 bg-[#EFEDED] dark:bg-background text-[#92664A] dark:text-[#EEB38C]/40 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#D9D9C2] transition-colors"
                 >
                   Cancel
                 </button>
@@ -1080,7 +1138,7 @@ const ManageUsers = () => {
                       ? "Finalize Node Initialization"
                       : "Deploy Registry Updates"
                   }
-                  className="flex-1 px-6 py-3 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#6C3B1C] transition-all shadow-xl shadow-[#5A270F]/20 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#6C3B1C] transition-all shadow-xl shadow-[#5A270F]/20 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {processing ? (
                     <RefreshCw className="h-4 w-4 animate-spin" />

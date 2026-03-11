@@ -11,6 +11,7 @@ import {
   getAccountAuthorizationHtml,
   getArchiveNotificationHtml,
   getRestoreNotificationHtml,
+  getSuspendedHtml,
 } from "../utils/email";
 
 export const getPendingResources = async (req: Request, res: Response) => {
@@ -1039,6 +1040,7 @@ export const updateUser = async (req: Request, res: Response) => {
       specialization,
       department,
       workerId,
+      suspendReason,
     } = req.body;
 
     const requester = (req as any).user;
@@ -1154,6 +1156,18 @@ export const updateUser = async (req: Request, res: Response) => {
         html: getRegistrationHtml(
           `${updatedUser.first_name} ${updatedUser.last_name}`,
           updatedUser.email,
+        ),
+      });
+    } else if (status === "suspended" && targetUser.status !== "suspended") {
+      const execName = requester?.name || requester?.first_name || "Department Head";
+      await notifyUsers({
+        userIds: [updatedUser.id],
+        title: "Account Suspended",
+        message: `Your system node connectivity has been terminated.`,
+        html: getSuspendedHtml(
+          `${updatedUser.first_name || "User"}`,
+          execName,
+          suspendReason
         ),
       });
     } else {

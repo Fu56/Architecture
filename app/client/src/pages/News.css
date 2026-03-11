@@ -1,0 +1,19 @@
+
+/* External styles for News.tsx to avoid React inline-style warnings */
+
+.news-bg-grid {
+  background-image: linear-gradient(rgba(238,179,140,1) 1px, transparent 1px), linear-gradient(90deg, rgba(238,179,140,1) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.font-inter {
+  font-family: 'Inter', 'Space Grotesk', system-ui, sans-serif;
+}
+
+.font-space-grotesk {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+}
+
+.input-height {
+  height: 52px;
+}
