@@ -280,11 +280,20 @@ h4,
 
 .architectural-dot-grid {
   background-image: radial-gradient(
-    circle at 2px 2px,
-    white 1px,
+    circle at 1px 1px,
+    currentColor 1px,
     transparent 0
   );
-  background-size: 24px 24px;
+  background-size: 32px 32px;
+}
+
+.architectural-dot-grid-dark {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(255, 255, 255, 0.1) 1px,
+    transparent 0
+  );
+  background-size: 32px 32px;
 }
 
 ::selection {

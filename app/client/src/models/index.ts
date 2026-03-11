@@ -52,6 +52,7 @@ export interface Resource {
   averageRating?: number;
   ratingCount?: number;
   isFavorite?: boolean;
+  forYearStudents?: number;
 }
 
 export interface Comment {

@@ -12,6 +12,7 @@ import {
   Sparkles,
   Zap,
   Hexagon,
+  Star,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -63,6 +64,7 @@ export default function Sidebar({ isOpen, setOpen }: SidebarProps) {
       ? [{ name: "Approvals", path: "/admin/approvals", icon: CheckCircle }]
       : []),
     { name: "Human Assets", path: "/admin/users", icon: Users },
+    { name: "Favorites", path: "/admin/favorites", icon: Star },
     { name: "Alert Flags", path: "/admin/flags", icon: Flag },
   ] : [
     { name: "Studio Dashboard", path: "/dashboard", icon: LayoutDashboard },

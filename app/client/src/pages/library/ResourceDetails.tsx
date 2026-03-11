@@ -6,23 +6,17 @@ import {
   Loader2,
   ServerCrash,
   Download,
-  User,
-  Flag,
   Eye,
   Clock,
-  CheckCircle,
   Star,
-  Info,
   ShieldAlert,
-  Calendar,
-  Layers,
-  Sparkles,
-  Zap,
   ArrowLeft,
-  MessageSquare,
   Box,
   RotateCcw,
   Trash2,
+  ChevronRight,
+  ShieldCheck,
+  Zap
 } from "lucide-react";
 import { isAuthenticated, currentRole } from "../../lib/auth";
 import { toast } from "../../lib/toast";
@@ -48,11 +42,7 @@ const ResourceDetails = () => {
   const [ratingCount, setRatingCount] = useState(0);
   const [userRating, setUserRating] = useState(0);
 
-  const [reporting, setReporting] = useState(false);
-  const [reportReason, setReportReason] = useState("");
   const [evaluationComment, setEvaluationComment] = useState("");
-  const [isSubmittingReport, setIsSubmittingReport] = useState(false);
-  const [reportSuccess, setReportSuccess] = useState(false);
   const [pendingRating, setPendingRating] = useState(0);
   const [submittingEvaluation, setSubmittingEvaluation] = useState(false);
 
@@ -123,30 +113,6 @@ const ResourceDetails = () => {
     fetchDetails();
   }, [id]);
 
-  const handleReport = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!reportReason.trim()) return;
-
-    setIsSubmittingReport(true);
-    try {
-      await api.post(`/resources/${id}/flag`, { reason: reportReason });
-      setReportSuccess(true);
-      toast.success(
-        "Security Directive: Breach report transmitted to moderator nexus",
-      );
-      setTimeout(() => {
-        setReporting(false);
-        setReportSuccess(false);
-        setReportReason("");
-      }, 2000);
-    } catch (err) {
-      console.error("Failed to report resource:", err);
-      toast.error("Transmission Error: Report packet lost in transit");
-    } finally {
-      setIsSubmittingReport(false);
-    }
-  };
-
   const handleRatingClick = (rateValue: number) => {
     if (!isAuth) {
       toast.info("Authentication verified required for evaluation protocols");
@@ -167,24 +133,19 @@ const ResourceDetails = () => {
 
     setSubmittingEvaluation(true);
     try {
-      // 1. Submit Numerical Rating
       await api.post(`/resources/${id}/rate`, { rate: pendingRating });
       setUserRating(pendingRating);
 
-      // 2. Submit Optional Qualitative Comment
       if (evaluationComment.trim()) {
         await api.post(`/resources/${id}/comments`, {
           text: `[Evaluation Feedback]: ${evaluationComment.trim()}`,
         });
-
-        // Refresh comments list
         const { data: updatedResource } = await api.get(`/resources/${id}`);
         setComments(updatedResource.comments || []);
       }
 
       toast.success(`Evaluation Broadcasted: Registry updated`);
 
-      // 3. Refresh Ratings Info
       const { data } = await api.get(`/resources/${id}`);
       if (data.ratings && data.ratings.length > 0) {
         const sum = data.ratings.reduce(
@@ -195,7 +156,6 @@ const ResourceDetails = () => {
         setRatingCount(data.ratings.length);
       }
 
-      // Clear compositonal state
       setEvaluationComment("");
       setPendingRating(0);
     } catch (error) {
@@ -228,40 +188,54 @@ const ResourceDetails = () => {
   };
 
   const handleArchive = async () => {
-    if (
-      !window.confirm(
-        "Are you sure you want to archive this resource? It will be hidden from students.",
-      )
-    )
-      return;
-    try {
-      await api.patch(`/admin/resources/${id}/archive`);
-      toast.success("Resource archived in the system matrix");
-      const { data } = await api.get(`/resources/${id}`);
-      setResource(data);
-    } catch {
-      toast.error("Protocol Error: Failed to archive node");
-    }
+    toast(`Archive this node?`, {
+      description: "This resource will be sequestered. Student access will be terminated.",
+      action: {
+        label: "Archive Node",
+        onClick: async () => {
+          try {
+            await api.patch(`/admin/resources/${id}/archive`);
+            toast.success("Resource archived in the system matrix");
+            const { data } = await api.get(`/resources/${id}`);
+            setResource(data);
+          } catch {
+            toast.error("Protocol Error: Failed to archive node");
+          }
+        }
+      },
+      cancel: { label: "Abort", onClick: () => {} }
+    });
   };
 
   const handleRestore = async () => {
-    if (!window.confirm("Restore this resource to the active library?")) return;
-    try {
-      await api.patch(`/admin/resources/${id}/restore`);
-      toast.success("Resource restored to the active library");
-      const { data } = await api.get(`/resources/${id}`);
-      setResource(data);
-    } catch {
-      toast.error("Protocol Error: Failed to restore node");
-    }
+    toast(`Restore this node?`, {
+        description: "Re-activating this resource will restores student access permissions.",
+        action: {
+          label: "Restore Node",
+          onClick: async () => {
+            try {
+              await api.patch(`/admin/resources/${id}/restore`);
+              toast.success("Resource restored to the active library");
+              const { data } = await api.get(`/resources/${id}`);
+              setResource(data);
+            } catch {
+              toast.error("Protocol Error: Failed to restore node");
+            }
+          }
+        },
+        cancel: { label: "Abort", onClick: () => {} }
+    });
   };
 
   if (loading) {
     return (
-      <div className="flex flex-col justify-center items-center py-40 animate-pulse">
-        <Loader2 className="h-16 w-16 animate-spin text-primary mb-6" />
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-500 dark:text-white/40 transition-colors">
-          Synchronizing with Matrix...
+      <div className="flex flex-col justify-center items-center py-40">
+        <div className="relative mb-10">
+          <div className="absolute inset-0 bg-[#DF8142] blur-3xl opacity-20 animate-pulse" />
+          <Loader2 className="h-20 w-20 animate-spin text-[#DF8142] relative z-10" />
+        </div>
+        <p className="text-[10px] font-black uppercase tracking-[0.6em] text-[#5A270F]/40 dark:text-white/40 animate-pulse">
+          Synchronizing Nexus Core...
         </p>
       </div>
     );
@@ -270,25 +244,21 @@ const ResourceDetails = () => {
   if (error) {
     return (
       <div className={`${isNested ? "" : "container mx-auto px-4"} py-24`}>
-        <div className="bg-[#5A270F] p-20 rounded-[3rem] text-center border border-white/10 shadow-3xl relative overflow-hidden">
-          <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(223,129,66,0.1),transparent_50%)]" />
-
-          <div className="relative z-10">
-            <ServerCrash className="h-20 w-20 text-[#DF8142] mx-auto mb-8 animate-bounce" />
-            <h2 className="text-3xl font-black text-white mb-4 tracking-tight uppercase">
-              Node Seizure Detected
-            </h2>
-            <p className="mt-2 text-gray-500 dark:text-white/40 font-bold uppercase tracking-widest text-xs max-w-md mx-auto leading-relaxed">
-              {error}
-            </p>
-            <button
-              onClick={() => navigate(-1)}
-              className="mt-10 px-8 py-4 bg-white dark:bg-card text-[#5A270F] dark:text-[#EEB38C] rounded-xl font-black uppercase tracking-widest text-xs hover:bg-[#DF8142] hover:text-white transition-all transform active:scale-95 shadow-xl"
-            >
-              Emergency Extraction
-            </button>
-          </div>
+        <div className="bg-[#5A270F] p-24 rounded-[4rem] text-center border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] relative overflow-hidden">
+          <div className="absolute inset-0 architectural-dot-grid opacity-10" />
+          <ServerCrash className="h-24 w-24 text-rose-500 mx-auto mb-10 animate-bounce" />
+          <h2 className="text-4xl font-black text-white mb-6 uppercase tracking-tighter italic">
+            NODE SEIZURE DETECTED
+          </h2>
+          <p className="mt-2 text-[#EEB38C]/60 font-bold uppercase tracking-widest text-xs max-w-md mx-auto leading-relaxed">
+            {error}
+          </p>
+          <button
+            onClick={() => navigate(-1)}
+            className="mt-12 px-12 py-5 bg-white text-[#5A270F] rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] hover:bg-[#EEB38C] transition-all transform active:scale-95 shadow-2xl"
+          >
+            Emergency Extraction
+          </button>
         </div>
       </div>
     );
@@ -297,605 +267,362 @@ const ResourceDetails = () => {
   if (!resource) return null;
 
   return (
-    <div
-      className={`${
-        isNested ? "" : "max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-10"
-      } animate-in fade-in duration-700 transition-colors duration-500`}
-    >
-      <div className="grid lg:grid-cols-12 gap-12">
-        {/* Main Intelligence Content */}
-        <div className="lg:col-span-8 space-y-12">
-          {/* Header Module */}
-          <div className="bg-white dark:bg-card p-6 sm:p-10 rounded-3xl shadow-xl border border-[#D9D9C2] dark:border-white/10 relative overflow-hidden group transition-all duration-500">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/10 dark:bg-[#DF8142]/5 rounded-bl-[4rem] -translate-y-8 translate-x-8 group-hover:bg-[#DF8142]/20 transition-colors duration-700" />
-
-            <div className="relative z-10">
-              <div className="flex flex-wrap items-center gap-4 mb-8">
-                <button
-                  onClick={() =>
-                    isNested ? navigate(-1) : navigate("/browse")
-                  }
-                  title="Go Back"
-                  className="flex items-center gap-2 pr-6 py-2.5 bg-[#5A270F] text-white rounded-xl hover:bg-[#DF8142] transition-all active:scale-90"
-                >
-                  <ArrowLeft className="h-5 w-5 ml-2.5" />
-                  <span className="text-[10px] font-black uppercase tracking-widest">
-                    {resource.status === "archived"
-                      ? "Back to Archive"
-                      : "Back to Library"}
-                  </span>
-                </button>
-                <div className="h-px w-8 bg-slate-200" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 bg-[#2A1205] dark:bg-primary text-white rounded-full transition-colors">
-                  {resource.fileType} Protocol
-                </span>
-                <span
-                  className={`text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full flex items-center gap-2 border ${
-                    resource.status === "student" ||
-                    resource.status === "approved"
-                      ? "bg-[#5A270F]/5 dark:bg-[#EEB38C]/10 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-500/20"
-                      : resource.status === "pending"
-                        ? "bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-100 dark:border-amber-500/20"
-                        : "bg-red-50 dark:bg-red-500/10 text-rose-700 dark:text-rose-400 border-rose-100 dark:border-rose-500/20"
-                  }`}
-                >
-                  <div
-                    className={`h-2 w-2 rounded-full ${
-                      resource.status === "student" ||
-                      resource.status === "approved"
-                        ? "bg-[#5A270F]"
-                        : resource.status === "pending"
-                          ? "bg-[#DF8142]"
-                          : "bg-red-700"
-                    } animate-pulse`}
-                  />
-                  {resource.status === "student" ? "Verified" : resource.status}
-                </span>
-              </div>
-
-              <h1 className="text-3xl sm:text-4xl font-black text-[#5A270F] dark:text-foreground tracking-tight leading-tight mb-8 max-w-2xl transition-colors duration-500">
-                {resource.title}
-              </h1>
-
-              <div className="flex flex-wrap items-center gap-6">
-                <div className="flex items-center gap-4 p-3 bg-[#EFEDED] dark:bg-white/5 rounded-2xl border border-[#D9D9C2] dark:border-white/10 hover:border-primary/40 transition-colors cursor-default">
-                  <div className="h-12 w-12 rounded-xl bg-white dark:bg-primary border border-[#D9D9C2] dark:border-white/10 flex items-center justify-center text-[#92664A] dark:text-white shadow-sm transition-colors">
-                    <User className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest leading-none mb-1">
-                      Authority Unit
-                    </p>
-                    <p className="text-base font-bold text-[#5A270F] dark:text-white leading-none">
-                      Architect {resource.author}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4 p-3 bg-[#EFEDED] dark:bg-white/5 rounded-2xl border border-[#D9D9C2] dark:border-white/10 transition-colors">
-                  <div className="h-12 w-12 rounded-xl bg-white dark:bg-primary border border-[#D9D9C2] dark:border-white/10 flex items-center justify-center text-[#DF8142] dark:text-[#EEB38C] shadow-sm transition-colors">
-                    <Calendar className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest leading-none mb-1">
-                      Genesis Date
-                    </p>
-                    <p className="text-base font-bold text-[#5A270F] dark:text-white leading-none">
-                      {new Date(resource.uploadedAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {resource.adminComment && (
-            <div className="p-6 bg-[#2A1205] dark:bg-primary/20 rounded-3xl text-white relative overflow-hidden shadow-xl ring-1 ring-white/10 transition-colors duration-500">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[40px] -translate-y-1/2 translate-x-1/2" />
-              <div className="relative z-10 flex items-start gap-5">
-                <div className="h-12 w-12 shrink-0 bg-white/10 dark:bg-card/10 rounded-xl flex items-center justify-center text-[#DF8142] dark:text-[#EEB38C] border border-white/10 transition-colors">
-                  <ShieldAlert className="h-6 w-6" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-black text-[#DF8142] dark:text-[#EEB38C] uppercase tracking-widest mb-2 transition-colors">
-                    Operations Directive
-                  </p>
-                  <p className="text-base text-gray-400 dark:text-foreground/60 italic font-medium leading-relaxed transition-colors">
-                    "{resource.adminComment}"
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Evaluation Matrix or Pending Verification State */}
-          {resource.status === "approved" || resource.status === "student" ? (
-            <div className="bg-[#EEB38C]/5 dark:bg-[#EEB38C]/5 p-8 sm:p-10 rounded-[2.5rem] shadow-xl shadow-[#5A270F]/5 dark:shadow-black/20 border border-[#EEB38C]/30 dark:border-[#EEB38C]/10 animate-in fade-in slide-in-from-bottom-4 duration-700 relative overflow-hidden transition-all duration-500">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/5 blur-3xl -translate-y-1/2 translate-x-1/2" />
-
-              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-12 pb-10 border-b border-[#EEB38C]/20">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-[#5A270F] rounded-lg shadow-lg">
-                      <Sparkles className="h-3.5 w-3.5 text-white" />
-                    </div>
-                    <h3 className="text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-[0.3em] transition-colors">
-                      Intel Evaluation
-                    </h3>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        disabled={!isAuth || submittingEvaluation}
-                        onMouseEnter={() => setHoverRating(star)}
-                        onMouseLeave={() => setHoverRating(0)}
-                        onClick={() => handleRatingClick(star)}
-                        title={`Evaluate at ${star} stars`}
-                        className="focus:outline-none transition-all hover:scale-125 group/star disabled:opacity-30 disabled:hover:scale-100"
-                      >
-                        <Star
-                          className={`h-10 w-10 ${
-                            (hoverRating ||
-                              pendingRating ||
-                              userRating ||
-                              Math.round(averageRating)) >= star
-                              ? "text-[#DF8142] dark:text-[#EEB38C] fill-[#DF8142] dark:fill-[#EEB38C]"
-                              : "text-[#92664A] dark:text-[#EEB38C]/40/20 dark:text-foreground/10 group-hover/star:text-[#EEB38C]"
-                          } transition-colors duration-300 drop-shadow-[0_2px_4px_rgba(223,129,66,0.1)]`}
-                        />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex items-baseline gap-3">
-                  <div className="text-right">
-                    <div className="flex items-baseline gap-2 mb-1 justify-end">
-                      <span className="text-6xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter leading-none transition-colors duration-500">
-                        {averageRating.toFixed(1)}
-                      </span>
-                      <span className="text-xl font-black text-[#92664A] dark:text-[#EEB38C]/40/60 dark:text-foreground/30 transition-colors">
-                        / 5.0
-                      </span>
-                    </div>
-                    <p className="text-[9px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-[0.2em] flex items-center gap-2 justify-end transition-colors">
-                      <div className="w-1 h-1 rounded-full bg-[#DF8142] dark:bg-[#EEB38C]" />
-                      Verified Valuations: {ratingCount}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Enhanced Feedback Module */}
-              <div className="mt-10 relative z-10 space-y-6">
-                <div className="space-y-2">
-                  <label className="text-[9px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.2em] ml-1">
-                    Qualitative Intelligence / Feedback (Optional)
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={evaluationComment}
-                    onChange={(e) => setEvaluationComment(e.target.value)}
-                    disabled={submittingEvaluation || !isAuth}
-                    placeholder="Provide technical feedback to the community matrix..."
-                    className="w-full bg-white dark:bg-card dark:bg-white/5 border border-[#EEB38C]/40 dark:border-white/10 rounded-[1.5rem] p-6 text-sm text-[#5A270F] dark:text-white font-bold focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142]/40 dark:focus:border-[#DF8142]/60 transition-all placeholder:text-[#92664A] dark:text-[#EEB38C]/40/30 dark:placeholder-white/20 resize-none shadow-inner"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between gap-6">
-                  <p className="text-[10px] text-[#92664A] dark:text-foreground/40 font-bold italic max-w-sm transition-colors">
-                    Evaluations are verified and logged to the public resource
-                    registry permanently.
-                  </p>
-                  <button
-                    onClick={handleSubmitEvaluation}
-                    disabled={
-                      submittingEvaluation || !isAuth || pendingRating === 0
-                    }
-                    className="flex-shrink-0 h-14 px-10 bg-[#5A270F] dark:bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#6C3B1C] dark:hover:bg-primary/80 transition-all hover:-translate-y-1 shadow-2xl shadow-[#5A270F]/20 dark:shadow-none active:scale-95 flex items-center justify-center gap-3 disabled:opacity-30 disabled:hover:translate-y-0"
-                  >
-                    {submittingEvaluation ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <>
-                        <Zap className="h-4 w-4" />
-                        Broadcast Evaluation
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="p-8 bg-[#EFEDED] dark:bg-background/50 dark:bg-white/5 rounded-3xl border border-dashed border-[#EEB38C]/50 dark:border-white/10 flex items-center gap-6 relative overflow-hidden group transition-all duration-500">
-              <div className="absolute inset-0 bg-[#EEB38C]/5 dark:bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="h-14 w-14 rounded-2xl bg-white dark:bg-primary border border-[#EEB38C]/30 dark:border-white/10 flex items-center justify-center text-[#92664A] dark:text-white shadow-inner relative z-10 transition-colors">
-                <ShieldAlert className="h-7 w-7" />
-              </div>
-              <div className="relative z-10">
-                <h3 className="text-xs font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-[0.2em] mb-1 transition-colors">
-                  Evaluation Protocol Locked
-                </h3>
-                <p className="text-[10px] text-[#92664A] dark:text-white/40 font-bold uppercase tracking-widest leading-relaxed transition-colors">
-                  Valuations are enabled following official{" "}
-                  <span className="text-[#DF8142] dark:text-[#EEB38C]">verification</span> and
-                  deployment.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Content Description */}
-          <div className="bg-white dark:bg-card p-8 rounded-3xl shadow-lg border border-[#D9D9C2] dark:border-white/10 transition-all duration-500">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="h-1 w-10 bg-[#DF8142] dark:bg-primary rounded-full transition-colors" />
-              <h3 className="text-lg font-black text-[#5A270F] dark:text-foreground uppercase tracking-tight transition-colors">
-                Technical Abstract
-              </h3>
-            </div>
-            <div className="prose prose-slate prose-lg max-w-none prose-p:text-[#5A270F] dark:text-[#EEB38C] dark:prose-p:text-foreground/80 prose-p:leading-relaxed prose-p:font-medium italic transition-colors">
-              <p>
-                This high-voltage architectural protocol contains verified
-                structural intelligence. Users are advised to inspect the
-                component hierarchy and metadata matrix within the provided
-                preview terminal before deploying to active BIM environments.
-              </p>
-            </div>
-          </div>
-
-          {/* Nexus of Intelligence (Comments) */}
-          <div className="pt-8 space-y-10">
-            <div className="flex items-center justify-between">
-              <h2 className="text-3xl font-black text-[#2A1205] dark:text-foreground tracking-tighter uppercase flex items-center gap-4 transition-colors">
-                <MessageSquare className="h-8 w-8 text-[#DF8142] dark:text-primary" />
-                Nexus Intelligence
-              </h2>
-              <div className="px-6 py-2 bg-[#EFEDED] dark:bg-white/5 rounded-full text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-widest border border-[#D9D9C2] dark:border-white/10 transition-colors">
-                {comments.length} Logged Pulse(s)
-              </div>
-            </div>
-
-            {isAuth ? (
-              <form onSubmit={handleSubmitComment} className="flex gap-4 group">
-                <div className="flex-grow relative">
-                  <div className="absolute inset-0 bg-[#DF8142]/5 blur-xl group-focus-within:bg-[#DF8142]/10 transition-colors" />
-                  <input
-                    type="text"
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Input community intelligence..."
-                    className="relative w-full px-8 py-5 bg-white dark:bg-card dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] dark:focus:border-[#DF8142]/60 transition-all text-[#5A270F] dark:text-white font-bold placeholder-slate-400 dark:placeholder-white/20"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={submittingComment || !newComment.trim()}
-                  className="px-8 py-4 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-[#DF8142] transition-all shadow-xl active:scale-95 disabled:opacity-50"
-                >
-                  {submittingComment ? (
-                    <Loader2 className="h-4 w-4 animate-spin mx-auto" />
-                  ) : (
-                    "Transmit"
-                  )}
-                </button>
-              </form>
-            ) : (
-              <div className="p-10 bg-[#EFEDED] dark:bg-white/5 rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 border-dashed text-center transition-all duration-500">
-                <ShieldAlert className="h-10 w-10 text-gray-400 dark:text-white/20 mx-auto mb-4 transition-colors" />
-                <p className="text-[#5A270F] dark:text-white/40 font-bold uppercase tracking-widest text-xs mb-6 transition-colors">
-                  Identity Verification Protocol Required for Transmission
-                </p>
-                <Link
-                  to="/login"
-                  className="px-8 py-3 bg-[#DF8142] text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-[#5A270F] transition-all shadow-xl shadow-[#DF8142]/20"
-                >
-                  Access Terminal
-                </Link>
-              </div>
-            )}
-
-            <div className="space-y-6">
-              {comments.length > 0 ? (
-                comments.map((comment: CommentModel) => (
-                  <div
-                    key={comment.id}
-                    className="bg-white dark:bg-card p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-lg hover:shadow-xl transition-all flex gap-6 items-start group"
-                  >
-                    <div className="flex-shrink-0 h-16 w-16 rounded-2xl bg-[#5A270F] dark:bg-primary border border-transparent dark:border-white/10 flex items-center justify-center text-white font-black text-xl shadow-xl group-hover:scale-110 transition-all duration-500">
-                      {(comment.user.first_name || comment.user.firstName)?.[0]}
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-4">
-                        <p className="font-black text-[#2A1205] dark:text-foreground text-lg tracking-tight transition-colors">
-                          {comment.user.first_name || comment.user.firstName}{" "}
-                          {comment.user.last_name || comment.user.lastName}
-                        </p>
-                        <span className="h-1.5 w-1.5 bg-primary/90 dark:bg-primary rounded-full transition-colors" />
-                        <p className="text-[10px] text-gray-500 dark:text-foreground/40 font-black uppercase tracking-widest transition-colors">
-                          Log:{" "}
-                          {new Date(comment.createdAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <p className="text-[#5A270F] dark:text-foreground/80 font-medium leading-relaxed text-base transition-colors">
-                        {comment.text}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-20 opacity-20 select-none">
-                  <Box className="h-16 w-16 mx-auto text-gray-500 dark:text-white/40 mb-4" />
-                  <p className="text-xs font-black uppercase tracking-[0.5em] text-[#2A1205]">
-                    Awaiting Signal
-                  </p>
-                </div>
-              )}
-            </div>
+    <div className={`${isNested ? "" : "max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6"} animate-in fade-in duration-1000 bg-[#FAF8F4] dark:bg-[#0C0603]`}>
+      {/* ── Page Header & Navigation ── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 px-2">
+        <div className="space-y-2">
+           <button
+            onClick={() => isNested ? navigate(-1) : navigate("/browse")}
+            className="group flex items-center gap-2 text-[8px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 hover:text-[#DF8142] transition-colors"
+          >
+            <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" />
+            Return to Nexus
+          </button>
+          <div className="flex items-center gap-2">
+            <div className="h-1 w-8 bg-[#DF8142] rounded-full" />
+            <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C]">Artifact Specification</h4>
           </div>
         </div>
-
-        {/* Control Center Sidebar */}
-        <div className="lg:col-span-4 space-y-10">
-          <div className="bg-[#2A1205] dark:bg-card p-10 rounded-[4rem] shadow-3xl text-white relative overflow-hidden ring-1 ring-white/10 dark:ring-white/5 transition-all duration-500">
-            <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
-            <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/90 to-transparent" />
-
-            <div className="relative z-10 space-y-8">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="h-10 w-10 bg-[#DF8142] rounded-xl flex items-center justify-center shadow-lg shadow-[#DF8142]/20">
-                  <Zap className="h-5 w-5 text-white" />
-                </div>
-                <h3 className="text-sm font-black uppercase tracking-[0.3em] text-[#DF8142]/80">
-                  Control Center
-                </h3>
-              </div>
-
-              <div className="space-y-4">
-                <a
-                  href={`${
-                    import.meta.env.VITE_API_URL
-                  }/resources/${id}/view?token=${encodeURIComponent(
-                    localStorage.getItem("token") || "",
-                  )}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-full h-16 flex justify-center items-center gap-4 bg-white/5 dark:bg-white/5 border border-white/10 dark:border-white/10 text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl text-white hover:bg-white/10 dark:hover:bg-white/10 transition-all active:scale-95 group"
-                >
-                  <Eye className="h-5 w-5 text-[#DF8142]/80 dark:text-[#EEB38C] group-hover:scale-110 transition-transform" />
-                  Scan Matrix
-                </a>
-
-                <a
-                  href={`${
-                    import.meta.env.VITE_API_URL
-                  }/resources/${id}/download?token=${encodeURIComponent(
-                    localStorage.getItem("token") || "",
-                  )}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-full h-16 flex justify-center items-center gap-4 bg-[#DF8142] dark:bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-[#DF8142]/90 dark:hover:bg-primary/80 shadow-xl shadow-[#DF8142]/20 dark:shadow-none transition-all hover:-translate-y-1 active:scale-95"
-                >
-                  <Download className="h-6 w-6" />
-                  Download Resource
-                </a>
-
-                {isAuthorizedManager && (
-                  <div className="pt-4 space-y-3">
-                    <div className="h-px bg-white/10 dark:bg-card/10 w-full mb-4" />
-                    <p className="text-[9px] font-black text-[#DF8142]/60 uppercase tracking-[0.3em] mb-2 px-1">
-                      Management Directives
-                    </p>
-                    {resource.status === "archived" ? (
-                      <button
-                        onClick={handleRestore}
-                        className="w-full h-14 flex justify-center items-center gap-3 bg-emerald-600/10 border border-emerald-500/30 text-[9px] font-black uppercase tracking-[0.2em] rounded-xl text-emerald-400 hover:bg-emerald-600/20 transition-all"
-                      >
-                        <RotateCcw className="h-3.5 w-3.5" />
-                        Restore node
-                      </button>
-                    ) : (
-                      <button
-                        onClick={handleArchive}
-                        className="w-full h-14 flex justify-center items-center gap-3 bg-rose-600/10 border border-rose-500/30 text-[9px] font-black uppercase tracking-[0.2em] rounded-xl text-rose-400 hover:bg-rose-600/20 transition-all"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                        Archive Node
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="pt-8 space-y-6 border-t border-white/10">
-                {[
-                  {
-                    label: "Transmission Nodes",
-                    value: resource.downloadCount.toLocaleString(),
-                    icon: Download,
-                  },
-                  {
-                    label: "Data Mass",
-                    value:
-                      resource.fileSize > 1048576
-                        ? `${(resource.fileSize / 1048576).toFixed(2)} MB`
-                        : `${(resource.fileSize / 1024).toFixed(2)} KB`,
-                    icon: Layers,
-                  },
-                  {
-                    label: "Design Phase",
-                    value: resource.designStage?.name || "Unclassified",
-                    icon: Box,
-                  },
-                  {
-                    label: "Academic Cluster",
-                    value: resource.semester
-                      ? `Semester ${resource.semester}`
-                      : "Global Node",
-                    icon: Info,
-                  },
-                  {
-                    label: "Batch Registry",
-                    value: resource.batchYear
-                      ? `Class of ${resource.batchYear}`
-                      : "Open Access",
-                    icon: User,
-                  },
-                  {
-                    label: "Keyword Signals",
-                    value:
-                      resource.keywords.length > 0
-                        ? resource.keywords.join(", ")
-                        : "No Tags",
-                    icon: Sparkles,
-                  },
-                  {
-                    label: "Authority Unit",
-                    value: resource.author,
-                    icon: User,
-                  },
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex justify-between items-center group py-1"
-                  >
-                    <div className="flex items-center gap-3">
-                      <item.icon className="h-4 w-4 text-white/20 dark:text-white/20 group-hover:text-[#DF8142]/80 dark:group-hover:text-primary transition-colors" />
-                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 dark:text-white/40 group-hover:text-white transition-colors">
-                        {item.label}
-                      </span>
-                    </div>
-                    <span
-                      className="font-black text-white text-[11px] text-right ml-4 max-w-[150px] truncate"
-                      title={item.value}
-                    >
-                      {item.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Related Artifacts Cluster */}
-          <div className="bg-white dark:bg-card p-10 rounded-[4rem] shadow-xl border border-[#D9D9C2] dark:border-white/10 transition-all duration-500">
-            <h3 className="text-xs font-black text-[#2A1205] dark:text-foreground uppercase tracking-[0.3em] mb-12 flex items-center gap-4 transition-colors">
-              <Clock className="h-5 w-5 text-[#DF8142] dark:text-[#EEB38C]" />
-              Related Artifacts
-            </h3>
-            <div className="space-y-10">
-              {recentResources.length > 0 ? (
-                recentResources.map((recent: Resource) => (
-                  <Link
-                    key={recent.id}
-                    to={
-                      isAuth
-                        ? role === "Admin" ||
-                          role === "SuperAdmin" ||
-                          role === "admin"
-                          ? `/admin/resources/${recent.id}`
-                          : `/dashboard/resources/${recent.id}`
-                        : `/resources/${recent.id}`
-                    }
-                    className="flex items-center gap-6 group"
-                  >
-                    <div className="h-16 w-16 shrink-0 bg-[#EFEDED] dark:bg-white/5 rounded-2xl flex items-center justify-center text-gray-500 dark:text-white/40 group-hover:bg-[#2A1205] dark:group-hover:bg-primary group-hover:text-white transition-all transform group-hover:scale-110 border border-[#D9D9C2] dark:border-white/10 shadow-sm">
-                      <Layers className="h-7 w-7" />
-                    </div>
-                    <div className="space-y-1">
-                      <h4 className="text-base font-black text-[#2A1205] dark:text-white group-hover:text-[#DF8142] transition-colors line-clamp-1 leading-tight">
-                        {recent.title}
-                      </h4>
-                      <p className="text-[9px] text-gray-500 dark:text-white/40 font-black uppercase tracking-[0.2em] transition-colors">
-                        Registry:{" "}
-                        {new Date(recent.uploadedAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </Link>
-                ))
-              ) : (
-                <p className="text-[10px] font-black text-gray-400 dark:text-white/20 uppercase tracking-widest text-center transition-colors">
-                  No secondary artifacts localized.
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Report Peripheral */}
-          <div className="text-center pt-4">
-            <button
-              onClick={() => setReporting(true)}
-              className="inline-flex items-center gap-3 text-[9px] font-black text-gray-400 dark:text-white/30 hover:text-red-700 dark:hover:text-rose-400 transition-all uppercase tracking-[0.4em] py-3 px-10 border border-[#D9D9C2] dark:border-white/10 rounded-full hover:border-rose-100 dark:hover:border-rose-500/30 hover:bg-red-50/50 dark:hover:bg-rose-500/5 transition-colors"
-            >
-              <Flag className="h-3.5 w-3.5" />
-              Report Protocol Violation
-            </button>
+        
+        <div className="flex items-center gap-3">
+          <div className="h-px w-12 bg-[#D9D9C2] dark:bg-white/10 hidden lg:block" />
+          <div className="px-3 py-1.5 bg-white dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-lg flex items-center gap-2 shadow-sm">
+             <div className={`h-1 w-1 rounded-full ${resource.status === 'archived' ? 'bg-rose-500' : 'bg-emerald-500'} animate-pulse`} />
+             <span className="text-[8px] font-black uppercase tracking-widest text-[#5A270F]/60 dark:text-white/40">Log Status: {resource.status?.toUpperCase()}</span>
           </div>
         </div>
       </div>
 
-      {/* Security Incident Reporting Modal */}
-      {reporting && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[#2A1205]/90 backdrop-blur-xl animate-in fade-in duration-500">
-          <div className="bg-white dark:bg-card rounded-[4rem] shadow-3xl p-12 sm:p-20 max-w-2xl w-full border border-[#D9D9C2] dark:border-white/10 animate-in zoom-in-95 duration-500 relative overflow-hidden transition-colors">
-            <div className="absolute top-0 left-0 w-full h-3 bg-red-700 dark:bg-rose-600" />
-
-            {reportSuccess ? (
-              <div className="text-center py-10 scale-in-center">
-                <div className="h-32 w-32 bg-[#5A270F]/5 dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] rounded-full flex items-center justify-center mx-auto mb-10 border border-emerald-100 dark:border-emerald-500/20 shadow-lg transition-colors">
-                  <CheckCircle className="h-14 w-14" />
+      <div className="grid lg:grid-cols-12 gap-6 items-start">
+        {/* ── Main Column ── */}
+        <div className="lg:col-span-8 space-y-10">
+          
+          {/* Immersive Title Section */}
+          <section className="relative group">
+            <div className="absolute -inset-4 bg-[#DF8142]/5 blur-2xl rounded-[2rem] group-hover:bg-[#DF8142]/10 transition-colors duration-1000" />
+            <div className="absolute top-0 right-0 text-[60px] font-black text-[#5A270F]/5 dark:text-white/5 uppercase select-none pointer-events-none tracking-tighter -translate-y-6">
+              SPEC-TX
+            </div>
+            <div className="relative">
+              <h1 className="text-3xl md:text-5xl font-black text-[#5A270F] dark:text-white tracking-tighter uppercase leading-[0.95] font-space-grotesk italic drop-shadow-sm">
+                {resource.title}
+              </h1>
+              <div className="mt-6 flex flex-wrap gap-6">
+                <div className="space-y-0.5">
+                   <p className="text-[7px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em]">Principal Authority</p>
+                   <p className="text-lg font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tight">{resource.author}</p>
                 </div>
-                <h3 className="text-4xl font-black text-[#2A1205] dark:text-[#EEB38C] mb-6 tracking-tighter uppercase transition-colors">
-                  Signal Received
-                </h3>
-                <p className="text-[#5A270F] dark:text-foreground/40 font-bold uppercase tracking-[0.2em] text-xs transition-colors">
-                  The moderator nexus has been alerted.
-                </p>
+                <div className="h-8 w-px bg-[#D9D9C2] dark:bg-white/10" />
+                <div className="space-y-0.5">
+                   <p className="text-[7px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em]">Genesis Date</p>
+                   <p className="text-lg font-black text-[#5A270F] dark:text-white uppercase tracking-tight">{new Date(resource.uploadedAt).toLocaleDateString()}</p>
+                </div>
+                {resource.designStage && (
+                  <>
+                    <div className="h-8 w-px bg-[#D9D9C2] dark:bg-white/10" />
+                    <div className="space-y-0.5">
+                      <p className="text-[7px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em]">Design Phase</p>
+                      <p className="text-lg font-black text-[#DF8142] uppercase tracking-tight">{resource.designStage.name}</p>
+                    </div>
+                  </>
+                )}
               </div>
-            ) : (
-              <>
-                <div className="mb-12">
-                  <h3 className="text-4xl font-black text-[#2A1205] dark:text-[#EEB38C] mb-3 tracking-tighter uppercase transition-colors">
-                    Isolate Incident
-                  </h3>
-                  <p className="text-gray-500 dark:text-foreground/40 font-bold uppercase tracking-[0.2em] text-[10px] transition-colors">
-                    Detail the nature of the architectural breach.
-                  </p>
-                </div>
-                <form onSubmit={handleReport} className="space-y-10">
-                  <textarea
-                    required
-                    value={reportReason}
-                    onChange={(e) => setReportReason(e.target.value)}
-                    placeholder="e.g. Intellectual property disruption, metadata distortion, unauthorized access..."
-                    className="w-full px-10 py-8 bg-[#EFEDED] dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-[3rem] focus:outline-none focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 dark:focus:border-rose-500/40 transition-all text-[#5A270F] dark:text-white font-bold placeholder-slate-400 dark:placeholder-white/20 min-h-[220px] outline-none text-lg shadow-inner"
-                  />
-                  <div className="flex gap-6">
+            </div>
+          </section>
+
+          {/* Admin Context Directive */}
+          {resource.adminComment && (
+            <div className="bg-[#5A270F] dark:bg-[#1A0B04] p-6 rounded-[1.5rem] shadow-xl relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/10 blur-[60px] -translate-y-1/2 translate-x-1/2 group-hover:bg-[#DF8142]/20 transition-colors" />
+               <div className="relative z-10 flex items-start gap-4">
+                  <div className="h-10 w-10 shrink-0 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-[#DF8142] shadow-inner">
+                    <ShieldAlert className="h-5 w-5 animate-pulse" />
+                  </div>
+                  <div className="space-y-1">
+                    <h5 className="text-[9px] font-black uppercase tracking-[0.4em] text-[#EEB38C]">Operations Directive</h5>
+                    <p className="text-lg text-white italic font-medium leading-relaxed max-w-lg opacity-90">
+                      "{resource.adminComment}"
+                    </p>
+                  </div>
+               </div>
+            </div>
+          )}
+
+          {/* Asset Preview / File Info */}
+          <div className="bg-white dark:bg-card/40 p-6 md:p-8 rounded-[1.5rem] border border-[#D9D9C2] dark:border-white/5 shadow-xl relative overflow-hidden architect-border group">
+             <div className="absolute inset-0 architectural-dot-grid dark:architectural-dot-grid-dark opacity-5" />
+             <div className="relative z-10 grid md:grid-cols-2 gap-6">
+               <div className="space-y-4">
+                 <div className="flex items-center gap-2">
+                    <div className="h-6 w-6 rounded-md bg-[#5A270F] flex items-center justify-center text-[#EEB38C] shadow-md">
+                      <Box className="h-3 w-3" />
+                    </div>
+                    <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-white">Technical Parameters</h3>
+                 </div>
+                 
+                 <div className="space-y-3">
+                    {[
+                      { label: 'Data Payload', value: resource.fileSize > 1048576 ? `${(resource.fileSize/1048576).toFixed(2)} MB` : `${(resource.fileSize/1024).toFixed(2)} KB`, color: '[#5A270F]' },
+                      { label: 'File Type', value: resource.fileType?.toUpperCase() || 'DOCUMENT', color: '[#DF8142]' },
+                      { label: 'Academic Year', value: `Year ${resource.forYearStudents}`, color: '[#6C3B1C]' },
+                      { label: 'Batch Cycle', value: resource.batchYear || '2024', color: '[#92664A]' }
+                    ].map((item, i) => (
+                      <div key={i} className="flex justify-between items-end pb-2 border-b border-[#D9D9C2]/40 dark:border-white/5 group/line">
+                        <span className="text-[8px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-white/20 group-hover/line:text-[#DF8142] transition-colors">{item.label}</span>
+                        <span className={`text-[10px] font-black text-${item.color} dark:text-white uppercase tracking-widest`}>{item.value}</span>
+                      </div>
+                    ))}
+                 </div>
+               </div>
+
+               <div className="flex flex-col justify-center gap-3">
+                  <a
+                    href={`${import.meta.env.VITE_API_URL}/resources/${id}/view?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
+                    target="_blank" rel="noreferrer"
+                    className="h-12 flex items-center justify-center gap-3 bg-[#5A270F] text-white rounded-xl text-[9px] font-black uppercase tracking-[0.3em] hover:bg-[#6C3B1C] transition-all hover:scale-[1.01] shadow-lg shadow-[#5A270F]/10 active:scale-95 group/btn"
+                  >
+                    <Eye className="h-5 w-5 text-[#EEB38C] group-hover/btn:scale-110 transition-transform" />
+                    Visual Scan
+                  </a>
+                  <a
+                    href={`${import.meta.env.VITE_API_URL}/resources/${id}/download?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
+                    className="h-12 flex items-center justify-center gap-3 bg-[#DF8142] text-white rounded-xl text-[9px] font-black uppercase tracking-[0.3em] hover:bg-[#EEB38C] hover:text-[#5A270F] transition-all hover:scale-[1.01] shadow-lg shadow-[#DF8142]/10 active:scale-95 group/btn"
+                  >
+                    <Download className="h-5 w-5 group-hover/btn:translate-y-0.5 transition-transform" />
+                    Archive Uplink
+                  </a>
+               </div>
+             </div>
+          </div>
+
+          {/* Multi-Phased Evaluation Matrix */}
+          {(resource.status === "approved" || resource.status === "student") && (
+            <div className="bg-[#FAF8F4] dark:bg-card/20 rounded-[2.5rem] border-2 border-[#D9D9C2] dark:border-white/5 p-8 md:p-10 relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#EEB38C]/3 blur-[100px] rounded-full" />
+               
+               <div className="relative z-10 flex flex-col xl:flex-row gap-10 items-start">
+                  <div className="flex-1 space-y-6 w-full">
+                    <div className="space-y-1">
+                       <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C]">Qualitative Matrix</h3>
+                       <p className="text-[9px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em]">Intelligence node for peer feedback</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          onMouseEnter={() => setHoverRating(star)}
+                          onMouseLeave={() => setHoverRating(0)}
+                          onClick={() => handleRatingClick(star)}
+                          className="focus:outline-none transition-all hover:scale-110 group/star active:scale-90 disabled:opacity-30 relative"
+                          disabled={!isAuth || submittingEvaluation}
+                          title={`Rate ${star} star${star > 1 ? 's' : ''}`}
+                        >
+                          <Star
+                            className={`h-8 w-8 ${
+                              (hoverRating || pendingRating || userRating || Math.round(averageRating)) >= star
+                                ? "text-[#DF8142] fill-[#DF8142]"
+                                : "text-[#D9D9C2] dark:text-white/5"
+                            } transition-all duration-300 drop-shadow-lg`}
+                          />
+                          {star === Math.round(averageRating) && !hoverRating && !pendingRating && (
+                            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1 w-1 bg-[#DF8142] rounded-full blur-[1px]" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+
+                    <textarea 
+                      rows={3}
+                      value={evaluationComment}
+                      onChange={(e) => setEvaluationComment(e.target.value)}
+                      placeholder="Input technical feedback node... (Optional)"
+                      className="w-full bg-white dark:bg-white/5 border-2 border-[#D9D9C2] dark:border-white/10 rounded-[1.5rem] p-6 text-base font-bold text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all shadow-lg placeholder:text-[#5A270F]/20"
+                    />
+                    
                     <button
-                      type="button"
-                      onClick={() => setReporting(false)}
-                      className="flex-1 py-6 px-4 rounded-3xl text-gray-500 dark:text-white/40 text-[10px] font-black uppercase tracking-widest hover:bg-[#EFEDED] dark:bg-background dark:hover:bg-white/5 dark:bg-card/5 transition-all"
+                      onClick={handleSubmitEvaluation}
+                      disabled={submittingEvaluation || !isAuth || pendingRating === 0}
+                      className="w-full md:w-auto px-10 py-4 bg-[#5A270F] text-white rounded-xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#6C3B1C] transition-all hover:-translate-y-1 shadow-lg active:scale-95 disabled:opacity-30"
                     >
-                      Abort Mission
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmittingReport || !reportReason.trim()}
-                      className="flex-1 bg-rose-600 text-white py-6 px-4 rounded-3xl text-[10px] font-black uppercase tracking-[0.3em] shadow-3xl shadow-rose-600/30 hover:bg-rose-700 transition-all disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
-                    >
-                      {isSubmittingReport ? (
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                      ) : (
-                        "Issue Directive"
-                      )}
+                      {submittingEvaluation ? <Loader2 className="h-5 w-5 animate-spin mx-auto" /> : "Broadcast Evaluation"}
                     </button>
                   </div>
-                </form>
-              </>
+
+                  <div className="w-full xl:w-64 space-y-6 bg-white dark:bg-black/40 p-6 rounded-[2rem] border border-[#D9D9C2] dark:border-white/5 shadow-xl relative overflow-hidden group/rating">
+                     <div className="absolute top-0 right-0 w-24 h-24 bg-[#DF8142]/10 blur-2xl -translate-y-1/2 translate-x-1/2 group-hover/rating:bg-[#DF8142]/20 transition-all duration-700" />
+                     <div className="text-center relative z-10">
+                        <p className="text-[9px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em] mb-2">Nexus Aggregate</p>
+                        <div className="flex items-baseline justify-center gap-1">
+                           <span className="text-5xl font-black text-[#5A270F] dark:text-[#DF8142] tracking-tighter italic">{averageRating.toFixed(1)}</span>
+                           <div className="flex flex-col items-start -translate-y-2">
+                              <span className="text-[10px] font-black text-[#D9D9C2] dark:text-white/10 uppercase tracking-tighter leading-none">AVG</span>
+                              <div className="flex gap-0.5 mt-1">
+                                 {[1, 2, 3, 4, 5].map((s) => (
+                                    <div key={s} className={`h-1 w-2 rounded-full ${s <= Math.round(averageRating) ? 'bg-[#DF8142]' : 'bg-[#D9D9C2] dark:bg-white/5'}`} />
+                                 ))}
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div className="space-y-4 pt-6 border-t border-[#D9D9C2]/40 dark:border-white/10 relative z-10">
+                        <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-[#5A270F]/60 dark:text-white/40">
+                           <span>Signal Count</span>
+                           <span className="text-[#5A270F] dark:text-white font-mono bg-[#FAF8F4] dark:bg-white/5 px-2 py-0.5 rounded-md">{(ratingCount || 0).toString().padStart(2, '0')}</span>
+                        </div>
+                        <div className="h-2 w-full bg-[#FAF8F4] dark:bg-white/5 rounded-full overflow-hidden p-0.5 border border-[#D9D9C2]/20 dark:border-white/5">
+                           <div 
+                              className="h-full bg-gradient-to-r from-[#5A270F] to-[#DF8142] rounded-full shadow-[0_0_10px_rgba(223,129,66,0.2)] transition-all duration-1000 ease-out" 
+                              style={{ width: `${(averageRating / 5) * 100}%` } as React.CSSProperties}
+                           />
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+          )}
+
+          {/* Peer Discovery / Comments */}
+          <div className="space-y-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b-2 border-[#5A270F] pb-6 relative">
+               <div className="space-y-1">
+                  <h2 className="text-3xl font-black text-[#5A270F] dark:text-white tracking-tighter uppercase italic">
+                    CORE <span className="text-[#DF8142]">INTELLIGENCE</span>
+                  </h2>
+                  <p className="text-[10px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.4em]">Synchronized community feedback nodes</p>
+               </div>
+               <div className="px-6 py-3 bg-[#5A270F] rounded-full text-[10px] font-black text-[#EEB38C] uppercase tracking-[0.3em] shadow-lg">
+                LOGS: {comments.length.toString().padStart(2, '0')}
+              </div>
+            </div>
+
+            {isAuth ? (
+              <form onSubmit={handleSubmitComment} className="flex gap-3 group">
+                <input
+                  type="text"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Inject technical insight..."
+                  className="flex-grow bg-white dark:bg-white/5 border-2 border-[#D9D9C2] dark:border-white/10 rounded-2xl px-6 py-4 text-base font-bold text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all shadow-md"
+                />
+                <button
+                  type="submit"
+                  disabled={submittingComment || !newComment.trim()}
+                  className="px-8 bg-[#5A270F] text-[#EEB38C] rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#6C3B1C] transition-all active:scale-95 shadow-md flex items-center justify-center min-w-[140px]"
+                >
+                  {submittingComment ? <Loader2 className="h-5 w-5 animate-spin" /> : "Transmit"}
+                </button>
+              </form>
+            ) : (
+              <div className="p-10 bg-white dark:bg-card/40 rounded-[2.5rem] border-2 border-dashed border-[#D9D9C2] dark:border-white/5 text-center shadow-inner">
+                <ShieldAlert className="h-10 w-10 text-[#DF8142] mx-auto mb-4 opacity-20" />
+                <p className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C]/40 uppercase tracking-[0.2em] mb-8 italic">Identity Verification Required</p>
+                <Link to="/login" className="px-10 py-4 bg-[#5A270F] text-[#EEB38C] rounded-xl text-[10px] font-black uppercase tracking-[0.4em] hover:bg-[#DF8142] hover:text-white transition-all shadow-md">Initialize Login</Link>
+              </div>
             )}
+
+            <div className="grid gap-6">
+              {comments.map((comment) => (
+                <div key={comment.id} className="bg-white dark:bg-card/40 p-6 rounded-[2rem] border border-[#D9D9C2] dark:border-white/5 shadow-lg flex gap-6 items-start group hover:bg-[#FAF8F4] dark:hover:bg-white/5 transition-all architect-border">
+                  <div className="h-14 w-14 shrink-0 rounded-2xl bg-gradient-to-br from-[#5A270F] to-[#2A1205] flex items-center justify-center text-[#EEB38C] text-xl font-black shadow-lg group-hover:rotate-6 transition-transform">
+                    {(comment.user.first_name || comment.user.firstName)?.[0]}
+                  </div>
+                  <div className="space-y-3 pt-1">
+                    <div className="flex items-center gap-4">
+                       <p className="text-lg font-black text-[#5A270F] dark:text-white uppercase tracking-tight">
+                         {comment.user.first_name || comment.user.firstName}
+                       </p>
+                       <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142]" />
+                       <p className="text-[9px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.4em]">
+                         SYNC: {new Date(comment.createdAt).toLocaleDateString()}
+                       </p>
+                    </div>
+                    <p className="text-base font-medium text-[#5A270F]/80 dark:text-[#EEB38C]/80 leading-relaxed italic border-l-2 border-[#DF8142]/20 pl-4">"{comment.text}"</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      )}
+
+        {/* ── Control Sidebar ── */}
+        <div className="lg:col-span-4 space-y-12 lg:sticky lg:top-12">
+          
+          <div className="bg-[#1A0B03] p-8 rounded-[2.5rem] text-white relative overflow-hidden shadow-2xl border border-white/5">
+             <div className="absolute top-0 left-0 w-full h-full architectural-dot-grid opacity-[0.03]" />
+             <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/20 blur-[80px] p-8 rounded-full -translate-y-1/2 translate-x-1/2" />
+             
+             <div className="relative z-10 space-y-8">
+                <div className="space-y-1">
+                   <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#EEB38C]">Security Layer</h4>
+                   <p className="text-[9px] font-bold text-white/40 italic">Unauthorized modification restricted</p>
+                </div>
+
+                <div className="space-y-4">
+                  {isAuthorizedManager && (
+                     <div className="space-y-3">
+                        {resource.status === 'archived' ? (
+                          <button onClick={handleRestore} className="w-full h-14 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-center gap-3 text-emerald-400 text-[9px] font-black uppercase tracking-[0.3em] hover:bg-emerald-500/20 transition-all active:scale-95 group">
+                            <RotateCcw className="h-5 w-5 group-hover:-rotate-180 transition-transform duration-700" /> Restore Logic
+                          </button>
+                        ) : (
+                          <button onClick={handleArchive} className="w-full h-14 bg-rose-500/10 border border-rose-500/30 rounded-2xl flex items-center justify-center gap-3 text-rose-400 text-[9px] font-black uppercase tracking-[0.3em] hover:bg-rose-500/20 transition-all active:scale-95 group">
+                            <Trash2 className="h-5 w-5 group-hover:shake transition-transform" /> Sequestrate Node
+                          </button>
+                        )}
+                     </div>
+                  )}
+
+                  <div className="p-6 bg-white/5 rounded-2xl border border-white/5 space-y-6">
+                     <div className="space-y-1">
+                        <p className="text-[8px] font-black text-white/30 uppercase tracking-[0.3em]">Registry Identity</p>
+                        <p className="text-xl font-black text-[#EEB38C] font-mono tracking-tighter italic">#{String(id).padStart(6, '0')}</p>
+                     </div>
+                     <div className="h-px bg-white/10" />
+                     <div className="space-y-4">
+                        <div className="flex items-center gap-3 opacity-50">
+                           <ShieldCheck className="h-4 w-4 text-emerald-400" />
+                           <span className="text-[8px] font-black uppercase tracking-widest text-emerald-400">Integrity Verified</span>
+                        </div>
+                        <div className="flex items-center gap-3 opacity-50">
+                           <Zap className="h-4 w-4 text-[#DF8142]" />
+                           <span className="text-[8px] font-black uppercase tracking-widest text-[#DF8142]">High Flux Node</span>
+                        </div>
+                     </div>
+                  </div>
+                </div>
+             </div>
+          </div>
+
+          {/* Related Artifacts Matrix */}
+          <div className="bg-white dark:bg-card/40 p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/5 shadow-xl">
+            <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C] mb-8 flex items-center gap-3">
+              <Clock className="h-4 w-4 text-[#DF8142]" /> SYNAPTIC NODES
+            </h5>
+            <div className="grid gap-6">
+              {recentResources.map((recent) => (
+                <Link 
+                  key={recent.id} 
+                  to={isNested ? (role === 'Admin' || role === 'SuperAdmin' || role === 'admin' ? `/admin/resources/${recent.id}` : `/dashboard/resources/${recent.id}`) : `/resources/${recent.id}`}
+                  className="flex items-center gap-4 group"
+                >
+                   <div className="h-12 w-12 shrink-0 rounded-xl bg-[#5A270F] flex items-center justify-center text-[#EEB38C] font-black text-[10px] shadow-md group-hover:scale-110 transition-all">
+                    {recent.fileType?.[0]?.toUpperCase() || 'A'}
+                   </div>
+                   <div className="overflow-hidden space-y-0.5">
+                      <p className="text-sm font-black text-[#5A270F] dark:text-white uppercase truncate group-hover:text-[#DF8142] transition-colors">{recent.title}</p>
+                      <p className="text-[8px] font-bold text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.2em]">Arch. {recent.author}</p>
+                   </div>
+                   <ChevronRight className="h-4 w-4 ml-auto text-[#D9D9C2] group-hover:translate-x-1.5 transition-transform" />
+                </Link>
+              ))}
+            </div>
+            <button className="w-full mt-8 py-4 border-2 border-dashed border-[#D9D9C2] dark:border-white/10 rounded-xl text-[9px] font-black uppercase tracking-[0.3em] text-[#5A270F]/40 dark:text-white/20 hover:border-[#DF8142] hover:text-[#DF8142] transition-colors">
+              Expand Nexus
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
