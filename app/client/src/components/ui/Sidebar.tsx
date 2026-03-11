@@ -11,6 +11,7 @@ import {
   ChevronRight,
   Sparkles,
   Zap,
+  Hexagon,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -36,30 +37,40 @@ export default function Sidebar({ isOpen, setOpen }: SidebarProps) {
     user && typeof user.role === "object" && user.role !== null
       ? user.role.name
       : user?.role;
+  
   const isAdmin =
     role === "admin" ||
     role === "Admin" ||
     role === "SuperAdmin" ||
     role === "DepartmentHead";
+    
   const isAuthorizedForApprovals =
     role === "SuperAdmin" || role === "DepartmentHead";
 
+  // Intel Hub: Common high-level routes
   const menuItems = [
     { name: "Browse", path: "/", icon: Home },
-    {
-      name: "Upload",
-      path: isAdmin ? "/admin/upload" : "/dashboard/upload",
-      icon: Upload,
-    },
+    ...(isAdmin 
+      ? [{ name: "Upload Node", path: "/admin/upload", icon: Upload }]
+      : [{ name: "Upload Node", path: "/dashboard/upload", icon: Upload }]
+    ),
   ];
 
-  const adminItems = [
-    { name: "Dashboard", path: "/admin", icon: LayoutDashboard },
+  // Secondary Console: Role-specific specialized routes
+  const consoleItems = isAdmin ? [
+    { name: "Terminal Dashboard", path: "/admin/analytics", icon: LayoutDashboard },
     ...(isAuthorizedForApprovals
-      ? [{ name: "Resource Approvals", path: "/admin/approvals", icon: CheckCircle }]
+      ? [{ name: "Approvals", path: "/admin/approvals", icon: CheckCircle }]
       : []),
-    { name: "Users", path: "/admin/users", icon: Users },
-    { name: "Flags", path: "/admin/flags", icon: Flag },
+    { name: "Human Assets", path: "/admin/users", icon: Users },
+    { name: "Alert Flags", path: "/admin/flags", icon: Flag },
+  ] : [
+    { name: "Studio Dashboard", path: "/dashboard", icon: LayoutDashboard },
+    ...(user ? [
+      { name: "My Archive", path: "/dashboard/uploads", icon: Sparkles },
+      { name: "Favorites", path: "/dashboard/favorites", icon: CheckCircle },
+      { name: "Academic Node", path: "/dashboard/assignments", icon: ShieldCheck },
+    ] : [])
   ];
 
   const isActive = (path: string) => loc.pathname === path;
@@ -96,53 +107,52 @@ export default function Sidebar({ isOpen, setOpen }: SidebarProps) {
         </div>
 
         <div className="space-y-1">
-          <p className="px-4 text-[9px] font-black text-[#5A270F]/60 dark:text-white/30 uppercase tracking-[0.4em] mb-4">
+          <p className="px-4 text-[9px] font-black text-[#5A270F]/60 dark:text-white/30 uppercase tracking-[0.5em] mb-4">
             Intel Hub
           </p>
           {menuItems.map((item) => (
             <Link
               key={item.path}
               onClick={closeSidebar}
-              className={`flex items-center justify-between group px-4 py-3.5 rounded-2xl transition-all duration-300 ${
+              className={`flex items-center justify-between group px-4 py-3.5 rounded-2xl transition-all duration-500 ${
                 isActive(item.path)
-                  ? "bg-[#5A270F] dark:bg-[#DF8142] text-white shadow-lg shadow-[#5A270F]/20 dark:shadow-none"
-                  : "text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#5A270F] dark:hover:bg-[#DF8142] hover:text-white hover:shadow-xl hover:shadow-[#5A270F]/10 dark:hover:shadow-none"
+                  ? "bg-[#1A0B04] dark:bg-[#DF8142] text-white shadow-[0_10px_20px_-5px_rgba(26,11,4,0.3)] dark:shadow-none"
+                  : "text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#FAF8F4] dark:hover:bg-white/5"
               }`}
               to={item.path}
             >
               <div className="flex items-center gap-3">
-                <item.icon className={`h-5 w-5 ${isActive(item.path) ? "text-white" : "text-[#92664A] dark:text-[#EEB38C]/60 group-hover:text-white"} transition-colors`} />
-                <span className="text-sm font-bold tracking-tight">{item.name}</span>
+                <item.icon className={`h-4 w-4 ${isActive(item.path) ? "text-[#DF8142] animate-pulse" : "text-[#92664A] dark:text-[#EEB38C]/40 group-hover:text-[#5A270F]"} transition-colors`} />
+                <span className="text-xs font-black uppercase tracking-widest">{item.name}</span>
               </div>
-              {isActive(item.path) && <Sparkles className="h-3.5 w-3.5 text-white/40 animate-pulse" />}
+              {isActive(item.path) && <Sparkles className="h-3 w-3 text-[#DF8142]" />}
             </Link>
           ))}
         </div>
 
-        {isAdmin && (
-          <div className="space-y-1 pt-6 border-t border-[#D9D9C2] dark:border-white/10">
-            <p className="px-4 text-[9px] font-black text-[#DF8142] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] mb-4 flex items-center gap-2">
-              <ShieldCheck className="h-3 w-3" /> Node Control
-            </p>
-            {adminItems.map((item) => (
-              <Link
-                key={item.path}
-                onClick={closeSidebar}
-                className={`flex items-center justify-between group px-4 py-3.5 rounded-2xl transition-all duration-300 ${
-                  isActive(item.path)
-                    ? "bg-[#DF8142] dark:bg-[#EEB38C] text-white dark:text-[#5A270F] shadow-lg shadow-[#DF8142]/20 dark:shadow-none"
-                    : "text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#DF8142] dark:hover:bg-[#EEB38C] hover:text-white dark:hover:text-[#5A270F] hover:shadow-xl dark:hover:shadow-none"
-                }`}
-                to={item.path}
-              >
-                <div className="flex items-center gap-3">
-                  <item.icon className={`h-5 w-5 ${isActive(item.path) ? "text-white" : "text-[#92664A] dark:text-[#EEB38C]/60 group-hover:text-white dark:group-hover:text-[#5A270F]"} transition-colors`} />
-                  <span className="text-xs font-black uppercase tracking-widest">{item.name}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
+        <div className="space-y-1 pt-6 border-t border-[#D9D9C2] dark:border-white/10">
+          <p className="px-4 text-[9px] font-black text-[#DF8142] dark:text-[#EEB38C]/40 uppercase tracking-[0.5em] mb-4 flex items-center gap-2">
+            <Hexagon className="h-3.5 w-3.5" /> {isAdmin ? "Node Control" : "Member Console"}
+          </p>
+          {consoleItems.map((item) => (
+            <Link
+              key={item.path}
+              onClick={closeSidebar}
+              className={`flex items-center justify-between group px-4 py-3.5 rounded-2xl transition-all duration-500 ${
+                isActive(item.path)
+                  ? "bg-[#DF8142] dark:bg-[#EEB38C] text-white dark:text-[#5A270F] shadow-[0_15px_30px_-10px_rgba(223,129,66,0.3)] dark:shadow-none"
+                  : "text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#FAF8F4] dark:hover:bg-white/5 active:scale-95"
+              }`}
+              to={item.path}
+            >
+              <div className="flex items-center gap-4">
+                <item.icon className={`h-4 w-4 ${isActive(item.path) ? "text-white" : "text-[#92664A] dark:text-[#EEB38C]/40 group-hover:text-[#DF8142] dark:group-hover:text-[#EEB38C]"} transition-all duration-300`} />
+                <span className="text-[11px] font-black uppercase tracking-[0.2em]">{item.name}</span>
+              </div>
+              {isActive(item.path) && <div className="h-1.5 w-1.5 rounded-full bg-white dark:bg-[#5A270F] shadow-[0_0_8px_white]" />}
+            </Link>
+          ))}
+        </div>
 
         <div className="absolute bottom-6 left-6 right-6">
           <div className="p-4 bg-gradient-to-br from-[#5A270F] to-[#2A1205] dark:from-[#2A1205] dark:to-black rounded-2xl relative overflow-hidden group/card shadow-xl ring-1 ring-white/10">

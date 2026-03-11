@@ -1,31 +1,30 @@
 import { useState } from "react";
-import { NavLink, Outlet, useLocation, Link } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import {
-  Users,
-  CheckSquare,
-  Flag,
   BarChart2,
-  UserPlus,
+  Users,
   GraduationCap,
+  UserPlus,
+  CheckSquare,
   Library,
   UploadCloud,
   Archive,
   PenTool,
   Megaphone,
-  ShieldCheck,
-  Layout,
-  Command,
+  Flag,
   Bell,
-  ArrowLeft,
-  User,
-  LayoutDashboard,
   Heart,
   Menu,
   X,
+  PanelLeftClose,
+  PanelLeftOpen,
+  LayoutDashboard,
+  ShieldCheck,
 } from "lucide-react";
 
 import { getUser } from "../../lib/auth";
 import ThemeToggle from "../../components/ui/ThemeToggle";
+import DeptHeadDashboard from "./DeptHeadDashboard";
 
 const adminNavLinks = [
   { name: "Analytics", href: "/admin/analytics", icon: BarChart2 },
@@ -46,15 +45,14 @@ const adminNavLinks = [
   { name: "Signals", href: "/admin/notifications", icon: Bell },
   { name: "Saved Resources", href: "/admin/favorites", icon: Heart },
   { name: "Personal Console", href: "/dashboard", icon: LayoutDashboard },
-  { name: "System Settings", href: "/dashboard/profile", icon: User },
+  { name: "System Settings", href: "/dashboard/profile", icon: ShieldCheck },
 ];
-
-import DeptHeadDashboard from "./DeptHeadDashboard";
 
 const AdminDashboard = () => {
   const location = useLocation();
   const user = getUser();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [prevPath, setPrevPath] = useState(location.pathname);
 
   // Close sidebar on mobile when navigating
@@ -81,21 +79,28 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background dark:bg-[#0F0602] lg:bg-[#EFEDED] dark:bg-background lg:dark:bg-[#0F0602] selection:bg-primary/20 selection:text-[#2A1205] relative">
-      {/* Mobile Menu Toggle */}
-      <button
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="lg:hidden fixed bottom-8 right-8 z-[60] h-16 w-16 bg-[#2A1205] text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform hover:bg-[#5A270F] border-4 border-white/20"
-      >
-        {isSidebarOpen ? (
-          <X className="h-6 w-6 animate-in spin-in-90 duration-300" />
-        ) : (
-          <Menu className="h-6 w-6 animate-in zoom-in duration-300" />
-        )}
-      </button>
-
+    <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#0F0602] lg:bg-[#EFEDED] dark:bg-background lg:dark:bg-[#0F0602] transition-colors duration-500 relative">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
+        <div className="flex flex-col lg:flex-row gap-8 items-start relative">
+          
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="lg:hidden fixed bottom-8 right-8 z-[60] h-16 w-16 bg-[#5A270F] text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform hover:bg-[#5A270F] border-4 border-white/20"
+            title={isSidebarOpen ? "Close Menu" : "Open Menu"}
+          >
+            {isSidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+
+          {/* Desktop Visibility Toggle Side-Grip */}
+          <button 
+            onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+            className={`hidden lg:flex fixed top-1/2 -translate-y-1/2 z-[100] h-12 w-6 items-center justify-center bg-[#5A270F] text-white rounded-r-xl shadow-xl hover:w-8 transition-all duration-300 border-y border-r border-white/10 ${isSidebarVisible ? "left-0 opacity-0 pointer-events-none" : "left-0"}`}
+            title="Show Sidebar"
+          >
+            <PanelLeftOpen className="h-4 w-4" />
+          </button>
+
           {/* Mobile Overlay */}
           {isSidebarOpen && (
             <div
@@ -104,123 +109,106 @@ const AdminDashboard = () => {
             />
           )}
 
-          {/* Refined Admin Sidebar */}
+          {/* Immersive Admin Sidebar (Dept Head Style) */}
           <aside
-            className={`fixed lg:sticky lg:top-24 inset-y-0 left-0 z-50 lg:z-auto w-full max-w-[300px] lg:w-[280px] bg-white dark:bg-card dark:bg-[#2A1205] lg:bg-transparent transform transition-transform duration-500 ease-in-out lg:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+            className={`fixed lg:sticky lg:top-24 inset-y-0 left-0 z-50 lg:z-auto w-80 flex flex-col gap-6 p-6 lg:p-0 bg-white dark:bg-[#1A0B04] lg:bg-transparent transform transition-all duration-500 ease-in-out ${
+              isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+            } ${isSidebarVisible ? "lg:w-80 lg:opacity-100" : "lg:w-0 lg:opacity-0 lg:pointer-events-none"}`}
           >
-            <div className="bg-white dark:bg-card dark:bg-[#2A1205] rounded-3xl lg:rounded-3xl p-6 shadow-xl relative overflow-hidden ring-1 ring-gray-200 dark:ring-white/10 flex flex-col h-[calc(100vh-80px)] lg:h-[calc(100vh-140px)]">
-              {/* Architectural Grid Pattern Overlay */}
+            <div className="bg-gradient-to-b from-[#5A270F] via-[#6C3B1C] to-[#2A1205] dark:from-[#1A0B04] dark:to-black rounded-[2.5rem] p-8 text-white relative overflow-hidden flex flex-col gap-8 shadow-2xl shadow-[#5A270F]/20 dark:shadow-none border border-white/5 h-full lg:h-auto min-h-[85vh]">
+              {/* Pattern Overlays */}
               <div className="absolute inset-0 opacity-[0.03] pointer-events-none architectural-dot-grid" />
               <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/10 blur-[60px] -translate-y-1/2 translate-x-1/2" />
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#92664A]/5 blur-[40px] translate-y-1/2 -translate-x-1/2" />
 
               <div className="relative z-10 flex flex-col h-full">
-                {/* Profile Module - Re-imagined */}
-                <div className="flex flex-col items-center text-center pb-6 border-b border-gray-200 dark:border-white/5 mb-6">
-                  {/* ... profile icon ... */}
-                  <div className="relative group p-1 rounded-2xl bg-gradient-to-br from-[#DF8142]/30 to-[#92664A]/30">
-                    <div className="absolute inset-0 bg-[#DF8142] blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-700" />
-                    <div className="h-16 w-16 rounded-xl bg-[#5A270F] flex items-center justify-center text-white text-xl font-bold relative z-10 border border-white/10 overflow-hidden transform group-hover:scale-105 transition-transform duration-500">
-                      <div className="absolute inset-0 bg-gradient-to-tr from-[#DF8142]/40 to-transparent" />
-                      <span className="relative z-10">
-                        {user?.first_name?.[0]}
-                        {user?.last_name?.[0]}
-                      </span>
+                {/* Profile Module */}
+                <div className="flex flex-col items-center text-center pb-8 border-b border-white/10 mb-8">
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-white blur-xl opacity-10 group-hover:opacity-20 transition-opacity" />
+                    <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-[#DF8142] to-[#EEB38C] flex items-center justify-center text-white text-2xl font-black shadow-2xl relative z-10 border border-white/20 transform group-hover:scale-105 transition-transform duration-500">
+                      {user?.first_name?.[0]}{user?.last_name?.[0]}
                     </div>
                   </div>
-                  <h3 className="mt-4 text-lg font-bold text-gray-900 dark:text-white leading-tight tracking-tight px-4 transition-colors">
-                    {user?.first_name} <br />
-                    <span className="text-gray-500 dark:text-white/60 font-medium">
-                      {user?.last_name}
-                    </span>
+                  <h3 className="mt-5 text-lg font-black text-white leading-tight tracking-tight uppercase">
+                    {user?.first_name} <br /> 
+                    <span className="text-white/50">{user?.last_name}</span>
                   </h3>
-                  <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-[#DF8142]/10 border border-[#DF8142]/20 rounded-full text-[10px] font-bold uppercase tracking-widest text-[#DF8142]">
+                  <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-white/10 border border-white/10 rounded-full text-[9px] font-black uppercase tracking-[0.2em] text-[#EEB38C]">
                     <ShieldCheck className="h-3.5 w-3.5" />
-                    {typeof user?.role === "string"
-                      ? user.role
-                      : user?.role?.name || "ADMIN_CORE"}
+                    {typeof user?.role === "string" ? user.role : user?.role?.name || "ADMIN_CORE"}
                   </div>
                 </div>
 
-                {isSuperAdmin && (
-                  <Link
-                    to="/super-admin"
-                    className="mb-6 mx-2 flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-xl text-[10px] font-bold uppercase tracking-widest text-[#DF8142] dark:text-[#EEB38C] hover:text-[#5A270F] dark:text-[#EEB38C] dark:hover:text-white transition-all group"
-                  >
-                    <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" />
-                    Back to Command
-                  </Link>
-                )}
-
                 {/* Navigation Terminal */}
-                <nav className="flex-grow overflow-y-auto pr-2 -mr-2 scrollbar-none space-y-2">
-                  <div className="flex items-center justify-between mb-4 px-2">
-                    <p className="text-[10px] font-bold text-gray-500 dark:text-white/20 uppercase tracking-widest flex items-center gap-3">
-                      <Command className="h-3 w-3" /> Control Modules
+                <nav className="space-y-6 flex-grow overflow-y-auto scrollbar-none">
+                  <div className="space-y-3">
+                    <p className="px-4 text-[9px] font-black text-white/30 uppercase tracking-[0.4em] mb-4">
+                      Control Modules
                     </p>
-                    <div className="h-px flex-grow ml-4 bg-gray-200 dark:bg-white/5" />
-                  </div>
-                  <div className="space-y-2">
                     {adminNavLinks
                       .filter((link) => {
-                        if (
-                          link.name === "Resource Approvals" ||
-                          link.name === "Flagged Content"
-                        ) {
-                          // These are strictly for DepartmentHead (who has a separate dashboard)
-                          return false;
-                        }
-                        if (link.name === "News & Events") {
-                          return isSuperAdmin;
-                        }
+                        if (link.name === "Resource Approvals" || link.name === "Flagged Content") return false;
+                        if (link.name === "News & Events") return isSuperAdmin;
                         return true;
                       })
                       .map((link) => {
-                        const isActive = location.pathname.startsWith(
-                          link.href,
-                        );
+                        const isActive = location.pathname.startsWith(link.href);
                         return (
                           <NavLink
                             key={link.name}
                             to={link.href}
-                            className={`group relative flex items-center px-4 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all duration-500 ${
+                            className={`group flex items-center justify-between px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 ${
                               isActive
-                                ? "bg-[#5A270F] dark:bg-[#EEB38C] text-white dark:text-[#1A0B02] shadow-lg -translate-y-0.5"
-                                : "text-gray-500 dark:text-[#EEB38C]/60 hover:text-white dark:hover:text-[#1A0B02] hover:bg-[#5A270F] dark:hover:bg-[#EEB38C] hover:shadow-xl hover:shadow-[#5A270F]/10 dark:hover:shadow-none"
+                                ? "bg-white text-[#5A270F] shadow-xl shadow-black/20 scale-[1.02]"
+                                : "text-[#EEB38C]/60 hover:text-white hover:bg-white/5"
                             }`}
                           >
-                            <link.icon
-                              className={`mr-4 h-5 w-5 transition-all duration-500 ${
-                                isActive
-                                  ? "text-white dark:text-[#DF8142] scale-110"
-                                  : "text-gray-400 dark:text-[#EEB38C]/40 group-hover:text-white dark:group-hover:text-[#DF8142] group-hover:scale-110"
-                              }`}
-                            />
-                            <span className="relative z-10">{link.name}</span>
-                            {isActive && (
-                              <div className="absolute right-4 w-1.5 h-1.5 rounded-full bg-[#DF8142] shadow-[0_0_10px_rgba(223,129,66,1)]" />
-                            )}
+                            <div className="flex items-center gap-4">
+                              <link.icon className={`h-4 w-4 ${isActive ? "text-[#DF8142]" : "text-[#EEB38C]/40 group-hover:text-white"}`} />
+                              <span>{link.name}</span>
+                            </div>
+                            {isActive && <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142] animate-pulse" />}
                           </NavLink>
                         );
                       })}
                   </div>
                 </nav>
+
+                <button 
+                  onClick={() => setIsSidebarVisible(false)}
+                  className="hidden lg:flex items-center gap-3 px-6 py-4 mt-8 rounded-2xl text-[9px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-white hover:bg-white/5 transition-all group"
+                  title="Close Control"
+                >
+                  <PanelLeftClose className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+                  Close Control
+                </button>
               </div>
             </div>
           </aside>
 
-          {/* Main Workspace */}
-          <main className="flex-grow w-full lg:max-w-[calc(100%-312px)] min-w-0">
+          {/* Main Integrated Workspace */}
+          <main className={`flex-grow min-w-0 transition-all duration-500 ${isSidebarVisible ? "lg:max-w-[calc(100%-344px)]" : "lg:max-w-full"}`}>
             <div className="bg-white dark:bg-card p-6 sm:p-10 rounded-3xl shadow-sm border border-[#D9D9C2] dark:border-white/10 min-h-[calc(100vh-140px)] relative overflow-hidden flex flex-col transition-colors duration-500">
               <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-50 dark:border-white/5 relative z-10 transition-colors">
                 <div className="flex items-center gap-6">
+                  {/* Toggle Grip for Hidden State */}
+                  {!isSidebarVisible && (
+                    <button 
+                      onClick={() => setIsSidebarVisible(true)}
+                      className="hidden lg:flex p-3 bg-[#5A270F] text-white rounded-2xl hover:scale-110 transition-transform shadow-lg"
+                      title="Show Sidebar"
+                    >
+                      <PanelLeftOpen className="h-6 w-6" />
+                    </button>
+                  )}
+
                   <div className="relative group">
                     <div className="absolute inset-0 bg-[#DF8142] blur-lg opacity-10 group-hover:opacity-20 transition-opacity" />
                     <div className="bg-[#5A270F] p-3 rounded-2xl text-white shadow-xl relative z-10 group-hover:scale-110 transition-transform duration-500">
                       {currentLink ? (
                         <currentLink.icon className="h-6 w-6" />
                       ) : (
-                        <Layout className="h-6 w-6" />
+                        <LayoutDashboard className="h-6 w-6" />
                       )}
                     </div>
                   </div>
@@ -231,7 +219,7 @@ const AdminDashboard = () => {
                         Executive Command
                       </p>
                     </div>
-                    <h1 className="text-3xl font-bold text-[#5A270F] dark:text-[#EEB38C] tracking-tight leading-none transition-colors">
+                    <h1 className="text-3xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter leading-none transition-colors uppercase">
                       {getTitle()}
                     </h1>
                   </div>
