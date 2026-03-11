@@ -61,7 +61,7 @@ const News = () => {
       document.head.appendChild(link);
     }
     return () => {
-      /* leave font loaded for navigations */
+      /* leave font loaded for navigation */
     };
   }, []);
 
@@ -564,7 +564,7 @@ const News = () => {
                     <span />
                   )}
                   <span
-                    className={`text-[9px] font-bold tabular-nums ml-auto shrink-0 ${
+                    className={`text-[9px] font-bold font-mono ml-auto shrink-0 ${
                       newsletterEmail.length > MAX_EMAIL_LENGTH
                         ? "text-white font-black"
                         : "text-white/50"

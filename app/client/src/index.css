@@ -284,3 +284,12 @@ h4,
 ::selection {
   @apply bg-primary text-primary-foreground;
 }
+
+.font-inter {
+  font-family: 'Inter', 'Space Grotesk', system-ui, sans-serif;
+}
+
+.font-space-grotesk {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+}
+
