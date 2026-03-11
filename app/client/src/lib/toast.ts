@@ -7,18 +7,32 @@ interface ToastOptions {
     label: string;
     onClick: () => void;
   };
+  cancel?: {
+    label: string;
+    onClick: () => void;
+  };
 }
 
 /**
  * Toast notification utility using Sonner
  * Styled with Warm Earth architectural theme
  */
-export const toast = {
+const baseToast = (message: string, options?: ToastOptions) => {
+  return sonnerToast(message, {
+    duration: options?.duration,
+    description: options?.description,
+    action: options?.action,
+    cancel: options?.cancel,
+  });
+};
+
+export const toast = Object.assign(baseToast, {
   success: (message: string, options?: ToastOptions) => {
     sonnerToast.success(message, {
       duration: options?.duration || 3000,
       description: options?.description,
       action: options?.action,
+      cancel: options?.cancel,
     });
   },
 
@@ -27,6 +41,7 @@ export const toast = {
       duration: options?.duration || 4000,
       description: options?.description,
       action: options?.action,
+      cancel: options?.cancel,
     });
   },
 
@@ -35,6 +50,7 @@ export const toast = {
       duration: options?.duration || 3000,
       description: options?.description,
       action: options?.action,
+      cancel: options?.cancel,
     });
   },
 
@@ -43,6 +59,7 @@ export const toast = {
       duration: options?.duration || 3500,
       description: options?.description,
       action: options?.action,
+      cancel: options?.cancel,
     });
   },
 
@@ -52,6 +69,7 @@ export const toast = {
       duration: options?.duration || 3500,
       description: options?.description,
       action: options?.action,
+      cancel: options?.cancel,
     });
   },
 
@@ -71,4 +89,4 @@ export const toast = {
   dismiss: (toastId?: string | number) => {
     sonnerToast.dismiss(toastId);
   },
-};
+});

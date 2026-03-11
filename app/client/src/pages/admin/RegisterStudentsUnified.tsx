@@ -440,7 +440,12 @@ const RegisterStudentsUnified = () => {
                       <Key className={`absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 ${errors.password ? "text-rose-400" : "text-[#92664A]/50"}`} />
                       <input name="password" type="text" placeholder="Secure credential" value={formData.password} onChange={handleChange} className={`${inputBase(!!errors.password)} pl-11 font-mono`} />
                     </div>
-                    <button type="button" onClick={generatePassword} className="px-5 py-3.5 bg-[#5A270F] text-[#EEB38C] rounded-[0.875rem] hover:bg-[#1A0B04] transition-all border border-white/5 shadow-lg active:scale-95">
+                    <button
+                      type="button"
+                      onClick={generatePassword}
+                      title="Generate Secure Password"
+                      className="px-5 py-3.5 bg-[#5A270F] text-[#EEB38C] rounded-[0.875rem] hover:bg-[#1A0B04] transition-all border border-white/5 shadow-lg active:scale-95"
+                    >
                       <RefreshCw className="h-4 w-4" />
                     </button>
                   </div>
