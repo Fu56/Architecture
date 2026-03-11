@@ -17,8 +17,10 @@ import {
   FileText,
   Clock,
   ArrowLeft,
+  Hexagon,
 } from "lucide-react";
 import { api } from "../lib/api";
+import { useTheme } from "../context/useTheme";
 import type { Resource, Blog } from "../models";
 import ResourceCard from "../components/ui/ResourceCard";
 
@@ -40,6 +42,8 @@ interface Stats {
 }
 
 const Home = () => {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const [topResources, setTopResources] = useState<Resource[]>([]);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [stats, setStats] = useState<Stats>({
@@ -478,148 +482,134 @@ const Home = () => {
       </section>
 
       {/* Explore Platform Sections - Architectural Ecosystem */}
-      <section className="py-32 bg-white dark:bg-background relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-slate-200 dark:via-white/10 to-transparent" />
-        <div className="absolute inset-0 blueprint-grid opacity-[0.03] pointer-events-none" />
-
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="text-center mb-24">
-            <div className="inline-block p-1 mb-8 rounded-full bg-[#DF8142]/10 border border-[#DF8142]/20">
-              <span className="px-5 py-1.5 text-[10px] font-black uppercase tracking-[0.4em] text-[#DF8142] block">
-                CORE ECOSYSTEM
-              </span>
+      <section className="py-44 bg-white dark:bg-background relative overflow-hidden transition-colors duration-500">
+        {/* Architectural Grid Background */}
+        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none" 
+             style={{ backgroundImage: 'linear-gradient(#5A270F 1px, transparent 1px), linear-gradient(90deg, #5A270F 1px, transparent 1px)', backgroundSize: '80px 80px' }} />
+        
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
+          <div className="text-center mb-32">
+            <div className={`inline-flex items-center gap-3 px-6 py-2 ${isDark ? "bg-white/5" : "bg-[#DF8142]/10"} border border-[#DF8142]/20 rounded-full text-[10px] font-black uppercase tracking-[0.6em] text-[#DF8142] mb-12 shadow-sm`}>
+              <Hexagon className="h-4 w-4" /> CORE ECOSYSTEM
             </div>
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-[#5A270F] dark:text-foreground uppercase leading-[0.8]">
+            <h2 className={`text-6xl md:text-8xl font-black tracking-tighter ${isDark ? "text-white" : "text-[#1A0B04]"} uppercase leading-[0.8] font-space-grotesk`}>
               THE ARCHITECTURAL <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] to-[#5A270F] italic">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] to-[#DF8142] italic">
                 STANDARD.
               </span>
             </h2>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8 lg:gap-6">
+          <div className="grid lg:grid-cols-3 gap-10 items-stretch">
             {/* Elite Projects */}
-            <div className="group relative bg-[#fafafa] dark:bg-white/5 p-8 rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 transition-all duration-700 hover:bg-white dark:bg-card dark:hover:bg-white/10 hover:shadow-[0_48px_100px_-24px_rgba(79,70,229,0.12)] hover:-translate-y-4 overflow-hidden">
-              <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:opacity-[0.07] transition-all duration-1000 group-hover:rotate-12 group-hover:scale-150">
-                <Trophy className="h-48 w-48" />
+            <div className="group relative bg-white dark:bg-card p-12 rounded-[4rem] border border-[#BCAF9C]/30 dark:border-white/10 shadow-[0_20px_50px_-20px_rgba(90,39,15,0.05)] hover:shadow-[0_50px_100px_-25px_rgba(223,129,66,0.15)] transition-all duration-700 hover:-translate-y-3 overflow-hidden flex flex-col">
+              {/* Technical Scan Corner */}
+              <div className="absolute top-0 right-0 w-20 h-20 border-r-2 border-t-2 border-[#DF8142]/20 rounded-tr-[4rem] group-hover:w-24 group-hover:h-24 transition-all duration-500" />
+              
+              <div className="absolute top-0 right-0 p-16 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-1000 group-hover:rotate-12 group-hover:scale-110 pointer-events-none">
+                <Trophy className="h-64 w-64 text-[#5A270F]" />
               </div>
 
-              <div className="relative z-10">
-                <div className="w-20 h-20 bg-[#DF8142] text-white rounded-[1.5rem] flex items-center justify-center mb-12 shadow-2xl shadow-[#DF8142]/20 group-hover:scale-110 transition-transform duration-500">
-                  <Trophy className="h-10 w-10" />
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="w-16 h-16 bg-[#DF8142] text-white rounded-2xl flex items-center justify-center mb-12 shadow-2xl shadow-[#DF8142]/30 group-hover:rotate-[360deg] transition-transform duration-1000">
+                  <Trophy className="h-8 w-8" />
                 </div>
-                <h3 className="text-2xl font-black tracking-tight text-[#5A270F] dark:text-foreground mb-4 uppercase leading-none">
-                  ELITE <br />
-                  PROJECTS
-                </h3>
-                <p className="text-[#5A270F] dark:text-foreground/70 leading-relaxed font-bold mb-8 text-base">
-                  Access award-winning thesis papers and research from the
-                  world's leading architectural minds.
+                
+                <div className="mb-10">
+                   <p className="text-[10px] font-black text-[#DF8142] uppercase tracking-[0.4em] mb-4">
+                     01 // EXCELLENCE INDEX
+                   </p>
+                   <h3 className={`text-4xl font-black ${isDark ? "text-white" : "text-[#1A0B04]"} uppercase tracking-tighter font-space-grotesk leading-[0.85]`}>
+                     ELITE <br /> PROJECTS
+                   </h3>
+                </div>
+
+                <p className={`${isDark ? "text-white/60" : "text-[#1A0B04]/70"} leading-relaxed font-bold mb-12 text-base pl-6 border-l-2 border-[#DF8142]/30`}>
+                  Access award-winning thesis papers and research from the world's leading architectural minds.
                 </p>
-                <div className="flex flex-col gap-4 mb-8">
-                  <div className="flex items-center gap-4">
-                    <div className="w-2 h-2 rounded-full bg-[#DF8142]/90 shadow-[0_0_8px_rgba(223,129,66,0.3)]" />
-                    <span className="text-xs font-black uppercase tracking-widest text-[#5A270F]/50 dark:text-foreground/40 transition-colors">
-                      Peer-Reviewed Standard
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className="w-2 h-2 rounded-full bg-[#DF8142]/90 shadow-[0_0_8px_rgba(223,129,66,0.3)]" />
-                    <span className="text-xs font-black uppercase tracking-widest text-[#5A270F]/50 dark:text-foreground/40 transition-colors">
-                      Thesis Gold Benchmarks
-                    </span>
-                  </div>
+
+                <div className="mt-auto pt-10 border-t border-[#BCAF9C]/20">
+                  <Link
+                    to="/browse?sort=top"
+                    className="inline-flex items-center gap-4 text-[11px] font-black uppercase tracking-[0.4em] text-[#DF8142] group/link"
+                  >
+                    VIEW FULL ARCHIVE <ArrowRight className="h-4 w-4 group-hover/link:translate-x-2 transition-transform" />
+                  </Link>
                 </div>
-                <Link
-                  to="/browse?sort=top"
-                  className="inline-flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.3em] text-[#DF8142] hover:gap-6 transition-all duration-500 group/link"
-                >
-                  VIEW FULL ARCHIVE{" "}
-                  <ArrowRight className="h-4 w-4 group-hover/link:translate-x-1" />
-                </Link>
               </div>
             </div>
 
             {/* Course Assignments */}
-            <div className="group relative bg-[#fafafa] dark:bg-white/5 p-12 rounded-[4rem] border border-[#D9D9C2] dark:border-white/10 transition-all duration-700 hover:bg-white dark:bg-card dark:hover:bg-white/10 hover:shadow-[0_48px_100px_-24px_rgba(168,85,247,0.12)] hover:-translate-y-4 overflow-hidden">
-              <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:opacity-[0.07] transition-all duration-1000 group-hover:rotate-12 group-hover:scale-150">
-                <Briefcase className="h-48 w-48" />
+            <div className="group relative bg-[#FAF8F4] dark:bg-card p-12 rounded-[4rem] border-2 border-white dark:border-white/5 shadow-[0_20px_50px_-20px_rgba(90,39,15,0.05)] hover:shadow-[0_50px_100px_-25px_rgba(26,11,4,0.1)] transition-all duration-700 hover:-translate-y-3 overflow-hidden flex flex-col">
+               <div className="absolute top-0 left-0 w-20 h-20 border-l-2 border-t-2 border-[#1A0B04]/10 rounded-tl-[4rem] group-hover:w-24 group-hover:h-24 transition-all duration-500" />
+               
+               <div className="absolute top-0 right-0 p-16 opacity-[0.03] group-hover:opacity-[0.08] transition-all duration-1000 group-hover:-rotate-12 group-hover:scale-110 pointer-events-none">
+                <Briefcase className="h-64 w-64 text-[#5A270F]" />
               </div>
 
-              <div className="relative z-10">
-                <div className="w-20 h-20 bg-[#6C3B1C] text-white rounded-[1.5rem] flex items-center justify-center mb-12 shadow-2xl shadow-[#6C3B1C]/30 group-hover:scale-110 transition-transform duration-500">
-                  <Briefcase className="h-10 w-10" />
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="w-16 h-16 bg-[#1A0B04] text-white rounded-2xl flex items-center justify-center mb-12 shadow-2xl shadow-black/30 group-hover:rotate-[360deg] transition-transform duration-1000">
+                  <Briefcase className="h-8 w-8 text-[#EEB38C]" />
                 </div>
-                <h3 className="text-3xl font-black tracking-tight text-[#5A270F] dark:text-foreground mb-6 uppercase leading-none">
-                  FACULTY <br />
-                  BENCHMARKS
-                </h3>
-                <p className="text-[#5A270F] dark:text-foreground/70 leading-relaxed font-bold mb-12 text-lg">
-                  Access structured coursework and verified professional
-                  reference materials from senior faculty.
+                
+                <div className="mb-10">
+                   <p className="text-[10px] font-black text-[#1A0B04]/40 dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] mb-4">
+                     02 // KNOWLEDGE BASE
+                   </p>
+                   <h3 className={`text-4xl font-black ${isDark ? "text-white" : "text-[#1A0B04]"} uppercase tracking-tighter font-space-grotesk leading-[0.85]`}>
+                     FACULTY <br /> BENCHMARKS
+                   </h3>
+                </div>
+
+                <p className={`${isDark ? "text-white/60" : "text-[#1A0B04]/70"} leading-relaxed font-bold mb-12 text-base pl-6 border-l-2 border-[#1A0B04]/20`}>
+                  Access structured coursework and verified professional reference materials from senior faculty.
                 </p>
-                <div className="flex flex-col gap-5 mb-14">
-                  <div className="flex items-center gap-4">
-                    <div className="w-2 h-2 rounded-full bg-[#92664A] shadow-[0_0_8px_rgba(146,102,74,0.3)]" />
-                    <span className="text-xs font-black uppercase tracking-widest text-[#5A270F]/50 dark:text-foreground/40 transition-colors">
-                      Syllabus Alignment
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className="w-2 h-2 rounded-full bg-[#92664A] shadow-[0_0_8px_rgba(146,102,74,0.3)]" />
-                    <span className="text-xs font-black uppercase tracking-widest text-[#5A270F]/50 dark:text-foreground/40 transition-colors">
-                      Studio Directives
-                    </span>
-                  </div>
+
+                <div className="mt-auto pt-10 border-t border-[#BCAF9C]/20">
+                  <Link
+                    to="/dashboard/assignments"
+                    className="inline-flex items-center gap-4 text-[11px] font-black uppercase tracking-[0.4em] text-[#1A0B04] dark:text-[#EEB38C] group/link"
+                  >
+                    DIRECT ACCESS <ArrowRight className="h-4 w-4 group-hover/link:translate-x-2 transition-transform" />
+                  </Link>
                 </div>
-                <Link
-                  to="/dashboard/assignments"
-                  className="inline-flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] hover:gap-6 transition-all duration-500 group/link"
-                >
-                  DIRECT ACCESS{" "}
-                  <ArrowRight className="h-4 w-4 group-hover/link:translate-x-1" />
-                </Link>
               </div>
             </div>
 
-            {/* Verified Platform */}
-            <div className="group relative bg-[#5A270F] dark:bg-card p-12 rounded-[4rem] border border-[#D9D9C2] dark:border-white/10 transition-all duration-700 hover:shadow-[0_48px_100px_-24px_rgba(0,0,0,0.4)] dark:hover:shadow-none hover:-translate-y-4 overflow-hidden group transition-all duration-500">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(223,129,66,0.2),transparent_60%)]" />
-              <div className="absolute inset-0 blueprint-grid-dark opacity-10" />
+            {/* Verified Trust (Featured Card) */}
+            <div className="group relative bg-[#1A0B04] p-12 rounded-[4rem] shadow-[0_40px_80px_-20px_rgba(26,11,4,0.5)] transition-all duration-700 hover:-translate-y-3 overflow-hidden flex flex-col border border-white/5">
+              {/* Technical Accents */}
+              <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-[#DF8142]/40 rounded-br-[4rem] group-hover:w-36 group-hover:h-36 transition-all duration-500" />
+              
+              <div className="absolute top-0 right-0 w-80 h-80 bg-[#DF8142]/30 blur-[100px] group-hover:bg-[#DF8142]/40 transition-all duration-1000" />
+              <div className="absolute inset-0 blueprint-grid-dark opacity-10 pointer-events-none" />
 
-              <div className="relative z-10">
-                <div className="w-20 h-20 bg-white/10 dark:bg-card/10 backdrop-blur-3xl text-white rounded-[1.5rem] flex items-center justify-center mb-12 border border-white/20 group-hover:bg-[#DF8142] group-hover:border-[#DF8142]/90 transition-all duration-500">
-                  <ShieldCheck className="h-10 w-10" />
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="w-16 h-16 bg-[#DF8142] text-white rounded-2xl flex items-center justify-center mb-12 shadow-2xl shadow-[#DF8142]/40 group-hover:rotate-[360deg] transition-transform duration-1000">
+                  <ShieldCheck className="h-8 w-8" />
                 </div>
-                <h3 className="text-3xl font-black tracking-tight text-white dark:text-[#EEB38C] mb-6 uppercase leading-none">
-                  VERIFIED <br />
-                  TRUST
-                </h3>
-                <p className="text-white/80 dark:text-[#EEB38C]/70 leading-relaxed font-bold mb-12 text-lg transition-colors">
-                  A high-security ecosystem ensuring intellectual property
-                  protection and content authenticity.
+                
+                <div className="mb-10">
+                   <p className="text-[10px] font-black text-[#EEB38C] uppercase tracking-[0.4em] mb-4">
+                     03 // SECURITY PROTOCOL
+                   </p>
+                   <h3 className="text-4xl font-black text-white uppercase tracking-tighter font-space-grotesk leading-[0.85]">
+                     VERIFIED <br /> TRUST
+                   </h3>
+                </div>
+
+                <p className="text-white/80 leading-relaxed font-bold mb-12 text-base pl-6 border-l-2 border-[#DF8142]">
+                  A high-security ecosystem ensuring intellectual property protection and content authenticity for architectural giants.
                 </p>
-                <div className="flex flex-col gap-5 mb-14">
-                  <div className="flex items-center gap-4">
-                    <div className="w-2 h-2 rounded-full bg-[#DF8142]/90 shadow-[0_0_12px_rgba(223,129,66,0.6)]" />
-                    <span className="text-xs font-black uppercase tracking-widest text-[#EEB38C]/80">
-                      IP Protection Protocol
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className="w-2 h-2 rounded-full bg-[#DF8142]/90 shadow-[0_0_12px_rgba(223,129,66,0.6)]" />
-                    <span className="text-xs font-black uppercase tracking-widest text-[#EEB38C]/80">
-                      Zero-Trust Encryption
-                    </span>
-                  </div>
+
+                <div className="mt-auto pt-10 border-t border-white/10">
+                  <Link
+                    to="/about"
+                    className="inline-flex items-center gap-4 text-[11px] font-black uppercase tracking-[0.4em] text-white group/link"
+                  >
+                    LEARN MORE <ArrowRight className="h-4 w-4 group-hover/link:translate-x-2 transition-transform text-[#DF8142]" />
+                  </Link>
                 </div>
-                <Link
-                  to="/about"
-                  className="inline-flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.3em] text-white hover:text-[#DF8142]/80 hover:gap-6 transition-all duration-500 group/link"
-                >
-                  LEARN MORE{" "}
-                  <ArrowRight className="h-4 w-4 group-hover/link:translate-x-1" />
-                </Link>
               </div>
             </div>
           </div>
@@ -627,38 +617,35 @@ const Home = () => {
       </section>
 
       {/* Spotlight Resources - Curated Gallery */}
-      <section className="py-32 bg-[#EFEDED] dark:bg-card/50 relative overflow-hidden transition-colors duration-500">
-        {/* Decorative architectural lines */}
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-white dark:bg-background -skew-x-12 translate-x-1/2 z-0 transition-colors duration-500" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 blur-[120px] rounded-full" />
-
+      <section className="py-44 bg-white dark:bg-background relative transition-colors duration-500">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-24 gap-12">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-28 gap-12">
             <div className="max-w-3xl">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-[2px] bg-[#DF8142]" />
-                <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#DF8142]">
-                  GLOBAL CURATION INDEX
-                </span>
+              <div className="flex items-center gap-4 mb-8">
+                <div className={`px-5 py-2 ${isDark ? "bg-white/5" : "bg-white shadow-sm shadow-[#5A270F]/5"} border border-[#BCAF9C]/30 dark:border-white/10 rounded-full`}>
+                   <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#DF8142]">
+                    GLOBAL CURATION INDEX
+                  </span>
+                </div>
               </div>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-[#5A270F] dark:text-foreground leading-[0.8] uppercase transition-colors">
+              <h2 className={`text-6xl md:text-8xl font-black tracking-tighter ${isDark ? "text-white" : "text-[#1A0B04]"} leading-[0.8] uppercase font-space-grotesk`}>
                 SPOTLIGHT <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] to-[#DF8142]/90 italic">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] to-[#DF8142] italic">
                   RESOURCES.
                 </span>
               </h2>
-              <p className="text-[#6C3B1C] dark:text-foreground/70 mt-6 text-lg font-bold max-w-2xl leading-relaxed transition-colors">
-                The most downloaded and peer-reviewed architectural artifacts
-                across the global network this week.
-              </p>
+              <div className="mt-10 pl-8 border-l-4 border-[#DF8142]">
+                <p className={`text-xl ${isDark ? "text-white/40" : "text-[#1A0B04]/70"} font-bold max-w-2xl leading-relaxed font-space-grotesk`}>
+                  The most downloaded and peer-reviewed architectural artifacts across the global network this week.
+                </p>
+              </div>
             </div>
 
             <Link
               to="/browse"
-              className="group relative flex items-center gap-6 px-8 py-5 bg-[#DF8142] hover:bg-[#5A270F] text-white rounded-[1.5rem] transition-all duration-700 shadow-2xl dark:shadow-none active:scale-95 overflow-hidden"
+              className="group relative flex items-center gap-6 px-10 py-6 bg-[#1A0B04] hover:bg-[#DF8142] text-white rounded-[2rem] transition-all duration-700 shadow-[0_20px_40px_-10px_rgba(26,11,4,0.3)] hover:shadow-[#DF8142]/30 active:scale-95 overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500" />
-              <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.3em]">
+              <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.4em]">
                 Explore Gallery
               </span>
               <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-2 transition-transform duration-500" />
@@ -666,7 +653,7 @@ const Home = () => {
           </div>
 
           {topResources.length > 0 ? (
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
               {topResources.map((resource) => (
                 <div
                   key={resource.id}
@@ -677,15 +664,15 @@ const Home = () => {
               ))}
             </div>
           ) : (
-            <div className="py-32 bg-white/50 dark:bg-white/5 backdrop-blur-3xl rounded-[4rem] border border-dashed border-[#D9D9C2] dark:border-white/10 flex flex-col items-center text-center transition-all duration-500">
-              <div className="w-24 h-24 bg-white dark:bg-card rounded-[2rem] flex items-center justify-center shadow-xl mb-8 animate-pulse">
-                <Layers className="h-12 w-12 text-[#EEB38C]" />
+            <div className="py-40 bg-white dark:bg-card/30 backdrop-blur-3xl rounded-[4rem] border border-2 border-dashed border-[#BCAF9C]/30 dark:border-white/10 flex flex-col items-center text-center transition-all duration-500 shadow-2xl">
+              <div className="w-28 h-28 bg-[#1A0B04] rounded-[2.5rem] flex items-center justify-center shadow-2xl mb-10 animate-pulse border-4 border-[#DF8142]/20">
+                <Layers className="h-12 w-12 text-[#DF8142]" />
               </div>
-              <h3 className="text-2xl font-black text-[#2A1205] dark:text-foreground mb-3 uppercase tracking-tight leading-none transition-colors">
+              <h3 className={`text-3xl font-black ${isDark ? "text-white" : "text-[#1A0B04]"} mb-4 uppercase tracking-tighter leading-none font-space-grotesk`}>
                 SYNCHRONIZING DATA
               </h3>
-              <p className="text-[#5A270F]/40 dark:text-white/40 font-bold uppercase text-xs tracking-widest">
-                Fetching latest architectural benchmarks from the CDN...
+              <p className={`text-[10px] ${isDark ? "text-white/30" : "text-[#1A0B04]/40"} font-black uppercase tracking-[0.6em]`}>
+                Fetching latest architectural benchmarks...
               </p>
             </div>
           )}
@@ -841,126 +828,114 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Interdisciplinary Collaboration - The Human Element */}
-      <section className="py-32 bg-[#EFEDED] dark:bg-background relative overflow-hidden transition-colors duration-500">
-        <div className="absolute inset-0 blueprint-grid opacity-[0.03] pointer-events-none" />
+      <section className="py-44 bg-white dark:bg-background transition-colors duration-500 relative overflow-hidden">
+        {/* Studio Ambient Background */}
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-[#FAF8F4] dark:bg-white/5 -skew-x-12 translate-x-1/4 z-0 transition-colors duration-500" />
+        
+        {/* Soft Atmosphere Glows */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#DF8142]/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-[#5A270F]/5 blur-[150px] rounded-full pointer-events-none" />
+        
+        {/* Technical Corner Markings */}
+        <div className="absolute top-20 left-20 w-8 h-8 border-l border-t border-[#BCAF9C]/30 pointer-events-none" />
+        <div className="absolute bottom-20 right-20 w-8 h-8 border-r border-b border-[#BCAF9C]/30 pointer-events-none" />
+        
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#DF8142]/20 to-transparent" />
 
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="flex flex-col lg:flex-row gap-16 items-center">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
+          <div className="flex flex-col lg:flex-row gap-24 items-center">
             {/* Visual Narrative */}
             <div className="lg:w-1/2 relative group">
-              <div className="absolute -inset-6 bg-[#DF8142]/10 rounded-[4rem] blur-3xl scale-95 group-hover:scale-100 transition-transform duration-1000" />
-              <div className="relative rounded-[3.5rem] overflow-hidden border border-[#D9D9C2] dark:border-white/10 shadow-2xl transition-all duration-700 hover:shadow-[#DF8142]/20 group-hover:-translate-y-2">
+              <div className="absolute -inset-8 bg-gradient-to-br from-[#DF8142]/10 to-transparent rounded-[4.5rem] blur-3xl scale-95 group-hover:scale-105 transition-all duration-1000" />
+              <div className="relative rounded-[4rem] overflow-hidden border-2 border-[#BCAF9C]/20 dark:border-white/10 shadow-[0_50px_100px_-20px_rgba(90,39,15,0.15)] group-hover:shadow-[#DF8142]/30 transition-all duration-700">
                 <img
                   src="/assets/collaborators.png"
-                  className="w-full aspect-[4/5] object-cover grayscale hover:grayscale-0 transition-all duration-[2s] scale-100 group-hover:scale-110"
+                  className="w-full aspect-[4/5] object-cover grayscale group-hover:grayscale-0 transition-all duration-[2.5s] scale-105 group-hover:scale-100"
                   alt="Architecture and Software Engineering Collaboration"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src =
-                      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop";
+                    target.src = "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop";
                   }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#5A270F] via-[#5A270F]/10 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-1000" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1A0B04] via-[#1A0B04]/10 to-transparent opacity-70 group-hover:opacity-40 transition-opacity duration-1000" />
 
-                {/* Floating Badge */}
+                {/* Glassmorphism Floating Badge */}
                 <div className="absolute bottom-12 left-12 right-12">
-                  <div className="bg-[#5A270F] dark:bg-black/40 backdrop-blur-3xl p-8 rounded-[2rem] border border-white/20 animate-in slide-in-from-bottom-8 duration-1000">
-                    <div className="flex items-center gap-4 mb-3">
+                  <div className="bg-[#1A0B04]/80 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/20 shadow-2xl">
+                    <div className="flex items-center gap-5 mb-4">
                       <div className="flex -space-x-3">
-                        <div className="h-8 w-8 rounded-full border-2 border-white bg-[#DF8142] flex items-center justify-center text-[10px] font-black text-white">
+                        <div className="h-10 w-10 rounded-full border-2 border-[#1A0B04] bg-[#DF8142] flex items-center justify-center text-[10px] font-black text-white shadow-lg">
                           ARCH
                         </div>
-                        <div className="h-8 w-8 rounded-full border-2 border-white bg-[#5A270F] flex items-center justify-center text-[10px] font-black text-white">
+                        <div className="h-10 w-10 rounded-full border-2 border-[#1A0B04] bg-white flex items-center justify-center text-[10px] font-black text-[#1A0B04] shadow-lg">
                           SOFT
                         </div>
                       </div>
-                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#EEB38C]">
-                        JOINT VENTURE
+                      <div className="h-4 w-[1px] bg-white/20" />
+                      <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#EEB38C]">
+                        SYNC_V1.0
                       </span>
                     </div>
-                    <p className="text-white/90 dark:text-[#EEB38C]/80 text-xs font-bold leading-relaxed">
-                      Bridge of intelligence between physical space and digital
-                      logic.
+                    <p className="text-white/90 text-sm font-bold leading-relaxed">
+                      "Bridging the physical and digital domains through interdisciplinary research and engineering."
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Decorative Geometric Elements */}
-              <div className="absolute -top-12 -right-12 h-48 w-48 border border-[#DF8142]/20 rounded-full animate-[spin_20s_linear_infinite]" />
-              <div className="absolute -bottom-8 -left-8 h-32 w-32 border-2 border-[#5A270F]/10 rounded-[2rem] rotate-12" />
+              {/* Technical Decorative Elements */}
+              <div className="absolute -top-16 -right-16 h-64 w-64 border-[1px] border-[#DF8142]/10 rounded-full animate-[spin_30s_linear_infinite] pointer-events-none" />
+              <div className="absolute -bottom-10 -left-10 h-40 w-40 border-[2px] border-[#5A270F]/5 rounded-[3rem] rotate-12 pointer-events-none" />
             </div>
 
             {/* Strategic Information */}
-            <div className="lg:w-1/2 space-y-8">
-              <div>
-                <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#DF8142]/10 border border-[#DF8142]/20 rounded-full text-[10px] font-black uppercase tracking-[0.4em] text-[#DF8142] mb-8">
+            <div className="lg:w-1/2 flex flex-col items-start">
+              <div className="mb-16">
+                <div className={`inline-flex items-center gap-3 px-6 py-2 ${isDark ? "bg-white/5" : "bg-[#DF8142]/10"} border border-[#DF8142]/20 rounded-full text-[10px] font-black uppercase tracking-[0.5em] text-[#DF8142] mb-10 shadow-sm backdrop-blur-sm`}>
                   <Sparkles className="h-4 w-4" /> THE COLLABORATION
                 </div>
-                <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-[#5A270F] dark:text-[#EEB38C] uppercase leading-[0.8] mb-10">
+                <h2 className={`text-5xl md:text-7xl font-black tracking-tighter ${isDark ? "text-[#EEB38C]" : "text-[#1A0B04]"} uppercase leading-[0.8] mb-12 font-space-grotesk`}>
                   FUSION OF <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] to-[#6C3B1C] italic">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] to-[#DF8142] italic">
                     DISCIPLINES.
                   </span>
                 </h2>
-                <p className="text-lg text-[#6C3B1C] dark:text-[#EEB38C]/80 font-bold leading-relaxed max-w-xl">
-                  ARCHVAULT is the product of a high-performance synergy between
-                  the **Department of Architecture** and the **Software
-                  Engineering Department**.
-                </p>
+                <div className="pl-8 border-l-4 border-[#DF8142]">
+                  <p className={`text-xl ${isDark ? "text-white/80" : "text-[#1A0B04]"} font-bold leading-relaxed max-w-xl`}>
+                    ARCHVAULT is the signature product of a high-performance synergy between the 
+                    <span className="text-[#DF8142]"> Department of Architecture</span> and the 
+                    <span className="text-[#DF8142]"> Software Engineering Department</span>.
+                  </p>
+                </div>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div className="p-6 bg-white dark:bg-card rounded-[2rem] border border-[#D9D9C2] dark:border-white/10 shadow-sm hover:border-[#DF8142]/40 transition-all duration-500 hover:-translate-y-1">
-                  <div className="h-12 w-12 bg-[#DF8142]/10 rounded-2xl flex items-center justify-center text-[#DF8142] mb-6">
-                    <Users className="h-6 w-6" />
+              <div className="grid sm:grid-cols-2 gap-8 w-full mb-16">
+                <div className="group relative p-10 bg-white dark:bg-card rounded-[3rem] border border-[#BCAF9C]/30 dark:border-white/10 shadow-[0_20px_40px_-15px_rgba(90,39,15,0.05)] hover:shadow-[#DF8142]/10 transition-all duration-700 hover:-translate-y-2 flex flex-col">
+                  <div className="h-14 w-14 bg-[#DF8142] text-white rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-500 mb-8">
+                    <Users className="h-7 w-7" />
                   </div>
-                  <h4 className="text-lg font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tight mb-4">
+                  <h4 className={`text-xl font-black ${isDark ? "text-[#EEB38C]" : "text-[#1A0B04]"} uppercase tracking-tight mb-4 font-space-grotesk`}>
                     ARCH_CORE
                   </h4>
-                  <p className="text-[#5A270F]/60 dark:text-white/40 text-sm font-bold leading-relaxed">
-                    Architecture students defined the library taxonomy, BIM
-                    standards, and creative vision.
+                  <p className={`${isDark ? "text-white/40" : "text-[#1A0B04]/70"} text-sm font-bold leading-relaxed`}>
+                    Defining library taxonomy, BIM standards, and the spatial creative vision for our global index.
                   </p>
                 </div>
 
-                <div className="p-10 bg-white dark:bg-card rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-sm hover:border-[#5A270F]/40 transition-all duration-500 hover:-translate-y-1">
-                  <div className="h-12 w-12 bg-[#5A270F]/10 rounded-2xl flex items-center justify-center text-[#5A270F] dark:text-[#EEB38C] mb-6">
-                    <Cpu className="h-6 w-6" />
+                <div className="group relative p-10 bg-white dark:bg-card rounded-[3rem] border border-[#BCAF9C]/30 dark:border-white/10 shadow-[0_20px_40px_-15px_rgba(90,39,15,0.05)] hover:shadow-[#5A270F]/10 transition-all duration-700 hover:-translate-y-2 flex flex-col">
+                  <div className="h-14 w-14 bg-[#1A0B04] text-white rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-500 mb-8">
+                    <Cpu className="h-7 w-7 font-bold text-[#EEB38C]" />
                   </div>
-                  <h4 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tight mb-4">
+                  <h4 className={`text-xl font-black ${isDark ? "text-[#EEB38C]" : "text-[#1A0B04]"} uppercase tracking-tight mb-4 font-space-grotesk`}>
                     SOFT_LOGIC
                   </h4>
-                  <p className="text-[#5A270F]/60 dark:text-white/40 text-sm font-bold leading-relaxed">
-                    Software engineering students engineered the high-speed CDN,
-                    encryption layer, and UX matrix.
+                  <p className={`${isDark ? "text-white/40" : "text-[#1A0B04]/70"} text-sm font-bold leading-relaxed`}>
+                    Engineering high-speed CDN clusters, zero-trust encryption layers, and the fluid UX matrix.
                   </p>
                 </div>
               </div>
 
-              <div className="pt-8 border-t border-[#D9D9C2] dark:border-white/10">
-                <div className="flex items-center gap-12">
-                  <div>
-                    <p className="text-[10px] font-black text-[#5A270F]/40 dark:text-white/30 uppercase tracking-[0.4em] mb-2">
-                      PROJECT SCALE
-                    </p>
-                    <p className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase">
-                      INTER-DEPT
-                    </p>
-                  </div>
-                  <div className="h-12 w-px bg-[#D9D9C2] dark:bg-white/10" />
-                  <div>
-                    <p className="text-[10px] font-black text-[#5A270F]/40 dark:text-white/30 uppercase tracking-[0.4em] mb-2">
-                      SYNERGY NODE
-                    </p>
-                    <p className="text-2xl font-black text-[#DF8142] tracking-tighter uppercase">
-                      ACTIVE
-                    </p>
-                  </div>
-                </div>
-              </div>
+
             </div>
           </div>
         </div>
