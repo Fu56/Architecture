@@ -100,7 +100,7 @@ const ManageUsers = () => {
       semester: "",
       status: "active",
       specialization: "",
-      department: "",
+      department: currentRoleName === "DepartmentHead" ? "Architecture" : "",
       workerId: "",
       suspendReason: "",
     });
@@ -134,7 +134,7 @@ const ManageUsers = () => {
       semester: "",
       status: user.status,
       specialization: user.specialization || "",
-      department: user.department || "",
+      department: currentRoleName === "DepartmentHead" ? "Architecture" : (user.department || ""),
       workerId: user.workerId || user.worker_id || "",
       suspendReason: "",
     });
@@ -258,6 +258,14 @@ const ManageUsers = () => {
 
     if (formData.status === "suspended" && !formData.suspendReason.trim()) {
       newErrors.suspendReason = "Suspension reason required for this operation.";
+    }
+
+    // Comprehensive field presence check
+    if (!formData.universityId.trim()) newErrors.universityId = "University identifier required.";
+    if (formData.roleNames.includes("Student")) {
+      if (!formData.batch) newErrors.batch = "Admission batch required.";
+      if (!formData.year) newErrors.year = "Academic year required.";
+      if (!formData.semester) newErrors.semester = "Current semester required.";
     }
 
     setErrors(newErrors);
@@ -814,15 +822,24 @@ const ManageUsers = () => {
                   <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
                     University ID
                   </label>
-                  <input
-                    id="universityId"
-                    name="universityId"
-                    title="University Identifier"
-                    value={formData.universityId}
-                    onChange={handleInputChange}
-                    placeholder="U-ARCH-XXXX"
-                    className="w-full bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none"
-                  />
+                  <div className="relative">
+                    <input
+                      id="universityId"
+                      name="universityId"
+                      title="University Identifier"
+                      value={formData.universityId}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                        if (errors.universityId)
+                          setErrors((prev) => ({ ...prev, universityId: "" }));
+                      }}
+                      placeholder="U-ARCH-XXXX"
+                      className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.universityId ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
+                    />
+                    {errors.universityId && (
+                      <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />
+                    )}
+                  </div>
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-widest ml-1">
@@ -954,7 +971,9 @@ const ManageUsers = () => {
                         value={formData.department}
                         onChange={handleInputChange}
                         placeholder="e.g. Design Studio"
-                        className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.department ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"}`}
+                        disabled={currentRoleName === "DepartmentHead" && modalMode === "edit"}
+                        className={`w-full bg-[#EFEDED] dark:bg-background border rounded-xl px-4 py-2.5 text-xs font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none ${errors.department ? "border-[#DF8142] ring-1 ring-[#DF8142]/20" : "border-[#D9D9C2] dark:border-white/10"} ${currentRoleName === "DepartmentHead" && modalMode === "edit" ? "opacity-60 cursor-not-allowed" : ""}`}
+                        required
                       />
                       {errors.department && (
                         <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#DF8142]" />

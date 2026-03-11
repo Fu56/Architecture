@@ -11,6 +11,8 @@ import {
   Clock,
   User,
   Zap,
+  MessageSquare,
+  ShieldAlert,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "../../lib/toast";
@@ -82,12 +84,12 @@ const Approvals = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+      <div className="flex flex-col items-center justify-center min-h-[600px] space-y-6">
         <div className="relative">
-          <div className="h-16 w-16 border-4 border-[#D9D9C2] dark:border-white/10 border-t-primary rounded-full animate-spin" />
-          <Loader2 className="h-8 w-8 text-primary animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+          <div className="h-20 w-20 border-4 border-[#D9D9C2] dark:border-white/10 border-t-[#DF8142] rounded-full animate-spin" />
+          <Loader2 className="h-10 w-10 text-[#DF8142] animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         </div>
-        <p className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-[0.4em]">
+        <p className="text-[11px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.5em] animate-pulse">
           Synchronizing Queue...
         </p>
       </div>
@@ -95,141 +97,143 @@ const Approvals = () => {
   }
 
   return (
-    <div className="space-y-10">
-      <div className="flex items-center justify-between bg-[#EEB38C]/10 dark:bg-white/5 p-6 rounded-[2.5rem] border border-[#EEB38C]/30 dark:border-white/10 transition-all duration-500">
-        <div className="flex items-center gap-4">
-          <div className="h-10 w-10 bg-[#5A270F] dark:bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-[#5A270F]/20 dark:shadow-none transition-colors">
-            <ShieldCheck className="h-5 w-5" />
+    <div className="space-y-12 animate-in fade-in duration-1000">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-4">
+        <div className="flex items-center gap-6">
+          <div className="h-16 w-16 bg-[#5A270F] rounded-[1.5rem] flex items-center justify-center text-[#EEB38C] shadow-2xl rotate-3">
+            <ShieldCheck className="h-8 w-8" />
           </div>
           <div>
-            <h3 className="text-sm font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] transition-colors">
-              Verification Protocol
-            </h3>
-            <p className="text-xs text-[#92664A] dark:text-foreground/40 font-medium transition-colors">
-              Awaiting Nexus Deployment
+            <h1 className="text-4xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase italic">
+              Verification <span className="not-italic text-[#DF8142]">Hub</span>
+            </h1>
+            <p className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/60 uppercase tracking-[0.5em]">
+              Nexus Deployment Authority Queue
             </p>
           </div>
         </div>
-        <div className="px-4 py-1.5 bg-[#DF8142]/10 dark:bg-[#DF8142]/20 text-[#DF8142] rounded-full text-[10px] font-black uppercase tracking-widest border border-[#DF8142]/20 dark:border-[#DF8142]/30 transition-all">
-          {resources.length} Pending Units
+        <div className="flex items-center gap-4 px-8 py-4 bg-white dark:bg-[#1A0B04] rounded-2xl border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-xl">
+           <Zap className="h-5 w-5 text-[#DF8142] animate-pulse" />
+           <span className="text-[11px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C]">
+            {resources.length} Pending Units
+           </span>
         </div>
       </div>
 
       {resources.length > 0 ? (
-        <div className="space-y-8">
+        <div className="grid grid-cols-1 gap-10">
           {resources.map((resource) => (
             <div
               key={resource.id}
-              className="bg-white dark:bg-card p-10 rounded-[3rem] border border-[#EEB38C]/30 dark:border-white/10 shadow-2xl shadow-[#5A270F]/5 dark:shadow-none group transition-all duration-500 hover:border-[#DF8142]/30 dark:hover:border-[#DF8142]/20 hover:shadow-[#DF8142]/10"
+              className="group relative bg-white dark:bg-[#1A0B04] rounded-[3.5rem] border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-2xl shadow-[#5A270F]/5 overflow-hidden transition-all duration-700 hover:border-[#DF8142]/40"
             >
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-10">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <span className="px-3 py-1 bg-[#5A270F] text-white text-[9px] font-black uppercase tracking-widest rounded-lg">
-                      {(resource as { type?: string; fileType?: string })
-                        .type ||
-                        (resource as { type?: string; fileType?: string })
-                          .fileType ||
-                        "Unit"}
-                    </span>
-                    <span className="flex items-center gap-1.5 text-[10px] text-[#92664A] dark:text-[#EEB38C]/40 font-bold uppercase tracking-widest">
-                      <Clock className="h-3 w-3" />
-                      {new Date(resource.uploadedAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <Link
-                    to={`/resources/${resource.id}`}
-                    className="block text-3xl font-black text-[#6C3B1C] dark:text-[#EEB38C] tracking-tighter hover:text-[#DF8142] transition-colors"
-                  >
-                    {resource.title}
-                  </Link>
-                  <div className="flex items-center gap-4 text-xs font-medium text-[#5A270F] dark:text-[#EEB38C]">
-                    <div className="flex items-center gap-2 px-3 py-1 bg-[#EEB38C]/10 rounded-full border border-[#EEB38C]/30 dark:border-white/5">
-                      <User className="h-3.5 w-3.5 text-[#92664A] dark:text-[#EEB38C]/40" />
-                      <span>
-                        Source:{" "}
-                        <span className="font-black text-[#5A270F] dark:text-[#EEB38C]">
-                          {
-                            (resource.uploader as { firstName?: string })
-                              .firstName
-                          }{" "}
-                          {
-                            (resource.uploader as { lastName?: string })
-                              .lastName
-                          }
-                        </span>
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-[#DF8142]/10 to-transparent blur-[80px] group-hover:from-[#DF8142]/20 transition-all duration-1000" />
+              
+              <div className="p-10 lg:p-14 relative z-10">
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-12 mb-12">
+                  <div className="space-y-6 flex-grow">
+                    <div className="flex flex-wrap items-center gap-4">
+                      <span className="px-4 py-1.5 bg-[#5A270F] text-[#EEB38C] text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg">
+                        {(resource as { type?: string; fileType?: string }).type || (resource as { type?: string; fileType?: string }).fileType || "Artifact"}
+                      </span>
+                      <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142]" />
+                      <span className="flex items-center gap-2 text-[10px] text-[#92664A] dark:text-[#EEB38C]/60 font-black uppercase tracking-widest">
+                        <Clock className="h-3.5 w-3.5" />
+                        Queued: {new Date(resource.uploadedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
                       </span>
                     </div>
+
+                    <Link
+                      to={`/admin/resources/${resource.id}`}
+                      className="block text-4xl lg:text-5xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter hover:text-[#DF8142] transition-colors leading-[0.85] uppercase italic"
+                    >
+                      {resource.title}
+                    </Link>
+
+                    <div className="flex items-center gap-4 p-4 bg-[#EFEDED] dark:bg-white/5 rounded-2xl border border-[#D9D9C2] dark:border-white/10 w-fit group-hover:bg-[#DF8142]/5 transition-colors duration-500">
+                      <div className="h-10 w-10 bg-white dark:bg-card border border-[#D9D9C2] dark:border-white/10 rounded-xl flex items-center justify-center text-[#DF8142] shadow-sm">
+                        <User className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="text-[9px] font-black text-[#92664A] dark:text-[#EEB38C]/60 uppercase tracking-widest leading-none mb-1">Origin Node</p>
+                        <p className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C]">
+                          {(resource.uploader as { firstName?: string }).firstName} {(resource.uploader as { lastName?: string }).lastName}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-3 min-w-[200px]">
+                    <a
+                      href={`${import.meta.env.VITE_API_URL}/resources/${resource.id}/view?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="h-16 flex items-center justify-center gap-4 px-8 bg-white dark:bg-card border-2 border-[#D9D9C2] dark:border-white/10 text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl text-[#5A270F] dark:text-[#EEB38C] hover:border-[#DF8142] hover:text-[#DF8142] transition-all active:scale-95 shadow-lg"
+                    >
+                      <Eye className="h-5 w-5" /> Inspect Matrix
+                    </a>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-4">
-                  <a
-                    href={`${import.meta.env.VITE_API_URL}/resources/${
-                      resource.id
-                    }/view?token=${encodeURIComponent(
-                      localStorage.getItem("token") || "",
-                    )}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="h-14 flex items-center gap-4 px-8 bg-white dark:bg-card border-2 border-[#92664A]/20 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl text-[#6C3B1C] dark:text-[#EEB38C]/80 hover:border-[#DF8142] hover:text-[#DF8142] transition-all active:scale-95 shadow-lg shadow-[#6C3B1C]/5"
-                  >
-                    <Eye className="h-4 w-4" /> Inspect Payload
-                  </a>
+                {/* Directive Input */}
+                <div className="space-y-3 mb-12">
+                  <label className="text-[11px] font-black text-[#5A270F] dark:text-[#EEB38C]/70 uppercase tracking-[0.25em] ml-1 flex items-center gap-2">
+                    <MessageSquare className="h-3.5 w-3.5 text-[#DF8142]" /> Operations Directive
+                  </label>
+                  <textarea
+                    placeholder="Enter optional verification notes or sequestration reason for the user node..."
+                    className="w-full px-8 py-6 bg-[#EFEDED] dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-[2.5rem] text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] focus:ring-4 focus:ring-[#DF8142]/5 transition-all outline-none resize-none min-h-[120px] placeholder:text-[#92664A] dark:placeholder:text-[#EEB38C]/30 shadow-inner"
+                    value={comments[resource.id] || ""}
+                    onChange={(e) => handleCommentChange(resource.id, e.target.value)}
+                  />
                 </div>
-              </div>
 
-              {/* Comment Input */}
-              <div className="relative mb-10">
-                <label className="text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-widest ml-1 mb-2 block transition-colors">
-                  Operations Directive / Feedback
-                </label>
-                <textarea
-                  placeholder="Enter optional verification notes or sequestration reason..."
-                  className="w-full px-6 py-4 bg-[#F5F5DC] dark:bg-white/5 border border-[#EEB38C]/50 dark:border-white/10 rounded-[2rem] text-sm text-[#5A270F] dark:text-foreground focus:ring-4 focus:ring-[#DF8142]/10 focus:bg-white dark:bg-card dark:focus:bg-white/10 placeholder:text-[#92664A] dark:text-[#EEB38C]/40/40 dark:placeholder:text-white/20 transition-all outline-none resize-none min-h-[100px]"
-                  value={comments[resource.id] || ""}
-                  onChange={(e) =>
-                    handleCommentChange(resource.id, e.target.value)
-                  }
-                />
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 items-center pt-8 border-t border-[#EEB38C]/20 dark:border-white/10 transition-colors">
-                <div className="flex items-center gap-2 text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-[0.2em] flex-1 transition-colors">
-                  <Zap className="h-3 w-3 text-[#DF8142]" />
-                  Review Protocol active
-                </div>
-                <div className="flex gap-4 w-full sm:w-auto">
-                  {isAuthorized && (
-                    <>
-                      <button
-                        onClick={() => handleDecision(resource.id, "rejected")}
-                        className="flex-1 sm:flex-none h-14 px-10 bg-white dark:bg-card border-2 border-rose-200 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl text-rose-600 hover:bg-rose-50 transition-all active:scale-95 flex items-center justify-center gap-3"
-                      >
-                        <X className="h-4 w-4" /> Sequester
-                      </button>
-                      <button
-                        onClick={() => handleDecision(resource.id, "approved")}
-                        className="flex-1 sm:flex-none h-14 px-12 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#6C3B1C] transition-all hover:-translate-y-1 shadow-2xl shadow-[#5A270F]/20 active:scale-95 flex items-center justify-center gap-3"
-                      >
-                        <Check className="h-4 w-4" /> Verify & Deploy
-                      </button>
-                    </>
-                  )}
+                <div className="flex flex-col sm:flex-row gap-6 items-center pt-10 border-t border-[#D9D9C2] dark:border-white/10">
+                  <div className="flex items-center gap-3 text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/60 uppercase tracking-[0.3em] flex-1">
+                    <div className="h-2 w-2 rounded-full bg-[#DF8142] animate-pulse" />
+                    Review Protocol: Node #ID-{resource.id}
+                  </div>
+                  <div className="flex gap-4 w-full sm:w-auto">
+                    {isAuthorized ? (
+                      <>
+                        <button
+                          onClick={() => handleDecision(resource.id, "rejected")}
+                          className="flex-1 sm:flex-none h-16 px-10 bg-[#EFEDED] dark:bg-white/5 border-2 border-transparent hover:border-rose-500/30 text-[11px] font-black uppercase tracking-[0.3em] rounded-[1.5rem] text-[#5A270F] dark:text-[#EEB38C]/60 hover:text-rose-600 dark:hover:text-rose-400 transition-all active:scale-95 flex items-center justify-center gap-3"
+                        >
+                          <X className="h-5 w-5" /> Sequester
+                        </button>
+                        <button
+                          onClick={() => handleDecision(resource.id, "approved")}
+                          className="flex-1 sm:flex-none h-16 px-12 bg-[#5A270F] text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-[1.5rem] hover:bg-[#1A0B04] hover:scale-[1.02] transition-all shadow-2xl shadow-[#5A270F]/30 active:scale-95 flex items-center justify-center gap-3"
+                        >
+                          <Check className="h-5 w-5" /> Verify & Deploy
+                        </button>
+                      </>
+                    ) : (
+                       <div className="flex items-center gap-2 px-6 py-4 bg-amber-50 dark:bg-amber-950/20 rounded-2xl border border-amber-200 dark:border-amber-900/30">
+                        <ShieldAlert className="h-4 w-4 text-amber-600" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-amber-700 dark:text-amber-400">Limited Authorization</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="text-center py-32 bg-[#EEB38C]/10 dark:bg-white/5 rounded-[4rem] border border-dashed border-[#EEB38C]/30 dark:border-white/10 transition-all duration-500">
-          <div className="h-24 w-24 bg-white dark:bg-card rounded-[2.5rem] flex items-center justify-center text-[#DF8142] mx-auto mb-8 shadow-xl shadow-[#DF8142]/10 dark:shadow-none transition-all">
-            <CheckSquare className="h-12 w-12" />
+        <div className="text-center py-32 bg-white dark:bg-[#1A0B04] rounded-[4rem] border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-2xl transition-all duration-700 group hover:border-[#DF8142]/40">
+           <div className="relative inline-block mb-10">
+            <div className="absolute -inset-6 bg-[#DF8142]/10 rounded-full blur-2xl animate-pulse" />
+            <div className="relative h-24 w-24 bg-[#5A270F] rounded-[2.5rem] flex items-center justify-center text-[#EEB38C] shadow-2xl rotate-3">
+              <CheckSquare className="h-12 w-12" />
+            </div>
           </div>
-          <h3 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight transition-colors">
-            Registry Synchronized
+          <h3 className="text-3xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight uppercase leading-none mb-4 italic">
+            Registry <span className="text-[#DF8142] not-italic">Synchronized</span>
           </h3>
-          <p className="text-xs text-[#92664A] dark:text-foreground/40 font-medium mt-2 max-w-xs mx-auto uppercase tracking-widest transition-colors">
+          <p className="text-[11px] text-[#92664A] dark:text-[#EEB38C]/60 font-black uppercase tracking-[0.5em] max-w-sm mx-auto">
             No pending units detected in the verification queue.
           </p>
         </div>
