@@ -308,7 +308,8 @@ export const archiveResource = async (req: Request, res: Response) => {
     // 2. Move file to archive folder if it exists
     if (resource.file_path && fs.existsSync(resource.file_path)) {
       const fileName = path.basename(resource.file_path);
-      const archiveDir = path.join(process.cwd(), "storage", "archive");
+      const originalDir = path.dirname(resource.file_path);
+      const archiveDir = path.join(originalDir, "archive");
 
       if (!fs.existsSync(archiveDir)) {
         fs.mkdirSync(archiveDir, { recursive: true });
@@ -405,7 +406,8 @@ export const restoreResource = async (req: Request, res: Response) => {
     // 2. Move file back to main storage if it's in the archive
     if (resource.file_path && resource.file_path.includes("archive")) {
       const fileName = path.basename(resource.file_path);
-      const mainStorageDir = path.join(process.cwd(), "storage");
+      const currentDir = path.dirname(resource.file_path);
+      const mainStorageDir = path.dirname(currentDir); // 1 level up from "archive"
 
       newFilePath = path.join(mainStorageDir, fileName);
 
