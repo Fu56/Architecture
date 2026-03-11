@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   Megaphone,
@@ -11,9 +11,17 @@ import {
   Share2,
   Loader2,
   CheckCircle,
+  AlertCircle,
+  X,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { api } from "../lib/api";
 import { toast } from "../lib/toast";
+import { useTheme } from "../context/useTheme";
+
+/* ─── Google Fonts: Inter + Space Grotesk ─── */
+const FONT_LINK_ID = "news-page-fonts";
 
 interface NewsItem {
   id: number;
@@ -27,13 +35,34 @@ interface NewsItem {
 }
 
 const News = () => {
+  const { theme, toggleTheme } = useTheme();
+
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "news" | "events">("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [subscribing, setSubscribing] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
   const [newsletterError, setNewsletterError] = useState("");
+  const [emailTouched, setEmailTouched] = useState(false);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const MAX_EMAIL_LENGTH = 100;
+
+  /* Inject premium Google Fonts scoped to this page */
+  useEffect(() => {
+    if (!document.getElementById(FONT_LINK_ID)) {
+      const link = document.createElement("link");
+      link.id = FONT_LINK_ID;
+      link.rel = "stylesheet";
+      link.href =
+        "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap";
+      document.head.appendChild(link);
+    }
+    return () => {
+      /* leave font loaded for navigations */
+    };
+  }, []);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -49,27 +78,50 @@ const News = () => {
     fetchNews();
   }, []);
 
+  /* Combined filter + search */
   const filteredNews = news.filter((item) => {
-    if (filter === "all") return true;
-    if (filter === "events") return item.isEvent;
-    if (filter === "news") return !item.isEvent;
-    return true;
+    const matchesFilter =
+      filter === "all" ||
+      (filter === "events" && item.isEvent) ||
+      (filter === "news" && !item.isEvent);
+
+    const q = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      !q ||
+      item.title.toLowerCase().includes(q) ||
+      item.content.toLowerCase().includes(q) ||
+      (item.source || "").toLowerCase().includes(q);
+
+    return matchesFilter && matchesSearch;
   });
+
+  /* Real-time email validation */
+  const getEmailValidationState = () => {
+    if (!emailTouched || !newsletterEmail) return "idle";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (newsletterEmail.length > MAX_EMAIL_LENGTH) return "error";
+    if (!emailRegex.test(newsletterEmail)) return "error";
+    return "valid";
+  };
+  const emailValidation = getEmailValidationState();
 
   const handleNewsletterSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     setNewsletterError("");
+    setEmailTouched(true);
 
-    // Enhanced email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!newsletterEmail.trim()) {
       setNewsletterError("Email address is required.");
       return;
     }
-
+    if (newsletterEmail.length > MAX_EMAIL_LENGTH) {
+      setNewsletterError(`Email must not exceed ${MAX_EMAIL_LENGTH} characters.`);
+      return;
+    }
     if (!emailRegex.test(newsletterEmail)) {
-      setNewsletterError("Please enter a valid email address.");
+      setNewsletterError("Please enter a valid email address (e.g. user@domain.com).");
       return;
     }
 
@@ -81,6 +133,7 @@ const News = () => {
       toast.success(data.message || "Transmission initialized successfully!");
       setSubscribed(true);
       setNewsletterEmail("");
+      setEmailTouched(false);
       setTimeout(() => setSubscribed(false), 3000);
     } catch (error: unknown) {
       let message = "Failed to initialize transmission. Please try again.";
@@ -96,41 +149,100 @@ const News = () => {
     }
   };
 
+  /* ─── Derived style tokens ─── */
+  const isLight = theme === "light";
+
   return (
-    <div className="min-h-screen bg-[#FAF9F6] dark:bg-background selection:bg-[#DF8142]/20 transition-colors duration-500">
-      {/* Immersive Header */}
-      <section className="relative pt-32 pb-48 overflow-hidden bg-[#5A270F] dark:bg-[#1A0B02] transition-colors duration-700">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_20%,rgba(223,129,66,0.18),transparent_50%)]" />
-          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#EEB38C]/20 to-transparent" />
+    <div
+      style={{ fontFamily: "'Inter', 'Space Grotesk', system-ui, sans-serif" }}
+      className={`min-h-screen transition-colors duration-500 selection:bg-[#DF8142]/20 ${
+        isLight ? "bg-[#FAF8F4]" : "bg-[#100704]"
+      }`}
+    >
+      {/* ════════════════════════════════════════
+          HERO HEADER
+      ════════════════════════════════════════ */}
+      <section
+        className={`relative pt-32 pb-52 overflow-hidden transition-colors duration-700 ${
+          isLight
+            ? "bg-gradient-to-br from-[#5A270F] via-[#7A3A1A] to-[#5A270F]"
+            : "bg-gradient-to-br from-[#1A0B02] via-[#2D1308] to-[#100704]"
+        }`}
+      >
+        {/* Background accents */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_20%,rgba(223,129,66,0.18),transparent_55%)]" />
+          <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_80%,rgba(90,39,15,0.3),transparent_60%)]" />
+          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#EEB38C]/30 to-transparent" />
+          {/* Subtle grid */}
+          <div
+            className="absolute inset-0 opacity-[0.04]"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(238,179,140,1) 1px, transparent 1px), linear-gradient(90deg, rgba(238,179,140,1) 1px, transparent 1px)",
+              backgroundSize: "60px 60px",
+            }}
+          />
         </div>
 
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10 text-center">
-          <div className="inline-flex items-center gap-3 px-4 py-2 bg-[#EEB38C]/10 border border-[#EEB38C]/20 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
-            <Megaphone className="h-3 w-3 text-[#DF8142]" /> Information
-            Broadcast
+        {/* Floating Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          title={isLight ? "Switch to Dark Mode" : "Switch to Light Mode"}
+          className="absolute top-8 right-6 sm:right-12 z-20 flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-xl text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-black/20"
+        >
+          <div className="relative h-4 w-4">
+            <Sun
+              className={`h-4 w-4 absolute inset-0 transition-all duration-400 ${
+                isLight ? "scale-100 opacity-100 rotate-0" : "scale-0 opacity-0 rotate-90"
+              }`}
+            />
+            <Moon
+              className={`h-4 w-4 absolute inset-0 transition-all duration-400 ${
+                !isLight ? "scale-100 opacity-100 rotate-0" : "scale-0 opacity-0 -rotate-90"
+              }`}
+            />
           </div>
-          <h1 className="text-5xl sm:text-7xl font-black text-white tracking-tighter mb-6 leading-none animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
-            CHRONICLES <br />
+          <span className="text-[10px] font-bold uppercase tracking-widest hidden sm:inline">
+            {isLight ? "Light" : "Dark"}
+          </span>
+        </button>
+
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10 text-center">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-[#EEB38C]/10 border border-[#EEB38C]/25 rounded-full text-[10px] font-extrabold uppercase tracking-[0.35em] text-[#EEB38C] mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
+            <Megaphone className="h-3 w-3 text-[#DF8142] shrink-0" />
+            Information Broadcast
+          </div>
+
+          {/* Headline */}
+          <h1
+            style={{ fontFamily: "'Space Grotesk', 'Inter', sans-serif" }}
+            className="text-5xl sm:text-7xl lg:text-8xl font-black text-white tracking-tighter mb-6 leading-[0.9] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200"
+          >
+            CHRONICLES
+            <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#EEB38C] to-[#DF8142]">
-              & ANNOUNCEMENTS.
+              &amp; ANNOUNCEMENTS.
             </span>
           </h1>
-          <p className="max-w-2xl mx-auto text-[#EEB38C]/70 text-lg font-medium leading-relaxed mb-12 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-400">
+
+          {/* Subheading */}
+          <p className="max-w-2xl mx-auto text-[#EEB38C]/70 text-base sm:text-lg font-medium leading-relaxed mb-14 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-400">
             Synchronize with the latest developments in our architectural nexus.
             From system upgrades to global industry summits.
           </p>
 
-          {/* Filter Controls */}
-          <div className="flex items-center justify-center gap-2 p-2 bg-black/10 dark:bg-[#6C3B1C]/30 backdrop-blur-xl border border-white/10 rounded-2xl max-w-sm mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 delay-600">
+          {/* Filter Pills */}
+          <div className="flex items-center justify-center gap-2 p-2 bg-black/20 backdrop-blur-xl border border-white/10 rounded-2xl max-w-xs mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 delay-600">
             {(["all", "news", "events"] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setFilter(t)}
-                className={`flex-1 py-3 px-6 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
+                className={`flex-1 py-3 px-5 rounded-xl text-[10px] font-extrabold uppercase tracking-widest transition-all duration-300 ${
                   filter === t
-                    ? "bg-[#DF8142] text-white shadow-2xl shadow-[#DF8142]/30"
-                    : "text-white/40 dark:text-[#EEB38C]/40 hover:text-white dark:hover:text-[#EEB38C] hover:bg-white/5"
+                    ? "bg-[#DF8142] text-white shadow-2xl shadow-[#DF8142]/40"
+                    : "text-white/50 hover:text-white hover:bg-white/8"
                 }`}
               >
                 {t}
@@ -140,93 +252,154 @@ const News = () => {
         </div>
       </section>
 
-      {/* Content Cluster */}
-      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 -mt-24 relative z-20 pb-32">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Main Feed */}
-          <div className="lg:col-span-2 space-y-12">
+      {/* ════════════════════════════════════════
+          CONTENT GRID
+      ════════════════════════════════════════ */}
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 -mt-28 relative z-20 pb-32">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+          {/* ── Main Feed ── */}
+          <div className="lg:col-span-2 space-y-10">
             {loading ? (
               [...Array(3)].map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white dark:bg-card h-[400px] rounded-[3rem] animate-pulse border border-[#EEB38C]/20"
+                  className={`h-[380px] rounded-[2.5rem] animate-pulse border ${
+                    isLight
+                      ? "bg-white border-[#EEB38C]/20"
+                      : "bg-[#1D0B03] border-white/5"
+                  }`}
                 />
               ))
             ) : filteredNews.length > 0 ? (
               filteredNews.map((item) => (
                 <article
                   key={item.id}
-                  className="group bg-white dark:bg-card rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 shadow-xl shadow-[#92664A]/5 overflow-hidden hover:shadow-2xl hover:shadow-[#DF8142]/10 transition-all duration-500 flex flex-col sm:flex-row"
+                  className={`group rounded-[2.5rem] overflow-hidden transition-all duration-500 flex flex-col sm:flex-row border hover:-translate-y-1 ${
+                    isLight
+                      ? "bg-white border-[#E4DDD4] shadow-xl shadow-[#92664A]/8 hover:shadow-2xl hover:shadow-[#DF8142]/15 hover:border-[#DF8142]/30"
+                      : "bg-[#1A0B02] border-white/8 shadow-xl shadow-black/30 hover:shadow-2xl hover:shadow-[#DF8142]/10 hover:border-white/15"
+                  }`}
                 >
-                  <div className="sm:w-1/3 bg-[#FAF8F4] dark:bg-white/5 p-12 flex flex-col items-center justify-center text-center relative overflow-hidden shrink-0">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-[#DF8142] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left" />
+                  {/* Left accent panel */}
+                  <div
+                    className={`sm:w-[220px] p-10 flex flex-col items-center justify-center text-center relative overflow-hidden shrink-0 ${
+                      isLight ? "bg-[#FAF6F0]" : "bg-white/[0.03]"
+                    }`}
+                  >
+                    {/* Hover bar */}
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#DF8142] to-[#EEB38C] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left" />
+
                     {item.isEvent ? (
                       <>
-                        <Calendar className="h-10 w-10 text-[#DF8142] mb-6 group-hover:scale-110 transition-transform" />
-                        <p className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight leading-none mb-1">
-                          {item.eventDate
-                            ? new Date(item.eventDate).getDate()
-                            : "--"}
+                        <div className={`h-16 w-16 rounded-2xl flex items-center justify-center mb-5 ${isLight ? "bg-[#DF8142]/10" : "bg-[#DF8142]/15"}`}>
+                          <Calendar className="h-8 w-8 text-[#DF8142] group-hover:scale-110 transition-transform duration-300" />
+                        </div>
+                        <p
+                          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                          className={`text-3xl font-black tracking-tight leading-none mb-1 ${
+                            isLight ? "text-[#5A270F]" : "text-[#EEB38C]"
+                          }`}
+                        >
+                          {item.eventDate ? new Date(item.eventDate).getDate() : "--"}
                         </p>
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 dark:text-white/40">
+                        <p className={`text-[10px] font-extrabold uppercase tracking-[0.3em] ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/50"}`}>
                           {item.eventDate
-                            ? new Date(item.eventDate).toLocaleString(
-                                "default",
-                                { month: "short" },
-                              )
+                            ? new Date(item.eventDate).toLocaleString("default", { month: "short" })
                             : "Event"}
                         </p>
                       </>
                     ) : (
                       <>
-                        <Zap className="h-10 w-10 text-[#DF8142] mb-6 group-hover:scale-110 transition-transform" />
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 dark:text-white/40">
+                        <div className={`h-16 w-16 rounded-2xl flex items-center justify-center mb-5 ${isLight ? "bg-[#DF8142]/10" : "bg-[#DF8142]/15"}`}>
+                          <Zap className="h-8 w-8 text-[#DF8142] group-hover:scale-110 transition-transform duration-300" />
+                        </div>
+                        <p className={`text-[10px] font-extrabold uppercase tracking-[0.3em] ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/50"}`}>
                           Transmission
                         </p>
-                        <p className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C] mt-2">
+                        <p className={`text-sm font-bold mt-2 ${isLight ? "text-[#5A270F]" : "text-[#EEB38C]"}`}>
                           Update Node
                         </p>
                       </>
                     )}
                   </div>
 
-                  <div className="sm:w-2/3 p-10 sm:p-12 relative flex flex-col">
-                    <div className="flex items-center gap-4 mb-6">
+                  {/* Right content */}
+                  <div className="flex-1 p-8 sm:p-10 flex flex-col">
+                    {/* Meta row */}
+                    <div className="flex items-center gap-3 mb-5 flex-wrap">
                       <span
-                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${
+                        className={`px-3 py-1.5 rounded-lg text-[9px] font-extrabold uppercase tracking-widest ${
                           item.isEvent
                             ? "bg-[#DF8142]/10 text-[#DF8142]"
-                            : "bg-[#EEB38C]/10 text-[#92664A] dark:text-[#EEB38C]/40"
+                            : isLight
+                            ? "bg-[#EEB38C]/20 text-[#7A4A22]"
+                            : "bg-[#EEB38C]/10 text-[#EEB38C]/70"
                         }`}
                       >
                         {item.isEvent ? "Protocol Event" : "System Alert"}
                       </span>
-                      <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40/60">
-                        <Clock className="h-3 w-3" /> {item.time}
+                      <span
+                        className={`flex items-center gap-1.5 text-[9px] font-extrabold uppercase tracking-widest ${
+                          isLight ? "text-[#92664A]" : "text-[#EEB38C]/40"
+                        }`}
+                      >
+                        <Clock className="h-3 w-3" />
+                        {item.time}
                       </span>
                     </div>
 
-                    <h2 className="text-3xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter leading-tight mb-6 group-hover:text-[#DF8142] transition-colors">
+                    {/* Title */}
+                    <h2
+                      style={{ fontFamily: "'Space Grotesk', 'Inter', sans-serif" }}
+                      className={`text-2xl sm:text-3xl font-black tracking-tight leading-tight mb-5 group-hover:text-[#DF8142] transition-colors duration-300 ${
+                        isLight ? "text-[#3D1A06]" : "text-[#F5E6D8]"
+                      }`}
+                    >
                       {item.title}
                     </h2>
 
-                    <p className="text-[#5A270F] dark:text-foreground/70 font-medium leading-relaxed mb-8 line-clamp-3">
+                    {/* Body */}
+                    <p
+                      className={`text-sm font-medium leading-relaxed mb-8 line-clamp-3 ${
+                        isLight ? "text-[#6B4226]" : "text-[#C8A882]/80"
+                      }`}
+                    >
                       {item.content}
                     </p>
 
-                    <div className="mt-auto flex items-center justify-between pt-8 border-t border-[#EEB38C]/20 dark:border-white/10">
+                    {/* Footer */}
+                    <div
+                      className={`mt-auto flex items-center justify-between pt-6 border-t ${
+                        isLight ? "border-[#EEB38C]/25" : "border-white/8"
+                      }`}
+                    >
                       <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-[#FAF8F4] dark:bg-white/5 border border-[#EEB38C]/30 dark:border-white/10 flex items-center justify-center text-[#92664A] dark:text-[#EEB38C]/60">
+                        <div
+                          className={`h-8 w-8 rounded-full border flex items-center justify-center ${
+                            isLight
+                              ? "bg-[#FAF6F0] border-[#EEB38C]/30 text-[#92664A]"
+                              : "bg-white/5 border-white/10 text-[#EEB38C]/60"
+                          }`}
+                        >
                           <Tag className="h-3.5 w-3.5" />
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40">
-                          Metadata Source: {item.source || "Nexus Prime"}
+                        <span
+                          className={`text-[10px] font-extrabold uppercase tracking-widest ${
+                            isLight ? "text-[#92664A]" : "text-[#EEB38C]/40"
+                          }`}
+                        >
+                          {item.source || "Nexus Prime"}
                         </span>
                       </div>
 
                       <button
                         title="Share Transmission"
-                        className="h-12 w-12 rounded-2xl bg-[#FAF8F4] dark:bg-white/5 flex items-center justify-center text-[#92664A] dark:text-[#EEB38C]/60 hover:bg-[#DF8142] dark:hover:bg-primary hover:text-white transition-all duration-300 shadow-sm border border-[#EEB38C]/20 dark:border-white/10"
+                        className={`h-11 w-11 rounded-2xl border flex items-center justify-center transition-all duration-300 hover:bg-[#DF8142] hover:text-white hover:border-[#DF8142] hover:shadow-lg hover:shadow-[#DF8142]/30 ${
+                          isLight
+                            ? "bg-[#FAF6F0] border-[#EEB38C]/30 text-[#92664A]"
+                            : "bg-white/5 border-white/10 text-[#EEB38C]/60"
+                        }`}
                       >
                         <Share2 className="h-4 w-4" />
                       </button>
@@ -235,84 +408,199 @@ const News = () => {
                 </article>
               ))
             ) : (
-              <div className="py-32 bg-white dark:bg-card rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 text-center">
-                <div className="h-20 w-20 bg-[#EFEDED] dark:bg-background rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-sm">
-                  <Search className="h-10 w-10 text-gray-400 dark:text-white/30" />
+              <div
+                className={`py-32 rounded-[2.5rem] border text-center ${
+                  isLight
+                    ? "bg-white border-[#E4DDD4]"
+                    : "bg-[#1A0B02] border-white/8"
+                }`}
+              >
+                <div
+                  className={`h-20 w-20 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-sm ${
+                    isLight ? "bg-[#F0EAE2]" : "bg-white/5"
+                  }`}
+                >
+                  <Search className={`h-10 w-10 ${isLight ? "text-[#B8967A]" : "text-white/30"}`} />
                 </div>
-                <h3 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] mb-2">
+                <h3
+                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                  className={`text-2xl font-black mb-3 ${isLight ? "text-[#3D1A06]" : "text-[#EEB38C]"}`}
+                >
                   No Signals Found
                 </h3>
-                <p className="text-gray-500 dark:text-white/40 font-medium max-w-xs mx-auto">
-                  The news cluster currently has no active transmissions for
-                  this filter.
+                <p className={`text-sm font-medium max-w-xs mx-auto ${isLight ? "text-[#92664A]" : "text-white/40"}`}>
+                  The news cluster currently has no active transmissions for this filter.
                 </p>
               </div>
             )}
           </div>
 
-          {/* Sidebar Modules */}
-          <div className="space-y-12">
+          {/* ── Sidebar ── */}
+          <div className="space-y-8">
+
             {/* Search Module */}
-            <div className="bg-white dark:bg-card p-10 rounded-[3rem] border border-[#EEB38C]/30 dark:border-white/5 shadow-xl shadow-[#92664A]/5">
-              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#92664A] dark:text-[#EEB38C]/40 mb-8">
-                Signal Scan
-              </h3>
+            <div
+              className={`p-8 rounded-[2.5rem] border shadow-xl transition-colors duration-300 ${
+                isLight
+                  ? "bg-white border-[#E4DDD4] shadow-[#92664A]/6"
+                  : "bg-[#1A0B02] border-white/8 shadow-black/20"
+              }`}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3
+                  className={`text-[10px] font-extrabold uppercase tracking-[0.35em] ${
+                    isLight ? "text-[#92664A]" : "text-[#EEB38C]/50"
+                  }`}
+                >
+                  Signal Scan
+                </h3>
+                {searchQuery && (
+                  <span className="text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full bg-[#DF8142]/12 text-[#DF8142] animate-in fade-in duration-200">
+                    {filteredNews.length} result{filteredNews.length !== 1 ? "s" : ""}
+                  </span>
+                )}
+              </div>
+
               <div className="relative group">
                 <input
+                  ref={searchRef}
+                  id="news-search"
                   type="text"
-                  placeholder="Search logs..."
-                  className="w-full h-16 bg-[#FAF8F4] dark:bg-white/5 border border-[#EEB38C]/20 dark:border-white/10 rounded-2xl pl-12 pr-6 text-sm font-bold text-[#5A270F] dark:text-white outline-none focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142]/90 transition-all font-sans"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search news & events..."
+                  style={{ fontFamily: "'Inter', sans-serif" }}
+                  className={`w-full h-14 rounded-2xl pl-11 pr-10 text-sm font-semibold outline-none transition-all duration-200 placeholder:font-medium border ${
+                    isLight
+                      ? "bg-[#FAF6F0] border-[#DDD0C0] text-[#3D1A06] placeholder:text-[#B8967A] focus:bg-white focus:border-[#DF8142] focus:ring-4 focus:ring-[#DF8142]/10"
+                      : "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#DF8142]/70 focus:ring-4 focus:ring-[#DF8142]/10"
+                  }`}
                 />
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-[#92664A] dark:text-[#EEB38C]/40 group-focus-within:text-[#DF8142] transition-colors" />
+                <Search
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors group-focus-within:text-[#DF8142] ${
+                    isLight ? "text-[#92664A]" : "text-[#EEB38C]/40"
+                  }`}
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => { setSearchQuery(""); searchRef.current?.focus(); }}
+                    className={`absolute right-3.5 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-[#DF8142] hover:text-white ${
+                      isLight ? "bg-[#EEB38C]/20 text-[#92664A]" : "bg-white/10 text-white/50"
+                    }`}
+                    title="Clear search"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                )}
               </div>
+
+              {searchQuery && filteredNews.length === 0 && (
+                <p className={`mt-4 text-[10px] font-extrabold uppercase tracking-widest text-center animate-in fade-in duration-300 ${isLight ? "text-[#B8967A]" : "text-white/30"}`}>
+                  No transmissions match your query.
+                </p>
+              )}
             </div>
 
-            {/* Newsletter Module */}
-            <div className="bg-[#DF8142] p-10 rounded-[3rem] shadow-2xl shadow-[#DF8142]/30 text-white relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 dark:bg-card/10 rounded-bl-[5rem] translate-x-12 -translate-y-12 group-hover:translate-x-8 group-hover:-translate-y-8 transition-transform duration-700" />
-              <h3 className="text-2xl font-black mb-4 relative z-10 leading-none">
+            {/* Studio Digest Newsletter */}
+            <div
+              className={`p-8 rounded-[2.5rem] shadow-2xl relative overflow-hidden group transition-all duration-500 ${
+                isLight
+                  ? "bg-gradient-to-br from-[#DF8142] to-[#C56A2A] shadow-[#DF8142]/35"
+                  : "bg-gradient-to-br from-[#5A270F] to-[#3D1A06] shadow-[#DF8142]/20 border border-[#DF8142]/20"
+              }`}
+            >
+              {/* Decorative orb */}
+              <div className="absolute top-0 right-0 w-36 h-36 bg-white/10 rounded-bl-[5rem] translate-x-14 -translate-y-14 group-hover:translate-x-10 group-hover:-translate-y-10 transition-transform duration-700 pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/5 rounded-tr-[4rem] -translate-x-10 translate-y-10 group-hover:-translate-x-6 group-hover:translate-y-6 transition-transform duration-700 pointer-events-none" />
+
+              <h3
+                style={{ fontFamily: "'Space Grotesk', 'Inter', sans-serif" }}
+                className="text-2xl font-black mb-3 relative z-10 leading-tight text-white"
+              >
                 THE STUDIO <br /> DIGEST.
               </h3>
-              <p className="text-[#EEB38C] text-sm font-medium mb-8 relative z-10">
-                Monthly curation of technical benchmarks directly to your studio
-                terminal.
+              <p className={`text-sm font-medium mb-7 relative z-10 ${isLight ? "text-white/75" : "text-[#EEB38C]/80"}`}>
+                Monthly curation of technical benchmarks delivered directly to your studio terminal.
               </p>
-              <form
-                onSubmit={handleNewsletterSubscribe}
-                className="relative z-10"
-              >
-                <input
-                  type="email"
-                  value={newsletterEmail}
-                  onChange={(e) => {
-                    setNewsletterEmail(e.target.value);
-                    if (newsletterError) setNewsletterError("");
-                  }}
-                  placeholder="Terminal Email..."
-                  disabled={subscribing || subscribed}
-                  className={`w-full h-14 bg-white/15 dark:bg-card/15 border ${newsletterError ? "border-[#5A270F]" : "border-white/20"} rounded-xl px-5 text-sm font-bold placeholder:text-white/50 mb-2 outline-none focus:bg-white/25 dark:bg-card/25 transition-all disabled:opacity-50`}
-                />
-                {newsletterError && (
-                  <p className="text-xs text-[#5A270F] dark:text-[#EEB38C] font-black mb-3 flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-300">
-                    <span className="inline-block w-1 h-1 rounded-full bg-[#5A270F]" />
-                    {newsletterError}
-                  </p>
-                )}
+
+              <form onSubmit={handleNewsletterSubscribe} className="relative z-10" noValidate>
+                {/* Email input — white bg for clear readability on the orange card */}
+                <div className="relative mb-1">
+                  <input
+                    id="newsletter-email"
+                    type="email"
+                    value={newsletterEmail}
+                    onChange={(e) => {
+                      setNewsletterEmail(e.target.value);
+                      if (newsletterError) setNewsletterError("");
+                    }}
+                    onBlur={() => setEmailTouched(true)}
+                    placeholder="your@email.com"
+                    disabled={subscribing || subscribed}
+                    maxLength={MAX_EMAIL_LENGTH + 1}
+                    autoComplete="email"
+                    className={`w-full rounded-xl pl-4 pr-11 text-sm font-semibold outline-none transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed border-2 ${
+                      newsletterError || emailValidation === "error"
+                        ? "bg-white border-red-400 text-[#3D1A06] placeholder:text-[#B8967A] focus:ring-4 focus:ring-red-400/20"
+                        : emailValidation === "valid"
+                        ? "bg-white border-emerald-400 text-[#3D1A06] placeholder:text-[#B8967A] focus:ring-4 focus:ring-emerald-400/20"
+                        : "bg-white border-white/30 text-[#3D1A06] placeholder:text-[#B8967A] focus:border-white focus:ring-4 focus:ring-white/20"
+                    }`}
+                    style={{ height: "52px", fontFamily: "'Inter', sans-serif" }}
+                  />
+                  {/* Inline validation icon */}
+                  {emailTouched && newsletterEmail && !subscribing && !subscribed && (
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                      {emailValidation === "valid" ? (
+                        <CheckCircle className="h-4 w-4 text-emerald-500 animate-in zoom-in duration-200" />
+                      ) : (
+                        <AlertCircle className="h-4 w-4 text-red-500 animate-in zoom-in duration-200" />
+                      )}
+                    </span>
+                  )}
+                </div>
+
+                {/* Error + counter row */}
+                <div className="flex items-start justify-between gap-2 mb-4 min-h-[20px]">
+                  {newsletterError || (emailTouched && emailValidation === "error") ? (
+                    <p className="text-[11px] font-bold text-white flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1 duration-300 drop-shadow-sm">
+                      <AlertCircle className="h-3.5 w-3.5 shrink-0 text-white" />
+                      {newsletterError ||
+                        (!newsletterEmail.trim()
+                          ? "Email address is required."
+                          : newsletterEmail.length > MAX_EMAIL_LENGTH
+                          ? `Max ${MAX_EMAIL_LENGTH} characters allowed.`
+                          : "Enter a valid email (e.g. user@domain.com).")}
+                    </p>
+                  ) : (
+                    <span />
+                  )}
+                  <span
+                    className={`text-[9px] font-bold tabular-nums ml-auto shrink-0 ${
+                      newsletterEmail.length > MAX_EMAIL_LENGTH
+                        ? "text-white font-black"
+                        : "text-white/50"
+                    }`}
+                  >
+                    {newsletterEmail.length}/{MAX_EMAIL_LENGTH}
+                  </span>
+                </div>
+
+                {/* Submit button — always high-contrast white bg on orange card */}
                 <button
                   type="submit"
-                  disabled={
-                    subscribing || subscribed || !newsletterEmail.trim()
-                  }
-                  className={`w-full h-14 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 active:scale-95 shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
+                  disabled={subscribing || subscribed || !newsletterEmail.trim()}
+                  className={`w-full rounded-xl font-extrabold uppercase tracking-widest text-[10px] transition-all duration-300 active:scale-95 shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
                     subscribed
-                      ? "bg-[#5A270F] text-white"
-                      : "bg-white dark:bg-card text-[#DF8142] hover:bg-[#5A270F] hover:text-white disabled:opacity-50 shadow-white/10"
+                      ? "bg-emerald-600 text-white shadow-emerald-600/30"
+                      : "bg-white text-[#C56A2A] hover:bg-[#3D1A06] hover:text-white disabled:opacity-50 shadow-white/30"
                   }`}
+                  style={{ height: "52px" }}
                 >
                   {subscribing ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Transmitting...
+                      Transmitting…
                     </>
                   ) : subscribed ? (
                     <>
@@ -327,23 +615,46 @@ const News = () => {
             </div>
 
             {/* Support Link */}
-            <div className="bg-white dark:bg-card p-10 rounded-[3rem] border border-[#EEB38C]/30 dark:border-white/10 shadow-xl shadow-[#92664A]/5 text-center">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#5A270F]/5 dark:bg-[#EEB38C]/10 rounded-full text-[8px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] mb-4">
-                <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142] animate-pulse" />{" "}
+            <div
+              className={`p-8 rounded-[2.5rem] border shadow-xl text-center transition-colors duration-300 ${
+                isLight
+                  ? "bg-white border-[#E4DDD4] shadow-[#92664A]/6"
+                  : "bg-[#1A0B02] border-white/8 shadow-black/20"
+              }`}
+            >
+              <div
+                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[8px] font-extrabold uppercase tracking-widest mb-5 ${
+                  isLight
+                    ? "bg-[#5A270F]/8 text-[#5A270F]"
+                    : "bg-[#EEB38C]/12 text-[#EEB38C]"
+                }`}
+              >
+                <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142] animate-pulse" />
                 Live Support
               </div>
-              <h3 className="text-sm font-black text-[#5A270F] dark:text-white uppercase tracking-widest mb-2">
+
+              <h3
+                style={{ fontFamily: "'Space Grotesk', 'Inter', sans-serif" }}
+                className={`text-sm font-black uppercase tracking-widest mb-2 ${
+                  isLight ? "text-[#3D1A06]" : "text-white"
+                }`}
+              >
                 Need Field Intel?
               </h3>
-              <p className="text-xs text-[#92664A] dark:text-white/40 font-medium mb-8">
+              <p className={`text-xs font-medium mb-7 leading-relaxed ${isLight ? "text-[#92664A]" : "text-white/40"}`}>
                 Contact our operations node for priority technical support.
               </p>
+
               <Link
                 to="/about"
-                className="flex items-center justify-center gap-3 text-xs font-black uppercase tracking-widest text-[#DF8142] dark:text-[#DF8142] hover:text-[#5A270F] dark:text-[#EEB38C] dark:hover:text-white transition-colors group"
+                className={`flex items-center justify-center gap-2 text-xs font-extrabold uppercase tracking-widest transition-colors group ${
+                  isLight
+                    ? "text-[#DF8142] hover:text-[#5A270F]"
+                    : "text-[#EEB38C] hover:text-white"
+                }`}
               >
-                Reach Control{" "}
-                <ArrowRight className="h-4 w-4 group-hover:translate-x-2 transition-transform" />
+                Reach Control
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1.5 transition-transform duration-300" />
               </Link>
             </div>
           </div>
