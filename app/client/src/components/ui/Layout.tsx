@@ -350,9 +350,9 @@ const Layout = () => {
                             <Link
                               to="/dashboard"
                               onClick={() => setUserMenuOpen(false)}
-                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] bg-[#EFEDED] dark:bg-background/50 dark:bg-white/5 hover:bg-[#5A270F] dark:hover:bg-primary hover:text-white rounded-2xl transition-all group/item"
+                              className="flex items-center gap-4 px-5 py-4 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] bg-[#EFEDED] dark:bg-white/5 hover:bg-[#DF8142] hover:text-white dark:hover:bg-[#DF8142] dark:hover:text-white rounded-2xl transition-all group/item"
                             >
-                              <div className="p-2 bg-white dark:bg-card dark:bg-[#2A1205] rounded-xl shadow-sm text-[#5A270F] dark:text-[#EEB38C] group-hover/item:bg-[#92664A] dark:group-hover/item:bg-white dark:bg-card group-hover/item:text-white dark:group-hover/item:text-[#5A270F] dark:text-[#EEB38C] transition-all">
+                              <div className="p-2 bg-white dark:bg-[#1A0B04] rounded-xl shadow-sm text-[#5A270F] dark:text-[#EEB38C] group-hover/item:bg-[#DF8142] group-hover/item:text-white dark:group-hover/item:bg-[#DF8142] dark:group-hover/item:text-white transition-all shadow-[#DF8142]/20">
                                 <LayoutDashboard className="h-4 w-4" />
                               </div>
                               Personal Console
