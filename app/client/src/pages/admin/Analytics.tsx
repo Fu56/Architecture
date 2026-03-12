@@ -155,6 +155,33 @@ const Analytics = () => {
     },
   ];
 
+  const handleDownloadReport = () => {
+    if (!stats) return;
+    
+    const reportContent = {
+      registry_protocol: "INTEL-MATRIX-RECO-14A",
+      timestamp: new Date().toISOString(),
+      intel_metrics: {
+        total_nodes: stats.totalUsers,
+        artifact_index: stats.totalResources,
+        data_pulse: stats.totalDownloads,
+        pending_validation_nexus: stats.pendingResources,
+        velocity_protocol_30d: stats.newResourcesLast30Days
+      },
+      status: "SECURE_PROTOCOL_VERIFIED"
+    };
+
+    const blob = new Blob([JSON.stringify(reportContent, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `MATRIX_INTEL_REPORT_${new Date().getTime()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-12 animate-in fade-in duration-1000">
       {/* Global Intel Grid */}
@@ -253,7 +280,9 @@ const Analytics = () => {
                 Snapshot Protocol 14-A
               </p>
               
-              <button className="w-full h-14 bg-white dark:bg-transparent border-2 border-[#5A270F] dark:border-[#EEB38C]/20 border-dashed text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] rounded-2xl hover:bg-[#5A270F] hover:text-white dark:hover:bg-[#EEB38C] dark:hover:text-[#1A0B04] transition-all active:scale-95 flex items-center justify-center gap-3">
+              <button 
+                onClick={handleDownloadReport}
+                className="w-full h-14 bg-white dark:bg-transparent border-2 border-[#5A270F] dark:border-[#EEB38C]/20 border-dashed text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] rounded-2xl hover:bg-[#5A270F] hover:text-white dark:hover:bg-[#EEB38C] dark:hover:text-[#1A0B04] transition-all active:scale-95 flex items-center justify-center gap-3">
                 Download Report <ArrowRight className="h-3 w-3" />
               </button>
             </div>
