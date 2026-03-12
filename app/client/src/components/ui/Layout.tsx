@@ -186,7 +186,7 @@ const Layout = () => {
                   <span
                     className={`text-[9px] font-black tracking-[0.3em] uppercase transition-all duration-500 ${
                       isScrolled || !isHomePage
-                        ? "text-[#5A270F]/50 dark:text-white/40"
+                        ? "text-[#5A270F] dark:text-[#EEB38C]/60"
                         : "text-white/70"
                     }`}
                   >

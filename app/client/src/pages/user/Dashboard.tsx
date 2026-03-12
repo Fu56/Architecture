@@ -208,7 +208,7 @@ const UserDashboard = () => {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142]" />
-                      <p className="text-[10px] font-bold text-[#5A270F]/40 dark:text-white/30 uppercase tracking-[0.3em] transition-colors">
+                      <p className="text-[10px] font-bold text-[#5A270F] dark:text-[#EEB38C]/60 uppercase tracking-[0.3em] transition-colors">
                         Architect Interface
                       </p>
                     </div>
