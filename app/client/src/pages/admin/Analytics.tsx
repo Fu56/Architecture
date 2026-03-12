@@ -11,6 +11,7 @@ import {
   Layers,
   ArrowRight,
   Sparkles,
+  ChevronDown,
 } from "lucide-react";
 import { api } from "../../lib/api";
 import { useSession } from "../../lib/auth-client";
@@ -95,7 +96,7 @@ interface AnalyticsStats {
 const Analytics = () => {
   const [stats, setStats] = useState<AnalyticsStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [downloadFormat, setDownloadFormat] = useState<'pdf' | 'excel' | 'word'>('pdf');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { data: session } = useSession();
 
   const user = session?.user as UserWithRole | undefined;
@@ -160,8 +161,9 @@ const Analytics = () => {
     },
   ];
 
-  const handleDownloadReport = async () => {
+  const handleDownloadReport = async (format: 'pdf' | 'excel' | 'word') => {
     if (!stats) return;
+    setIsDropdownOpen(false);
     
     const metricsData = [
       { metric: "Registry Protocol", value: "INTEL-MATRIX-RECO-14A" },
@@ -176,7 +178,7 @@ const Analytics = () => {
 
     const filename = `MATRIX_INTEL_REPORT_${new Date().getTime()}`;
 
-    if (downloadFormat === 'pdf') {
+    if (format === 'pdf') {
       const doc = new jsPDF();
       doc.text("System Analytics Report", 14, 20);
       autoTable(doc, {
@@ -185,12 +187,12 @@ const Analytics = () => {
         body: metricsData.map(row => [row.metric, row.value.toString()]),
       });
       doc.save(`${filename}.pdf`);
-    } else if (downloadFormat === 'excel') {
+    } else if (format === 'excel') {
       const worksheet = XLSX.utils.json_to_sheet(metricsData);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Metrics");
       XLSX.writeFile(workbook, `${filename}.xlsx`);
-    } else if (downloadFormat === 'word') {
+    } else if (format === 'word') {
       const doc = new Document({
         sections: [
           {
@@ -339,24 +341,28 @@ const Analytics = () => {
                 Snapshot Protocol 14-A
               </p>
               
-              <div className="space-y-4">
-                <select
-                  aria-label="Select report format"
-                  value={downloadFormat}
-                  onChange={(e) => setDownloadFormat(e.target.value as 'pdf' | 'excel' | 'word')}
-                  className="w-full bg-[#FAF8F4] dark:bg-[#2A1205] border border-[#D9D9C2] dark:border-white/10 text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] rounded-2xl px-5 py-4 outline-none focus:border-[#DF8142] transition-colors appearance-none uppercase tracking-widest shadow-inner relative z-10"
-                >
-                  <option value="pdf">Hard Copy (PDF)</option>
-                  <option value="word">Hard Copy (Word)</option>
-                  <option value="excel">Data Payload (Excel)</option>
-                </select>
-
+              <div className="space-y-3 relative z-10 w-full text-left">
                 <button 
-                  onClick={handleDownloadReport}
-                  className="w-full h-14 bg-white dark:bg-transparent border-2 border-[#5A270F] dark:border-[#EEB38C]/20 border-dashed text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] rounded-2xl hover:bg-[#5A270F] hover:text-white dark:hover:bg-[#EEB38C] dark:hover:text-[#1A0B04] transition-all active:scale-95 flex items-center justify-center gap-3 relative z-10"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="w-full h-14 bg-white dark:bg-transparent border-2 border-[#5A270F] dark:border-[#EEB38C]/20 border-dashed text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] rounded-2xl hover:bg-[#5A270F] hover:text-white dark:hover:bg-[#EEB38C] dark:hover:text-[#1A0B04] transition-all active:scale-95 flex items-center justify-between px-6 gap-3"
                 >
-                  Download Report <ArrowRight className="h-3 w-3" />
+                  <span className="flex-1 text-center pr-2">Download Report</span>
+                  <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`} />
                 </button>
+
+                {isDropdownOpen && (
+                  <div className="flex flex-col gap-2 p-2 bg-[#FAF8F4] dark:bg-[#2A1205] border border-[#D9D9C2] dark:border-white/10 rounded-2xl shadow-xl animate-in slide-in-from-top-2 fade-in duration-300 border-t-0 rounded-t-none -mt-4 pt-5">
+                    <button onClick={() => handleDownloadReport('pdf')} className="w-full text-left px-5 py-3 text-[9px] font-black tracking-widest uppercase text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#D9D9C2] dark:hover:bg-white/5 rounded-xl transition-colors">
+                      Extract to PDF
+                    </button>
+                    <button onClick={() => handleDownloadReport('word')} className="w-full text-left px-5 py-3 text-[9px] font-black tracking-widest uppercase text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#D9D9C2] dark:hover:bg-white/5 rounded-xl transition-colors">
+                      Extract to Word
+                    </button>
+                    <button onClick={() => handleDownloadReport('excel')} className="w-full text-left px-5 py-3 text-[9px] font-black tracking-widest uppercase text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#D9D9C2] dark:hover:bg-white/5 rounded-xl transition-colors">
+                      Extract to Excel
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
