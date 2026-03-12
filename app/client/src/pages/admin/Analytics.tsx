@@ -14,6 +14,10 @@ import {
 } from "lucide-react";
 import { api } from "../../lib/api";
 import { useSession } from "../../lib/auth-client";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
+import * as XLSX from "xlsx";
+import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType } from "docx";
 
 interface UserWithRole {
   id: string | number;
@@ -91,6 +95,7 @@ interface AnalyticsStats {
 const Analytics = () => {
   const [stats, setStats] = useState<AnalyticsStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [downloadFormat, setDownloadFormat] = useState<'pdf' | 'excel' | 'word'>('pdf');
   const { data: session } = useSession();
 
   const user = session?.user as UserWithRole | undefined;
@@ -155,31 +160,85 @@ const Analytics = () => {
     },
   ];
 
-  const handleDownloadReport = () => {
+  const handleDownloadReport = async () => {
     if (!stats) return;
     
-    const reportContent = {
-      registry_protocol: "INTEL-MATRIX-RECO-14A",
-      timestamp: new Date().toISOString(),
-      intel_metrics: {
-        total_nodes: stats.totalUsers,
-        artifact_index: stats.totalResources,
-        data_pulse: stats.totalDownloads,
-        pending_validation_nexus: stats.pendingResources,
-        velocity_protocol_30d: stats.newResourcesLast30Days
-      },
-      status: "SECURE_PROTOCOL_VERIFIED"
-    };
+    const metricsData = [
+      { metric: "Registry Protocol", value: "INTEL-MATRIX-RECO-14A" },
+      { metric: "Timestamp", value: new Date().toISOString() },
+      { metric: "Status", value: "SECURE_PROTOCOL_VERIFIED" },
+      { metric: "Total Nodes", value: stats.totalUsers },
+      { metric: "Artifact Index", value: stats.totalResources },
+      { metric: "Data Pulse (Downloads)", value: stats.totalDownloads },
+      { metric: "Pending Validation Nexus", value: stats.pendingResources },
+      { metric: "Velocity Protocol 30D", value: stats.newResourcesLast30Days }
+    ];
 
-    const blob = new Blob([JSON.stringify(reportContent, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `MATRIX_INTEL_REPORT_${new Date().getTime()}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const filename = `MATRIX_INTEL_REPORT_${new Date().getTime()}`;
+
+    if (downloadFormat === 'pdf') {
+      const doc = new jsPDF();
+      doc.text("System Analytics Report", 14, 20);
+      autoTable(doc, {
+        startY: 30,
+        head: [['Metric', 'Value']],
+        body: metricsData.map(row => [row.metric, row.value.toString()]),
+      });
+      doc.save(`${filename}.pdf`);
+    } else if (downloadFormat === 'excel') {
+      const worksheet = XLSX.utils.json_to_sheet(metricsData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Metrics");
+      XLSX.writeFile(workbook, `${filename}.xlsx`);
+    } else if (downloadFormat === 'word') {
+      const doc = new Document({
+        sections: [
+          {
+            properties: {},
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "System Analytics Report",
+                    bold: true,
+                    size: 32,
+                  }),
+                ],
+              }),
+              new Paragraph({ text: "" }),
+              new Table({
+                width: { size: 100, type: WidthType.PERCENTAGE },
+                rows: [
+                  new TableRow({
+                    children: [
+                      new TableCell({ children: [new Paragraph("Metric")] }),
+                      new TableCell({ children: [new Paragraph("Value")] }),
+                    ],
+                  }),
+                  ...metricsData.map(row => 
+                    new TableRow({
+                      children: [
+                        new TableCell({ children: [new Paragraph(row.metric)] }),
+                        new TableCell({ children: [new Paragraph(row.value.toString())] }),
+                      ],
+                    })
+                  ),
+                ],
+              }),
+            ],
+          },
+        ],
+      });
+      const blob = await Packer.toBlob(doc);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${filename}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
   };
 
   return (
@@ -280,11 +339,25 @@ const Analytics = () => {
                 Snapshot Protocol 14-A
               </p>
               
-              <button 
-                onClick={handleDownloadReport}
-                className="w-full h-14 bg-white dark:bg-transparent border-2 border-[#5A270F] dark:border-[#EEB38C]/20 border-dashed text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] rounded-2xl hover:bg-[#5A270F] hover:text-white dark:hover:bg-[#EEB38C] dark:hover:text-[#1A0B04] transition-all active:scale-95 flex items-center justify-center gap-3">
-                Download Report <ArrowRight className="h-3 w-3" />
-              </button>
+              <div className="space-y-4">
+                <select
+                  aria-label="Select report format"
+                  value={downloadFormat}
+                  onChange={(e) => setDownloadFormat(e.target.value as 'pdf' | 'excel' | 'word')}
+                  className="w-full bg-[#FAF8F4] dark:bg-[#2A1205] border border-[#D9D9C2] dark:border-white/10 text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] rounded-2xl px-5 py-4 outline-none focus:border-[#DF8142] transition-colors appearance-none uppercase tracking-widest shadow-inner relative z-10"
+                >
+                  <option value="pdf">Hard Copy (PDF)</option>
+                  <option value="word">Hard Copy (Word)</option>
+                  <option value="excel">Data Payload (Excel)</option>
+                </select>
+
+                <button 
+                  onClick={handleDownloadReport}
+                  className="w-full h-14 bg-white dark:bg-transparent border-2 border-[#5A270F] dark:border-[#EEB38C]/20 border-dashed text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] rounded-2xl hover:bg-[#5A270F] hover:text-white dark:hover:bg-[#EEB38C] dark:hover:text-[#1A0B04] transition-all active:scale-95 flex items-center justify-center gap-3 relative z-10"
+                >
+                  Download Report <ArrowRight className="h-3 w-3" />
+                </button>
+              </div>
             </div>
           </div>
 
