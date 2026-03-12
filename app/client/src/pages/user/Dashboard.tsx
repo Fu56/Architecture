@@ -14,7 +14,9 @@ import {
   X,
   PanelLeftClose,
   PanelLeftOpen,
+  ShieldCheck,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { getUser } from "../../lib/auth";
 import ThemeToggle from "../../components/ui/ThemeToggle";
 
@@ -137,6 +139,20 @@ const UserDashboard = () => {
 
                 {/* Navigation Terminal */}
                 <nav className="space-y-6 flex-grow overflow-y-auto scrollbar-none">
+                  {isAdmin && (
+                    <div className="px-4 mb-8">
+                       <Link
+                        to="/admin"
+                        className="flex items-center gap-4 px-6 py-4 bg-white/10 hover:bg-white text-white hover:text-[#5A270F] rounded-2xl border border-white/10 transition-all duration-500 group shadow-lg"
+                      >
+                        <ShieldCheck className="h-5 w-5 text-[#DF8142]" />
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Return to Center</span>
+                          <span className="text-[7px] font-bold text-white/40 group-hover:text-[#5A270F]/40 uppercase tracking-widest mt-0.5">Admin Protocol</span>
+                        </div>
+                      </Link>
+                    </div>
+                  )}
                   <div className="space-y-3">
                     <p className="px-4 text-[9px] font-black text-white/30 uppercase tracking-[0.4em] mb-4">
                       Personal Nexus

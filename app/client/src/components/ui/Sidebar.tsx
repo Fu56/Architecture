@@ -14,7 +14,6 @@ import {
   Hexagon,
   Star,
   ArrowLeft,
-  Shield,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -31,6 +30,7 @@ interface UserWithRole {
 }
 
 export default function Sidebar({ isOpen, setOpen }: SidebarProps) {
+  const navigate = useNavigate();
   const loc = useLocation();
   const { data: session } = useSession();
   const user = session?.user as UserWithRole | undefined;
