@@ -4,208 +4,272 @@ import { api } from "../../lib/api";
 import { toast } from "../../lib/toast";
 import { useSession } from "../../lib/auth-client";
 import type { Notification } from "../../models";
-import { Bell, CheckCircle, XCircle, Info, Zap } from "lucide-react";
+import {
+  Bell,
+  CheckCircle,
+  XCircle,
+  Info,
+  Zap,
+  CheckCheck,
+  ArrowUpRight,
+} from "lucide-react";
 
-const NotificationIcon = ({ title }: { title: string }) => {
+/* ─────────────────────────────────────────────────
+   Icon + colour helper  
+───────────────────────────────────────────────── */
+const getIconMeta = (title: string, isRead: boolean) => {
   const t = title.toLowerCase();
+
   if (t.includes("approved"))
-    return <CheckCircle className="h-4 w-4 text-[#5A270F] dark:text-[#EEB38C]" />;
+    return {
+      Icon: CheckCircle,
+      wrap: isRead ? "bg-[#92664A] text-white" : "bg-emerald-600 text-white",
+    };
   if (t.includes("rejected") || t.includes("denied"))
-    return <XCircle className="h-4 w-4 text-rose-600" />;
+    return {
+      Icon: XCircle,
+      wrap: isRead ? "bg-[#92664A] text-white" : "bg-rose-600 text-white",
+    };
   if (t.includes("assignment"))
-    return <Zap className="h-4 w-4 text-[#DF8142]" />;
-  return <Info className="h-4 w-4 text-[#92664A] dark:text-[#EEB38C]/40" />;
+    return {
+      Icon: Zap,
+      wrap: isRead ? "bg-[#92664A] text-white" : "bg-[#DF8142] text-white",
+    };
+  return {
+    Icon: Info,
+    wrap: isRead ? "bg-[#92664A] text-white" : "bg-[#5A270F] text-white",
+  };
 };
 
 interface SessionUser {
   role?: string | { name: string };
 }
 
+/* ─────────────────────────────────────────────────
+   Component
+───────────────────────────────────────────────── */
 const Notifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { data: session } = useSession();
+  const unreadCount = notifications.filter((n) => !n.is_read).length;
 
+  /* fetch ──────────────────────────── */
   useEffect(() => {
-    const fetchNotifications = async () => {
+    (async () => {
       setLoading(true);
       try {
         const { data } = await api.get("/notifications");
-        if (Array.isArray(data)) {
-          setNotifications(data);
-        }
-      } catch (err: unknown) {
-        console.error("Failed to fetch notifications:", err);
-        toast.error("Failed to synchronize intelligence feed.");
+        if (Array.isArray(data)) setNotifications(data);
+      } catch {
+        toast.error("Failed to load notifications.");
       } finally {
         setLoading(false);
       }
-    };
-    fetchNotifications();
+    })();
   }, []);
 
-  const handleMarkAsRead = async (id: number, e?: React.MouseEvent) => {
+  /* actions ────────────────────────── */
+  const markRead = async (id: number, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
-    // Optimistic update
-    setNotifications(
-      notifications.map((n) => (n.id === id ? { ...n, is_read: true } : n)),
+    setNotifications((p) =>
+      p.map((n) => (n.id === id ? { ...n, is_read: true } : n)),
     );
     try {
       await api.patch(`/notifications/${id}/read`);
       window.dispatchEvent(new Event("notificationsUpdated"));
     } catch {
-      // Revert on error
-      setNotifications(
-        notifications.map((n) => (n.id === id ? { ...n, is_read: false } : n)),
+      setNotifications((p) =>
+        p.map((n) => (n.id === id ? { ...n, is_read: false } : n)),
       );
     }
   };
 
-  const handleNotificationClick = (notification: Notification) => {
-    if (!notification.is_read) {
-      handleMarkAsRead(notification.id);
-    }
-
-    const user = session?.user as SessionUser | undefined;
-    const role = typeof user?.role === "object" ? user.role.name : user?.role;
-    const isAdmin =
-      role === "Admin" || role === "SuperAdmin" || role === "admin";
-    const basePrefix = isAdmin ? "/admin" : "/dashboard";
-
-    if (notification.resource_id) {
-      navigate(`${basePrefix}/resources/${notification.resource_id}`);
-    } else if (notification.assignment_id) {
-      navigate(`${basePrefix}/assignments/${notification.assignment_id}`);
+  const markAllRead = async () => {
+    setNotifications((p) => p.map((n) => ({ ...n, is_read: true })));
+    try {
+      await Promise.all(
+        notifications
+          .filter((n) => !n.is_read)
+          .map((n) => api.patch(`/notifications/${n.id}/read`)),
+      );
+      window.dispatchEvent(new Event("notificationsUpdated"));
+    } catch {
+      toast.error("Failed to mark all as read.");
     }
   };
 
+  const handleClick = (n: Notification) => {
+    if (!n.is_read) markRead(n.id);
+    const user = session?.user as SessionUser | undefined;
+    const role = typeof user?.role === "object" ? user.role.name : user?.role;
+    const isAdmin = role === "Admin" || role === "SuperAdmin" || role === "admin";
+    const base = isAdmin ? "/admin" : "/dashboard";
+    if (n.resource_id) navigate(`${base}/resources/${n.resource_id}`);
+    else if (n.assignment_id) navigate(`${base}/assignments/${n.assignment_id}`);
+  };
+
+  /* ── Loading ──────────────────────── */
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 space-y-4">
-        <div className="relative">
-          <div className="h-12 w-12 border-2 border-[#EEB38C]/20 border-t-[#DF8142] rounded-full animate-spin" />
+      <div className="min-h-[50vh] flex flex-col items-center justify-center gap-6">
+        <div className="relative h-16 w-16">
+          <div className="absolute inset-0 rounded-full border-4 border-[#EEB38C] opacity-20" />
+          <div className="absolute inset-0 rounded-full border-4 border-t-[#DF8142] animate-spin" />
         </div>
-        <p className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.3em]">
-          Retrieving Briefings...
+        <p className="text-sm font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C]">
+          Loading Signals...
         </p>
       </div>
     );
   }
 
+  /* ── Main ─────────────────────────── */
   return (
-    <div className="max-w-4xl mx-auto px-4">
-      <div className="flex items-center justify-between mb-12">
-        <div>
-          <h2 className="text-3xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase mb-1 transition-colors">
-            Intelligence Feed
-          </h2>
-          <p className="text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-[0.4em] transition-colors">
-            System Logistics & Performance Updates
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+
+      {/* ── Header ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+
+        {/* Left: title */}
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#DF8142] bg-[#DF8142] text-white text-[10px] font-black uppercase tracking-[0.3em]">
+            <Bell className="h-3 w-3" />
+            Signal Feed
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-black uppercase italic tracking-tighter leading-none text-[#5A270F] dark:text-[#EEB38C]">
+            Signals
+          </h1>
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#6C3B1C] dark:text-[#EEB38C]">
+            System updates &amp; activity alerts
           </p>
         </div>
-        <div className="h-12 w-12 bg-[#FAF8F4] dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-2xl flex items-center justify-center shadow-sm transition-all">
-          <Bell className="h-5 w-5 text-[#DF8142]" />
+
+        {/* Right: badge + actions */}
+        <div className="flex items-center gap-3 flex-wrap">
+          {unreadCount > 0 && (
+            <span className="px-4 py-2 rounded-xl bg-[#DF8142] text-white text-[11px] font-black uppercase tracking-widest shadow-lg">
+              {unreadCount} Unread
+            </span>
+          )}
+          {unreadCount > 0 && (
+            <button
+              onClick={markAllRead}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-[#5A270F] bg-white dark:bg-[#1A0B04] text-[#5A270F] dark:text-[#EEB38C] text-[11px] font-black uppercase tracking-widest hover:bg-[#5A270F] hover:text-white transition-all duration-200 shadow-sm"
+            >
+              <CheckCheck className="h-4 w-4" />
+              Mark All Read
+            </button>
+          )}
+          <div className="relative h-12 w-12 rounded-2xl bg-[#5A270F] flex items-center justify-center shadow-xl">
+            <Bell className="h-5 w-5 text-white" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-[#DF8142] border-2 border-white dark:border-[#0F0602] text-[9px] font-black text-white flex items-center justify-center">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
-      {notifications.length > 0 ? (
-        <div className="grid gap-4">
-          {notifications.map((notification) => (
-            <div
-              key={notification.id}
-              onClick={() => handleNotificationClick(notification)}
-              className={`group relative flex items-start p-8 rounded-[2.5rem] border transition-all duration-500 cursor-pointer ${
-                !notification.is_read
-                  ? "bg-white dark:bg-[#1A0B04] border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-xl shadow-[#DF8142]/5 dark:shadow-none hover:shadow-2xl hover:shadow-[#DF8142]/10 dark:hover:border-[#DF8142]/30"
-                  : "bg-[#F5F5F0] dark:bg-white/5 border-transparent dark:border-white/5 opacity-80 hover:opacity-100 hover:bg-white dark:hover:bg-white/10 hover:border-[#D9D9C2] dark:hover:border-white/10"
-              }`}
-            >
-              {!notification.is_read && (
-                <div className="absolute top-8 right-10 flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142] animate-pulse" />
-                  <span className="text-[8px] font-black text-[#DF8142] uppercase tracking-widest">
-                    Priority Intelligence
-                  </span>
-                </div>
-              )}
+      {/* ── Divider ── */}
+      <div className="h-0.5 rounded-full bg-[#DF8142] opacity-30" />
 
+      {/* ── List ── */}
+      {notifications.length > 0 ? (
+        <div className="space-y-4">
+          {notifications.map((n) => {
+            const { Icon, wrap } = getIconMeta(n.title, n.is_read);
+            return (
               <div
-                className={`flex-shrink-0 h-12 w-12 rounded-2xl flex items-center justify-center transition-all duration-500 ${
-                  !notification.is_read
-                    ? "bg-[#DF8142] text-white shadow-lg shadow-[#DF8142]/20"
-                    : "bg-[#6C3B1C]/5 text-[#92664A] dark:text-[#EEB38C]/40"
+                key={n.id}
+                onClick={() => handleClick(n)}
+                className={`group relative flex items-start gap-5 p-6 sm:p-8 rounded-2xl sm:rounded-3xl border-2 cursor-pointer transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 ${
+                  !n.is_read
+                    ? "bg-[#FDFAF6] dark:bg-[#1A0B04] border-[#DF8142]/40 shadow-lg hover:shadow-xl hover:border-[#DF8142] border-l-4 border-l-[#DF8142]"
+                    : "bg-[#FAF8F4] dark:bg-[#1A0B04] border-[#92664A]/30 hover:border-[#92664A]"
                 }`}
               >
-                <NotificationIcon title={notification.title} />
-              </div>
+                {/* Unread badge */}
+                {!n.is_read && (
+                  <div className="absolute top-5 right-5 flex items-center gap-1.5">
+                    <div className="h-2.5 w-2.5 rounded-full bg-[#DF8142] animate-pulse" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[#DF8142] hidden sm:block">
+                      New
+                    </span>
+                  </div>
+                )}
 
-              <div className="ml-5 flex-1 min-w-0">
-                <div className="flex items-center gap-4">
-                  <p
-                    className={`text-[10px] font-black uppercase tracking-widest ${
-                      !notification.is_read
-                        ? "text-[#DF8142]"
-                        : "text-[#5A270F]/40 dark:text-[#EEB38C]/40"
-                    }`}
-                  >
-                    {notification.title}
-                  </p>
-                  <span className="text-[10px] font-black text-[#EEB38C] uppercase tracking-widest">
-                    •{" "}
-                    {new Date(notification.created_at).toLocaleDateString(
-                      undefined,
-                      {
+                {/* Icon box */}
+                <div className={`flex-shrink-0 h-12 w-12 rounded-2xl flex items-center justify-center shadow-md ${wrap}`}>
+                  <Icon className="h-6 w-6" />
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0 space-y-2 pr-16 sm:pr-24">
+
+                  {/* Title row */}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="text-[12px] font-black uppercase tracking-[0.15em] text-[#5A270F] dark:text-[#EEB38C]">
+                      {n.title}
+                    </span>
+                    <span className="text-[11px] font-bold text-[#6C3B1C] dark:text-[#EEB38C] uppercase tracking-wider">
+                      {new Date(n.created_at).toLocaleDateString(undefined, {
                         month: "short",
                         day: "numeric",
-                      },
-                    )}
-                  </span>
-                </div>
-                <p
-                  className={`text-sm mt-3 leading-relaxed whitespace-pre-wrap transition-colors ${
-                    !notification.is_read
-                      ? "text-[#5A270F] dark:text-white font-black"
-                      : "text-[#5A270F]/60 dark:text-foreground/50 font-bold"
-                  }`}
-                >
-                  {notification.message}
-                </p>
+                        year: "numeric",
+                      })}
+                    </span>
+                  </div>
 
-                <div className="mt-6 flex items-center gap-6 pt-6 border-t border-[#EEB38C]/10 dark:border-white/5 transition-colors">
-                  {notification.resource_id && (
-                    <span className="text-[10px] font-black text-[#DF8142] uppercase tracking-[0.2em] hover:text-[#5A270F] dark:text-[#EEB38C] transition-colors">
-                      Inspect Resource Node →
-                    </span>
-                  )}
-                  {notification.assignment_id && (
-                    <span className="text-[10px] font-black text-[#DF8142] uppercase tracking-[0.2em] hover:text-[#5A270F] dark:text-[#EEB38C] transition-colors">
-                      View Assignment Brief →
-                    </span>
-                  )}
-                  {!notification.is_read && (
-                    <button
-                      onClick={(e) => handleMarkAsRead(notification.id, e)}
-                      className="text-[9px] font-black text-[#5A270F]/40 dark:text-[#EEB38C]/40 uppercase tracking-[0.3em] hover:text-[#DF8142] transition-colors ml-auto"
-                    >
-                      Acknowledge Intel
-                    </button>
+                  {/* Message — always fully visible */}
+                  <p className="text-[14px] leading-relaxed text-[#5A270F] dark:text-[#EEB38C] font-medium whitespace-pre-wrap">
+                    {n.message}
+                  </p>
+
+                  {/* Action links */}
+                  {(n.resource_id || n.assignment_id || !n.is_read) && (
+                    <div className="flex flex-wrap items-center gap-5 pt-4 mt-1 border-t-2 border-[#92664A]/30">
+                      {n.resource_id && (
+                        <span className="inline-flex items-center gap-1.5 text-[12px] font-black uppercase tracking-widest text-[#DF8142] hover:text-[#5A270F] dark:hover:text-white transition-colors underline underline-offset-4">
+                          View Resource
+                          <ArrowUpRight className="h-4 w-4" />
+                        </span>
+                      )}
+                      {n.assignment_id && (
+                        <span className="inline-flex items-center gap-1.5 text-[12px] font-black uppercase tracking-widest text-[#DF8142] hover:text-[#5A270F] dark:hover:text-white transition-colors underline underline-offset-4">
+                          View Assignment
+                          <ArrowUpRight className="h-4 w-4" />
+                        </span>
+                      )}
+                      {!n.is_read && (
+                        <button
+                          onClick={(e) => markRead(n.id, e)}
+                          className="ml-auto inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-widest hover:bg-[#DF8142] transition-colors shadow-md"
+                        >
+                          <CheckCheck className="h-3.5 w-3.5" />
+                          Mark Read
+                        </button>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
-        <div className="py-24 text-center bg-[#FAF8F4] dark:bg-white/5 rounded-[4rem] border border-dashed border-[#D9D9C2] dark:border-white/10 transition-all duration-500">
-          <div className="h-20 w-20 bg-white dark:bg-card border border-[#D9D9C2] dark:border-white/10 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-sm transition-all">
-            <Bell className="h-10 w-10 text-[#EEB38C]/30 dark:text-white/10" />
+        /* ── Empty State ── */
+        <div className="py-28 text-center rounded-3xl border-2 border-dashed border-[#92664A] bg-white dark:bg-[#1A0B04]">
+          <div className="h-24 w-24 mx-auto mb-8 rounded-3xl bg-[#EEB38C] flex items-center justify-center shadow-xl">
+            <Bell className="h-12 w-12 text-[#5A270F]" />
           </div>
-          <h3 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase transition-colors italic">
-            Zero Delta Detected
+          <h3 className="text-3xl font-black uppercase italic tracking-tighter text-[#5A270F] dark:text-[#EEB38C] mb-3">
+            All Clear
           </h3>
-          <p className="text-[10px] text-[#5A270F]/40 dark:text-foreground/40 font-black uppercase tracking-[0.4em] mt-3 transition-colors">
-            Intelligence feed is currently dormant.
+          <p className="text-sm font-bold uppercase tracking-[0.35em] text-[#6C3B1C] dark:text-[#EEB38C]">
+            No notifications at this time
           </p>
         </div>
       )}

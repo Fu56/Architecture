@@ -189,7 +189,7 @@ const AdminDashboard = () => {
           {/* Main Integrated Workspace */}
           <main className={`flex-grow min-w-0 transition-all duration-500 ${isSidebarVisible ? "lg:max-w-[calc(100%-352px)]" : "lg:max-w-full"}`}>
             <div className="bg-white dark:bg-card p-6 sm:p-10 rounded-3xl shadow-sm border border-[#92664A]/20 dark:border-white/10 min-h-[calc(100vh-140px)] relative overflow-hidden flex flex-col transition-colors duration-500">
-              <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-50 dark:border-white/5 relative z-10 transition-colors">
+              <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8 pb-6 border-b border-[#92664A]/15 dark:border-white/5 relative z-10 transition-colors">
                 <div className="flex items-center gap-6">
                   {/* Toggle Grip for Hidden State */}
                   {!isSidebarVisible && (
@@ -215,7 +215,7 @@ const AdminDashboard = () => {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142]/90" />
-                      <p className="text-[10px] font-bold text-gray-500 dark:text-white/40 uppercase tracking-widest">
+                      <p className="text-[10px] font-bold text-[#6C3B1C] dark:text-[#EEB38C] uppercase tracking-widest">
                         Executive Command
                       </p>
                     </div>

@@ -1,7 +1,14 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../lib/api";
-import { Loader2, UploadCloud, X, PlusCircle, Save, Sparkles } from "lucide-react";
+import {
+  Loader2,
+  UploadCloud,
+  X,
+  PlusCircle,
+  Save,
+  Sparkles,
+} from "lucide-react";
 import { toast } from "../../lib/toast";
 import { useSession } from "../../lib/auth-client";
 
@@ -131,7 +138,6 @@ const PostBlog = () => {
       <div className="absolute inset-0 blueprint-grid opacity-[0.03] pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 max-w-6xl relative z-10">
-
         {/* ── Page Header ─────────────────────────────────── */}
         <div className="mb-12 md:mb-16 text-center space-y-5">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#DF8142]/10 border border-[#DF8142]/25 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-[#DF8142] animate-in fade-in slide-in-from-top-4 duration-1000">
@@ -149,7 +155,6 @@ const PostBlog = () => {
         {/* ── Form ────────────────────────────────────────── */}
         <form onSubmit={handleSubmit}>
           <div className="grid lg:grid-cols-3 gap-8 items-start">
-
             {/* ── LEFT: Main Content ── */}
             <div className="lg:col-span-2">
               <div className="bg-white dark:bg-[#1A0B04] p-8 md:p-12 space-y-10 border-2 border-[#92664A]/20 dark:border-white/10 shadow-xl shadow-[#5A270F]/5 rounded-3xl md:rounded-[3.5rem] relative overflow-hidden">
@@ -174,9 +179,10 @@ const PostBlog = () => {
                         text-xl md:text-3xl font-black uppercase tracking-tight
                         text-[#5A270F] dark:text-white
                         placeholder:text-[#5A270F]/25 dark:placeholder-white/20
-                        ${errors.title
-                          ? "border-rose-500 bg-rose-50/30"
-                          : "border-[#92664A]/25 dark:border-white/15 hover:border-[#DF8142]/50"
+                        ${
+                          errors.title
+                            ? "border-rose-500 bg-rose-50/30"
+                            : "border-[#92664A]/25 dark:border-white/15 hover:border-[#DF8142]/50"
                         }`}
                     />
                     <FieldError message={errors.title} />
@@ -200,9 +206,10 @@ const PostBlog = () => {
                         text-[#5A270F] dark:text-white/90
                         placeholder:text-[#5A270F]/25 dark:placeholder-white/20
                         resize-none min-h-[500px] md:min-h-[700px]
-                        ${errors.content
-                          ? "border-rose-500 bg-rose-50/30"
-                          : "border-[#92664A]/25 dark:border-white/15 hover:border-[#DF8142]/50"
+                        ${
+                          errors.content
+                            ? "border-rose-500 bg-rose-50/30"
+                            : "border-[#92664A]/25 dark:border-white/15 hover:border-[#DF8142]/50"
                         }`}
                     />
                     <FieldError message={errors.content} />
@@ -213,7 +220,6 @@ const PostBlog = () => {
 
             {/* ── RIGHT: Sidebar ── */}
             <div className="space-y-6 lg:sticky lg:top-8">
-
               {/* Cover Image */}
               <div className="bg-white dark:bg-[#1A0B04] p-6 space-y-5 border-2 border-[#92664A]/20 dark:border-white/10 rounded-3xl shadow-xl shadow-[#5A270F]/5">
                 <label className="block text-[13px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] italic">
@@ -222,11 +228,12 @@ const PostBlog = () => {
                 <div
                   onClick={() => fileInputRef.current?.click()}
                   className={`group relative aspect-video rounded-2xl border-2 border-dashed cursor-pointer overflow-hidden flex flex-col items-center justify-center transition-all duration-300
-                    ${imagePreview
-                      ? "border-[#DF8142]"
-                      : errors.image
-                        ? "border-rose-400 bg-rose-50/20"
-                        : "border-[#92664A]/30 dark:border-white/15 hover:border-[#DF8142] bg-[#EEB38C]/5 dark:bg-white/5"
+                    ${
+                      imagePreview
+                        ? "border-[#DF8142]"
+                        : errors.image
+                          ? "border-rose-400 bg-rose-50/20"
+                          : "border-[#92664A]/30 dark:border-white/15 hover:border-[#DF8142] bg-[#EEB38C]/5 dark:bg-white/5"
                     }`}
                 >
                   {imagePreview ? (
@@ -305,9 +312,10 @@ const PostBlog = () => {
                         font-black uppercase tracking-widest text-[11px]
                         text-[#5A270F] dark:text-white
                         placeholder:text-[#5A270F]/30 dark:placeholder-white/20
-                        ${errors.tags
-                          ? "border-rose-500 bg-rose-50/30"
-                          : "border-[#92664A]/25 dark:border-white/15 hover:border-[#DF8142]/50"
+                        ${
+                          errors.tags
+                            ? "border-rose-500 bg-rose-50/30"
+                            : "border-[#92664A]/25 dark:border-white/15 hover:border-[#DF8142]/50"
                         }`}
                     />
                   </div>
@@ -326,7 +334,16 @@ const PostBlog = () => {
                       className="peer h-6 w-6 cursor-pointer appearance-none rounded-lg border-2 border-[#92664A]/50 bg-white dark:bg-black/60 transition-all checked:border-[#DF8142] checked:bg-[#DF8142] hover:border-[#DF8142] focus:outline-none focus:ring-4 focus:ring-[#DF8142]/20"
                     />
                     <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-3.5 w-3.5"
+                      >
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     </div>
@@ -356,7 +373,6 @@ const PostBlog = () => {
                 </button>
               </div>
             </div>
-
           </div>
         </form>
       </div>
@@ -373,7 +389,7 @@ const PostBlog = () => {
           ) : (
             <>
               <Save className="h-6 w-6" />
-              Publish Story
+              Save Story
             </>
           )}
         </button>
