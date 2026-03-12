@@ -56,7 +56,7 @@ const Blog = () => {
     });
 
   return (
-    <div className="bg-[#EFEDED] dark:bg-background min-h-screen selection:bg-primary/20 selection:text-[#2A1205]">
+    <div className="bg-[#FAF8F4] dark:bg-background min-h-screen selection:bg-[#DF8142]/20 selection:text-[#5A270F]">
       {/* Premium Header */}
       <section className="relative pt-32 pb-48 overflow-hidden bg-[#5A270F]">
         <div className="absolute inset-0 z-0">
@@ -83,7 +83,7 @@ const Blog = () => {
           {/* Search Bar Nexus */}
           <div className="max-w-xl mx-auto relative group animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-600">
             <div className="absolute -inset-1 bg-gradient-to-r from-[#DF8142] to-[#92664A] rounded-2xl blur opacity-20 group-focus-within:opacity-40 transition duration-500" />
-            <div className="relative flex items-center bg-white dark:bg-card border border-[#D9D9C2] dark:border-white/10 rounded-2xl overflow-hidden shadow-sm group-focus-within:border-[#DF8142] transition-all">
+            <div className="relative flex items-center bg-white dark:bg-card border border-[#92664A]/20 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm group-focus-within:border-[#DF8142] transition-all">
               <Search className="ml-5 h-5 w-5 text-gray-500 dark:text-white/40" />
               <input
                 type="text"
@@ -98,7 +98,7 @@ const Blog = () => {
                   className={`p-2 rounded-xl transition-all duration-300 relative group ${
                     filterOpen || sortOrder !== "newest"
                       ? "bg-[#DF8142] text-white shadow-lg shadow-[#DF8142]/30"
-                      : "bg-[#EFEDED] dark:bg-background text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#D9D9C2] hover:text-[#2A1205]"
+                      : "bg-[#EEB38C]/10 dark:bg-background text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EEB38C]/20 hover:text-[#5A270F]"
                   }`}
                   aria-label="Filter blogs"
                 >
@@ -107,7 +107,7 @@ const Blog = () => {
 
                 {/* Filter Dropdown */}
                 {filterOpen && (
-                  <div className="absolute right-0 top-full mt-4 w-48 bg-white dark:bg-card rounded-2xl shadow-xl border border-[#D9D9C2] dark:border-white/10 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="absolute right-0 top-full mt-4 w-48 bg-white dark:bg-card rounded-2xl shadow-xl border border-[#92664A]/20 dark:border-white/10 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
                     <div className="p-2 space-y-1">
                       <p className="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40">
                         Sort Order
@@ -120,7 +120,7 @@ const Blog = () => {
                         className={`w-full text-left px-3 py-2 text-sm font-bold rounded-xl transition-colors ${
                           sortOrder === "newest"
                             ? "bg-[#DF8142]/10 text-[#DF8142]"
-                            : "text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:bg-background"
+                            : "text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EEB38C]/5 dark:bg-background"
                         }`}
                       >
                         Newest First
@@ -133,7 +133,7 @@ const Blog = () => {
                         className={`w-full text-left px-3 py-2 text-sm font-bold rounded-xl transition-colors ${
                           sortOrder === "oldest"
                             ? "bg-[#DF8142]/10 text-[#DF8142]"
-                            : "text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:bg-background"
+                            : "text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EEB38C]/5 dark:bg-background"
                         }`}
                       >
                         Oldest First
@@ -154,7 +154,7 @@ const Blog = () => {
             {[...Array(6)].map((_, i) => (
               <div
                 key={i}
-                className="bg-white dark:bg-card h-[500px] rounded-[3rem] animate-pulse border border-[#D9D9C2] dark:border-white/10 shadow-xl shadow-slate-200/20"
+                className="bg-white dark:bg-card h-[500px] rounded-[3rem] animate-pulse border border-[#92664A]/20 dark:border-white/10 shadow-xl shadow-slate-200/20"
               />
             ))}
           </div>
@@ -177,7 +177,7 @@ const Blog = () => {
             {filteredBlogs.map((blog) => (
               <article
                 key={blog.id}
-                className="group bg-white dark:bg-card rounded-[3rem] overflow-hidden border border-[#D9D9C2] dark:border-white/10 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:shadow-[#DF8142]/10 hover:-translate-y-2 transition-all duration-500 flex flex-col h-full animate-in fade-in slide-in-from-bottom-8 duration-700"
+                className="group bg-white dark:bg-card rounded-[3rem] overflow-hidden border border-[#92664A]/20 dark:border-white/10 shadow-xl shadow-[#5A270F]/5 hover:shadow-2xl hover:shadow-[#DF8142]/10 hover:-translate-y-2 transition-all duration-500 flex flex-col h-full animate-in fade-in slide-in-from-bottom-8 duration-700"
               >
                 {/* Visual Header */}
                 <div className="relative aspect-[16/9] overflow-hidden bg-[#F5F5DC] shrink-0">
@@ -194,7 +194,7 @@ const Blog = () => {
                       <Tag className="h-16 w-16 text-white/20" />
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#5A270F]/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#5A270F]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                   <div className="absolute top-6 right-6 z-10 flex flex-col gap-2 scale-90 group-hover:scale-100 transition-transform duration-500">
                     {blog.tags.slice(0, 1).map((tag) => (
@@ -228,7 +228,7 @@ const Blog = () => {
 
                   <div className="pt-8 border-t border-slate-50 flex items-center justify-between mt-auto">
                     <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 rounded-2xl bg-[#EFEDED] dark:bg-background flex items-center justify-center border border-[#D9D9C2] dark:border-white/10 text-gray-500 dark:text-white/40 group-hover:bg-[#DF8142] group-hover:text-white transition-all duration-300 shadow-sm">
+                     <div className="h-12 w-12 rounded-2xl bg-[#EEB38C]/10 dark:bg-background flex items-center justify-center border border-[#92664A]/20 dark:border-white/10 text-[#5A270F]/40 dark:text-white/40 group-hover:bg-[#DF8142] group-hover:text-white transition-all duration-300 shadow-sm">
                         <User className="h-5 w-5" />
                       </div>
                       <div className="overflow-hidden">
@@ -257,8 +257,8 @@ const Blog = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-32 bg-white dark:bg-card rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 shadow-xl shadow-slate-200/20 max-w-4xl mx-auto px-12">
-            <div className="h-24 w-24 bg-[#EFEDED] dark:bg-background text-[#EEB38C] rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-sm border border-[#D9D9C2] dark:border-white/10">
+           <div className="text-center py-32 bg-white dark:bg-card rounded-[3rem] border border-[#92664A]/20 dark:border-white/10 shadow-xl shadow-[#5A270F]/5 max-w-4xl mx-auto px-12">
+            <div className="h-24 w-24 bg-[#EEB38C]/10 dark:bg-background text-[#EEB38C] rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-sm border border-[#92664A]/20 dark:border-white/10">
               <Search className="h-12 w-12" />
             </div>
             <h3 className="text-3xl font-black text-[#2A1205] mb-4 tracking-tight">

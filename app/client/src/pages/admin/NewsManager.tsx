@@ -131,10 +131,10 @@ const NewsManager = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
         <div className="relative">
-          <div className="h-16 w-16 border-4 border-[#D9D9C2] dark:border-white/10 border-t-[#DF8142] rounded-full animate-spin" />
+          <div className="h-16 w-16 border-4 border-[#92664A]/20 dark:border-white/10 border-t-[#DF8142] rounded-full animate-spin" />
           <Loader2 className="h-8 w-8 text-[#DF8142] animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         </div>
-        <p className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em]">
+        <p className="text-[10px] font-black text-[#5A270F]/60 dark:text-[#EEB38C]/40 uppercase tracking-[0.4em]">
           Synchronizing Feed...
         </p>
       </div>
@@ -144,7 +144,7 @@ const NewsManager = () => {
   return (
     <div className="space-y-12">
       {/* Header & Toggle */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-[#EFEDED] dark:bg-background p-8 rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 shadow-sm relative overflow-hidden group">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-[#EEB38C]/5 dark:bg-background p-8 rounded-[3rem] border border-[#92664A]/20 dark:border-white/10 shadow-sm relative overflow-hidden group">
         <div className="absolute inset-0 bg-gradient-to-r from-[#DF8142]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         <div className="flex items-center gap-6 relative z-10">
           <div className="h-14 w-14 bg-[#5A270F] rounded-[1.5rem] flex items-center justify-center text-white shadow-2xl">
@@ -163,7 +163,7 @@ const NewsManager = () => {
           onClick={() => setShowForm(!showForm)}
           className={`relative z-10 w-full md:w-auto flex items-center justify-center gap-3 px-10 py-4 rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 ${
             showForm
-              ? "bg-white dark:bg-card border-2 border-[#D9D9C2] dark:border-white/10 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-rose-600 hover:border-rose-100 shadow-lg"
+              ? "bg-white dark:bg-card border-2 border-[#92664A]/20 dark:border-white/10 text-[#5A270F] dark:text-[#EEB38C]/40 hover:text-rose-600 hover:border-rose-100 shadow-lg"
               : "bg-[#5A270F] text-white shadow-2xl shadow-[#5A270F]/20 hover:-translate-y-1 hover:bg-[#6C3B1C]"
           }`}
         >
@@ -180,7 +180,7 @@ const NewsManager = () => {
 
       {/* Form Section */}
       {showForm && (
-        <div className="bg-white dark:bg-card rounded-[3.5rem] border border-[#D9D9C2] dark:border-white/10 p-10 sm:p-14 shadow-3xl animate-in zoom-in-95 duration-500 relative overflow-hidden">
+        <div className="bg-white dark:bg-card rounded-[3.5rem] border border-[#92664A]/20 dark:border-white/10 p-10 sm:p-14 shadow-3xl animate-in zoom-in-95 duration-500 relative overflow-hidden">
           <div className="absolute top-0 right-0 p-20 opacity-[0.02]">
             <Zap className="h-64 w-64" />
           </div>
@@ -200,16 +200,16 @@ const NewsManager = () => {
                         setErrors((prev) => ({ ...prev, title: "" }));
                     }}
                     placeholder="E.g., Winter Semester Thesis Submissions Open"
-                    className={`w-full bg-[#EFEDED] dark:bg-background border ${
+                    className={`w-full bg-[#EEB38C]/5 dark:bg-background border ${
                       errors.title
                         ? "border-rose-400 bg-red-50/20"
-                        : "border-[#D9D9C2] dark:border-white/10"
-                    } rounded-[1.5rem] px-8 py-5 text-[#5A270F] dark:text-[#EEB38C] font-black text-lg outline-none focus:ring-4 focus:ring-[#DF8142]/5 focus:bg-white dark:bg-card transition-all placeholder:text-[#EEB38C]`}
+                        : "border-[#92664A]/20 dark:border-white/10"
+                    } rounded-[1.5rem] px-8 py-5 text-[#5A270F] dark:text-[#EEB38C] font-black text-lg outline-none focus:ring-4 focus:ring-[#DF8142]/5 focus:bg-white dark:bg-card transition-all placeholder:text-[#5A270F]/20`}
                   />
                   <FieldError message={errors.title} />
                 </div>
 
-                <div className="p-8 bg-[#EFEDED] dark:bg-background rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10 space-y-6">
+                <div className="p-8 bg-[#EEB38C]/5 dark:bg-background rounded-[2.5rem] border border-[#92664A]/20 dark:border-white/10 space-y-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="text-xs font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-widest">
@@ -253,8 +253,8 @@ const NewsManager = () => {
                         className={`w-full bg-white dark:bg-card border ${
                           errors.eventDate
                             ? "border-rose-400 bg-red-50/20"
-                            : "border-[#D9D9C2] dark:border-white/10"
-                        } rounded-2xl px-6 py-4 text-sm font-black text-[#2A1205] outline-none focus:ring-4 focus:ring-primary/10 transition-all`}
+                            : "border-[#92664A]/20 dark:border-white/10"
+                        } rounded-2xl px-6 py-4 text-sm font-black text-[#2A1205] outline-none focus:ring-4 focus:ring-[#DF8142]/10 transition-all`}
                       />
                       <FieldError message={errors.eventDate} />
                     </div>
@@ -275,11 +275,11 @@ const NewsManager = () => {
                       setErrors((prev) => ({ ...prev, content: "" }));
                   }}
                   placeholder="Draft your intelligence transmission here..."
-                  className={`w-full bg-[#EFEDED] dark:bg-background border ${
+                  className={`w-full bg-[#EEB38C]/5 dark:bg-background border ${
                     errors.content
                       ? "border-rose-400 bg-red-50/20"
-                      : "border-[#D9D9C2] dark:border-white/10"
-                  } rounded-[2rem] px-8 py-6 text-[#5A270F] dark:text-[#EEB38C] font-medium text-base outline-none focus:ring-4 focus:ring-primary/5 focus:bg-white dark:bg-card transition-all resize-none min-h-[280px]`}
+                      : "border-[#92664A]/20 dark:border-white/10"
+                  } rounded-[2rem] px-8 py-6 text-[#5A270F] dark:text-[#EEB38C] font-medium text-base outline-none focus:ring-4 focus:ring-[#DF8142]/5 focus:bg-white dark:bg-card transition-all resize-none min-h-[280px]`}
                 />
                 <FieldError message={errors.content} />
               </div>
@@ -315,7 +315,7 @@ const NewsManager = () => {
         </div>
 
         {news.length === 0 ? (
-          <div className="p-24 text-center bg-[#EFEDED] dark:bg-background rounded-[4rem] border border-dashed border-[#D9D9C2] dark:border-white/10">
+          <div className="p-24 text-center bg-[#EEB38C]/5 dark:bg-background rounded-[4rem] border border-dashed border-[#92664A]/20 dark:border-white/10">
             <Info className="h-16 w-16 text-[#EEB38C] mx-auto mb-6" />
             <p className="text-[#92664A] dark:text-[#EEB38C]/40 text-xs font-black uppercase tracking-widest">
               Awaiting Signal: No archives detected.
@@ -326,9 +326,9 @@ const NewsManager = () => {
             {news.map((item) => (
               <div
                 key={item.id}
-                className="group relative bg-white dark:bg-card p-10 rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 transition-all duration-700 hover:border-primary/20 hover:shadow-3xl hover:-translate-y-2 overflow-hidden"
+                className="group relative bg-white dark:bg-card p-10 rounded-[3rem] border border-[#92664A]/20 dark:border-white/10 transition-all duration-700 hover:border-[#DF8142]/20 hover:shadow-3xl hover:-translate-y-2 overflow-hidden"
               >
-                <div className="absolute top-0 right-0 w-64 h-64 bg-[#EFEDED] dark:bg-background rounded-bl-[10rem] -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#EEB38C]/10 dark:bg-background rounded-bl-[10rem] -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-10">
                   <div className="flex-1 space-y-6">
@@ -364,7 +364,7 @@ const NewsManager = () => {
                     </p>
 
                     {item.isEvent && item.eventDate && (
-                      <div className="mt-6 flex items-center gap-4 p-5 bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-[1.5rem] w-fit">
+                      <div className="mt-6 flex items-center gap-4 p-5 bg-[#EEB38C]/5 dark:bg-background border border-[#92664A]/20 dark:border-white/10 rounded-[1.5rem] w-fit">
                         <div className="h-8 w-8 bg-[#DF8142]/90 rounded-lg flex items-center justify-center text-white">
                           <AlertCircle className="h-4 w-4" />
                         </div>

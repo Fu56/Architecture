@@ -221,7 +221,7 @@ const DeptHeadDashboard = () => {
       <main
         className={`flex-1 min-w-0 transition-all duration-500 ${isSettingsPage ? "max-w-6xl w-full" : isSidebarVisible ? "lg:max-w-[calc(100%-352px)]" : "lg:max-w-full"}`}
       >
-        <div className="bg-white dark:bg-card p-6 sm:p-10 rounded-3xl shadow-sm border border-[#D9D9C2] dark:border-white/10 min-h-[calc(100vh-140px)] relative overflow-hidden flex flex-col transition-colors duration-500">
+        <div className="bg-white dark:bg-card p-6 sm:p-10 rounded-3xl shadow-sm border border-[#92664A]/20 dark:border-white/10 min-h-[calc(100vh-140px)] relative overflow-hidden flex flex-col transition-colors duration-500">
           <header className={`flex items-center justify-between mb-8 pb-6 border-b border-slate-50 dark:border-white/5 ${!isSidebarVisible && !isSettingsPage ? "pl-2" : ""}`}>
             <div className="flex items-center gap-6">
               {/* Toggle Grip for Hidden State */}

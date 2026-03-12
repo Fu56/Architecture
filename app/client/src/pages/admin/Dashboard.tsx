@@ -79,7 +79,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#0F0602] lg:bg-[#EFEDED] dark:bg-background lg:dark:bg-[#0F0602] transition-colors duration-500 relative">
+    <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#0F0602] lg:bg-[#EEB38C]/5 dark:bg-background lg:dark:bg-[#0F0602] transition-colors duration-500 relative">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex flex-col lg:flex-row items-start relative">
           
@@ -188,7 +188,7 @@ const AdminDashboard = () => {
 
           {/* Main Integrated Workspace */}
           <main className={`flex-grow min-w-0 transition-all duration-500 ${isSidebarVisible ? "lg:max-w-[calc(100%-352px)]" : "lg:max-w-full"}`}>
-            <div className="bg-white dark:bg-card p-6 sm:p-10 rounded-3xl shadow-sm border border-[#D9D9C2] dark:border-white/10 min-h-[calc(100vh-140px)] relative overflow-hidden flex flex-col transition-colors duration-500">
+            <div className="bg-white dark:bg-card p-6 sm:p-10 rounded-3xl shadow-sm border border-[#92664A]/20 dark:border-white/10 min-h-[calc(100vh-140px)] relative overflow-hidden flex flex-col transition-colors duration-500">
               <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-50 dark:border-white/5 relative z-10 transition-colors">
                 <div className="flex items-center gap-6">
                   {/* Toggle Grip for Hidden State */}
