@@ -18,6 +18,7 @@ import {
   LayoutDashboard,
   PanelLeftClose,
   PanelLeftOpen,
+  Archive,
 } from "lucide-react";
 import ThemeToggle from "../../components/ui/ThemeToggle";
 
@@ -140,6 +141,11 @@ const DeptHeadDashboard = () => {
                       to: "upload",
                       label: "Upload Resource",
                       icon: UploadCloud,
+                    },
+                    {
+                      to: "archived",
+                      label: "System Archive",
+                      icon: Archive,
                     },
                     { to: "blog/new", label: "Post Blog", icon: PenTool },
                     { to: "news", label: "News & Events", icon: Megaphone },

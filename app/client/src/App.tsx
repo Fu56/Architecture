@@ -19,6 +19,7 @@ import Flags from "./pages/admin/Flags";
 import RegisterStudentsUnified from "./pages/admin/RegisterStudentsUnified";
 import RegisterFaculty from "./pages/admin/RegisterFaculty";
 import NewsManager from "./pages/admin/NewsManager";
+import ArchivedResources from "./pages/admin/ArchivedResources";
 import Resources from "./pages/dashboard/Resources";
 import Favorites from "./pages/dashboard/Favorites";
 import Assignments from "./pages/library/Assignments";
@@ -111,6 +112,7 @@ const App = () => {
               <Route path="register-faculty" element={<RegisterFaculty />} />
               <Route element={<DeptHeadAboveRoute />}>
                 <Route path="approvals" element={<Approvals />} />
+                <Route path="archived" element={<ArchivedResources />} />
                 <Route path="news" element={<NewsManager />} />
               </Route>
               <Route path="flags" element={<Flags />} />
