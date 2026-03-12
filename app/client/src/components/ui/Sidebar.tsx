@@ -13,7 +13,10 @@ import {
   Zap,
   Hexagon,
   Star,
+  ArrowLeft,
+  Shield,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -105,6 +108,16 @@ export default function Sidebar({ isOpen, setOpen }: SidebarProps) {
             className="p-2 bg-[#EFEDED] dark:bg-white/5 hover:bg-[#D9D9C2] dark:hover:bg-white/10 rounded-xl transition-colors text-[#5A270F]/60 dark:text-white/40"
           >
             <ChevronRight className="h-5 w-5 rotate-180" />
+          </button>
+        </div>
+
+        <div className="px-4 mb-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="w-full flex items-center gap-3 px-4 py-3 bg-[#FAF8F4] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] rounded-2xl border border-[#D9D9C2] dark:border-white/10 hover:bg-[#1A0B04] hover:text-white transition-all duration-300 group shadow-sm active:scale-95"
+          >
+            <ArrowLeft className="h-4 w-4 text-[#DF8142] group-hover:text-white group-hover:-translate-x-1 transition-transform" />
+            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Return to Matrix</span>
           </button>
         </div>
 
