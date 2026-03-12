@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { api } from "../../lib/api";
-import { 
-  UploadCloud, 
-  Loader2, 
-  Shield, 
-  Info, 
-  CheckCircle2, 
-  FileText, 
+import {
+  UploadCloud,
+  Loader2,
+  Shield,
+  Info,
+  CheckCircle2,
+  FileText,
   Database,
   Zap,
   Tag,
   AtSign,
-  ArrowRight
+  ArrowRight,
 } from "lucide-react";
 import { toast } from "../../lib/toast";
 import type { DesignStage } from "../../models";
@@ -37,11 +37,7 @@ const Upload = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   interface UserWithRole {
-    role?:
-      | string
-      | {
-          name: string;
-        };
+    role?: string | { name: string };
   }
 
   const { data: session } = useSession();
@@ -51,7 +47,6 @@ const Upload = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-
   const isBaseAdmin = location.pathname.startsWith("/admin");
 
   useEffect(() => {
@@ -79,7 +74,7 @@ const Upload = () => {
     if (e.target.files) {
       setFile(e.target.files[0]);
       setErrors((prev) => ({ ...prev, file: "" }));
-      toast.info(`Asset node identified: ${e.target.files[0].name}`);
+      toast.info(`Asset identified: ${e.target.files[0].name}`);
     }
   };
 
@@ -90,40 +85,39 @@ const Upload = () => {
     const val =
       type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
     setMetadata({ ...metadata, [name]: val });
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
 
-    if (!file) newErrors.file = "Critical: Asset Core Missing (File Req.)";
-    if (!metadata.title.trim()) newErrors.title = "Protocol Breach: Title Required";
-    if (!metadata.author.trim()) newErrors.author = "Protocol Breach: Author Required";
-    if (!metadata.keywords.trim()) newErrors.keywords = "Protocol Breach: Metadata Tags Required";
-    if (!metadata.design_stage_id) newErrors.design_stage_id = "Protocol Breach: Design Phase Required";
-    if (metadata.design_stage_id === "others" && !metadata.customStageName.trim()) newErrors.customStageName = "Title Req for Other Stages";
+    if (!file) newErrors.file = "File is required.";
+    if (!metadata.title.trim()) newErrors.title = "Title is required.";
+    if (!metadata.author.trim()) newErrors.author = "Author is required.";
+    if (!metadata.keywords.trim()) newErrors.keywords = "Keywords are required.";
+    if (!metadata.design_stage_id) newErrors.design_stage_id = "Design stage is required.";
+    if (metadata.design_stage_id === "others" && !metadata.customStageName.trim())
+      newErrors.customStageName = "Custom stage name is required.";
 
     const yearNum = parseInt(metadata.forYearStudents);
-    if (!metadata.forYearStudents.trim() || isNaN(yearNum) || yearNum < 1 || yearNum > 5) {
-      newErrors.forYearStudents = "Target Year must be 1-5";
-    }
+    if (!metadata.forYearStudents.trim() || isNaN(yearNum) || yearNum < 1 || yearNum > 5)
+      newErrors.forYearStudents = "Year must be 1–5.";
 
     if (!metadata.semester.trim()) {
-      newErrors.semester = "Academic Semester Required";
+      newErrors.semester = "Semester is required.";
     } else {
       const semNum = parseInt(metadata.semester);
-      if (isNaN(semNum) || semNum < 1 || semNum > 2) newErrors.semester = "Sem must be 1-2";
+      if (isNaN(semNum) || semNum < 1 || semNum > 2) newErrors.semester = "Semester must be 1 or 2.";
     }
 
-    if (!metadata.batch || isNaN(parseInt(metadata.batch))) newErrors.batch = "Batch Identity Node Required";
-    if (!metadata.agreedToTerms) newErrors.agreedToTerms = "Protocol Consensus Missing";
+    if (!metadata.batch || isNaN(parseInt(metadata.batch)))
+      newErrors.batch = "Batch year is required.";
+    if (!metadata.agreedToTerms) newErrors.agreedToTerms = "You must agree to the terms.";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      toast.error("Integrity validation failed. Check protocols.");
+      toast.error("Please fill in all required fields.");
       return;
     }
 
@@ -136,9 +130,8 @@ const Upload = () => {
     formData.append("author", metadata.author);
     formData.append("keywords", metadata.keywords);
     formData.append("design_stage_id", metadata.design_stage_id);
-    if (metadata.design_stage_id === "others") {
+    if (metadata.design_stage_id === "others")
       formData.append("design_stage_name", metadata.customStageName);
-    }
     formData.append("forYearStudents", metadata.forYearStudents);
     if (metadata.semester) formData.append("semester", metadata.semester);
     if (metadata.batch) formData.append("batch", metadata.batch);
@@ -148,270 +141,438 @@ const Upload = () => {
       const { data } = await api.post("/resources", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      toast.success("Intelligence successfully injected into library matrix.");
-      if (isBaseAdmin) {
-        navigate("/admin/resources");
-      } else {
-        navigate(`/resources/${data.id}`);
-      }
+      toast.success("Resource uploaded successfully!");
+      if (isBaseAdmin) navigate("/admin/resources");
+      else navigate(`/resources/${data.id}`);
     } catch (err: unknown) {
       console.error(err);
-      toast.error("Protocol Error: Uplink failure.");
+      toast.error("Upload failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const inputBase = (hasError: boolean) => `
-    w-full bg-[#FAF8F4]/50 dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 
-    text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] 
-    transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.06)] 
-    focus:shadow-[0_8px_24px_-8px_rgba(223,129,66,0.3)]
-    ${hasError ? 'border-rose-400' : 'border-[#D9D9C2]/60 dark:border-white/10'}
-  `;
+  /* shared input style */
+  const inputCls = (hasError: boolean) =>
+    `w-full bg-white dark:bg-white/5 border-2 rounded-2xl px-5 py-4
+     text-sm font-semibold text-[#5A270F] dark:text-[#EEB38C]
+     placeholder:text-[#92664A]/40 dark:placeholder:text-white/20
+     focus:border-[#DF8142] focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10
+     transition-all duration-300
+     ${hasError ? "border-rose-400 bg-rose-50/30" : "border-[#92664A]/25 dark:border-white/10 hover:border-[#DF8142]/40"}`;
+
+  const labelCls =
+    "block text-[11px] font-black uppercase tracking-[0.25em] text-[#5A270F] dark:text-[#EEB38C] mb-2";
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 py-12 animate-in fade-in slide-in-from-bottom-6 duration-1000 bg-[#FAF8F4] dark:bg-[#0C0603] min-h-screen">
-      
-      {/* ── Page Header ── */}
-      <div className="flex flex-col md:flex-row items-end justify-between gap-10 mb-20 px-4">
-        <div className="space-y-6">
-          <div className="flex items-center gap-4">
-            <div className="h-2 w-16 bg-[#DF8142] rounded-full" />
-            <p className="text-[11px] font-black uppercase tracking-[0.8em] text-[#5A270F]/60 dark:text-[#EEB38C]/60">
-              Nexus Ingestion
+    <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#0C0603] px-4 sm:px-6 lg:px-8 py-10 animate-in fade-in duration-700">
+
+      {/* ── Page Header ─────────────────────────────── */}
+      <div className="mb-10 sm:mb-14 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="h-1.5 w-10 bg-[#DF8142] rounded-full" />
+            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#92664A] dark:text-[#EEB38C]">
+              Resource Upload
             </p>
           </div>
-          <h1 className="text-5xl md:text-8xl font-black text-[#5A270F] dark:text-white tracking-tighter uppercase leading-[0.85] font-space-grotesk italic">
-            RESOURCE <span className="text-[#DF8142]">UPLINK</span>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-[#5A270F] dark:text-white tracking-tighter uppercase leading-none italic">
+            Upload <span className="text-[#DF8142]">Resource</span>
           </h1>
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#6C3B1C] dark:text-[#EEB38C]">
+            Submit architectural materials to the library
+          </p>
         </div>
-        
-        <div className="flex items-center gap-8 bg-white dark:bg-card/40 p-8 rounded-[3rem] border border-[#D9D9C2] dark:border-white/5 shadow-2xl">
-           <div className="h-16 w-16 bg-[#5A270F] rounded-2xl flex items-center justify-center text-[#EEB38C] shadow-lg">
-             <UploadCloud className="h-8 w-8" />
-           </div>
-           <div>
-              <p className="text-[10px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.4em] mb-1">Authorization</p>
-              <p className="text-sm font-black text-[#5A270F] dark:text-white uppercase tracking-widest">{userRole || 'Verifying...'}</p>
-           </div>
+
+        {/* Auth chip */}
+        <div className="flex items-center gap-4 bg-white dark:bg-[#1A0B04] px-5 py-4 rounded-2xl border-2 border-[#92664A]/20 dark:border-white/10 shadow-lg self-start sm:self-auto">
+          <div className="h-11 w-11 bg-[#5A270F] rounded-xl flex items-center justify-center text-[#EEB38C] shadow-md flex-shrink-0">
+            <UploadCloud className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C] uppercase tracking-[0.3em] mb-0.5">
+              Authorization
+            </p>
+            <p className="text-sm font-black text-[#5A270F] dark:text-white uppercase tracking-widest">
+              {userRole || "Verifying..."}
+            </p>
+          </div>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-12">
-        {/* ── Left Side: File & Core Identity ── */}
-        <div className="lg:col-span-8 space-y-12">
-          
-          {/* Payload Section */}
-          <div className="bg-white dark:bg-card/40 rounded-[4rem] border border-[#D9D9C2] dark:border-white/5 shadow-2xl p-10 md:p-14 relative overflow-hidden group/payload">
-             <div className="absolute inset-0 architectural-dot-grid dark:architectural-dot-grid-dark opacity-5" />
-             
-             <div className="relative z-10 space-y-12">
-                <div className="flex items-center justify-between">
-                   <div className="space-y-1">
-                      <h4 className="text-xs font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C]">Payload Identification</h4>
-                      <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[#92664A] dark:text-white/20 italic">Node integrity verification required</p>
-                   </div>
-                   <div className="text-[10px] font-black text-[#5A270F]/20 dark:text-white/10 uppercase tracking-widest">Protocol-01</div>
-                </div>
+      {/* ── Form ────────────────────────────────────── */}
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
-                <div className="relative group/drop">
-                  <input
-                    id="file-upload" type="file" onChange={handleFileChange}
-                    className="absolute inset-0 w-full h-full opacity-0 z-20 cursor-pointer"
-                    title="Upload File"
-                  />
-                  <div className={`
-                    relative z-10 p-16 md:p-24 border-4 border-dashed rounded-[3.5rem] text-center transition-all duration-700
-                    ${errors.file ? 'bg-rose-50/20 border-rose-400' : 'bg-[#FAF8F4] dark:bg-white/5 border-[#D9D9C2] group-hover/drop:border-[#DF8142] group-hover/drop:bg-white dark:group-hover/drop:bg-white/5'}
-                  `}>
-                    <div className="h-24 w-24 bg-[#5A270F] rounded-[2rem] flex items-center justify-center text-[#EEB38C] mx-auto mb-10 shadow-2xl transform group-hover/drop:scale-110 group-hover/drop:rotate-6 transition-all duration-500">
-                      {file ? <CheckCircle2 className="h-12 w-12" /> : <UploadCloud className="h-12 w-12" />}
-                    </div>
+        {/* ── LEFT: File + Metadata ────────────────── */}
+        <div className="lg:col-span-2 space-y-8">
+
+          {/* File Drop Zone */}
+          <div className="bg-white dark:bg-[#1A0B04] rounded-3xl border-2 border-[#92664A]/20 dark:border-white/10 shadow-xl p-6 sm:p-10 relative overflow-hidden">
+            <div className="absolute inset-0 architectural-dot-grid dark:architectural-dot-grid-dark opacity-5 pointer-events-none" />
+            <div className="relative z-10 space-y-8">
+
+              {/* Section label */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-black uppercase tracking-[0.35em] text-[#5A270F] dark:text-[#EEB38C]">
+                    File Upload
+                  </h4>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#6C3B1C] dark:text-[#EEB38C] mt-1">
+                    Select your architectural document
+                  </p>
+                </div>
+                <span className="text-[9px] font-black text-[#92664A] dark:text-[#EEB38C] uppercase tracking-[0.3em] bg-[#EEB38C]/10 px-3 py-1 rounded-full">
+                  Step 01
+                </span>
+              </div>
+
+              {/* Drop Area */}
+              <div className="relative group">
+                <input
+                  id="file-upload"
+                  type="file"
+                  onChange={handleFileChange}
+                  className="absolute inset-0 w-full h-full opacity-0 z-20 cursor-pointer"
+                  title="Upload File"
+                />
+                <div
+                  className={`relative z-10 p-8 sm:p-14 border-2 border-dashed rounded-2xl text-center transition-all duration-500 ${
+                    errors.file
+                      ? "bg-rose-50/20 border-rose-400"
+                      : "bg-[#EEB38C]/5 border-[#92664A]/25 group-hover:border-[#DF8142] group-hover:bg-[#EEB38C]/10"
+                  }`}
+                >
+                  <div className="h-16 w-16 sm:h-20 sm:w-20 bg-[#5A270F] rounded-2xl flex items-center justify-center text-[#EEB38C] mx-auto mb-6 shadow-xl transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
                     {file ? (
-                      <div className="space-y-4 animate-in zoom-in-95">
-                        <p className="text-3xl font-black text-[#5A270F] dark:text-white tracking-tighter uppercase italic">{file.name}</p>
-                        <p className="text-xs font-black text-[#DF8142] uppercase tracking-[0.5em]">Capacity: {(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                      </div>
+                      <CheckCircle2 className="h-8 w-8 sm:h-10 sm:w-10" />
                     ) : (
-                      <div className="space-y-6">
-                        <p className="text-4xl font-black text-[#5A270F] dark:text-white tracking-tighter uppercase italic">Inject Artifact Matrix</p>
-                        <div className="text-[10px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.5em] flex items-center justify-center gap-4">
-                          <Zap className="h-4 w-4 text-[#DF8142]" /> 
-                          MAX PAYLOAD: 5GB • ARCHITECTURAL SCHEMATICS
-                        </div>
-                      </div>
+                      <UploadCloud className="h-8 w-8 sm:h-10 sm:w-10" />
                     )}
-                    <FieldError message={errors.file} />
                   </div>
-                </div>
-
-                <div className="space-y-4">
-                   <label className="text-[10px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.6em] ml-2">Registry Title / Identity</label>
-                   <div className="relative">
-                      <FileText className={`absolute left-8 top-1/2 -translate-y-1/2 h-6 w-6 ${errors.title ? "text-rose-500" : "text-[#5A270F]/20"}`} />
-                      <input
-                        name="title" placeholder="e.g. Urban Nexus Phase IV"
-                        value={metadata.title} onChange={handleMetaChange}
-                        className={`${inputBase(!!errors.title)} pl-20 bg-[#FAF8F4] h-24 text-2xl tracking-tighter italic placeholder:text-[#5A270F]/5`}
-                      />
-                   </div>
-                   <FieldError message={errors.title} />
-                </div>
-             </div>
-          </div>
-
-          {/* Context Matrix Section */}
-          <div className="bg-white dark:bg-card/40 rounded-[4rem] border border-[#D9D9C2] dark:border-white/5 shadow-2xl p-10 md:p-14 space-y-12">
-             <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                   <h4 className="text-xs font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C]">Metadatabase Indexing</h4>
-                   <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[#92664A] dark:text-white/20 italic">Establishing authorship and search nexus</p>
-                </div>
-                <div className="text-[10px] font-black text-[#5A270F]/20 dark:text-white/10 uppercase tracking-widest">Protocol-02</div>
-             </div>
-
-             <div className="grid md:grid-cols-2 gap-10">
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.6em] ml-2">Author Authority</label>
-                  <div className="relative">
-                    <AtSign className={`absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 ${errors.author ? "text-rose-500" : "text-[#5A270F]/20"}`} />
-                    <input name="author" placeholder="Principal Architect" value={metadata.author} onChange={handleMetaChange} className={`${inputBase(!!errors.author)} pl-16 h-20 uppercase tracking-widest text-base shadow-inner`} />
-                  </div>
-                  <FieldError message={errors.author} />
-                </div>
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.6em] ml-2">Intelligence Tags</label>
-                  <div className="relative">
-                    <Tag className={`absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 ${errors.keywords ? "text-rose-500" : "text-[#5A270F]/20"}`} />
-                    <input name="keywords" placeholder="Brutalism, Concrete, Urban" value={metadata.keywords} onChange={handleMetaChange} className={`${inputBase(!!errors.keywords)} pl-16 h-20 uppercase tracking-widest text-sm shadow-inner`} />
-                  </div>
-                  <FieldError message={errors.keywords} />
-                </div>
-             </div>
-
-             <div className="grid grid-cols-2 md:grid-cols-3 gap-10">
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.6em] ml-2">Year Node</label>
-                  <input type="number" name="forYearStudents" placeholder="1-5" value={metadata.forYearStudents} onChange={handleMetaChange} className={`${inputBase(!!errors.forYearStudents)} h-20 text-center text-xl shadow-inner`} />
-                  <FieldError message={errors.forYearStudents} />
-                </div>
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.6em] ml-2">Semester Cycle</label>
-                  <input type="number" name="semester" placeholder="1-2" value={metadata.semester} onChange={handleMetaChange} className={`${inputBase(!!errors.semester)} h-20 text-center text-xl shadow-inner`} />
-                  <FieldError message={errors.semester} />
-                </div>
-                <div className="space-y-4 col-span-2 md:col-span-1">
-                  <label className="text-[10px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.6em] ml-2">Batch Identity</label>
-                  <input type="number" name="batch" placeholder="202X" value={metadata.batch} onChange={handleMetaChange} className={`${inputBase(!!errors.batch)} h-20 text-center text-xl shadow-inner`} />
-                  <FieldError message={errors.batch} />
-                </div>
-             </div>
-
-             <div className="space-y-6">
-                <div className="space-y-4">
-                  <label className="text-[10px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.6em] ml-2">Design Phase Specification</label>
-                  <div className="relative">
-                    <Database className={`absolute left-6 top-1/2 -translate-y-1/2 h-6 w-6 ${errors.design_stage_id ? "text-rose-500" : "text-[#5A270F]/20"}`} />
-                    <select
-                      name="design_stage_id" title="Course Type"
-                      value={metadata.design_stage_id} onChange={handleMetaChange}
-                      className={`${inputBase(!!errors.design_stage_id)} pl-16 h-20 appearance-none cursor-pointer uppercase tracking-[0.2em] font-black bg-white dark:bg-[#110804]`}
-                    >
-                      <option value="" disabled>Select Core Phase</option>
-                      {designStages.filter((s) => s.name.toLowerCase() !== "others").map((s) => (
-                        <option key={s.id} value={s.id}>{s.name}</option>
-                      ))}
-                      <option value="others">Custom Protocol Node...</option>
-                    </select>
-                  </div>
-                  <FieldError message={errors.design_stage_id} />
-                </div>
-
-                {metadata.design_stage_id === "others" && (
-                  <div className="space-y-4 animate-in slide-in-from-top-4 duration-500">
-                    <label className="text-[10px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.6em] ml-2">Custom Phase Node Identity</label>
-                    <input name="customStageName" placeholder="Enter course name node" value={metadata.customStageName} onChange={handleMetaChange} className={`${inputBase(!!errors.customStageName)} h-20 uppercase tracking-widest text-base shadow-inner`} />
-                    <FieldError message={errors.customStageName} />
-                  </div>
-                )}
-             </div>
-          </div>
-        </div>
-
-        {/* ── Right Side: Action Side ── */}
-        <div className="lg:col-span-4 space-y-12">
-          
-          <div className="bg-[#1A0B03] rounded-[4rem] p-12 text-white relative overflow-hidden shadow-[0_60px_100px_-20px_rgba(26,11,3,0.5)] border border-white/5">
-             <div className="absolute top-0 right-0 w-80 h-80 bg-[#DF8142]/20 blur-[120px] rounded-full" />
-             
-             <div className="relative z-10 space-y-12">
-                <div className="flex items-center gap-6">
-                   <div className="h-10 w-10 rounded-xl bg-[#DF8142] flex items-center justify-center text-white shadow-lg">
-                      <Shield className="h-5 w-5" />
-                   </div>
-                   <h6 className="text-[12px] font-black uppercase tracking-[0.4em] text-[#EEB38C]">Security Consensus</h6>
-                </div>
-
-                <div className="space-y-6">
-                   <div className={`p-6 rounded-[2.5rem] border transition-all duration-500 flex items-start gap-4 ${metadata.agreedToTerms ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-white/5 border-white/10 hover:bg-white/10'}`}>
-                      <input
-                        type="checkbox" id="agreedToTerms" name="agreedToTerms"
-                        checked={metadata.agreedToTerms} onChange={handleMetaChange}
-                        className="mt-1 h-6 w-6 rounded-lg border-2 border-white/20 text-[#DF8142] focus:ring-0 cursor-pointer accent-[#DF8142]"
-                        title="Accept Terms"
-                      />
-                      <label htmlFor="agreedToTerms" className="text-[10px] font-bold text-white/60 leading-relaxed uppercase tracking-widest cursor-pointer select-none">
-                        I hereby verify the academic integrity of this asset and agree to the <Link to="/terms" className="text-[#DF8142] underline underline-offset-4 decoration-dotted">Legal Matrix Protocols</Link>.
-                      </label>
-                   </div>
-                   <FieldError message={errors.agreedToTerms} />
-
-                   {(["Faculty", "Admin", "SuperAdmin", "DepartmentHead", "admin"] as string[]).includes(userRole) && (
-                    <div className={`p-6 rounded-[2.5rem] border transition-all duration-500 flex items-start gap-4 ${metadata.isPriority ? 'bg-[#DF8142]/20 border-[#DF8142]/40' : 'bg-white/5 border-white/10 opacity-40 hover:opacity-100'}`}>
-                      <input
-                        type="checkbox" id="isPriority" name="isPriority"
-                        checked={metadata.isPriority} onChange={handleMetaChange}
-                        className="mt-1 h-6 w-6 rounded-lg border-2 border-white/20 text-[#DF8142] focus:ring-0 cursor-pointer accent-[#DF8142]"
-                        title="Priority Tag"
-                      />
-                      <div className="space-y-1">
-                        <label htmlFor="isPriority" className="text-[11px] font-black text-white uppercase tracking-widest cursor-pointer leading-none">Faculty High Fidelity</label>
-                        <p className="text-[8px] font-bold text-[#EEB38C]/60 uppercase tracking-widest">Mark as verified priority node</p>
+                  {file ? (
+                    <div className="space-y-2 animate-in zoom-in-95">
+                      <p className="text-lg sm:text-2xl font-black text-[#5A270F] dark:text-white tracking-tighter italic break-all">
+                        {file.name}
+                      </p>
+                      <p className="text-xs font-black text-[#DF8142] uppercase tracking-[0.4em]">
+                        {(file.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <p className="text-xl sm:text-3xl font-black text-[#5A270F] dark:text-white tracking-tighter italic">
+                        Click to Upload File
+                      </p>
+                      <div className="text-[10px] font-bold text-[#6C3B1C] dark:text-[#EEB38C] uppercase tracking-[0.4em] flex items-center justify-center gap-3">
+                        <Zap className="h-3.5 w-3.5 text-[#DF8142]" />
+                        Max 5GB · PDF, DWG, CAD, Images
                       </div>
                     </div>
                   )}
+                  <FieldError message={errors.file} />
                 </div>
+              </div>
 
-                <div className="pt-10 border-t border-white/10">
-                   <button
-                    type="submit" disabled={loading}
-                    className="w-full h-24 flex items-center justify-center gap-6 bg-white text-[#5A270F] rounded-[2rem] text-[14px] font-black uppercase tracking-[0.5em] hover:bg-[#EEB38C] transition-all hover:scale-[1.03] active:scale-95 disabled:opacity-30 group shadow-2xl"
-                  >
-                    {loading ? (
-                      <Loader2 className="h-8 w-8 animate-spin" />
-                    ) : (
-                      <>
-                        Initialize Uplink 
-                        <ArrowRight className="h-6 w-6 transform group-hover:translate-x-3 transition-transform duration-500" />
-                      </>
-                    )}
-                  </button>
-                  <p className="mt-8 text-[9px] font-black uppercase tracking-[0.5em] text-[#EEB38C]/20 text-center italic">Encryption active • Secure Link established</p>
+              {/* Title */}
+              <div>
+                <label className={labelCls}>Resource Title</label>
+                <div className="relative">
+                  <FileText
+                    className={`absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 ${errors.title ? "text-rose-500" : "text-[#DF8142]"}`}
+                  />
+                  <input
+                    name="title"
+                    placeholder="e.g. Urban Design Phase IV"
+                    value={metadata.title}
+                    onChange={handleMetaChange}
+                    className={`${inputCls(!!errors.title)} pl-12 h-14 text-base sm:text-lg font-bold italic`}
+                  />
                 </div>
-             </div>
+                <FieldError message={errors.title} />
+              </div>
+            </div>
           </div>
 
-          <div className="bg-white dark:bg-card/40 rounded-[3rem] p-10 border border-[#D9D9C2] dark:border-white/5 space-y-8 shadow-2xl">
-            <h5 className="text-[11px] font-black uppercase tracking-[0.6em] text-[#5A270F] dark:text-[#EEB38C] flex items-center gap-4">
-              <Info className="h-5 w-5 text-[#DF8142]" /> SYSTEM DIRECTIVE
+          {/* Metadata Card */}
+          <div className="bg-white dark:bg-[#1A0B04] rounded-3xl border-2 border-[#92664A]/20 dark:border-white/10 shadow-xl p-6 sm:p-10 space-y-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-xs font-black uppercase tracking-[0.35em] text-[#5A270F] dark:text-[#EEB38C]">
+                  Resource Details
+                </h4>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#6C3B1C] dark:text-[#EEB38C] mt-1">
+                  Author, keywords &amp; classification
+                </p>
+              </div>
+              <span className="text-[9px] font-black text-[#92664A] dark:text-[#EEB38C] uppercase tracking-[0.3em] bg-[#EEB38C]/10 px-3 py-1 rounded-full">
+                Step 02
+              </span>
+            </div>
+
+            {/* Author + Keywords */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label className={labelCls}>Author</label>
+                <div className="relative">
+                  <AtSign
+                    className={`absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 ${errors.author ? "text-rose-500" : "text-[#DF8142]"}`}
+                  />
+                  <input
+                    name="author"
+                    placeholder="Principal Architect"
+                    value={metadata.author}
+                    onChange={handleMetaChange}
+                    className={`${inputCls(!!errors.author)} pl-12 h-14 uppercase tracking-wider`}
+                  />
+                </div>
+                <FieldError message={errors.author} />
+              </div>
+              <div>
+                <label className={labelCls}>Keywords / Tags</label>
+                <div className="relative">
+                  <Tag
+                    className={`absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 ${errors.keywords ? "text-rose-500" : "text-[#DF8142]"}`}
+                  />
+                  <input
+                    name="keywords"
+                    placeholder="Brutalism, Concrete, Urban"
+                    value={metadata.keywords}
+                    onChange={handleMetaChange}
+                    className={`${inputCls(!!errors.keywords)} pl-12 h-14 uppercase tracking-wide text-sm`}
+                  />
+                </div>
+                <FieldError message={errors.keywords} />
+              </div>
+            </div>
+
+            {/* Year · Semester · Batch */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
+              <div>
+                <label className={labelCls}>Year (1–5)</label>
+                <input
+                  type="number"
+                  name="forYearStudents"
+                  placeholder="e.g. 3"
+                  value={metadata.forYearStudents}
+                  onChange={handleMetaChange}
+                  className={`${inputCls(!!errors.forYearStudents)} h-14 text-center text-lg font-black`}
+                />
+                <FieldError message={errors.forYearStudents} />
+              </div>
+              <div>
+                <label className={labelCls}>Semester</label>
+                <input
+                  type="number"
+                  name="semester"
+                  placeholder="1 or 2"
+                  value={metadata.semester}
+                  onChange={handleMetaChange}
+                  className={`${inputCls(!!errors.semester)} h-14 text-center text-lg font-black`}
+                />
+                <FieldError message={errors.semester} />
+              </div>
+              <div className="col-span-2 sm:col-span-1">
+                <label className={labelCls}>Batch Year</label>
+                <input
+                  type="number"
+                  name="batch"
+                  placeholder="202X"
+                  value={metadata.batch}
+                  onChange={handleMetaChange}
+                  className={`${inputCls(!!errors.batch)} h-14 text-center text-lg font-black`}
+                />
+                <FieldError message={errors.batch} />
+              </div>
+            </div>
+
+            {/* Design Stage */}
+            <div>
+              <label className={labelCls}>Design Stage / Course</label>
+              <div className="relative">
+                <Database
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 z-10 ${errors.design_stage_id ? "text-rose-500" : "text-[#DF8142]"}`}
+                />
+                <select
+                  name="design_stage_id"
+                  title="Design Stage"
+                  value={metadata.design_stage_id}
+                  onChange={handleMetaChange}
+                  className={`${inputCls(!!errors.design_stage_id)} pl-12 h-14 appearance-none cursor-pointer uppercase tracking-wide font-bold bg-white dark:bg-[#1A0B04]`}
+                >
+                  <option value="" disabled>
+                    Select a stage...
+                  </option>
+                  {designStages
+                    .filter((s) => s.name.toLowerCase() !== "others")
+                    .map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name}
+                      </option>
+                    ))}
+                  <option value="others">Other (Custom)</option>
+                </select>
+              </div>
+              <FieldError message={errors.design_stage_id} />
+            </div>
+
+            {/* Custom Stage */}
+            {metadata.design_stage_id === "others" && (
+              <div className="animate-in slide-in-from-top-3 duration-400">
+                <label className={labelCls}>Custom Stage Name</label>
+                <input
+                  name="customStageName"
+                  placeholder="Enter stage name..."
+                  value={metadata.customStageName}
+                  onChange={handleMetaChange}
+                  className={`${inputCls(!!errors.customStageName)} h-14 uppercase tracking-wide`}
+                />
+                <FieldError message={errors.customStageName} />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ── RIGHT: Action Panel ──────────────────── */}
+        <div className="space-y-6 lg:sticky lg:top-8">
+
+          {/* Security & Submit */}
+          <div className="bg-[#1A0B03] dark:bg-[#1A0B04] rounded-3xl p-7 sm:p-9 text-white relative overflow-hidden shadow-2xl shadow-[#1A0B03]/40 border border-white/5">
+            <div className="absolute top-0 right-0 w-60 h-60 bg-[#DF8142]/15 blur-[80px] rounded-full pointer-events-none" />
+
+            <div className="relative z-10 space-y-8">
+              {/* Header */}
+              <div className="flex items-center gap-4">
+                <div className="h-10 w-10 rounded-xl bg-[#DF8142] flex items-center justify-center shadow-lg flex-shrink-0">
+                  <Shield className="h-5 w-5 text-white" />
+                </div>
+                <h6 className="text-[12px] font-black uppercase tracking-[0.35em] text-[#EEB38C]">
+                  Upload Authorization
+                </h6>
+              </div>
+
+              {/* Terms */}
+              <div className="space-y-4">
+                <div
+                  className={`p-5 rounded-2xl border transition-all duration-400 flex items-start gap-4 ${
+                    metadata.agreedToTerms
+                      ? "bg-emerald-500/10 border-emerald-500/30"
+                      : "bg-white/5 border-white/10 hover:bg-white/8"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    id="agreedToTerms"
+                    name="agreedToTerms"
+                    checked={metadata.agreedToTerms}
+                    onChange={handleMetaChange}
+                    className="mt-1 h-5 w-5 rounded-lg border-2 border-white/30 cursor-pointer accent-[#DF8142] flex-shrink-0"
+                    title="Accept Terms"
+                  />
+                  <label
+                    htmlFor="agreedToTerms"
+                    className="text-[11px] font-semibold text-white/80 leading-relaxed uppercase tracking-wide cursor-pointer select-none"
+                  >
+                    I verify the academic integrity of this asset and agree to the{" "}
+                    <Link
+                      to="/terms"
+                      className="text-[#DF8142] underline underline-offset-4 decoration-dotted hover:text-[#EEB38C] transition-colors"
+                    >
+                      Terms &amp; Protocols
+                    </Link>
+                    .
+                  </label>
+                </div>
+                <FieldError message={errors.agreedToTerms} />
+
+                {/* Priority toggle — faculty/admin only */}
+                {(["Faculty", "Admin", "SuperAdmin", "DepartmentHead", "admin"] as string[]).includes(userRole) && (
+                  <div
+                    className={`p-5 rounded-2xl border transition-all duration-400 flex items-start gap-4 ${
+                      metadata.isPriority
+                        ? "bg-[#DF8142]/20 border-[#DF8142]/40"
+                        : "bg-white/5 border-white/10 hover:bg-white/8"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      id="isPriority"
+                      name="isPriority"
+                      checked={metadata.isPriority}
+                      onChange={handleMetaChange}
+                      className="mt-1 h-5 w-5 rounded-lg border-2 border-white/30 cursor-pointer accent-[#DF8142] flex-shrink-0"
+                      title="Priority Tag"
+                    />
+                    <div className="space-y-1">
+                      <label
+                        htmlFor="isPriority"
+                        className="text-[11px] font-black text-white uppercase tracking-widest cursor-pointer leading-none"
+                      >
+                        Faculty Priority Tag
+                      </label>
+                      <p className="text-[9px] font-bold text-[#EEB38C] uppercase tracking-widest">
+                        Mark as verified priority resource
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Submit button */}
+              <div className="pt-6 border-t border-white/10">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full h-16 sm:h-20 flex items-center justify-center gap-4 bg-white text-[#5A270F] rounded-2xl text-[13px] font-black uppercase tracking-[0.4em] hover:bg-[#EEB38C] transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-40 group shadow-2xl"
+                >
+                  {loading ? (
+                    <Loader2 className="h-7 w-7 animate-spin" />
+                  ) : (
+                    <>
+                      Upload Resource
+                      <ArrowRight className="h-5 w-5 transform group-hover:translate-x-2 transition-transform duration-300" />
+                    </>
+                  )}
+                </button>
+                <p className="mt-5 text-[9px] font-bold uppercase tracking-[0.4em] text-[#EEB38C]/40 text-center italic">
+                  Secure encrypted upload
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Info Card */}
+          <div className="bg-white dark:bg-[#1A0B04] rounded-3xl p-6 sm:p-8 border-2 border-[#92664A]/20 dark:border-white/10 space-y-4 shadow-xl">
+            <h5 className="text-[11px] font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C] flex items-center gap-3">
+              <Info className="h-5 w-5 text-[#DF8142] flex-shrink-0" />
+              Upload Guidelines
             </h5>
-            <p className="text-sm font-medium text-[#5A270F]/60 dark:text-white/40 leading-relaxed italic border-l-4 border-[#DF8142]/20 pl-6">
-              "All submitted architectural assets undergo a formal validation cycle in the nexus core. Malicious code injection or proprietary infringement results in immediate node sequestration."
+            <p className="text-sm font-medium text-[#5A270F] dark:text-white/70 leading-relaxed border-l-4 border-[#DF8142]/40 pl-4">
+              All submitted resources undergo a formal review cycle. Ensure your
+              material complies with academic integrity standards before submitting.
             </p>
           </div>
         </div>
+
       </form>
+
+      {/* Mobile Submit Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white/95 dark:bg-black/95 backdrop-blur-2xl border-t-2 border-[#92664A]/15 z-50 shadow-[0_-10px_40px_rgba(90,39,15,0.1)]">
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="w-full h-14 flex items-center justify-center gap-3 bg-[#5A270F] text-white rounded-2xl text-[13px] font-black uppercase tracking-[0.35em] shadow-xl active:scale-95 disabled:opacity-50 transition-all duration-300"
+        >
+          {loading ? (
+            <Loader2 className="h-6 w-6 animate-spin" />
+          ) : (
+            <>
+              <UploadCloud className="h-6 w-6" />
+              Upload Resource
+            </>
+          )}
+        </button>
+      </div>
+
     </div>
   );
 };
