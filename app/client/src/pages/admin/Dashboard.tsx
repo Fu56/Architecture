@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { useNavigate, NavLink, Outlet, useLocation } from "react-router-dom";
 import {
   BarChart2,
   Users,
@@ -20,6 +20,7 @@ import {
   PanelLeftOpen,
   LayoutDashboard,
   ShieldCheck,
+  ArrowLeft,
 } from "lucide-react";
 
 import { getUser } from "../../lib/auth";
@@ -49,6 +50,7 @@ const adminNavLinks = [
 ];
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const user = getUser();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -141,6 +143,17 @@ const AdminDashboard = () => {
 
                 {/* Navigation Terminal */}
                 <nav className="space-y-6 flex-grow overflow-y-auto scrollbar-none">
+                  {/* General Back Protocol */}
+                  <div className="px-4 mb-4">
+                    <button
+                      onClick={() => navigate(-1)}
+                      className="w-full flex items-center justify-center gap-2 py-3 bg-white/5 hover:bg-white/10 text-[#EEB38C] rounded-xl border border-white/10 transition-all text-[9.5px] font-black uppercase tracking-widest group"
+                    >
+                      <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" />
+                      Back to Context
+                    </button>
+                  </div>
+
                   <div className="space-y-3">
                     <p className="px-4 text-[9px] font-black text-white/30 uppercase tracking-[0.4em] mb-4">
                       Control Modules

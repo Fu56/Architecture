@@ -17,6 +17,7 @@ import {
 import { toast } from "../../lib/toast";
 import type { DesignStage } from "../../models";
 import { useSession } from "../../lib/auth-client";
+import Select from "../../components/ui/Select";
 
 const Upload = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -154,8 +155,8 @@ const Upload = () => {
 
   /* shared input style */
   const inputCls = (hasError: boolean) =>
-    `w-full bg-white dark:bg-white/5 border-2 rounded-2xl px-5 py-4
-     text-sm font-semibold text-[#5A270F] dark:text-[#EEB38C]
+    `w-full bg-white dark:bg-white/5 border-2 rounded-xl px-4 py-3
+     text-xs font-semibold text-[#5A270F] dark:text-[#EEB38C]
      placeholder:text-[#92664A]/40 dark:placeholder:text-white/20
      focus:border-[#DF8142] focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10
      transition-all duration-300
@@ -165,7 +166,8 @@ const Upload = () => {
     "block text-[11px] font-black uppercase tracking-[0.25em] text-[#5A270F] dark:text-[#EEB38C] mb-2";
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#0C0603] px-4 sm:px-6 lg:px-8 py-10 animate-in fade-in duration-700">
+    <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#0C0603] px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-700">
+      <div className="max-w-6xl mx-auto">
 
       {/* ── Page Header ─────────────────────────────── */}
       <div className="mb-10 sm:mb-14 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
@@ -386,34 +388,23 @@ const Upload = () => {
             </div>
 
             {/* Design Stage */}
-            <div>
-              <label className={labelCls}>Design Stage / Course</label>
-              <div className="relative">
-                <Database
-                  className={`absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 z-10 ${errors.design_stage_id ? "text-rose-500" : "text-[#DF8142]"}`}
-                />
-                <select
-                  name="design_stage_id"
-                  title="Design Stage"
-                  value={metadata.design_stage_id}
-                  onChange={handleMetaChange}
-                  className={`${inputCls(!!errors.design_stage_id)} pl-12 h-14 appearance-none cursor-pointer uppercase tracking-wide font-bold bg-white dark:bg-[#1A0B04]`}
-                >
-                  <option value="" disabled>
-                    Select a stage...
-                  </option>
-                  {designStages
-                    .filter((s) => s.name.toLowerCase() !== "others")
-                    .map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.name}
-                      </option>
-                    ))}
-                  <option value="others">Other (Custom)</option>
-                </select>
-              </div>
-              <FieldError message={errors.design_stage_id} />
-            </div>
+            <Select
+              label="Design Stage / Course"
+              options={[
+                ...designStages
+                  .filter((s) => s.name.toLowerCase() !== "others")
+                  .map((s) => ({ id: s.id, name: s.name })),
+                { id: "others", name: "Other (Custom)" },
+              ]}
+              value={metadata.design_stage_id}
+              onChange={(val) => {
+                setMetadata({ ...metadata, design_stage_id: val });
+                if (errors.design_stage_id) setErrors((prev) => ({ ...prev, design_stage_id: "" }));
+              }}
+              placeholder="Select a stage..."
+              icon={<Database className={`h-5 w-5 ${errors.design_stage_id ? "text-rose-500" : "text-[#DF8142]"}`} />}
+              error={errors.design_stage_id}
+            />
 
             {/* Custom Stage */}
             {metadata.design_stage_id === "others" && (
@@ -572,7 +563,7 @@ const Upload = () => {
           )}
         </button>
       </div>
-
+      </div>
     </div>
   );
 };

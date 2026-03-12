@@ -14,6 +14,8 @@ import {
   BookOpen,
 } from "lucide-react";
 import type { DesignStage } from "../../models";
+import Select from "../../components/ui/Select";
+import { Database, ShieldCheck } from "lucide-react";
 
 const FieldError = ({ message }: { message?: string }) => {
   if (!message) return null;
@@ -29,8 +31,8 @@ const labelCls =
   "flex items-center gap-2 text-[12px] font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-[0.2em] mb-2";
 
 const inputCls = (hasError: boolean) =>
-  `w-full px-5 py-4 bg-white dark:bg-white/5 border-2 rounded-2xl
-   text-sm font-semibold text-[#5A270F] dark:text-[#EEB38C]
+  `w-full px-4 py-3 bg-white dark:bg-white/5 border-2 rounded-xl
+   text-xs font-semibold text-[#5A270F] dark:text-[#EEB38C]
    placeholder:text-[#92664A]/50 dark:placeholder:text-white/20
    focus:outline-none focus:ring-4 focus:ring-[#DF8142]/15 focus:border-[#DF8142]
    transition-all duration-300
@@ -130,7 +132,8 @@ const PostAssignment = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#0C0603] px-4 sm:px-6 lg:px-8 py-10 animate-in fade-in duration-500">
+    <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#0C0603] px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-500">
+      <div className="max-w-6xl mx-auto">
 
       {/* ── Back Link ── */}
       <Link
@@ -233,69 +236,45 @@ const PostAssignment = () => {
 
             {/* Year + Semester */}
             <div className="grid grid-cols-2 gap-5">
-              <div>
-                <label className={labelCls}>
-                  <BookOpen className="h-4 w-4 text-[#DF8142]" />
-                  Academic Year
-                </label>
-                <select
-                  id="academic_year"
-                  name="academic_year"
-                  title="Academic Year"
-                  value={metadata.academic_year}
-                  onChange={handleMetaChange}
-                  className={`${inputCls(!!errors.academic_year)} appearance-none cursor-pointer bg-white dark:bg-[#1A0B04]`}
-                >
-                  <option value="">Select Year</option>
-                  {[1, 2, 3, 4, 5].map((y) => (
-                    <option key={y} value={y}>
-                      Year {y}
-                    </option>
-                  ))}
-                </select>
-                <FieldError message={errors.academic_year} />
-              </div>
-              <div>
-                <label className={labelCls}>Semester</label>
-                <select
-                  id="semester"
-                  name="semester"
-                  title="Semester"
-                  value={metadata.semester}
-                  onChange={handleMetaChange}
-                  className={`${inputCls(!!errors.semester)} appearance-none cursor-pointer bg-white dark:bg-[#1A0B04]`}
-                >
-                  <option value="">Select Sem</option>
-                  {[1, 2].map((s) => (
-                    <option key={s} value={s}>
-                      Semester {s}
-                    </option>
-                  ))}
-                </select>
-                <FieldError message={errors.semester} />
-              </div>
+              <Select
+                label="Academic Year"
+                options={[1, 2, 3, 4, 5].map((y) => ({ id: String(y), name: `Year ${y}` }))}
+                value={metadata.academic_year}
+                onChange={(val) => {
+                  setMetadata({ ...metadata, academic_year: val });
+                  if (errors.academic_year) setErrors((prev) => ({ ...prev, academic_year: "" }));
+                }}
+                placeholder="Select Year"
+                icon={<BookOpen className="h-4 w-4 text-[#DF8142]" />}
+                error={errors.academic_year}
+              />
+              <Select
+                label="Semester"
+                options={[1, 2].map((s) => ({ id: String(s), name: `Semester ${s}` }))}
+                value={metadata.semester}
+                onChange={(val) => {
+                  setMetadata({ ...metadata, semester: val });
+                  if (errors.semester) setErrors((prev) => ({ ...prev, semester: "" }));
+                }}
+                placeholder="Select Sem"
+                icon={<ShieldCheck className="h-4 w-4 text-[#DF8142]" />}
+                error={errors.semester}
+              />
             </div>
 
             {/* Design Stage */}
-            <div>
-              <label className={labelCls}>Design Stage / Course</label>
-              <select
-                id="design_stage_id"
-                name="design_stage_id"
-                title="Design Stage"
-                value={metadata.design_stage_id}
-                onChange={handleMetaChange}
-                className={`${inputCls(!!errors.design_stage_id)} appearance-none cursor-pointer bg-white dark:bg-[#1A0B04]`}
-              >
-                <option value="">Select Stage</option>
-                {designStages.map((stage) => (
-                  <option key={stage.id} value={stage.id}>
-                    {stage.name}
-                  </option>
-                ))}
-              </select>
-              <FieldError message={errors.design_stage_id} />
-            </div>
+            <Select
+              label="Design Stage / Course"
+              options={designStages.map((s) => ({ id: s.id, name: s.name }))}
+              value={metadata.design_stage_id}
+              onChange={(val) => {
+                setMetadata({ ...metadata, design_stage_id: val });
+                if (errors.design_stage_id) setErrors((prev) => ({ ...prev, design_stage_id: "" }));
+              }}
+              placeholder="Select Stage"
+              icon={<Database className="h-4 w-4 text-[#DF8142]" />}
+              error={errors.design_stage_id}
+            />
 
             {/* Due Date */}
             <div>
@@ -407,6 +386,7 @@ const PostAssignment = () => {
             </>
           )}
         </button>
+      </div>
       </div>
     </div>
   );

@@ -14,9 +14,10 @@ import {
   X,
   PanelLeftClose,
   PanelLeftOpen,
+  ArrowLeft,
   ShieldCheck,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getUser } from "../../lib/auth";
 import ThemeToggle from "../../components/ui/ThemeToggle";
 
@@ -44,6 +45,7 @@ const dashboardNavLinks = [
 ];
 
 const UserDashboard = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const user = getUser();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -139,6 +141,17 @@ const UserDashboard = () => {
 
                 {/* Navigation Terminal */}
                 <nav className="space-y-6 flex-grow overflow-y-auto scrollbar-none">
+                  {/* General Back Protocol */}
+                  <div className="px-4 mb-4">
+                    <button
+                      onClick={() => navigate(-1)}
+                      className="w-full flex items-center justify-center gap-2 py-3 bg-white/5 hover:bg-white/10 text-[#EEB38C] rounded-xl border border-white/10 transition-all text-[9.5px] font-black uppercase tracking-widest group"
+                    >
+                      <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" />
+                      Back to Context
+                    </button>
+                  </div>
+
                   {isAdmin && (
                     <div className="px-4 mb-8">
                        <Link

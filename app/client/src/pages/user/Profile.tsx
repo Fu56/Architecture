@@ -204,7 +204,7 @@ const Profile = () => {
                   disabled={!isEditing}
                   value={profileForm.first_name}
                   onChange={(e) => setProfileForm({ ...profileForm, first_name: e.target.value })}
-                  className="w-full bg-transparent border-b-2 border-[#5A270F]/40 font-black text-[#5A270F] outline-none focus:border-[#DF8142] transition-all py-1 text-base placeholder-[#5A270F]/80"
+                  className="w-full bg-transparent border-b-2 border-[#5A270F]/40 font-black text-[#5A270F] dark:text-[#EEB38C] outline-none focus:border-[#DF8142] transition-all py-1 text-base placeholder-[#5A270F]/80 dark:placeholder-white/20"
                   placeholder="Enter First Name"
                 />
                 {errors.first_name && <p className="text-[9px] font-black text-rose-600 uppercase tracking-widest px-1">{errors.first_name}</p>}
@@ -216,7 +216,7 @@ const Profile = () => {
                   disabled={!isEditing}
                   value={profileForm.last_name}
                   onChange={(e) => setProfileForm({ ...profileForm, last_name: e.target.value })}
-                  className="w-full bg-transparent border-b-2 border-[#5A270F]/40 font-black text-[#5A270F] outline-none focus:border-[#DF8142] transition-all py-1 text-base placeholder-[#5A270F]/80"
+                  className="w-full bg-transparent border-b-2 border-[#5A270F]/40 font-black text-[#5A270F] dark:text-[#EEB38C] outline-none focus:border-[#DF8142] transition-all py-1 text-base placeholder-[#5A270F]/80 dark:placeholder-white/20"
                   placeholder="Enter Last Name"
                 />
                 {errors.last_name && <p className="text-[9px] font-black text-rose-600 uppercase tracking-widest">{errors.last_name}</p>}
@@ -254,7 +254,7 @@ const Profile = () => {
                   type={showPasswords ? "text" : "password"}
                   value={passwordForm.currentPassword}
                   onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                  className="w-full bg-transparent border-b-2 border-[#5A270F]/40 font-black text-[#5A270F] outline-none focus:border-[#DF8142] transition-all py-1 text-base placeholder-[#5A270F]/80"
+                  className="w-full bg-transparent border-b-2 border-[#5A270F]/40 font-black text-[#5A270F] dark:text-[#EEB38C] outline-none focus:border-[#DF8142] transition-all py-1 text-base placeholder-[#5A270F]/80 dark:placeholder-white/20"
                   placeholder="Enter Master Key"
                 />
                 <button
@@ -273,7 +273,7 @@ const Profile = () => {
                 type={showPasswords ? "text" : "password"}
                 value={passwordForm.newPassword}
                 onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                className="w-full bg-transparent border-b-2 border-[#5A270F]/40 font-black text-[#5A270F] outline-none focus:border-[#DF8142] transition-all py-1 text-base placeholder-[#5A270F]/80"
+                className="w-full bg-transparent border-b-2 border-[#5A270F]/40 font-black text-[#5A270F] dark:text-[#EEB38C] outline-none focus:border-[#DF8142] transition-all py-1 text-base placeholder-[#5A270F]/80 dark:placeholder-white/20"
                 placeholder="New Calibration Secret"
               />
             </div>
