@@ -13,6 +13,7 @@ import {
   getRestoreNotificationHtml,
   getSuspendedHtml,
 } from "../utils/email";
+import { getMonthGap, parseEthiopianDateString, getEthiopianDate } from "../utils/ethiopianDate";
 
 export const getPendingResources = async (req: Request, res: Response) => {
   try {
@@ -210,6 +211,13 @@ export const getAllUsers = async (req: Request, res: Response) => {
     // Map to camelCase for frontend consistency
     const formattedUsers = users.map((user) => {
       const u = user as any;
+      
+      const formatEthDate = (date: Date | null) => {
+        if (!date) return "";
+        const eth = getEthiopianDate(date);
+        return `${eth.year}-${String(eth.month).padStart(2, '0')}-${String(eth.day).padStart(2, '0')}`;
+      };
+
       return {
         id: user.id,
         firstName: user.first_name,
@@ -224,6 +232,10 @@ export const getAllUsers = async (req: Request, res: Response) => {
         specialization: u.specialization,
         department: u.department,
         workerId: u.worker_id,
+        academicStartDate: u.academic_start_date,
+        academicEndDate: u.academic_end_date,
+        academicStartDateEth: formatEthDate(u.academic_start_date),
+        academicEndDateEth: formatEthDate(u.academic_end_date),
         createdAt: user.createdAt,
       };
     });
@@ -853,6 +865,8 @@ export const createUser = async (req: Request, res: Response) => {
       specialization,
       department,
       workerId,
+      academicStartDate, // Ethiopian string YYYY-MM-DD
+      academicEndDate,   // Ethiopian string YYYY-MM-DD
     } = req.body;
 
     // Normalize roles to array
@@ -984,6 +998,8 @@ export const createUser = async (req: Request, res: Response) => {
         specialization: specialization || null,
         department: department || null,
         worker_id: workerId || null,
+        academic_start_date: academicStartDate ? parseEthiopianDateString(academicStartDate) : null,
+        academic_end_date: academicEndDate ? parseEthiopianDateString(academicEndDate) : null,
       } as any,
     });
 
@@ -1041,6 +1057,8 @@ export const updateUser = async (req: Request, res: Response) => {
       department,
       workerId,
       suspendReason,
+      academicStartDate,
+      academicEndDate,
     } = req.body;
 
     const requester = (req as any).user;
@@ -1074,6 +1092,8 @@ export const updateUser = async (req: Request, res: Response) => {
         specialization === "" ? null : specialization || undefined,
       department: department === "" ? null : department || undefined,
       worker_id: workerId === "" ? null : workerId || undefined,
+      academic_start_date: academicStartDate ? parseEthiopianDateString(academicStartDate) : undefined,
+      academic_end_date: academicEndDate ? parseEthiopianDateString(academicEndDate) : undefined,
     };
 
     // Status Change Authorization Protocol
@@ -1466,5 +1486,155 @@ export const getArchivedResources = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Fetch Archived Error:", error);
     res.status(500).json({ message: "Error fetching archived resources" });
+  }
+};
+
+export const advanceAcademicStatus = async (req: Request, res: Response) => {
+  try {
+    const studentRole = await prisma.role.findUnique({
+      where: { name: "Student" },
+    });
+
+    if (!studentRole) {
+      return res.status(500).json({ message: "Student role not found" });
+    }
+
+    const students = await prisma.user.findMany({
+      where: {
+        roleId: studentRole.id,
+        status: "active",
+      },
+    });
+
+    let updatedCount = 0;
+    const now = new Date();
+
+    for (const student of students) {
+      if (!student.createdAt) continue;
+
+      // Calculate gap in Ethiopian months since registration
+      const monthGap = getMonthGap(student.createdAt, now);
+      
+      // Logic: 
+      // 1 year = 13 months in Ethiopian calendar
+      // Semester 1 -> 2 happens after a gap of 5 months
+      // Year increments every 13 months
+      
+      const yearsElapsed = Math.floor(monthGap / 13);
+      const remainingMonths = monthGap % 13;
+      const semestersElapsedInCurrentYear = Math.floor(remainingMonths / 5);
+      
+      // Target state (starting from Year 1, Semester 1)
+      const targetYear = 1 + yearsElapsed;
+      const targetSemester = 1 + (semestersElapsedInCurrentYear > 1 ? 1 : semestersElapsedInCurrentYear); // Cap at 2 semesters
+
+      // Only advance if the calculated targets are greater than current values
+      // Note: We use the existing year/semester as base if they exist
+      const currentYear = student.year || 1;
+      const currentSemester = student.semester || 1;
+
+      if (targetYear > currentYear || (targetYear === currentYear && targetSemester > currentSemester)) {
+        await prisma.user.update({
+          where: { id: student.id },
+          data: {
+            year: targetYear,
+            semester: targetSemester,
+            status: "active", // Maintain active status as requested
+          },
+        });
+        
+        // Notify the student about their promotion
+        await notifyUsers({
+          userIds: [student.id],
+          title: "Academic Promotion Synchronized",
+          message: `Your account node has been advanced to Year ${targetYear}, Semester ${targetSemester} based on the Ethiopian academic cycle.`,
+          html: getGenericHtml(
+            "Academic Progression Protocol",
+            `Greetings ${student.first_name || "Student"},<br/><br/>The system has synchronized your academic standing. Your current node is now positioned in:<br/><b>Year: ${targetYear}</b><br/><b>Semester: ${targetSemester}</b><br/><br/>Your access levels have been updated accordingly.`
+          )
+        });
+
+        updatedCount++;
+      }
+    }
+
+    // Log the system action
+    const actorId = (req as any).user?.id;
+    if (actorId && (prisma as any).systemLog) {
+        await (prisma as any).systemLog.create({
+          data: {
+            action: "BULK_ACADEMIC_PROMOTION",
+            entity: "User",
+            details: `Advanced ${updatedCount} student nodes based on Ethiopian calendar gap analysis.`,
+            actorId: actorId,
+          },
+        });
+    }
+
+    res.json({
+      message: `${updatedCount} student nodes successfully advanced in the registry.`,
+      updatedCount,
+      totalProcessed: students.length,
+    });
+  } catch (error) {
+    console.error("Advance Academic Status Error:", error);
+    res.status(500).json({ message: "Protocol Error: Failed to synchronize academic progression." });
+  }
+};
+
+export const checkAndSuspendExpiredStudents = async (req: Request, res: Response) => {
+  try {
+    const studentRole = await prisma.role.findUnique({
+      where: { name: "Student" },
+    });
+
+    if (!studentRole) {
+      return res.status(500).json({ message: "Student role not found" });
+    }
+
+    const now = new Date();
+    // Suspend after 1 month (30 days) from end date
+    const suspensionThreshold = new Date();
+    suspensionThreshold.setDate(now.getDate() - 30);
+
+    const expiredStudents = await prisma.user.findMany({
+      where: {
+        roleId: studentRole.id,
+        status: "active",
+        academic_end_date: {
+          lt: suspensionThreshold,
+        },
+      },
+    });
+
+    let suspendedCount = 0;
+    for (const student of expiredStudents) {
+      await prisma.user.update({
+        where: { id: student.id },
+        data: {
+          status: "suspended",
+        },
+      });
+
+      await notifyUsers({
+        userIds: [student.id],
+        title: "⚠️ Account Automatically Suspended",
+        message: "Your academic term has concluded and the grace period has expired. Your node access has been automatically terminated.",
+        html: getSuspendedHtml(
+            student.first_name || "User",
+            "System Autopilot",
+            "Academic term concluded + 1-month grace period expired."
+        )
+      });
+      suspendedCount++;
+    }
+
+    res.json({
+      message: `${suspendedCount} expired student nodes suspended automatically.`,
+      suspendedCount,
+    });
+  } catch (error) {
+    console.error("Auto-suspension Error:", error);
+    res.status(500).json({ message: "Protocol Error: Failed to execute automated suspension sequence." });
   }
 };

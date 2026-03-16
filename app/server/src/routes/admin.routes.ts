@@ -25,6 +25,8 @@ import {
   broadcastNotification,
   deleteResource,
   getArchivedResources,
+  advanceAcademicStatus,
+  checkAndSuspendExpiredStudents,
 } from "../controllers/admin.controller";
 
 const router = Router();
@@ -88,6 +90,16 @@ router.patch(
 router.patch("/users/:id/role", manageUserRole); // Keep specific if needed, or deprecate
 router.post("/users/bulk-register", bulkRegisterStudents);
 router.post("/users/register-faculty", registerFaculty);
+router.post(
+  "/users/advance-academic",
+  requireRole(["DepartmentHead", "SuperAdmin"]),
+  advanceAcademicStatus,
+);
+router.post(
+  "/users/check-suspension",
+  requireRole(["DepartmentHead", "SuperAdmin"]),
+  checkAndSuspendExpiredStudents,
+);
 
 router.get("/stats", getStats);
 

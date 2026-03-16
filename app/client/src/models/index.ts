@@ -19,10 +19,15 @@ export interface User {
   status: string;
   batch?: number;
   year?: number;
+  semester?: number;
   specialization?: string;
   department?: string;
   worker_id?: string;
   workerId?: string;
+  academicStartDate?: string;
+  academicEndDate?: string;
+  academicStartDateEth?: string;
+  academicEndDateEth?: string;
   createdAt?: string;
 }
 

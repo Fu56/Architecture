@@ -30,6 +30,8 @@ model User {
     specialization String?
     department     String?
     worker_id      String? @unique
+    academic_start_date DateTime?
+    academic_end_date   DateTime?
 
     // Relations
     sessions      Session[]

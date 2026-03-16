@@ -19,6 +19,7 @@ import {
   Bell,
   Terminal,
   Mail,
+  ArrowUpCircle,
 } from "lucide-react";
 import { toast } from "../../lib/toast";
 import { useSession } from "../../lib/auth-client";
@@ -72,6 +73,8 @@ const ManageUsers = () => {
     department: "",
     workerId: "",
     suspendReason: "",
+    academicStartDate: "",
+    academicEndDate: "",
   });
   const [processing, setProcessing] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -114,6 +117,8 @@ const ManageUsers = () => {
       department: currentRoleName === "DepartmentHead" ? "Architecture" : "",
       workerId: "",
       suspendReason: "",
+      academicStartDate: "",
+      academicEndDate: "",
     });
     setSelectedUser(null);
     setErrors({});
@@ -142,12 +147,14 @@ const ManageUsers = () => {
         "",
       batch: user.batch?.toString() || "",
       year: user.year?.toString() || "",
-      semester: "",
+      semester: user.semester?.toString() || "",
       status: user.status,
       specialization: user.specialization || "",
       department: currentRoleName === "DepartmentHead" ? "Architecture" : (user.department || ""),
       workerId: user.workerId || user.worker_id || "",
       suspendReason: "",
+      academicStartDate: user.academicStartDateEth || "",
+      academicEndDate: user.academicEndDateEth || "",
     });
     setModalMode("edit");
     setIsModalOpen(true);
@@ -218,6 +225,56 @@ const ManageUsers = () => {
     } finally {
       setProcessing(false);
     }
+  };
+
+  const [isAdvancing, setIsAdvancing] = useState(false);
+  const handleAdvanceAcademic = async () => {
+    toast(`Initiate Academic Advancement?`, {
+      description:
+        "This will analyze all student nodes and advance their Year/Semester based on the Ethiopian calendar cycle (5-month semester gap, 1-year annual gap).",
+      action: {
+        label: "Execute Progression",
+        onClick: async () => {
+          setIsAdvancing(true);
+          try {
+            const { data } = await api.post("/admin/users/advance-academic");
+            toast.success(`Advancement Complete: ${data.updatedCount} nodes promoted.`);
+            fetchUsers();
+          } catch (err: unknown) {
+            console.error("Advancement error:", err);
+            toast.error("Protocol Breach: Failed to synchronize academic advancement.");
+          } finally {
+            setIsAdvancing(false);
+          }
+        },
+      },
+      cancel: { label: "Abort", onClick: () => {} },
+    });
+  };
+
+  const [isSuspending, setIsSuspending] = useState(false);
+  const handleCheckSuspension = async () => {
+    toast(`Initiate Automated Suspension?`, {
+      description:
+        "This will analyze student nodes and suspend those past their final academic deadline (including the 1-month grace period).",
+      action: {
+        label: "Execute Sequence",
+        onClick: async () => {
+          setIsSuspending(true);
+          try {
+            const { data } = await api.post("/admin/users/check-suspension");
+            toast.success(`Protocol Executed: ${data.suspendedCount} nodes terminated.`);
+            fetchUsers();
+          } catch (err: unknown) {
+            console.error("Suspension error:", err);
+            toast.error("Protocol Breach: Failed to execute automated suspension sequence.");
+          } finally {
+            setIsSuspending(false);
+          }
+        },
+      },
+      cancel: { label: "Abort", onClick: () => {} },
+    });
   };
 
   const validateForm = () => {
@@ -403,6 +460,9 @@ const ManageUsers = () => {
     const role = userRoleName.toLowerCase();
     const batch = (user.batch || "").toString();
     const year = (user.year || "").toString();
+    const specialization = (user.specialization || "").toLowerCase();
+    const startDate = (user.academicStartDateEth || "").toLowerCase();
+    const endDate = (user.academicEndDateEth || "").toLowerCase();
 
     return (
       fullName.includes(search) ||
@@ -412,7 +472,10 @@ const ManageUsers = () => {
       status.includes(search) ||
       role.includes(search) ||
       batch.includes(search) ||
-      year.includes(search)
+      year.includes(search) ||
+      specialization.includes(search) ||
+      startDate.includes(search) ||
+      endDate.includes(search)
     );
   });
 
@@ -562,13 +625,41 @@ const ManageUsers = () => {
           </div>
           {(currentRoleName === "DepartmentHead" ||
             currentRoleName === "SuperAdmin") && (
-            <button
-              onClick={() => setIsBroadcastModalOpen(true)}
-              className="h-14 px-8 bg-gradient-to-r from-[#DF8142] to-[#EEB38C] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:scale-[1.02] transition-all shadow-xl shadow-[#DF8142]/20 active:scale-95 flex items-center justify-center gap-3"
-            >
-              <Zap className="h-4 w-4" />
-              Broadcaster
-            </button>
+            <>
+              <button
+                onClick={handleAdvanceAcademic}
+                disabled={isAdvancing}
+                className="h-14 px-8 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3 border border-[#BCAF9C] dark:border-white/10"
+                title="Synchronize student academic standing based on Ethiopian calendar registry"
+              >
+                {isAdvancing ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <ArrowUpCircle className="h-4 w-4" />
+                )}
+                Advance Status
+              </button>
+              <button
+                onClick={handleCheckSuspension}
+                disabled={isSuspending}
+                className="h-14 px-8 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3 border border-[#BCAF9C] dark:border-white/10"
+                title="Automatically suspend expired student nodes"
+              >
+                {isSuspending ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-rose-500" />
+                ) : (
+                  <Shield className="h-4 w-4 text-rose-500" />
+                )}
+                Check Expired
+              </button>
+              <button
+                onClick={() => setIsBroadcastModalOpen(true)}
+                className="h-14 px-8 bg-gradient-to-r from-[#DF8142] to-[#EEB38C] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:scale-[1.02] transition-all shadow-xl shadow-[#DF8142]/20 active:scale-95 flex items-center justify-center gap-3"
+              >
+                <Zap className="h-4 w-4" />
+                Broadcaster
+              </button>
+            </>
           )}
           <button
             onClick={handleOpenCreate}
@@ -627,8 +718,28 @@ const ManageUsers = () => {
                           <div className="text-[10px] text-[#92664A] dark:text-white/70 font-black uppercase tracking-widest leading-none mb-1.5">
                             {user.email}
                           </div>
-                          <div className="text-[9px] text-[#DF8142] font-black uppercase tracking-[0.3em] flex items-center gap-2">
+                          <div className="text-[9px] text-[#DF8142] font-black uppercase tracking-[0.3em] flex items-center gap-2 flex-wrap">
                              <span className="h-1 w-1 rounded-full bg-[#DF8142]" /> {user.department || "Architecture"}
+                             {roleName === "Student" && (
+                               <>
+                                 <span className="h-1 w-1 rounded-full bg-[#BCAF9C] mx-1" />
+                                 <span className="text-[#92664A] dark:text-[#EEB38C]/60">Batch {user.batch}</span>
+                                 <span className="h-1 w-1 rounded-full bg-[#BCAF9C] mx-1" />
+                                 <span className="text-[#5A270F] dark:text-[#EEB38C]">Y{user.year} S{user.semester}</span>
+                                 {user.academicEndDateEth && (
+                                   <>
+                                     <span className="h-1 w-1 rounded-full bg-rose-400 mx-1" />
+                                     <span className="text-rose-600 dark:text-rose-400/80 lowercase tracking-normal">Expires: {user.academicEndDateEth}</span>
+                                   </>
+                                 )}
+                               </>
+                             )}
+                             {roleName === "Faculty" && user.specialization && (
+                               <>
+                                 <span className="h-1 w-1 rounded-full bg-[#BCAF9C] mx-1" />
+                                 <span className="text-[#92664A] dark:text-[#EEB38C]/60 italic tracking-normal capitalize">{user.specialization}</span>
+                               </>
+                             )}
                           </div>
                         </div>
                       </div>
@@ -998,45 +1109,35 @@ const ManageUsers = () => {
                       </div>
                     </div>
                   )}
+                </div>
 
                   {formData.roleNames.includes("Student") && (
-                    <div className="grid grid-cols-3 gap-6 md:col-span-2">
-                       <div className="space-y-3 group">
-                        <label htmlFor="batch" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Phase Batch</label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10 md:col-span-2 p-8 bg-[#EFEDED]/30 dark:bg-white/5 rounded-[2rem] border-2 border-dashed border-[#D9D9C2] dark:border-white/10">
+                      <div className="md:col-span-2 flex items-center gap-3 mb-2">
+                        <Terminal className="h-4 w-4 text-[#DF8142]" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C]">Academic Phase Registry (Ethiopian Calendar)</span>
+                      </div>
+                      <div className="space-y-3 group">
+                        <label htmlFor="academicStartDate" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Start Node (YYYY-MM-DD)</label>
                         <input
-                          id="batch"
-                          name="batch"
-                          type="number"
-                          title="Batch Year"
-                          value={formData.batch}
+                          id="academicStartDate"
+                          name="academicStartDate"
+                          title="Academic Start Date"
+                          value={formData.academicStartDate}
                           onChange={handleInputChange}
-                          placeholder="2024"
+                          placeholder="2016-01-01"
                           className="w-full bg-white dark:bg-white/5 border-2 border-[#D9D9C2]/60 dark:border-white/10 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none font-mono"
                         />
                       </div>
                       <div className="space-y-3 group">
-                        <label htmlFor="year" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Cycle Year</label>
+                        <label htmlFor="academicEndDate" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Finish Node (YYYY-MM-DD)</label>
                         <input
-                          id="year"
-                          name="year"
-                          type="number"
-                          title="Academic Year"
-                          value={formData.year}
+                          id="academicEndDate"
+                          name="academicEndDate"
+                          title="Academic End Date"
+                          value={formData.academicEndDate}
                           onChange={handleInputChange}
-                          placeholder="1"
-                          className="w-full bg-white dark:bg-white/5 border-2 border-[#D9D9C2]/60 dark:border-white/10 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none font-mono"
-                        />
-                      </div>
-                      <div className="space-y-3 group">
-                        <label htmlFor="semester" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Term Sem</label>
-                        <input
-                          id="semester"
-                          name="semester"
-                          type="number"
-                          title="Current Semester"
-                          value={formData.semester}
-                          onChange={handleInputChange}
-                          placeholder="1"
+                          placeholder="2020-10-30"
                           className="w-full bg-white dark:bg-white/5 border-2 border-[#D9D9C2]/60 dark:border-white/10 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none font-mono"
                         />
                       </div>
@@ -1082,8 +1183,7 @@ const ManageUsers = () => {
                     )}
                   </div>
                 )}
-              </div>
-
+ 
               {/* Action Vector Footer */}
               <div className="flex gap-6 pt-12 border-t border-[#D9D9C2]/40 dark:border-white/5">
                 <button
