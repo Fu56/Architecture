@@ -60,27 +60,27 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-4">
-      <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
         {/* Search Bar - Premium Style */}
         <div className="relative flex-grow group">
-          <div className="absolute -inset-0.5 bg-[#DF8142]/90 rounded-xl blur opacity-10 group-focus-within:opacity-20 transition duration-500" />
-          <div className="relative flex items-center bg-[#FAF8F4] dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-xl overflow-hidden shadow-sm group-focus-within:border-[#DF8142]/80 group-focus-within:shadow-[#DF8142]/5 transition-all">
-            <Search className="ml-5 h-5 w-5 text-[#5A270F]/40 dark:text-[#EEB38C]/40" />
+          <div className="absolute -inset-0.5 bg-[#DF8142]/30 rounded-xl blur opacity-0 group-focus-within:opacity-30 transition duration-500" />
+          <div className="relative flex items-center bg-white dark:bg-[#1A0B02] border border-[#D9D9C2] dark:border-white/5 rounded-xl overflow-hidden shadow-sm group-focus-within:border-[#DF8142]/60 transition-all">
+            <Search className="ml-4 h-4 w-4 text-[#5A270F]/40 dark:text-[#EEB38C]/40" />
             <input
               type="text"
               name="search"
-              placeholder="Search library matrix..."
+              placeholder="Search resource nexus..."
               value={filters.search || ""}
               onChange={handleInputChange}
-              className="w-full pl-4 pr-4 py-3.5 bg-transparent text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/40 dark:placeholder-white/20 font-black uppercase tracking-widest text-[10px] outline-none"
+              className="w-full pl-3 pr-4 py-3 bg-transparent text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/20 dark:placeholder-white/20 font-black uppercase tracking-widest text-[9px] outline-none"
             />
             {filters.search && (
               <button
                 title="Clear Search"
                 onClick={() => setFilters((prev: FilterState) => ({ ...prev, search: "" }))}
-                className="mr-4 p-1 hover:bg-[#F5F5DC] dark:hover:bg-white/10 dark:bg-card/10 rounded-full transition-colors"
+                className="mr-3 p-1 hover:bg-[#FAF8F4] dark:hover:bg-white/10 rounded-full transition-colors"
               >
-                <X className="h-4 w-4 text-[#92664A] dark:text-[#EEB38C]/40" />
+                <X className="h-3.5 w-3.5 text-[#92664A] dark:text-[#EEB38C]/40" />
               </button>
             )}
           </div>
@@ -89,21 +89,21 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
         {/* Filter Toggle Button */}
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className={`flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 border ${
+          className={`flex items-center justify-center gap-2.5 px-5 py-3 rounded-xl font-black uppercase tracking-widest text-[9px] transition-all duration-300 border ${
             showFilters || activeFilterCount > 0
-              ? "bg-[#5A270F] dark:bg-[#DF8142] text-white border-[#5A270F] dark:border-[#DF8142] shadow-xl shadow-[#5A270F]/20 dark:shadow-[#DF8142]/20"
-              : "bg-[#FAF8F4] dark:bg-white/5 text-[#5A270F] dark:text-white border-[#D9D9C2] dark:border-white/10 hover:border-[#DF8142]"
+              ? "bg-[#5A270F] text-white border-[#5A270F] shadow-lg shadow-[#5A270F]/10"
+              : "bg-white dark:bg-[#1A0B02] text-[#5A270F] dark:text-[#EEB38C] border-[#D9D9C2] dark:border-white/5 hover:border-[#DF8142]"
           }`}
         >
-          <SlidersHorizontal className="h-4 w-4" />
-          <span>Filter Resource</span>
+          <SlidersHorizontal className="h-3.5 w-3.5" />
+          <span>Config</span>
           {activeFilterCount > 0 && (
-            <span className="ml-1 bg-white dark:bg-primary text-[#DF8142] dark:text-[#EEB38C] px-2 py-0.5 rounded-full text-[10px]">
+            <span className="ml-0.5 bg-[#DF8142] text-white px-1.5 py-0.5 rounded text-[8px] font-black">
               {activeFilterCount}
             </span>
           )}
           <ChevronDown
-            className={`h-4 w-4 transition-transform duration-500 ${
+            className={`h-3.5 w-3.5 transition-transform duration-500 ${
               showFilters ? "rotate-180" : ""
             }`}
           />
@@ -113,19 +113,19 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
       <div
         className={`grid transition-all duration-500 ease-in-out ${
           showFilters
-            ? "grid-rows-[1fr] opacity-100 mt-4"
+            ? "grid-rows-[1fr] opacity-100 mt-3"
             : "grid-rows-[0fr] opacity-0 pointer-events-none"
         }`}
       >
         <div className="min-h-0">
-          <div className="bg-[#FAF8F4] dark:bg-card p-6 border border-[#D9D9C2] dark:border-white/10 rounded-2xl space-y-6 transition-colors duration-500 shadow-inner">
-            <div className="flex items-center justify-between border-b border-[#5A270F]/5 pb-4">
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-[#5A270F]/40 dark:text-[#EEB38C]/40">
-                Parameter <span className="text-[#DF8142]">Configuration</span>
+          <div className="bg-white dark:bg-[#1A0B02] p-5 border border-[#D9D9C2] dark:border-white/5 rounded-2xl space-y-5 transition-colors duration-500 shadow-xl shadow-[#5A270F]/5">
+            <div className="flex items-center justify-between border-b border-[#FAF8F4] dark:border-white/5 pb-3">
+              <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-[#EEB38C]/40">
+                Nexus <span className="text-[#DF8142]">Configuration</span>
               </h3>
               <button
                 onClick={clearFilters}
-                className="text-[10px] font-bold uppercase tracking-widest text-[#DF8142] hover:text-[#5A270F] dark:text-[#EEB38C] transition-colors bg-[#DF8142]/5 px-3 py-1 rounded-full border border-[#DF8142]/20"
+                className="text-[8.5px] font-black uppercase tracking-widest text-[#DF8142] hover:text-[#5A270F] transition-colors"
               >
                 Reset Matrix
               </button>
@@ -169,18 +169,18 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                 icon={<SortAsc className="h-4 w-4 text-[#DF8142]" />}
               />
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-white/40 ml-1">
-                  Academic Cycle
+              <div className="space-y-1.5">
+                <label className="text-[8.5px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-[#EEB38C]/40 ml-1">
+                  Temporal Cycle
                 </label>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <input
                     type="number"
                     name="year"
                     placeholder="Year..."
                     value={filters.year || ""}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-lg font-black uppercase tracking-widest text-[10px] text-[#5A270F] dark:text-white outline-none focus:ring-2 focus:ring-[#DF8142] focus:border-[#DF8142] placeholder:text-[#5A270F]/40"
+                    className="w-full px-3 py-2.5 bg-[#FAF8F4] dark:bg-white/5 border border-[#D9D9C2] dark:border-white/5 rounded-lg font-black uppercase tracking-widest text-[9px] text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] placeholder:text-[#5A270F]/20"
                   />
                   <input
                     type="number"
@@ -188,7 +188,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                     placeholder="Sem..."
                     value={filters.semester || ""}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-lg font-black uppercase tracking-widest text-[10px] text-[#5A270F] dark:text-white outline-none focus:ring-2 focus:ring-[#DF8142] focus:border-[#DF8142] placeholder:text-[#5A270F]/40"
+                    className="w-full px-3 py-2.5 bg-[#FAF8F4] dark:bg-white/5 border border-[#D9D9C2] dark:border-white/5 rounded-lg font-black uppercase tracking-widest text-[9px] text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] placeholder:text-[#5A270F]/20"
                   />
                 </div>
               </div>

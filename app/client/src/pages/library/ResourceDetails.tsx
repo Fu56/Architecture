@@ -267,62 +267,77 @@ const ResourceDetails = () => {
   if (!resource) return null;
 
   return (
-    <div className={`${isNested ? "" : "max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6"} animate-in fade-in duration-1000 bg-[#FAF8F4] dark:bg-[#0C0603]`}>
+    <div className={`${isNested ? "" : "max-w-5xl mx-auto px-2 py-2"} animate-in fade-in duration-700 bg-[#FAF8F4] dark:bg-[#0C0603] font-inter selection:bg-[#DF8142]/20`}>
       {/* ── Page Header & Navigation ── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 px-2">
-        <div className="space-y-2">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-1.5 mb-4 px-1 border-b border-[#D9D9C2]/20 pb-2">
+        <div className="space-y-0.5">
            <button
             onClick={() => isNested ? navigate(-1) : navigate("/browse")}
-            className="group flex items-center gap-2 text-[8px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 hover:text-[#DF8142] transition-colors"
+            className="group flex items-center gap-1 text-[6.5px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] transition-all"
           >
-            <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" />
-            Return to Nexus
+            <ArrowLeft className="h-2.5 w-2.5 group-hover:-translate-x-1 transition-transform" />
+            PROTOCOL_EXIT
           </button>
-          <div className="flex items-center gap-2">
-            <div className="h-1 w-8 bg-[#DF8142] rounded-full" />
-            <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C]">Artifact Specification</h4>
+          <div className="flex items-center gap-1.5">
+            <div className="h-0.5 w-6 bg-[#DF8142] rounded-full" />
+            <h4 className="text-[7.5px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C]">SPECIFICATION_NODE//TX-{id}</h4>
           </div>
         </div>
         
-        <div className="flex items-center gap-3">
-          <div className="h-px w-12 bg-[#D9D9C2] dark:bg-white/10 hidden lg:block" />
-          <div className="px-3 py-1.5 bg-white dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-lg flex items-center gap-2 shadow-sm">
-             <div className={`h-1 w-1 rounded-full ${resource.status === 'archived' ? 'bg-rose-500' : 'bg-emerald-500'} animate-pulse`} />
-             <span className="text-[8px] font-black uppercase tracking-widest text-[#5A270F]/60 dark:text-white/40">Log Status: {resource.status?.toUpperCase()}</span>
+        <div className="flex items-center gap-2">
+          <div className="px-2 py-0.5 bg-white dark:bg-[#1A0B02] border border-[#D9D9C2] dark:border-white/5 rounded-full flex items-center gap-2 shadow-sm border-dashed">
+             <div className="flex items-center gap-1">
+                <div className={`h-1 w-1 rounded-full ${resource.status === 'archived' ? 'bg-rose-500' : 'bg-[#DF8142]'} animate-pulse`} />
+                <span className="text-[6.5px] font-black uppercase tracking-widest text-[#5A270F] dark:text-white/60">STATE: {resource.status?.toUpperCase()}</span>
+             </div>
+             <div className="h-2 w-px bg-[#D9D9C2] dark:bg-white/10" />
+             <span className="text-[6.5px] font-black text-[#92664A] uppercase tracking-widest leading-none">V_1.0.4</span>
           </div>
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-12 gap-6 items-start">
-        {/* ── Main Column ── */}
-        <div className="lg:col-span-8 space-y-10">
+      <div className="grid lg:grid-cols-12 gap-4 items-start">
+        {/* ── Main Intel Column ── */}
+        <div className="lg:col-span-8 space-y-4">
           
-          {/* Immersive Title Section */}
-          <section className="relative group">
-            <div className="absolute -inset-4 bg-[#DF8142]/5 blur-2xl rounded-[2rem] group-hover:bg-[#DF8142]/10 transition-colors duration-1000" />
-            <div className="absolute top-0 right-0 text-[60px] font-black text-[#5A270F]/5 dark:text-white/5 uppercase select-none pointer-events-none tracking-tighter -translate-y-6">
-              SPEC-TX
+          {/* Hyper-Compact Title Node */}
+          <section className="relative group p-4 rounded-xl bg-white dark:bg-[#1A0B02]/40 border border-[#D9D9C2] dark:border-white/5 overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 blueprint-grid opacity-5 -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 text-[40px] font-black text-[#5A270F]/5 dark:text-white/5 uppercase select-none pointer-events-none tracking-tighter translate-y-4">
+              CORE
             </div>
-            <div className="relative">
-              <h1 className="text-3xl md:text-5xl font-black text-[#5A270F] dark:text-white tracking-tighter uppercase leading-[0.95] font-space-grotesk italic drop-shadow-sm">
+            
+            <div className="relative z-10">
+              <div className="flex items-center gap-1.5 mb-2">
+                 <span className="px-1.5 py-0.5 bg-[#5A270F] text-[#EEB38C] text-[6px] font-black uppercase tracking-[0.2em] rounded">SYSTEM_PRIMARY</span>
+                 <div className="h-px flex-1 bg-gradient-to-r from-[#D9D9C2] to-transparent dark:from-white/10" />
+              </div>
+              
+              <h1 className="text-xl md:text-2xl font-black text-[#5A270F] dark:text-white tracking-tighter uppercase leading-[0.9] italic mb-4 drop-shadow-sm">
                 {resource.title}
               </h1>
-              <div className="mt-6 flex flex-wrap gap-6">
+              
+              <div className="flex flex-wrap gap-4">
                 <div className="space-y-0.5">
-                   <p className="text-[7px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em]">Principal Authority</p>
-                   <p className="text-lg font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tight">{resource.author}</p>
+                   <p className="text-[6px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.2em]">Authorized Principal</p>
+                   <p className="text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tight italic flex items-center gap-1">
+                     <span className="h-1 w-1 bg-[#DF8142] rounded-full" />
+                     {resource.author}
+                   </p>
                 </div>
-                <div className="h-8 w-px bg-[#D9D9C2] dark:bg-white/10" />
+                <div className="w-px h-6 bg-[#D9D9C2] dark:bg-white/10 hidden sm:block" />
                 <div className="space-y-0.5">
-                   <p className="text-[7px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em]">Genesis Date</p>
-                   <p className="text-lg font-black text-[#5A270F] dark:text-white uppercase tracking-tight">{new Date(resource.uploadedAt).toLocaleDateString()}</p>
+                   <p className="text-[6px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.2em]">Temporal Stamp</p>
+                   <p className="text-[10px] font-black text-[#5A270F] dark:text-white/50 uppercase tracking-tight">
+                     {new Date(resource.uploadedAt).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' })}
+                   </p>
                 </div>
                 {resource.designStage && (
                   <>
-                    <div className="h-8 w-px bg-[#D9D9C2] dark:bg-white/10" />
+                    <div className="w-px h-6 bg-[#D9D9C2] dark:bg-white/10 hidden sm:block" />
                     <div className="space-y-0.5">
-                      <p className="text-[7px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em]">Design Phase</p>
-                      <p className="text-lg font-black text-[#DF8142] uppercase tracking-tight">{resource.designStage.name}</p>
+                       <p className="text-[6px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.2em]">Phased Alignment</p>
+                       <p className="text-[10px] font-black text-[#DF8142] uppercase tracking-tight italic drop-shadow-sm">{resource.designStage.name}</p>
                     </div>
                   </>
                 )}
@@ -330,17 +345,17 @@ const ResourceDetails = () => {
             </div>
           </section>
 
-          {/* Admin Context Directive */}
+          {/* Admin Context Directive - Shrunk */}
           {resource.adminComment && (
-            <div className="bg-[#5A270F] dark:bg-[#1A0B04] p-6 rounded-[1.5rem] shadow-xl relative overflow-hidden group">
-               <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/10 blur-[60px] -translate-y-1/2 translate-x-1/2 group-hover:bg-[#DF8142]/20 transition-colors" />
-               <div className="relative z-10 flex items-start gap-4">
-                  <div className="h-10 w-10 shrink-0 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-[#DF8142] shadow-inner">
-                    <ShieldAlert className="h-5 w-5 animate-pulse" />
+            <div className="bg-[#5A270F] dark:bg-[#1A0B02] p-3 rounded-xl shadow-lg relative overflow-hidden group border border-white/5">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/10 blur-[40px] -translate-y-1/2 translate-x-1/2" />
+               <div className="relative z-10 flex items-start gap-3">
+                  <div className="h-8 w-8 shrink-0 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-[#DF8142]">
+                    <ShieldAlert className="h-3.5 w-3.5 animate-pulse" />
                   </div>
-                  <div className="space-y-1">
-                    <h5 className="text-[9px] font-black uppercase tracking-[0.4em] text-[#EEB38C]">Operations Directive</h5>
-                    <p className="text-lg text-white italic font-medium leading-relaxed max-w-lg opacity-90">
+                  <div className="space-y-0.5">
+                    <h5 className="text-[6.5px] font-black uppercase tracking-[0.3em] text-[#EEB38C]">Operations Command Directive</h5>
+                    <p className="text-sm text-white italic font-medium leading-tight max-w-xl opacity-90 border-l border-[#DF8142]/40 pl-3">
                       "{resource.adminComment}"
                     </p>
                   </div>
@@ -348,196 +363,185 @@ const ResourceDetails = () => {
             </div>
           )}
 
-          {/* Asset Preview / File Info */}
-          <div className="bg-white dark:bg-card/40 p-6 md:p-8 rounded-[1.5rem] border border-[#D9D9C2] dark:border-white/5 shadow-xl relative overflow-hidden architect-border group">
-             <div className="absolute inset-0 architectural-dot-grid dark:architectural-dot-grid-dark opacity-5" />
-             <div className="relative z-10 grid md:grid-cols-2 gap-6">
-               <div className="space-y-4">
-                 <div className="flex items-center gap-2">
-                    <div className="h-6 w-6 rounded-md bg-[#5A270F] flex items-center justify-center text-[#EEB38C] shadow-md">
-                      <Box className="h-3 w-3" />
-                    </div>
-                    <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-white">Technical Parameters</h3>
-                 </div>
-                 
-                 <div className="space-y-3">
-                    {[
-                      { label: 'Data Payload', value: resource.fileSize > 1048576 ? `${(resource.fileSize/1048576).toFixed(2)} MB` : `${(resource.fileSize/1024).toFixed(2)} KB`, color: '[#5A270F]' },
-                      { label: 'File Type', value: resource.fileType?.toUpperCase() || 'DOCUMENT', color: '[#DF8142]' },
-                      { label: 'Academic Year', value: `Year ${resource.forYearStudents}`, color: '[#6C3B1C]' },
-                      { label: 'Batch Cycle', value: resource.batchYear || '2024', color: '[#92664A]' }
-                    ].map((item, i) => (
-                      <div key={i} className="flex justify-between items-end pb-2 border-b border-[#D9D9C2]/40 dark:border-white/5 group/line">
-                        <span className="text-[8px] font-black uppercase tracking-[0.2em] text-[#5A270F]/40 dark:text-white/20 group-hover/line:text-[#DF8142] transition-colors">{item.label}</span>
-                        <span className={`text-[10px] font-black text-${item.color} dark:text-white uppercase tracking-widest`}>{item.value}</span>
+          {/* Technical Core Parameters - Compact Grid */}
+          <section className="bg-white dark:bg-[#1A0100]/40 p-4 rounded-xl border border-[#D9D9C2] dark:border-white/5 shadow-md relative overflow-hidden group">
+             <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-[#DF8142] to-transparent opacity-30" />
+             <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                   <div className="flex items-center gap-2">
+                      <div className="h-6 w-6 rounded-lg bg-[#5A270F] flex items-center justify-center text-[#EEB38C] shadow-md">
+                        <Box className="h-3 w-3" />
                       </div>
-                    ))}
-                 </div>
-               </div>
+                      <h3 className="text-[8px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C]">TECHNICAL_CORE_PARAMETERS</h3>
+                   </div>
+                   <div className="flex gap-0.5">
+                      <div className="h-0.5 w-4 bg-[#DF8142] rounded-full" />
+                      <div className="h-0.5 w-1 bg-[#D9D9C2] rounded-full" />
+                   </div>
+                </div>
+                
+                <div className="grid md:grid-cols-2 gap-6">
+                   <div className="space-y-2">
+                      {[
+                        { label: 'Asset Payload', value: resource.fileSize > 1048576 ? `${(resource.fileSize/1048576).toFixed(2)}` : `${(resource.fileSize/1024).toFixed(2)}`, unit: resource.fileSize > 1048576 ? 'MB' : 'KB', color: '[#5A270F]' },
+                        { label: 'Node Extension', value: resource.fileType?.toUpperCase() || 'FMT', unit: 'FMT', color: '[#DF8142]' },
+                        { label: 'Academic Year', value: `0${resource.forYearStudents}`, unit: 'LVL', color: '[#6C3B1C]' },
+                        { label: 'Batch Registry', value: resource.batchYear || '2024', unit: 'CYC', color: '[#92664A]' }
+                      ].map((item, i) => (
+                        <div key={i} className="flex justify-between items-end pb-1 border-b border-[#D9D9C2]/20 dark:border-white/5 group/line">
+                          <span className="text-[7.5px] font-black uppercase tracking-[0.2em] text-[#92664A]/60 dark:text-white/20 group-hover/line:text-[#DF8142] transition-colors">{item.label}</span>
+                          <div className="flex items-baseline gap-1">
+                             <span className={`text-[11px] font-black text-${item.color} dark:text-white uppercase tracking-tighter italic`}>{item.value}</span>
+                             <span className="text-[6.5px] font-black text-[#92664A]/40">{item.unit}</span>
+                          </div>
+                        </div>
+                      ))}
+                   </div>
 
-               <div className="flex flex-col justify-center gap-3">
-                  <a
-                    href={`${import.meta.env.VITE_API_URL}/resources/${id}/view?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
-                    target="_blank" rel="noreferrer"
-                    className="h-12 flex items-center justify-center gap-3 bg-[#5A270F] text-white rounded-xl text-[9px] font-black uppercase tracking-[0.3em] hover:bg-[#6C3B1C] transition-all hover:scale-[1.01] shadow-lg shadow-[#5A270F]/10 active:scale-95 group/btn"
-                  >
-                    <Eye className="h-5 w-5 text-[#EEB38C] group-hover/btn:scale-110 transition-transform" />
-                    Visual Scan
-                  </a>
-                  <a
-                    href={`${import.meta.env.VITE_API_URL}/resources/${id}/download?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
-                    className="h-12 flex items-center justify-center gap-3 bg-[#DF8142] text-white rounded-xl text-[9px] font-black uppercase tracking-[0.3em] hover:bg-[#EEB38C] hover:text-[#5A270F] transition-all hover:scale-[1.01] shadow-lg shadow-[#DF8142]/10 active:scale-95 group/btn"
-                  >
-                    <Download className="h-5 w-5 group-hover/btn:translate-y-0.5 transition-transform" />
-                    Archive Uplink
-                  </a>
-               </div>
+                   <div className="flex flex-col justify-end gap-1.5">
+                      <a
+                        href={`${import.meta.env.VITE_API_URL}/resources/${id}/view?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
+                        target="_blank" rel="noreferrer"
+                        className="h-10 flex items-center justify-center gap-2 bg-[#5A270F] text-white rounded-lg text-[8px] font-black uppercase tracking-[0.2em] hover:bg-[#6C3B1C] transition-all group/btn shadow-md"
+                      >
+                        <Eye className="h-3.5 w-3.5 text-[#EEB38C] group-hover/btn:scale-110 transition-transform" />
+                        Visual Scan
+                      </a>
+                      <a
+                        href={`${import.meta.env.VITE_API_URL}/resources/${id}/download?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
+                        className="h-10 flex items-center justify-center gap-2 bg-[#DF8142] text-white rounded-lg text-[8px] font-black uppercase tracking-[0.2em] hover:bg-[#5A270F] transition-all shadow-md"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        Archive Uplink
+                      </a>
+                   </div>
+                </div>
              </div>
-          </div>
+          </section>
 
-          {/* Multi-Phased Evaluation Matrix */}
+          {/* Qualitative Evaluation Node - Compressed */}
           {(resource.status === "approved" || resource.status === "student") && (
-            <div className="bg-[#FAF8F4] dark:bg-card/20 rounded-[2.5rem] border-2 border-[#D9D9C2] dark:border-white/5 p-8 md:p-10 relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#EEB38C]/3 blur-[100px] rounded-full" />
-               
-               <div className="relative z-10 flex flex-col xl:flex-row gap-10 items-start">
-                  <div className="flex-1 space-y-6 w-full">
-                    <div className="space-y-1">
-                       <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C]">Qualitative Matrix</h3>
-                       <p className="text-[9px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em]">Intelligence node for peer feedback</p>
+            <section className="bg-white dark:bg-[#1A0B02]/30 rounded-xl border border-[#D9D9C2] dark:border-white/5 p-4 relative overflow-hidden shadow-lg">
+               <div className="relative z-10 flex flex-col xl:flex-row gap-6 items-center">
+                  <div className="flex-1 space-y-4 w-full">
+                    <div className="space-y-0.5">
+                       <h3 className="text-[8.5px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C]">QUALITATIVE_SCAN_NODE</h3>
+                       <p className="text-[7.5px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.2em]">Intelligence synchronization</p>
                     </div>
                     
                     <div className="flex items-center gap-2">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}
+                          title={`Rate ${star} star${star > 1 ? 's' : ''}`}
                           onMouseEnter={() => setHoverRating(star)}
                           onMouseLeave={() => setHoverRating(0)}
                           onClick={() => handleRatingClick(star)}
-                          className="focus:outline-none transition-all hover:scale-110 group/star active:scale-90 disabled:opacity-30 relative"
+                          className="focus:outline-none transition-all hover:scale-110 group/star disabled:opacity-30 relative"
                           disabled={!isAuth || submittingEvaluation}
-                          title={`Rate ${star} star${star > 1 ? 's' : ''}`}
                         >
                           <Star
-                            className={`h-8 w-8 ${
+                            className={`h-5 w-5 ${
                               (hoverRating || pendingRating || userRating || Math.round(averageRating)) >= star
                                 ? "text-[#DF8142] fill-[#DF8142]"
                                 : "text-[#D9D9C2] dark:text-white/5"
-                            } transition-all duration-300 drop-shadow-lg`}
+                            } transition-all duration-300`}
                           />
-                          {star === Math.round(averageRating) && !hoverRating && !pendingRating && (
-                            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1 w-1 bg-[#DF8142] rounded-full blur-[1px]" />
-                          )}
                         </button>
                       ))}
                     </div>
 
-                    <textarea 
-                      rows={3}
-                      value={evaluationComment}
-                      onChange={(e) => setEvaluationComment(e.target.value)}
-                      placeholder="Input technical feedback node... (Optional)"
-                      className="w-full bg-white dark:bg-white/5 border-2 border-[#D9D9C2] dark:border-white/10 rounded-[1.5rem] p-6 text-base font-bold text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all shadow-lg placeholder:text-[#5A270F]/20"
-                    />
+                    <div className="relative group">
+                      <textarea 
+                        rows={2}
+                        value={evaluationComment}
+                        onChange={(e) => setEvaluationComment(e.target.value)}
+                        placeholder="Technical insight node..."
+                        className="w-full bg-[#FAF8F4] dark:bg-black/20 border border-[#D9D9C2] dark:border-white/5 rounded-lg p-3 text-[10px] font-bold text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all placeholder:text-[#92664A]/30"
+                      />
+                    </div>
                     
                     <button
                       onClick={handleSubmitEvaluation}
                       disabled={submittingEvaluation || !isAuth || pendingRating === 0}
-                      className="w-full md:w-auto px-10 py-4 bg-[#5A270F] text-white rounded-xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#6C3B1C] transition-all hover:-translate-y-1 shadow-lg active:scale-95 disabled:opacity-30"
+                      className="w-full xl:w-auto px-6 py-2 bg-[#5A270F] text-[#EEB38C] rounded-lg text-[8px] font-black uppercase tracking-[0.3em] hover:bg-[#DF8142] hover:text-white transition-all shadow-md active:scale-95 disabled:opacity-30"
                     >
-                      {submittingEvaluation ? <Loader2 className="h-5 w-5 animate-spin mx-auto" /> : "Broadcast Evaluation"}
+                      {submittingEvaluation ? <Loader2 className="h-3 w-3 animate-spin mx-auto" /> : "BROADCAST_EVALUATION"}
                     </button>
                   </div>
 
-                  <div className="w-full xl:w-64 space-y-6 bg-white dark:bg-black/40 p-6 rounded-[2rem] border border-[#D9D9C2] dark:border-white/5 shadow-xl relative overflow-hidden group/rating">
-                     <div className="absolute top-0 right-0 w-24 h-24 bg-[#DF8142]/10 blur-2xl -translate-y-1/2 translate-x-1/2 group-hover/rating:bg-[#DF8142]/20 transition-all duration-700" />
+                  <div className="w-full xl:w-48 space-y-4 bg-[#FAF8F4] dark:bg-black/40 p-4 rounded-xl border border-[#D9D9C2] dark:border-white/5 shadow-inner relative overflow-hidden group/readout">
                      <div className="text-center relative z-10">
-                        <p className="text-[9px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em] mb-2">Nexus Aggregate</p>
+                        <p className="text-[7.5px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em] mb-2">NEXUS_AGGREGATE</p>
                         <div className="flex items-baseline justify-center gap-1">
-                           <span className="text-5xl font-black text-[#5A270F] dark:text-[#DF8142] tracking-tighter italic">{averageRating.toFixed(1)}</span>
-                           <div className="flex flex-col items-start -translate-y-2">
-                              <span className="text-[10px] font-black text-[#D9D9C2] dark:text-white/10 uppercase tracking-tighter leading-none">AVG</span>
-                              <div className="flex gap-0.5 mt-1">
-                                 {[1, 2, 3, 4, 5].map((s) => (
-                                    <div key={s} className={`h-1 w-2 rounded-full ${s <= Math.round(averageRating) ? 'bg-[#DF8142]' : 'bg-[#D9D9C2] dark:bg-white/5'}`} />
-                                 ))}
-                              </div>
-                           </div>
+                           <span className="text-3xl font-black text-[#5A270F] dark:text-[#DF8142] tracking-tighter italic">{averageRating.toFixed(1)}</span>
+                           <span className="text-[10px] font-black text-[#92664A] uppercase">/ 5.0</span>
                         </div>
                      </div>
-                     <div className="space-y-4 pt-6 border-t border-[#D9D9C2]/40 dark:border-white/10 relative z-10">
-                        <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-[#5A270F]/60 dark:text-white/40">
-                           <span>Signal Count</span>
-                           <span className="text-[#5A270F] dark:text-white font-mono bg-[#FAF8F4] dark:bg-white/5 px-2 py-0.5 rounded-md">{(ratingCount || 0).toString().padStart(2, '0')}</span>
+                     <div className="space-y-2 pt-4 border-t border-[#D9D9C2] dark:border-white/10 relative z-10">
+                        <div className="flex justify-between items-center text-[7.5px] font-black uppercase tracking-[0.2em] text-[#5A270F]/60 dark:text-white/40">
+                           <span>LOG_COUNT</span>
+                           <span className="text-[#5A270F] dark:text-[#EEB38C] font-mono font-black">{(ratingCount || 0).toString().padStart(3, '0')}</span>
                         </div>
-                        <div className="h-2 w-full bg-[#FAF8F4] dark:bg-white/5 rounded-full overflow-hidden p-0.5 border border-[#D9D9C2]/20 dark:border-white/5">
+                        <div className="h-1.5 w-full bg-white dark:bg-white/5 rounded-full overflow-hidden border border-[#D9D9C2]/20 dark:border-white/5 shadow-inner">
                            <div 
-                              className="h-full bg-gradient-to-r from-[#5A270F] to-[#DF8142] rounded-full shadow-[0_0_10px_rgba(223,129,66,0.2)] transition-all duration-1000 ease-out" 
+                              className="h-full bg-gradient-to-r from-[#5A270F] via-[#DF8142] to-[#EEB38C] rounded-full transition-all duration-1000 ease-out" 
                               style={{ width: `${(averageRating / 5) * 100}%` } as React.CSSProperties}
                            />
                         </div>
                      </div>
                   </div>
                </div>
-            </div>
+            </section>
           )}
 
-          {/* Peer Discovery / Comments */}
-          <div className="space-y-10">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b-2 border-[#5A270F] pb-6 relative">
-               <div className="space-y-1">
-                  <h2 className="text-3xl font-black text-[#5A270F] dark:text-white tracking-tighter uppercase italic">
-                    CORE <span className="text-[#DF8142]">INTELLIGENCE</span>
+          {/* Intelligence Synchronization Cluster - Tightened */}
+          <div className="space-y-4">
+            <div className="flex items-end justify-between gap-4 border-b-2 border-[#5A270F] pb-2">
+               <div className="space-y-0.5">
+                  <h2 className="text-lg font-black text-[#5A270F] dark:text-white tracking-tighter uppercase italic leading-none">
+                    CORE_<span className="text-[#DF8142]">INTELLIGENCE</span>
                   </h2>
-                  <p className="text-[10px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.4em]">Synchronized community feedback nodes</p>
+                  <p className="text-[7.5px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em]">Peer insight cluster</p>
                </div>
-               <div className="px-6 py-3 bg-[#5A270F] rounded-full text-[10px] font-black text-[#EEB38C] uppercase tracking-[0.3em] shadow-lg">
-                LOGS: {comments.length.toString().padStart(2, '0')}
+               <div className="px-4 py-1.5 bg-[#5A270F] rounded-lg text-[8px] font-black text-[#EEB38C] uppercase tracking-[0.2em] shadow-md">
+                LOGS: {comments.length.toString().padStart(3, '0')}
               </div>
             </div>
 
-            {isAuth ? (
-              <form onSubmit={handleSubmitComment} className="flex gap-3 group">
-                <input
-                  type="text"
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Inject technical insight..."
-                  className="flex-grow bg-white dark:bg-white/5 border-2 border-[#D9D9C2] dark:border-white/10 rounded-2xl px-6 py-4 text-base font-bold text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all shadow-md"
-                />
-                <button
-                  type="submit"
-                  disabled={submittingComment || !newComment.trim()}
-                  className="px-8 bg-[#5A270F] text-[#EEB38C] rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#6C3B1C] transition-all active:scale-95 shadow-md flex items-center justify-center min-w-[140px]"
-                >
-                  {submittingComment ? <Loader2 className="h-5 w-5 animate-spin" /> : "Transmit"}
-                </button>
-              </form>
-            ) : (
-              <div className="p-10 bg-white dark:bg-card/40 rounded-[2.5rem] border-2 border-dashed border-[#D9D9C2] dark:border-white/5 text-center shadow-inner">
-                <ShieldAlert className="h-10 w-10 text-[#DF8142] mx-auto mb-4 opacity-20" />
-                <p className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C]/40 uppercase tracking-[0.2em] mb-8 italic">Identity Verification Required</p>
-                <Link to="/login" className="px-10 py-4 bg-[#5A270F] text-[#EEB38C] rounded-xl text-[10px] font-black uppercase tracking-[0.4em] hover:bg-[#DF8142] hover:text-white transition-all shadow-md">Initialize Login</Link>
-              </div>
-            )}
+            <form onSubmit={handleSubmitComment} className="flex gap-2">
+              <input
+                type="text"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Technical packet..."
+                className="flex-grow bg-white dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-lg px-4 py-2 text-[10px] font-bold text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all shadow-sm placeholder:text-[#92664A]/20"
+              />
+              <button
+                type="submit"
+                disabled={submittingComment || !newComment.trim()}
+                className="px-6 bg-[#5A270F] text-[#EEB38C] rounded-lg text-[8px] font-black uppercase tracking-[0.2em] hover:bg-[#6C3B1C] transition-all shadow-md min-w-[100px]"
+              >
+                {submittingComment ? <Loader2 className="h-3 w-3 animate-spin" /> : "TRANSMIT"}
+              </button>
+            </form>
 
-            <div className="grid gap-6">
+            <div className="grid gap-2">
               {comments.map((comment) => (
-                <div key={comment.id} className="bg-white dark:bg-card/40 p-6 rounded-[2rem] border border-[#D9D9C2] dark:border-white/5 shadow-lg flex gap-6 items-start group hover:bg-[#FAF8F4] dark:hover:bg-white/5 transition-all architect-border">
-                  <div className="h-14 w-14 shrink-0 rounded-2xl bg-gradient-to-br from-[#5A270F] to-[#2A1205] flex items-center justify-center text-[#EEB38C] text-xl font-black shadow-lg group-hover:rotate-6 transition-transform">
+                <div key={comment.id} className="bg-white dark:bg-[#1A0100]/60 p-3 rounded-lg border border-[#D9D9C2] dark:border-white/10 shadow-sm flex gap-4 items-start group hover:bg-[#FAF8F4] transition-all">
+                  <div className="h-8 w-8 shrink-0 rounded-lg bg-[#5A270F] flex items-center justify-center text-[#EEB38C] text-sm font-black shadow-md">
                     {(comment.user.first_name || comment.user.firstName)?.[0]}
                   </div>
-                  <div className="space-y-3 pt-1">
-                    <div className="flex items-center gap-4">
-                       <p className="text-lg font-black text-[#5A270F] dark:text-white uppercase tracking-tight">
+                  <div className="space-y-1 flex-grow">
+                    <div className="flex items-center gap-3">
+                       <p className="text-[10px] font-black text-[#5A270F] dark:text-white uppercase tracking-tighter italic">
                          {comment.user.first_name || comment.user.firstName}
                        </p>
-                       <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142]" />
-                       <p className="text-[9px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.4em]">
-                         SYNC: {new Date(comment.createdAt).toLocaleDateString()}
+                       <p className="text-[6.5px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-widest">
+                         SYNC_{new Date(comment.createdAt).toLocaleDateString()}
                        </p>
                     </div>
-                    <p className="text-base font-medium text-[#5A270F]/80 dark:text-[#EEB38C]/80 leading-relaxed italic border-l-2 border-[#DF8142]/20 pl-4">"{comment.text}"</p>
+                    <p className="text-[10px] font-medium text-[#5A270F]/80 dark:text-[#EEB38C]/80 leading-tight italic border-l border-[#DF8142]/20 pl-3">"{comment.text}"</p>
                   </div>
                 </div>
               ))}
@@ -545,48 +549,49 @@ const ResourceDetails = () => {
           </div>
         </div>
 
-        {/* ── Control Sidebar ── */}
-        <div className="lg:col-span-4 space-y-12 lg:sticky lg:top-12">
+        {/* ── Control Center Sidebar - Hyper Compact ── */}
+        <div className="lg:col-span-4 space-y-4 lg:sticky lg:top-4">
           
-          <div className="bg-[#1A0B03] p-8 rounded-[2.5rem] text-white relative overflow-hidden shadow-2xl border border-white/5">
+          <div className="bg-[#1A0B03] p-4 rounded-xl text-white relative overflow-hidden shadow-xl border border-white/5">
              <div className="absolute top-0 left-0 w-full h-full architectural-dot-grid opacity-[0.03]" />
-             <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/20 blur-[80px] p-8 rounded-full -translate-y-1/2 translate-x-1/2" />
-             
-             <div className="relative z-10 space-y-8">
-                <div className="space-y-1">
-                   <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#EEB38C]">Security Layer</h4>
-                   <p className="text-[9px] font-bold text-white/40 italic">Unauthorized modification restricted</p>
+             <div className="relative z-10 space-y-4">
+                <div className="space-y-0.5">
+                   <div className="flex items-center gap-1.5 mb-1">
+                      <div className="h-1 w-1 bg-[#DF8142] rounded-full animate-pulse" />
+                      <h4 className="text-[8px] font-black uppercase tracking-[0.3em] text-[#EEB38C]">SECURITY_LAYER</h4>
+                   </div>
+                   <p className="text-[8px] font-bold text-white/30 italic">Privileged modification restricted</p>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {isAuthorizedManager && (
-                     <div className="space-y-3">
+                     <div className="space-y-2">
                         {resource.status === 'archived' ? (
-                          <button onClick={handleRestore} className="w-full h-14 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-center gap-3 text-emerald-400 text-[9px] font-black uppercase tracking-[0.3em] hover:bg-emerald-500/20 transition-all active:scale-95 group">
-                            <RotateCcw className="h-5 w-5 group-hover:-rotate-180 transition-transform duration-700" /> Restore Logic
+                          <button onClick={handleRestore} className="w-full h-10 bg-emerald-500/10 border border-emerald-500/30 rounded-lg flex items-center justify-center gap-2 text-emerald-400 text-[8px] font-black uppercase tracking-[0.3em] hover:bg-emerald-500/20 transition-all active:scale-95 group">
+                            <RotateCcw className="h-4 w-4 group-hover:-rotate-180 transition-transform duration-700" /> RESTORE_LOGIC_CMD
                           </button>
                         ) : (
-                          <button onClick={handleArchive} className="w-full h-14 bg-rose-500/10 border border-rose-500/30 rounded-2xl flex items-center justify-center gap-3 text-rose-400 text-[9px] font-black uppercase tracking-[0.3em] hover:bg-rose-500/20 transition-all active:scale-95 group">
-                            <Trash2 className="h-5 w-5 group-hover:shake transition-transform" /> Sequestrate Node
+                          <button onClick={handleArchive} className="w-full h-10 bg-rose-500/10 border border-rose-500/30 rounded-lg flex items-center justify-center gap-2 text-rose-400 text-[8px] font-black uppercase tracking-[0.3em] hover:bg-rose-500/20 transition-all active:scale-95 group">
+                            <Trash2 className="h-4 w-4" /> SEQUESTER_NODE_CMD
                           </button>
                         )}
                      </div>
                   )}
 
-                  <div className="p-6 bg-white/5 rounded-2xl border border-white/5 space-y-6">
-                     <div className="space-y-1">
-                        <p className="text-[8px] font-black text-white/30 uppercase tracking-[0.3em]">Registry Identity</p>
-                        <p className="text-xl font-black text-[#EEB38C] font-mono tracking-tighter italic">#{String(id).padStart(6, '0')}</p>
+                  <div className="p-4 bg-white/5 rounded-xl border border-white/10 space-y-4 relative overflow-hidden group/id">
+                     <div className="space-y-1 relative z-10">
+                        <p className="text-[7.5px] font-black text-white/20 uppercase tracking-[0.3em]">REGISTRY_ID</p>
+                        <p className="text-lg font-black text-[#EEB38C] font-mono tracking-tighter italic">#{String(id).padStart(8, '0')}</p>
                      </div>
-                     <div className="h-px bg-white/10" />
-                     <div className="space-y-4">
-                        <div className="flex items-center gap-3 opacity-50">
-                           <ShieldCheck className="h-4 w-4 text-emerald-400" />
-                           <span className="text-[8px] font-black uppercase tracking-widest text-emerald-400">Integrity Verified</span>
+                     <div className="h-px bg-gradient-to-r from-white/10 to-transparent" />
+                     <div className="space-y-2.5 relative z-10">
+                        <div className="flex items-center gap-2 opacity-60">
+                           <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+                           <span className="text-[7.5px] font-black uppercase tracking-[0.2em] text-emerald-400">VERIFIED_SHA256</span>
                         </div>
-                        <div className="flex items-center gap-3 opacity-50">
-                           <Zap className="h-4 w-4 text-[#DF8142]" />
-                           <span className="text-[8px] font-black uppercase tracking-widest text-[#DF8142]">High Flux Node</span>
+                        <div className="flex items-center gap-2 opacity-60">
+                           <Zap className="h-3.5 w-3.5 text-[#DF8142]" />
+                           <span className="text-[7.5px] font-black uppercase tracking-[0.2em] text-[#DF8142]">NEURAL_LINK</span>
                         </div>
                      </div>
                   </div>
@@ -594,31 +599,31 @@ const ResourceDetails = () => {
              </div>
           </div>
 
-          {/* Related Artifacts Matrix */}
-          <div className="bg-white dark:bg-card/40 p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/5 shadow-xl">
-            <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C] mb-8 flex items-center gap-3">
-              <Clock className="h-4 w-4 text-[#DF8142]" /> SYNAPTIC NODES
+          {/* Related Artifact Cluster - Shrunk */}
+          <div className="bg-white dark:bg-[#1A0B02]/20 p-4 rounded-xl border border-[#D9D9C2] dark:border-white/5 shadow-md relative overflow-hidden group/matrix">
+            <h5 className="text-[8px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] mb-4 flex items-center gap-2">
+              <Clock className="h-3.5 w-3.5 text-[#DF8142]" /> SYNAPTIC_NODES
             </h5>
-            <div className="grid gap-6">
+            <div className="grid gap-3">
               {recentResources.map((recent) => (
                 <Link 
                   key={recent.id} 
                   to={isNested ? (role === 'Admin' || role === 'SuperAdmin' || role === 'admin' ? `/admin/resources/${recent.id}` : `/dashboard/resources/${recent.id}`) : `/resources/${recent.id}`}
-                  className="flex items-center gap-4 group"
+                  className="flex items-center gap-3 group/item transition-all"
                 >
-                   <div className="h-12 w-12 shrink-0 rounded-xl bg-[#5A270F] flex items-center justify-center text-[#EEB38C] font-black text-[10px] shadow-md group-hover:scale-110 transition-all">
+                   <div className="h-8 w-8 shrink-0 rounded-lg bg-[#5A270F] flex items-center justify-center text-[#EEB38C] font-black text-[9px] shadow-md transform group-hover/item:scale-105 transition-all">
                     {recent.fileType?.[0]?.toUpperCase() || 'A'}
                    </div>
-                   <div className="overflow-hidden space-y-0.5">
-                      <p className="text-sm font-black text-[#5A270F] dark:text-white uppercase truncate group-hover:text-[#DF8142] transition-colors">{recent.title}</p>
-                      <p className="text-[8px] font-bold text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.2em]">Arch. {recent.author}</p>
+                   <div className="overflow-hidden space-y-0.5 flex-grow">
+                      <p className="text-[9px] font-black text-[#5A270F] dark:text-white uppercase truncate group-hover/item:text-[#DF8142] transition-colors tracking-tight italic">{recent.title}</p>
+                      <p className="text-[7px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.1em] opacity-80">ARCHITECT. {recent.author}</p>
                    </div>
-                   <ChevronRight className="h-4 w-4 ml-auto text-[#D9D9C2] group-hover:translate-x-1.5 transition-transform" />
+                   <ChevronRight className="h-3 w-3 ml-auto text-[#D9D9C2] group-hover/item:translate-x-1 transition-transform" />
                 </Link>
               ))}
             </div>
-            <button className="w-full mt-8 py-4 border-2 border-dashed border-[#D9D9C2] dark:border-white/10 rounded-xl text-[9px] font-black uppercase tracking-[0.3em] text-[#5A270F]/40 dark:text-white/20 hover:border-[#DF8142] hover:text-[#DF8142] transition-colors">
-              Expand Nexus
+            <button className="w-full mt-4 py-2 border border-dashed border-[#D9D9C2] dark:border-white/10 rounded-lg text-[8px] font-black uppercase tracking-[0.2em] text-[#92664A]/60 dark:text-white/20 hover:border-[#DF8142] hover:text-[#DF8142] transition-all bg-[#FAF8F4]/50">
+              EXPAND_CLUSTER
             </button>
           </div>
         </div>

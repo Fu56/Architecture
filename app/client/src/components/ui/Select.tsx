@@ -48,9 +48,9 @@ const Select: React.FC<SelectProps> = ({
   };
 
   return (
-    <div className={`w-full space-y-2 ${className}`} ref={containerRef}>
+    <div className={`w-full space-y-1.5 ${className}`} ref={containerRef}>
       {label && (
-        <label className="block text-[11px] font-black uppercase tracking-[0.25em] text-[#5A270F] dark:text-[#EEB38C] mb-2 ml-1">
+        <label className="block text-[8.5px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-[#EEB38C]/40 mb-1 ml-1">
           {label}
         </label>
       )}
@@ -59,12 +59,11 @@ const Select: React.FC<SelectProps> = ({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full bg-white dark:bg-white/5 border-2 rounded-xl px-3 py-2.5
-                     text-[10px] font-bold text-[#5A270F] dark:text-[#EEB38C]
+          className={`w-full bg-white dark:bg-[#1A0B02] border rounded-lg px-2.5 py-2
+                     text-[9px] font-black text-[#5A270F] dark:text-[#EEB38C]
                      flex items-center justify-between transition-all duration-300
-                     focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10
-                     ${isOpen ? "border-[#DF8142] shadow-md" : "border-[#92664A]/25 dark:border-white/10 hover:border-[#DF8142]/40 shadow-sm"}
-                     ${error ? "border-rose-400 bg-rose-50/30" : ""}`}
+                     ${isOpen ? "border-[#DF8142]" : "border-[#D9D9C2] dark:border-white/5"}
+                     ${error ? "border-rose-400 bg-rose-50/10" : ""}`}
         >
           <div className="flex items-center gap-2">
             {icon && <div className={`${error ? "text-rose-500" : "text-[#DF8142]"} scale-75`}>{icon}</div>}
@@ -96,16 +95,16 @@ const Select: React.FC<SelectProps> = ({
                         key={option.id}
                         type="button"
                         onClick={() => handleSelect(option.id)}
-                        className={`w-full flex items-center justify-between gap-6 px-5 py-2 text-left transition-all duration-200 group
+                        className={`w-full flex items-center justify-between gap-4 px-4 py-1.5 text-left transition-all duration-200 group
                                    ${index !== options.length - 1 ? "border-b border-white/5" : ""}
                                    ${isSelected 
                                      ? "bg-[#DF8142] text-white" 
-                                     : "text-[#EEB38C]/90 hover:bg-[#DF8142]/10 hover:text-white"}`}
+                                     : "text-[#EEB38C]/80 hover:bg-[#DF8142]/10"}`}
                       >
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em] leading-tight">
+                        <span className="text-[8.5px] font-black uppercase tracking-[0.15em] leading-tight">
                           {option.name}
                         </span>
-                        {isSelected && <Check className="h-2.5 w-2.5 text-white flex-shrink-0" />}
+                        {isSelected && <Check className="h-2 w-2 text-white flex-shrink-0" />}
                       </button>
                     );
                   })}

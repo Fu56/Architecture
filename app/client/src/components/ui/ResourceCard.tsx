@@ -1,14 +1,11 @@
 import { Link } from "react-router-dom";
 import {
   Download,
-  User,
-  Calendar,
   Eye,
   FileText,
   Package,
   Layout,
   Layers,
-  Sparkles,
   Star,
   Heart,
   type LucideIcon,
@@ -97,7 +94,6 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
     fileType,
     keywords,
     downloadCount,
-    priority,
     uploader,
     uploadedAt,
     isFavorite: initialIsFavorite,
@@ -126,7 +122,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
   const style =
     (fileType && fileTypeStyles[fileType.toLowerCase()]) ||
     fileTypeStyles.default;
-  const TypeIcon = style.icon;
+
 
   const uploaderName = uploader
     ? uploader.firstName && uploader.lastName
@@ -137,199 +133,123 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
     : "Anonymous Architect";
 
   return (
-    <div className="group relative bg-white dark:bg-[#1A0B02] rounded-2xl border border-[#D9D9C2] dark:border-white/5 shadow-sm hover:shadow-xl hover:shadow-[#5A270F]/5 dark:hover:shadow-none transition-all duration-500 flex flex-col h-full animate-in fade-in slide-in-from-bottom-4">
-      {/* Visual Header Node */}
-      <div className="relative h-32 bg-[#5A270F] rounded-t-2xl overflow-hidden">
-        {/* Abstract Background pattern */}
-        <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
-        <div
-          className={`absolute inset-0 opacity-40 ${style.bg} blur-[40px] -translate-y-1/2`}
-        />
-
-        {/* File Type & Rating Badge Overlay */}
-        <div className="absolute top-4 left-4 z-10">
-          <div className="flex items-center gap-2">
-            <div
-              className={`h-8 w-8 rounded-lg bg-white/10 dark:bg-[#1A0B02]/40 backdrop-blur-md border border-white/20 flex items-center justify-center text-white dark:text-[#EEB38C] shadow-lg`}
-            >
-              <TypeIcon className="h-4 w-4" />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <span className="text-[8px] font-black uppercase tracking-[0.1em] text-[#EEB38C] bg-[#2A1205]/40 backdrop-blur-sm px-2 py-0.5 rounded border border-[#EEB38C]/20 leading-none">
-                {fileType || "Asset"}
-              </span>
-              {resource.averageRating !== undefined &&
-                resource.averageRating > 0 && (
-                  <div className="flex items-center gap-1 px-1.5 py-0.5 bg-white/10 dark:bg-[#1A0B02]/40 backdrop-blur-md rounded border border-white/10 w-fit">
-                    <Star className="h-2.5 w-2.5 text-[#DF8142] fill-[#DF8142]" />
-                    <span className="text-[8px] font-black text-white dark:text-[#EEB38C]">
-                      {resource.averageRating.toFixed(1)}
-                    </span>
-                  </div>
-                )}
-            </div>
-          </div>
+    <div className="group relative bg-white dark:bg-[#1A0B02] rounded-2xl border border-[#D9D9C2] dark:border-white/5 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col h-full animate-in fade-in slide-in-from-bottom-2 hover:-translate-y-1 overflow-hidden">
+      {/* ── Visual Node Header ── */}
+      <div className="relative h-20 bg-[#5A270F] overflow-hidden">
+        {/* Architectural Background Layers */}
+        <div className="absolute inset-0 blueprint-grid opacity-20" />
+        <div className={`absolute inset-0 opacity-40 ${style.bg} blur-[60px] translate-y-1/2 scale-150`} />
+        <div className="absolute inset-0 architectural-dot-grid opacity-10 text-[#EEB38C]" />
+        
+        {/* Protocol Label */}
+        <div className="absolute top-0 right-0 p-2 text-[24px] font-black text-white/5 uppercase select-none tracking-tighter italic">
+          NODE
         </div>
 
-        {/* Favorite Button for Approved/Student Resources */}
+        {/* Status indicator (Top Left) */}
+        <div className="absolute top-2.5 left-2.5 z-10 flex items-center gap-1.5">
+          <div className="px-1.5 py-0.5 bg-white/10 backdrop-blur-md rounded border border-white/20 flex items-center gap-1.5">
+             <div className={`h-1 w-1 rounded-full ${resource.status === 'archived' ? 'bg-rose-500' : 'bg-[#DF8142]'} animate-pulse`} />
+             <span className="text-[6.5px] font-black uppercase tracking-widest text-[#EEB38C]">
+               {fileType?.toUpperCase() || "GEN"}
+             </span>
+          </div>
+          {resource.averageRating !== undefined && resource.averageRating > 0 && (
+            <div className="flex items-center gap-0.5 px-1 py-0.5 bg-[#DF8142] rounded border border-white/10 shadow-lg">
+              <Star className="h-2 w-2 text-white fill-white" />
+              <span className="text-[7.5px] font-black text-white">{resource.averageRating.toFixed(1)}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Favorite Trigger (Top Right) */}
         {(resource.status === "approved" || resource.status === "student") && (
           <button
             onClick={toggleFavorite}
-            title={isFavorite ? "Remove from favorites" : "Add to favorites"}
-            aria-label={
-              isFavorite ? "Remove from favorites" : "Add to favorites"
-            }
-            className="absolute top-4 right-4 z-20 p-1.5 rounded-full bg-white/10 dark:bg-[#1A0B02]/40 backdrop-blur-md border border-white/20 shadow-lg hover:bg-white/20 dark:hover:bg-[#1A0B02]/60 transition-all active:scale-95 group/fav"
+            title={isFavorite ? "De-sync heart" : "Synchronize heart"}
+            aria-label={isFavorite ? "De-sync heart" : "Synchronize heart"}
+            className="absolute top-2.5 right-2.5 z-20 p-1.5 rounded-lg bg-white/10 backdrop-blur-md border border-white/10 hover:bg-[#rose-500]/20 hover:border-rose-500/30 transition-all group/fav active:scale-90"
           >
             <Heart
-              className={`h-3.5 w-3.5 transition-all duration-300 ${
-                isFavorite
-                  ? "fill-[#DF8142] text-[#DF8142]"
-                  : "text-white dark:text-[#EEB38C] group-hover/fav:text-[#DF8142]"
-              }`}
+              className={`h-3 w-3 ${isFavorite ? "fill-[#DF8142] text-[#DF8142]" : "text-white group-hover/fav:text-rose-400"}`}
             />
           </button>
         )}
-
-        {priority && (
-          <div
-            className={`absolute top-4 ${resource.status === "approved" || resource.status === "student" ? "right-14" : "right-4"} z-10 flex items-center gap-1.5 px-2 py-1 bg-[#DF8142] text-white rounded shadow-lg shadow-[#DF8142]/20 transform group-hover:scale-105 transition-transform`}
-          >
-            <Sparkles className="h-2.5 w-2.5 fill-white" />
-            <span className="text-[7.5px] font-black uppercase tracking-widest">
-              Premium
-            </span>
-          </div>
-        )}
-
-        {(role === "Admin" || role === "SuperAdmin" || role === "DepartmentHead") && resource.is_public && (
-           <div className="absolute bottom-4 right-6 z-10 flex items-center gap-2 px-3 py-1 bg-emerald-500/20 backdrop-blur-md border border-emerald-500/30 rounded-lg shadow-sm">
-             <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-             <span className="text-[8px] font-black uppercase tracking-widest text-emerald-100">Public Matrix</span>
-           </div>
-        )}
-
-        <div className="absolute bottom-3 left-4 z-10">
-          <span className="text-[7.5px] font-black uppercase tracking-[0.2em] text-[#EEB38C]/40">
-            Node: {String(id).padStart(5, "0")}
-          </span>
-        </div>
       </div>
 
-      {/* Content Intelligence Body */}
-      <div className="p-4 pb-1 flex-grow flex flex-col transition-colors duration-500">
-        <h3 className="text-base font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter hover:text-[#DF8142] dark:hover:text-[#DF8142] transition-colors line-clamp-2 leading-[1.1] font-space-grotesk uppercase italic mb-4">
-          <Link to={detailPath} className="line-clamp-2">
-            {title}
-          </Link>
-        </h3>
- 
-        <div className="flex items-center gap-2.5 mb-4 p-2 bg-[#EEB38C]/10 dark:bg-white/5 rounded-xl border border-[#D9D9C2] dark:border-white/5 group-hover:bg-[#DF8142]/5 transition-all duration-300">
-          <div className="h-7 w-7 rounded-lg bg-[#5A270F] text-white flex items-center justify-center shadow-sm">
-            <User className="h-3.5 w-3.5" />
-          </div>
-          <div className="overflow-hidden">
-            <p className="text-[6.5px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.2em] leading-none mb-0.5">
-              Authority Node
-            </p>
-            <p className="text-[10px] font-black text-[#5A270F] dark:text-white truncate leading-none">
-              {author || uploaderName}
-            </p>
-          </div>
+      {/* ── Content Intelligence Body ── */}
+      <div className="p-4 pb-2 flex-grow flex flex-col">
+        <div className="mb-3">
+          <p className="text-[7.5px] font-black text-[#DF8142] uppercase tracking-[0.2em] mb-1 italic">
+            Identification
+          </p>
+          <h3 className="text-[12px] font-black text-[#5A270F] dark:text-white tracking-tighter hover:text-[#DF8142] transition-colors line-clamp-2 uppercase italic leading-[1.1]">
+            <Link to={detailPath}>{title}</Link>
+          </h3>
         </div>
  
-        <div className="flex flex-wrap gap-1.5 mb-4 min-h-[40px]">
-          {Array.isArray(keywords) && keywords.length > 0 ? (
-            keywords.slice(0, 3).map((keyword) => (
-              <span
-                key={keyword}
-                className="text-[7.5px] font-black uppercase tracking-widest bg-[#FAF8F4] dark:bg-white/5 text-[#92664A] dark:text-[#EEB38C]/60 px-2 py-1 rounded border border-[#D9D9C2] dark:border-white/5 hover:border-[#DF8142] transition-colors"
-              >
-                {keyword}
-              </span>
-            ))
-          ) : (
-            <span className="text-[7.5px] font-black uppercase tracking-widest text-[#5A270F]/20 dark:text-white/10 italic">
-              Void Tags
-            </span>
-          )}
+        <div className="grid grid-cols-2 gap-4 mt-auto">
+          <div className="space-y-0.5">
+             <p className="text-[7.5px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-widest">Architect</p>
+             <div className="flex items-center gap-1.5 opacity-80">
+                <p className="text-[9px] font-black text-[#5A270F] dark:text-[#EEB38C] truncate uppercase">
+                  {author || uploaderName}
+                </p>
+             </div>
+          </div>
+          <div className="space-y-0.5 text-right">
+             <p className="text-[7.5px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-widest">Phase</p>
+             <p className="text-[9px] font-black text-[#DF8142] uppercase italic">
+               {new Date(uploadedAt).toLocaleDateString(undefined, { month: "short", year: "2-digit" })}
+             </p>
+          </div>
         </div>
 
         {resource.status &&
           resource.status !== "student" &&
           resource.status !== "approved" && (
-            <div className="mb-6 p-3 bg-[#5A270F] rounded-xl text-[9px] font-bold text-white relative overflow-hidden ring-1 ring-white/10 shadow-lg">
-              <div
-                className={`absolute top-0 right-0 w-12 h-12 ${
-                  resource.status === "rejected" ? "bg-red-700" : "bg-[#DF8142]"
-                } blur-2xl opacity-40`}
-              />
-              <div className="relative z-10 flex items-center justify-between">
-                <span className="uppercase tracking-widest flex items-center gap-2">
-                  <div
-                    className={`h-1.5 w-1.5 rounded-full ${
-                      resource.status === "rejected"
-                        ? "bg-red-700"
-                        : "bg-[#DF8142]"
-                    } animate-pulse`}
-                  />
-                  Matrix State: {resource.status}
-                </span>
-                {resource.adminComment && (
-                  <span className="text-white/70 font-medium italic truncate max-w-[90px]">
-                    Directive logged
-                  </span>
-                )}
-              </div>
+            <div className={`mt-4 p-2 rounded-lg flex items-center justify-between text-[8px] font-black uppercase tracking-widest border border-current opacity-70 ${resource.status === 'rejected' ? 'text-rose-500 bg-rose-500/5' : 'text-[#DF8142] bg-[#DF8142]/5'}`}>
+              <span className="flex items-center gap-2">
+                <div className={`h-1 w-1 rounded-full ${resource.status === 'rejected' ? 'bg-rose-500' : 'bg-[#DF8142]'}`} />
+                NODE_STATE_{resource.status}
+              </span>
             </div>
           )}
       </div>
-
-      {/* Action Terminals */}
-      <div className="mt-auto px-4 pb-4">
+ 
+      {/* ── Operational Terminals ── */}
+      <div className="p-4 pt-1">
+        <div className="h-px bg-gradient-to-r from-[#D9D9C2]/0 via-[#D9D9C2]/50 to-[#D9D9C2]/0 dark:via-white/5 mb-3" />
+        
         <div className="flex items-center justify-between mb-3 px-1">
-          <div className="flex items-center gap-1.5 group/stat">
+          <div className="flex items-center gap-1.5 group/dl">
             <Download className="h-2.5 w-2.5 text-[#DF8142]" />
-            <span className="text-[8.5px] font-black text-[#5A270F] dark:text-[#EEB38C]/60 tracking-widest">
-              {downloadCount.toLocaleString()}
+            <span className="text-[8px] font-black text-[#5A270F] dark:text-white/60 tracking-widest">
+              {downloadCount.toString().padStart(3, '0')}
             </span>
           </div>
-          <div className="flex items-center gap-1.5 group/stat">
-            <Calendar className="h-2.5 w-2.5 text-[#92664A]" />
-            <span className="text-[8.5px] font-black text-[#5A270F] dark:text-[#EEB38C]/60 tracking-widest uppercase">
-              {new Date(uploadedAt).toLocaleDateString(undefined, {
-                month: "short",
-                year: "numeric",
-              })}
-            </span>
+          <div className="flex gap-1">
+             {Array.isArray(keywords) && keywords.slice(0, 1).map((keyword) => (
+                <span key={keyword} className="text-[7px] font-black uppercase tracking-widest text-[#92664A] dark:text-white/20">
+                  {keyword}
+                </span>
+             ))}
           </div>
         </div>
-
+ 
          <div className="grid grid-cols-2 gap-2">
-          <a
-            href={`${
-              import.meta.env.VITE_API_URL
-            }/resources/${id}/view?token=${encodeURIComponent(
-              localStorage.getItem("token") || "",
-            )}`}
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center justify-center gap-1.5 py-2.5 bg-[#FAF8F4] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] rounded-xl text-[8px] font-black uppercase tracking-widest hover:bg-[#5A270F] dark:hover:bg-[#DF8142] hover:text-white transition-all border border-[#D9D9C2] dark:border-white/5 shadow-sm"
+          <Link
+            to={detailPath}
+            className="flex items-center justify-center gap-2 py-2 bg-white dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] rounded-xl text-[8.5px] font-black uppercase tracking-widest hover:bg-[#FAF8F4] dark:hover:bg-white/10 transition-all border border-[#D9D9C2] dark:border-white/10 shadow-sm active:scale-95"
           >
-            <Eye className="h-3.5 w-3.5" />
-            View State
-          </a>
+            <Eye className="h-3 w-3" /> Inspect
+          </Link>
           <a
-            href={`${
-              import.meta.env.VITE_API_URL
-            }/resources/${id}/download?token=${encodeURIComponent(
-              localStorage.getItem("token") || "",
-            )}`}
+            href={`${import.meta.env.VITE_API_URL}/resources/${id}/download?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
             download
-            className="flex items-center justify-center gap-1.5 py-2.5 bg-[#DF8142] text-white rounded-xl text-[8px] font-black uppercase tracking-widest hover:bg-[#5A270F] transition-all shadow-md shadow-[#DF8142]/10"
+            className="flex items-center justify-center gap-2 py-2 bg-[#5A270F] text-white rounded-xl text-[8.5px] font-black uppercase tracking-widest hover:bg-[#6C3B1C] transition-all shadow-lg shadow-[#5A270F]/10 active:scale-95"
           >
-            <Download className="h-3.5 w-3.5" />
-            Download
+            <Download className="h-3 w-3 text-[#EEB38C]" /> PULL
           </a>
         </div>
       </div>

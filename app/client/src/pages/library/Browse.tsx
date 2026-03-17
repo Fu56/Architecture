@@ -82,62 +82,59 @@ const Browse = () => {
   }, [initialFilters, fetchResources]);
 
   return (
-    <div className="min-h-screen bg-[#EFEDED] dark:bg-background selection:bg-[#DF8142]/20 selection:text-[#5A270F] dark:text-[#EEB38C] transition-colors duration-500">
+    <div className="min-h-screen bg-[#FAF8F4] dark:bg-[#0F0602] font-inter selection:bg-[#DF8142]/20 selection:text-[#5A270F] transition-colors duration-500">
       {/* Header Section */}
-      <div className="relative pt-32 pb-20 overflow-hidden bg-[#5A270F]">
+      <div className="relative pt-16 pb-12 overflow-hidden bg-[#5A270F] dark:bg-[#1A0B02]">
         <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(223,129,66,0.1),transparent_50%)] dark:bg-[radial-gradient(circle_at_30%_20%,rgba(223,129,66,0.05),transparent_50%)]" />
-          <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_80%,rgba(146,102,74,0.05),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 dark:opacity-5" />
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(223,129,66,0.1),transparent_50%)]" />
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5" />
         </div>
-
+ 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center mb-6">
             <button
               onClick={() => window.history.back()}
-              className="flex items-center gap-2 px-4 py-2 bg-white/5 dark:bg-card/5 hover:bg-white/10 dark:bg-card/10 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-[#EEB38C] hover:text-white transition-all group"
+              className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-[8.5px] font-black uppercase tracking-widest text-[#EEB38C] hover:bg-white/10 transition-all group"
             >
               <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" />
-              Back
+              Return
             </button>
-            {searchParams.get("search") && (
-              <Link
-                to="/"
-                className="flex items-center gap-2 px-4 py-2 bg-[#DF8142]/20 hover:bg-[#DF8142]/30 border border-[#DF8142]/20 rounded-xl text-[10px] font-black uppercase tracking-widest text-white transition-all"
-              >
-                Return to Home
-              </Link>
-            )}
-            {searchParams.get("stage") && (
-              <Link
-                to="/explore"
-                className="flex items-center gap-2 px-4 py-2 bg-[#DF8142]/20 hover:bg-[#DF8142]/30 border border-[#DF8142]/20 rounded-xl text-[10px] font-black uppercase tracking-widest text-white transition-all"
-              >
-                Return to Explore
-              </Link>
-            )}
+            <div className="flex gap-2">
+              {searchParams.get("search") && (
+                <Link
+                  to="/"
+                  className="px-3 py-1.5 bg-[#DF8142]/20 border border-[#DF8142]/20 rounded-lg text-[8.5px] font-black uppercase tracking-widest text-white hover:bg-[#DF8142]/30 transition-all"
+                >
+                  Origin
+                </Link>
+              )}
+              {searchParams.get("stage") && (
+                <Link
+                  to="/explore"
+                  className="px-3 py-1.5 bg-[#DF8142]/20 border border-[#DF8142]/20 rounded-lg text-[8.5px] font-black uppercase tracking-widest text-white hover:bg-[#DF8142]/30 transition-all"
+                >
+                  Nexus
+                </Link>
+              )}
+            </div>
           </div>
-
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#DF8142]/10 border border-[#DF8142]/20 rounded-full text-[10px] font-bold uppercase tracking-widest text-[#DF8142] mb-6 animate-in fade-in slide-in-from-top-4 duration-700">
-            <Library className="h-3 w-3" /> Universal Asset Repository
+ 
+          <div className="inline-flex items-center gap-2 px-2 py-0.5 bg-white/5 border border-white/10 rounded-full text-[7.5px] font-black uppercase tracking-[0.2em] text-[#EEB38C] mb-3">
+            <Library className="h-2.5 w-2.5" /> DATA REPOSITORY
           </div>
-          <h1 className="text-3xl sm:text-5xl font-bold text-white tracking-tight mb-4 leading-tight">
-            EXPLORE THE <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] to-[#EEB38C]">
-              DESIGN MATRIX
-            </span>
+          <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tighter mb-2 uppercase italic leading-none">
+            DATA <span className="text-[#DF8142] not-italic">EXCAVATION</span>
           </h1>
-          <p className="max-w-xl mx-auto text-[#92664A] dark:text-[#EEB38C]/60 text-base sm:text-lg font-medium leading-relaxed">
-            Access thousands of academic assets, BIM families, and technical
-            specifications curated for the modern architect.
+          <p className="max-w-md mx-auto text-white/30 text-[9px] font-black uppercase tracking-widest">
+            BIM protocols & academic schemas.
           </p>
         </div>
       </div>
 
       {/* Main Grid Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 relative z-20 pb-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20 pb-16">
         {/* Filter Unit */}
-        <div className="mb-12">
+        <div className="mb-6">
           <Filters
             key={initialFilters ? JSON.stringify(initialFilters) : "default"}
             onFilterChange={fetchResources}
@@ -146,20 +143,20 @@ const Browse = () => {
         </div>
 
         {/* Status Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10 px-4">
-          <div className="flex items-center gap-3">
-            <div className="h-2 w-2 rounded-full bg-[#DF8142] animate-pulse" />
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 px-2">
+          <div className="flex items-center gap-2.5">
+            <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142] animate-pulse" />
+            <p className="text-[8.5px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-[#EEB38C]/40">
               {loading
-                ? "Searching Cluster..."
-                : `${totalCount} Assets Isolated`}
+                ? "Locating Cluster Elements..."
+                : `${totalCount} Nodes Isolated`}
             </p>
           </div>
-
+ 
           {!loading && resources.length > 0 && (
-            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40/80 dark:text-[#EEB38C]/40">
+            <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40">
               <Sparkles className="h-3 w-3 text-[#DF8142]" />
-              Optimized for Studio Integration
+               Sync complete
             </div>
           )}
         </div>
@@ -203,31 +200,22 @@ const Browse = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-24 bg-[#EFEDED] dark:bg-card rounded-3xl border border-[#D9D9C2] dark:border-white/10 border-dashed transition-all duration-500">
-              <div className="h-16 w-16 bg-white dark:bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm border border-[#D9D9C2] dark:border-white/10 transition-colors">
-                <SearchX className="h-8 w-8 text-gray-400 dark:text-white/40" />
+            <div className="text-center py-24 bg-white dark:bg-[#1A0B02] rounded-2xl border border-[#D9D9C2] dark:border-white/5 border-dashed transition-all duration-500 shadow-xl shadow-[#5A270F]/5">
+              <div className="h-16 w-16 bg-[#FAF8F4] dark:bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-[#D9D9C2] dark:border-white/5">
+                <SearchX className="h-8 w-8 text-[#EEB38C]/40" />
               </div>
-              <h3 className="text-xl font-bold text-[#5A270F] dark:text-foreground mb-2 tracking-tight transition-colors">
-                No Signals Detected
+              <h3 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] mb-2 tracking-tighter uppercase italic">
+                NULL DETECTED
               </h3>
-              <p className="text-[#92664A] dark:text-foreground/60 font-medium max-w-xs mx-auto text-sm transition-colors">
-                The Designer Matrix returned null for your current parameters.
-                Try widening your search nexus.
+              <p className="text-[#92664A] dark:text-[#EEB38C]/40 font-black uppercase tracking-widest max-w-xs mx-auto text-[10px] leading-relaxed">
+                The Designer Matrix returned no protocols. Widening search nexus is recommended.
               </p>
               <button
                 onClick={() => fetchResources({})}
-                className="mt-6 text-[#DF8142] font-bold text-[10px] uppercase tracking-widest hover:text-[#5A270F] dark:text-[#EEB38C] transition-colors"
+                className="mt-8 px-8 py-3 bg-[#5A270F] text-white text-[9px] font-black uppercase tracking-widest rounded-xl hover:bg-[#DF8142] transition-colors shadow-lg shadow-[#5A270F]/20"
               >
-                Reset Search Protocols
+                Reset Search
               </button>
-              <div className="mt-8">
-                <button
-                  onClick={() => window.history.back()}
-                  className="px-6 py-2.5 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#DF8142] transition-colors active:scale-95"
-                >
-                  Return to Nexus Origin
-                </button>
-              </div>
             </div>
           )}
         </div>
