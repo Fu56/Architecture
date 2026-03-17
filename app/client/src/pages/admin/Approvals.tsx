@@ -32,6 +32,7 @@ const Approvals = () => {
 
   const [resources, setResources] = useState<Resource[]>([]);
   const [comments, setComments] = useState<{ [key: number]: string }>({});
+  const [isPublic, setIsPublic] = useState<{ [key: number]: boolean }>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -64,6 +65,7 @@ const Approvals = () => {
       if (status === "approved") {
         await api.patch(`/admin/resources/${resourceId}/approve`, {
           comment: feedback,
+          is_public: isDeptHead ? !!isPublic[resourceId] : undefined,
         });
       } else {
         await api.patch(`/admin/resources/${resourceId}/reject`, {
@@ -216,6 +218,18 @@ const Approvals = () => {
                       value={comments[resource.id] || ""}
                       onChange={(e) => handleCommentChange(resource.id, e.target.value)}
                     />
+
+                    {isDeptHead && (
+                      <div className="flex items-center gap-4 px-6 py-4 bg-[#DF8142]/5 border-2 border-[#DF8142]/20 rounded-2xl group/toggle cursor-pointer mt-4" onClick={() => setIsPublic(prev => ({...prev, [resource.id]: !prev[resource.id]}))}>
+                        <div className={`h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all ${isPublic[resource.id] ? "bg-[#DF8142] border-[#DF8142]" : "border-[#BCAF9C] dark:border-white/20"}`}>
+                          {isPublic[resource.id] && <Check className="h-4 w-4 text-white" />}
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-widest">Deploy to Public Matrix</p>
+                          <p className="text-[9px] font-bold text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest">Mark this asset as globally visible to all student nodes</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 

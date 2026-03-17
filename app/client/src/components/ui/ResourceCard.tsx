@@ -202,6 +202,13 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
           </div>
         )}
 
+        {(role === "Admin" || role === "SuperAdmin" || role === "DepartmentHead") && resource.is_public && (
+           <div className="absolute bottom-4 right-6 z-10 flex items-center gap-2 px-3 py-1 bg-emerald-500/20 backdrop-blur-md border border-emerald-500/30 rounded-lg shadow-sm">
+             <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+             <span className="text-[8px] font-black uppercase tracking-widest text-emerald-100">Public Matrix</span>
+           </div>
+        )}
+
         <div className="absolute bottom-4 left-6 z-10">
           <span className="text-[9px] font-bold uppercase tracking-widest text-[#5A270F]/80 dark:text-[#EEB38C]/60">
             Node Registry: {String(id).padStart(5, "0")}

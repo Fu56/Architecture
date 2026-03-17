@@ -11,7 +11,9 @@ import {
   Trash2, 
   RotateCcw, 
   Search,
-  BookOpen
+  BookOpen,
+  Globe,
+  Lock
 } from "lucide-react";
 import { currentRole } from "../../lib/auth";
 
@@ -103,6 +105,19 @@ const Resources = () => {
       },
       cancel: { label: "Abort", onClick: () => {} },
     });
+  };
+
+  const handleToggleVisibility = async (id: number, currentStatus: boolean) => {
+    try {
+      await api.patch(`/admin/resources/${id}/visibility`, { is_public: !currentStatus });
+      setResources((prev) => 
+        prev.map((r) => r.id === id ? { ...r, is_public: !currentStatus } : r)
+      );
+      toast.success(`Resource protocol switched to ${!currentStatus ? "PUBLIC" : "PRIVATE"}`);
+    } catch (err) {
+      console.error("Failed to toggle visibility:", err);
+      toast.error("Access Forbidden: Unified visibility control restricted.");
+    }
   };
 
   const handlePermanentDelete = (id: number) => {
@@ -257,13 +272,26 @@ const Resources = () => {
                         </button>
                       </>
                     ) : (
-                      <button
-                        onClick={() => handleDelete(resource.id)}
-                        className="p-4 bg-[#1A0B04] text-[#EEB38C] rounded-2xl shadow-2xl hover:bg-black transition-all active:scale-95 border border-white/5"
-                        title="Archive Resource"
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </button>
+                      <>
+                        <button
+                          onClick={() => handleToggleVisibility(resource.id, !!resource.is_public)}
+                          className={`p-4 rounded-2xl shadow-2xl transition-all active:scale-95 border ${
+                            resource.is_public 
+                              ? "bg-emerald-500 text-white border-emerald-400" 
+                              : "bg-[#1A0B04] text-[#EEB38C] border-white/5"
+                          }`}
+                          title={resource.is_public ? "Make Private" : "Make Public"}
+                        >
+                          {resource.is_public ? <Globe className="h-5 w-5" /> : <Lock className="h-5 w-5" />}
+                        </button>
+                        <button
+                          onClick={() => handleDelete(resource.id)}
+                          className="p-4 bg-[#1A0B04] text-[#EEB38C] rounded-2xl shadow-2xl hover:bg-black transition-all active:scale-95 border border-white/5"
+                          title="Archive Resource"
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </button>
+                      </>
                     )}
                   </div>
                 )}

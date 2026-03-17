@@ -58,6 +58,7 @@ export interface Resource {
   ratingCount?: number;
   isFavorite?: boolean;
   forYearStudents?: number;
+  is_public?: boolean;
 }
 
 export interface Comment {

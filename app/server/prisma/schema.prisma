@@ -156,6 +156,7 @@ model Resource {
     archived_at     DateTime?
     priority_tag    String?
     admin_comment   String?
+    is_public       Boolean?      @default(false)
 
     comments      Comment[]
     ratings       Rating[]

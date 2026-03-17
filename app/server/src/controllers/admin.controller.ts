@@ -69,7 +69,7 @@ export const getPendingResources = async (req: Request, res: Response) => {
 export const approveResource = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { comment } = req.body;
+    const { comment, is_public } = req.body;
 
     const requester = (req as any).user;
     const requesterRole = (requester?.role?.name || requester?.role || "").toLowerCase();
@@ -94,6 +94,7 @@ export const approveResource = async (req: Request, res: Response) => {
         status: newStatus,
         approved_at: isDeptHead ? new Date() : undefined,
         admin_comment: comment,
+        is_public: isDeptHead ? !!is_public : undefined,
       } as any,
       include: {
         uploader: {
@@ -490,6 +491,35 @@ export const restoreResource = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Restore Error:", error);
     res.status(500).json({ message: "Error restoring resource" });
+  }
+};
+
+export const toggleResourcePublicStatus = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { is_public } = req.body;
+    const resourceId = Number(id);
+
+    const requester = (req as any).user;
+    const requesterRole = (requester?.role?.name || requester?.role || "").toLowerCase();
+    const isAuthorized = ["departmenthead", "superadmin"].includes(requesterRole);
+
+    if (!isAuthorized) {
+      return res.status(403).json({ message: "Only Department Heads can toggle public visibility" });
+    }
+
+    const updatedResource = await prisma.resource.update({
+      where: { id: resourceId },
+      data: { is_public: Boolean(is_public) },
+    });
+
+    res.json({
+      message: `Resource visibility set to ${is_public ? "Public" : "Private"}`,
+      resource: updatedResource,
+    });
+  } catch (error) {
+    console.error("Toggle Visibility Error:", error);
+    res.status(500).json({ message: "Error updating resource visibility" });
   }
 };
 

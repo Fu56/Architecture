@@ -117,30 +117,32 @@ export const listResources = async (req: Request, res: Response) => {
     const finalSort = sort || sortBy;
     const finalLimit = limit ? Number(limit) : undefined;
 
+    const userRole = getUserRole(req);
+    const isPrivileged = [
+      "Admin",
+      "admin",
+      "SuperAdmin",
+      "DepartmentHead",
+    ].includes(userRole || "");
+
     // Build filter
     const where: any = {};
 
-    // Students should only see 'approved' usually, but this logic can be in service or here.
-    // If user is Admin, they might want 'pending'.
-    // Let's assume this is the public/student list.
     if (status) {
-      // Security Check: Only admins/dept heads can view archived resources
-      const userRole = getUserRole(req);
-      const isPrivileged = [
-        "Admin",
-        "admin",
-        "SuperAdmin",
-        "DepartmentHead",
-      ].includes(userRole || "");
-
       if (status === "archived" && !isPrivileged) {
-        where.status = "student"; // Force back to public view
+        where.status = "student";
       } else {
         where.status = String(status);
       }
     } else {
-      // Default to 'student' status
       where.status = "student";
+    }
+
+    // For public browse: only show is_public: true items to non-admins
+    if (!status || status === "student") {
+      if (!isPrivileged) {
+        where.is_public = true;
+      }
     }
 
     if (stage) where.design_stage_id = Number(stage);

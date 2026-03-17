@@ -27,6 +27,7 @@ import {
   getArchivedResources,
   advanceAcademicStatus,
   checkAndSuspendExpiredStudents,
+  toggleResourcePublicStatus,
 } from "../controllers/admin.controller";
 
 const router = Router();
@@ -58,6 +59,11 @@ router.patch(
   "/resources/:id/restore",
   requireRole(["Admin", "DepartmentHead", "SuperAdmin"]),
   restoreResource,
+);
+router.patch(
+  "/resources/:id/visibility",
+  requireRole(["DepartmentHead", "SuperAdmin"]),
+  toggleResourcePublicStatus,
 );
 router.delete(
   "/resources/:id/permanent",
