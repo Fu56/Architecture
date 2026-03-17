@@ -137,9 +137,9 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
     : "Anonymous Architect";
 
   return (
-    <div className="group relative bg-[#FDFCFB] dark:bg-card rounded-[2.5rem] border border-[#BCAF9C] dark:border-white/10 shadow-lg shadow-[#5A270F]/5 hover:shadow-[0_25px_50px_-12px_rgba(90,39,15,0.2)] dark:hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] hover:-translate-y-1 transition-all duration-500 flex flex-col h-full animate-in fade-in slide-in-from-bottom-4">
+    <div className="group relative bg-white dark:bg-[#1A0B02] rounded-2xl border border-[#D9D9C2] dark:border-white/5 shadow-sm hover:shadow-xl hover:shadow-[#5A270F]/5 dark:hover:shadow-none transition-all duration-500 flex flex-col h-full animate-in fade-in slide-in-from-bottom-4">
       {/* Visual Header Node */}
-      <div className="relative h-40 bg-[#5A270F] rounded-t-[2.5rem] overflow-hidden">
+      <div className="relative h-32 bg-[#5A270F] rounded-t-2xl overflow-hidden">
         {/* Abstract Background pattern */}
         <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
         <div
@@ -147,22 +147,22 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
         />
 
         {/* File Type & Rating Badge Overlay */}
-        <div className="absolute top-6 left-6 z-10">
-          <div className="flex items-center gap-3">
+        <div className="absolute top-4 left-4 z-10">
+          <div className="flex items-center gap-2">
             <div
-              className={`h-10 w-10 rounded-xl bg-white/10 dark:bg-card/20 backdrop-blur-md border border-white/20 flex items-center justify-center text-white dark:text-[#EEB38C] shadow-xl`}
+              className={`h-8 w-8 rounded-lg bg-white/10 dark:bg-[#1A0B02]/40 backdrop-blur-md border border-white/20 flex items-center justify-center text-white dark:text-[#EEB38C] shadow-lg`}
             >
-              <TypeIcon className="h-5 w-5" />
+              <TypeIcon className="h-4 w-4" />
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#EEB38C] bg-[#2A1205]/40 backdrop-blur-sm px-3 py-1 rounded-lg border border-[#EEB38C]/20">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[8px] font-black uppercase tracking-[0.1em] text-[#EEB38C] bg-[#2A1205]/40 backdrop-blur-sm px-2 py-0.5 rounded border border-[#EEB38C]/20 leading-none">
                 {fileType || "Asset"}
               </span>
               {resource.averageRating !== undefined &&
                 resource.averageRating > 0 && (
-                  <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/10 dark:bg-card/20 backdrop-blur-md rounded-lg border border-white/10 w-fit">
-                    <Star className="h-3 w-3 text-[#DF8142] fill-[#DF8142]" />
-                    <span className="text-[10px] font-black text-white dark:text-[#EEB38C]">
+                  <div className="flex items-center gap-1 px-1.5 py-0.5 bg-white/10 dark:bg-[#1A0B02]/40 backdrop-blur-md rounded border border-white/10 w-fit">
+                    <Star className="h-2.5 w-2.5 text-[#DF8142] fill-[#DF8142]" />
+                    <span className="text-[8px] font-black text-white dark:text-[#EEB38C]">
                       {resource.averageRating.toFixed(1)}
                     </span>
                   </div>
@@ -179,10 +179,10 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             aria-label={
               isFavorite ? "Remove from favorites" : "Add to favorites"
             }
-            className="absolute top-6 right-6 z-20 p-2 rounded-full bg-white/10 dark:bg-card/20 backdrop-blur-md border border-white/20 shadow-lg hover:bg-white/20 dark:hover:bg-card/30 transition-all active:scale-95 group/fav"
+            className="absolute top-4 right-4 z-20 p-1.5 rounded-full bg-white/10 dark:bg-[#1A0B02]/40 backdrop-blur-md border border-white/20 shadow-lg hover:bg-white/20 dark:hover:bg-[#1A0B02]/60 transition-all active:scale-95 group/fav"
           >
             <Heart
-              className={`h-4 w-4 transition-all duration-300 ${
+              className={`h-3.5 w-3.5 transition-all duration-300 ${
                 isFavorite
                   ? "fill-[#DF8142] text-[#DF8142]"
                   : "text-white dark:text-[#EEB38C] group-hover/fav:text-[#DF8142]"
@@ -193,11 +193,11 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
 
         {priority && (
           <div
-            className={`absolute top-6 ${resource.status === "approved" || resource.status === "student" ? "right-16" : "right-6"} z-10 flex items-center gap-2 px-3 py-1.5 bg-[#DF8142] text-white rounded-lg shadow-lg shadow-[#DF8142]/20 transform group-hover:scale-105 transition-transform`}
+            className={`absolute top-4 ${resource.status === "approved" || resource.status === "student" ? "right-14" : "right-4"} z-10 flex items-center gap-1.5 px-2 py-1 bg-[#DF8142] text-white rounded shadow-lg shadow-[#DF8142]/20 transform group-hover:scale-105 transition-transform`}
           >
-            <Sparkles className="h-3 w-3 fill-white" />
-            <span className="text-[9px] font-bold uppercase tracking-widest">
-              High-Fidelity
+            <Sparkles className="h-2.5 w-2.5 fill-white" />
+            <span className="text-[7.5px] font-black uppercase tracking-widest">
+              Premium
             </span>
           </div>
         )}
@@ -209,48 +209,48 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
            </div>
         )}
 
-        <div className="absolute bottom-4 left-6 z-10">
-          <span className="text-[9px] font-bold uppercase tracking-widest text-[#5A270F]/80 dark:text-[#EEB38C]/60">
-            Node Registry: {String(id).padStart(5, "0")}
+        <div className="absolute bottom-3 left-4 z-10">
+          <span className="text-[7.5px] font-black uppercase tracking-[0.2em] text-[#EEB38C]/40">
+            Node: {String(id).padStart(5, "0")}
           </span>
         </div>
       </div>
 
       {/* Content Intelligence Body */}
-      <div className="p-6 pb-2 flex-grow flex flex-col transition-colors duration-500">
-        <h3 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight hover:text-[#DF8142] dark:hover:text-[#DF8142] transition-colors line-clamp-2 leading-tight font-space-grotesk">
+      <div className="p-4 pb-1 flex-grow flex flex-col transition-colors duration-500">
+        <h3 className="text-base font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter hover:text-[#DF8142] dark:hover:text-[#DF8142] transition-colors line-clamp-2 leading-[1.1] font-space-grotesk uppercase italic mb-4">
           <Link to={detailPath} className="line-clamp-2">
             {title}
           </Link>
         </h3>
-
-        <div className="flex items-center gap-3 mb-6 p-3 bg-[#EEB38C]/15 dark:bg-white/5 rounded-2xl border border-[#EEB38C]/40 dark:border-white/10 group-hover:bg-[#DF8142]/10 group-hover:border-[#DF8142]/30 transition-all duration-300">
-          <div className="h-8 w-8 rounded-lg bg-white dark:bg-[#2A1205] border border-[#EEB38C]/40 dark:border-white/10 flex items-center justify-center text-[#DF8142] dark:text-[#EEB38C]/40 shadow-sm">
-            <User className="h-4 w-4" />
+ 
+        <div className="flex items-center gap-2.5 mb-4 p-2 bg-[#EEB38C]/10 dark:bg-white/5 rounded-xl border border-[#D9D9C2] dark:border-white/5 group-hover:bg-[#DF8142]/5 transition-all duration-300">
+          <div className="h-7 w-7 rounded-lg bg-[#5A270F] text-white flex items-center justify-center shadow-sm">
+            <User className="h-3.5 w-3.5" />
           </div>
           <div className="overflow-hidden">
-            <p className="text-[8px] font-black text-[#5A270F] dark:text-[#EEB38C]/80 uppercase tracking-widest leading-none mb-1">
+            <p className="text-[6.5px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.2em] leading-none mb-0.5">
               Authority Node
             </p>
-            <p className="text-xs font-black text-[#5A270F] dark:text-[#EEB38C] truncate leading-none">
+            <p className="text-[10px] font-black text-[#5A270F] dark:text-white truncate leading-none">
               {author || uploaderName}
             </p>
           </div>
         </div>
-
-        <div className="flex flex-wrap gap-2 mb-6 min-h-[48px]">
+ 
+        <div className="flex flex-wrap gap-1.5 mb-4 min-h-[40px]">
           {Array.isArray(keywords) && keywords.length > 0 ? (
             keywords.slice(0, 3).map((keyword) => (
               <span
                 key={keyword}
-                className="text-[9px] font-black uppercase tracking-[0.15em] bg-white dark:bg-white/10 text-[#5A270F] dark:text-[#EEB38C] px-3 py-2 rounded-lg border border-[#BCAF9C] dark:border-white/10 hover:bg-[#DF8142] dark:hover:bg-[#DF8142] hover:text-white dark:hover:text-white transition-all duration-300 cursor-default shadow-sm"
+                className="text-[7.5px] font-black uppercase tracking-widest bg-[#FAF8F4] dark:bg-white/5 text-[#92664A] dark:text-[#EEB38C]/60 px-2 py-1 rounded border border-[#D9D9C2] dark:border-white/5 hover:border-[#DF8142] transition-colors"
               >
                 {keyword}
               </span>
             ))
           ) : (
-            <span className="text-[9px] font-bold uppercase tracking-widest text-[#5A270F]/40 dark:text-white/20 italic transition-colors">
-              No Metadata Tags
+            <span className="text-[7.5px] font-black uppercase tracking-widest text-[#5A270F]/20 dark:text-white/10 italic">
+              Void Tags
             </span>
           )}
         </div>
@@ -286,21 +286,17 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
       </div>
 
       {/* Action Terminals */}
-      <div className="mt-auto px-6 pb-6">
-        <div className="flex items-center justify-between mb-4 px-1">
-          <div className="flex items-center gap-2 group/stat">
-            <div className="h-6 w-6 rounded-lg bg-[#DF8142]/10 dark:bg-[#DF8142]/5 flex items-center justify-center text-[#DF8142] group-hover/stat:bg-[#DF8142] group-hover/stat:text-white transition-all duration-300">
-              <Download className="h-3 w-3" />
-            </div>
-            <span className="text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] tracking-[0.2em]">
+      <div className="mt-auto px-4 pb-4">
+        <div className="flex items-center justify-between mb-3 px-1">
+          <div className="flex items-center gap-1.5 group/stat">
+            <Download className="h-2.5 w-2.5 text-[#DF8142]" />
+            <span className="text-[8.5px] font-black text-[#5A270F] dark:text-[#EEB38C]/60 tracking-widest">
               {downloadCount.toLocaleString()}
             </span>
           </div>
-          <div className="flex items-center gap-2 group/stat">
-            <div className="h-6 w-6 rounded-lg bg-[#5A270F]/10 dark:bg-white/5 flex items-center justify-center text-[#5A270F] dark:text-[#92664A] group-hover/stat:bg-[#5A270F] group-hover/stat:text-white transition-all duration-300">
-              <Calendar className="h-3 w-3" />
-            </div>
-            <span className="text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] tracking-[0.2em]">
+          <div className="flex items-center gap-1.5 group/stat">
+            <Calendar className="h-2.5 w-2.5 text-[#92664A]" />
+            <span className="text-[8.5px] font-black text-[#5A270F] dark:text-[#EEB38C]/60 tracking-widest uppercase">
               {new Date(uploadedAt).toLocaleDateString(undefined, {
                 month: "short",
                 year: "numeric",
@@ -309,7 +305,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
           </div>
         </div>
 
-         <div className="grid grid-cols-2 gap-3">
+         <div className="grid grid-cols-2 gap-2">
           <a
             href={`${
               import.meta.env.VITE_API_URL
@@ -318,9 +314,9 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             )}`}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center gap-2 py-4 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#5A270F] dark:hover:bg-[#DF8142] hover:text-white transition-all shadow-sm active:scale-95 border border-[#BCAF9C] dark:border-white/10"
+            className="flex items-center justify-center gap-1.5 py-2.5 bg-[#FAF8F4] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] rounded-xl text-[8px] font-black uppercase tracking-widest hover:bg-[#5A270F] dark:hover:bg-[#DF8142] hover:text-white transition-all border border-[#D9D9C2] dark:border-white/5 shadow-sm"
           >
-            <Eye className="h-4 w-4" />
+            <Eye className="h-3.5 w-3.5" />
             View State
           </a>
           <a
@@ -330,9 +326,9 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
               localStorage.getItem("token") || "",
             )}`}
             download
-            className="flex items-center justify-center gap-2 py-4 bg-[#DF8142] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#5A270F] transition-all shadow-xl shadow-[#DF8142]/20 active:scale-95 hover:-translate-y-0.5"
+            className="flex items-center justify-center gap-1.5 py-2.5 bg-[#DF8142] text-white rounded-xl text-[8px] font-black uppercase tracking-widest hover:bg-[#5A270F] transition-all shadow-md shadow-[#DF8142]/10"
           >
-            <Download className="h-4 w-4" />
+            <Download className="h-3.5 w-3.5" />
             Download
           </a>
         </div>
