@@ -189,7 +189,7 @@ const AboutUs = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {[
               { id: '01', tag: 'Origin Genesis', title: 'Prototype\nAlpha', desc: 'Foundational matrix conceptualized during collaborative research phase.', date: 'MAR_2025', icon: Map },
-              { id: '02', tag: 'Core Synergy', title: 'Interdisciplinary\nSync', desc: 'Architecture and Software Engineering acheived class-wide synchronization.', date: 'OCT_2025', icon: Users, featured: true },
+              { id: '02', tag: 'Core Synergy', title: 'Interdisciplinary\nSync', desc: 'Architecture and Software Engineering achieved class-wide synchronization.', date: 'OCT_2025', icon: Users, featured: true },
               { id: '03', tag: 'Deployment', title: 'Operational\nNexus', desc: 'Full integration and transition to current active Architectural Matrix.', date: 'FEB_2026', icon: Globe }
             ].map((item, i) => (
               <div 

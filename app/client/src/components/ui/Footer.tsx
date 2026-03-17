@@ -2,17 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
   BookOpen,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
-  ArrowRight,
   Globe,
   ShieldCheck,
   Cpu,
-  Layers,
-  Loader2,
-  CheckCircle,
+  Users,
 } from "lucide-react";
 import { toast } from "../../lib/toast";
 import { api } from "../../lib/api";
@@ -95,225 +88,190 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-[#FAF8F4] dark:bg-[#1A0B04] text-[#5A270F]/80 dark:text-gray-400 pt-24 pb-12 overflow-hidden relative transition-colors duration-500">
-      {/* Decorative Blueprint Background */}
-      <div className="absolute top-0 left-0 w-full h-full blueprint-grid-dark opacity-[0.02] pointer-events-none" />
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#DF8142]/20 to-transparent" />
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#DF8142]/10 blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-
+    <footer className="relative bg-white dark:bg-[#080402] border-t border-[#D9D9C2]/40 dark:border-white/5 py-24 transition-colors duration-500">
+      {/* Structural Document Grid */}
+      <div className="absolute inset-0 blueprint-grid opacity-[0.04] pointer-events-none" />
+      
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-16 mb-16 lg:mb-24">
-          {/* Brand Identity Module */}
-          <div className="lg:col-span-5 space-y-12">
-            <Link to="/" className="flex items-center gap-4 group">
-              <div className="relative p-3 bg-[#DF8142] rounded-2xl shadow-lg shadow-[#DF8142]/20 transition-all duration-700 group-hover:rotate-12 group-hover:scale-110">
-                <BookOpen className="h-7 w-7 text-white relative z-10" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-3xl font-black tracking-tight text-[#5A270F] dark:text-white leading-none uppercase">
-                  ARCH
-                  <span className="text-[#DF8142]">VAULT</span>
-                </span>
-                <span className="text-[9px] font-bold tracking-widest uppercase text-[#5A270F] dark:text-[#EEB38C] mt-1 px-1.5 py-0.5 bg-[#DF8142]/10 rounded border border-[#DF8142]/20 inline-block w-fit">
-                  EST. 2024 / NODE-01
-                </span>
-              </div>
-            </Link>
-
-            <p className="text-[#6C3B1C] dark:text-[#EEB38C]/80 text-lg leading-relaxed max-w-sm font-medium border-l-2 border-[#DF8142]/30 pl-6">
-              The digital archive for visionary architects. Accelerating
-              evolution through verified intellectual property.
-            </p>
-
-            <div className="flex flex-wrap gap-3 sm:gap-4">
-              {[
-                { icon: Facebook, label: "Meta" },
-                { icon: Twitter, label: "X-Network" },
-                { icon: Instagram, label: "Visuals" },
-                { icon: Linkedin, label: "Professional" },
-              ].map((social, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="p-4 bg-[#EFEDED] dark:bg-white/5 border border-black/5 dark:border-white/5 rounded-2xl text-[#6C3B1C] dark:text-white/40 hover:bg-[#DF8142] hover:text-white hover:border-[#DF8142]/30 transition-all duration-500 hover:-translate-y-1 group/social dark:hover:text-white"
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-4 w-4" />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Navigation Matrix */}
-          <div className="lg:col-span-3">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F]/80 dark:text-white/50 mb-8 flex items-center gap-3">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#DF8142]" />
-              SYSTEM INDEX
-            </h3>
-            <ul className="space-y-3 sm:space-y-4 text-sm font-black uppercase tracking-widest">
-              {[
-                { label: "Collective Archive", to: "/browse" },
-                { label: "Research Journal", to: "/blog" },
-                { label: "Portal", to: "/login" },
-
-                { label: "Design Console", to: "/explore" },
-              ].map((link) => (
-                <li key={link.label}>
-                  <Link
-                    to={link.to}
-                    className="text-[#6C3B1C] dark:text-[#EEB38C]/70 hover:text-[#5A270F] dark:hover:text-white transition-all flex items-center gap-4 group/link"
-                  >
-                    <div className="w-2 h-[1px] bg-[#D9D9C2] dark:bg-[#92664A] group-hover/link:w-6 group-hover/link:bg-[#DF8142] transition-all" />
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Infrastructure Metrics Module */}
-          <div className="lg:col-span-4 bg-white dark:bg-card/[0.02] p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/5 relative overflow-hidden group/signup transition-all">
-            <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover/signup:opacity-[0.08] transition-all duration-1000 group-hover/signup:rotate-12 group-hover/signup:scale-125">
-              <Cpu className="h-48 w-48 text-[#DF8142]" />
-            </div>
-
-            <div className="relative z-10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2.5 bg-[#EFEDED] dark:bg-white/5 rounded-xl border border-black/5 dark:border-white/10">
-                  <Layers className="h-5 w-5 text-[#DF8142]" />
-                </div>
-                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-white">
-                  METRIC SUBSCRIPTION
-                </h3>
-              </div>
-
-              <p className="text-base text-[#6C3B1C] dark:text-[#EEB38C]/80 mb-8 font-bold leading-relaxed">
-                Registration for our monthly technical publication. Zero-Trust
-                verified transmission.
-              </p>
-
-              <form
-                onSubmit={handleFooterSubscribe}
-                className="relative group/input mb-8"
-              >
-                <div className="absolute -inset-0.5 bg-[#DF8142] rounded-2xl blur opacity-0 group-focus-within/input:opacity-10 transition" />
-                <div className="relative">
-                  <input
-                    type="email"
-                    id="footer-subscribe-email"
-                    title="Subscription Email"
-                    value={footerEmail}
-                    onChange={(e) => {
-                      setFooterEmail(e.target.value);
-                      if (footerError) setFooterError("");
-                    }}
-                    disabled={footerSubscribing || footerSubscribed}
-                    placeholder="Enter your email identifier..."
-                    className={`relative w-full bg-[#EFEDED] dark:bg-white/5 border ${footerError ? "border-red-500/50" : "border-black/10 dark:border-white/10"} rounded-xl py-4 pl-6 pr-16 text-xs font-black text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all placeholder:text-[#92664A]/50 dark:placeholder:text-white/20 disabled:opacity-50`}
-                  />
-                  <button
-                    type="submit"
-                    disabled={footerSubscribing || footerSubscribed}
-                    title="Execute Subscription"
-                    aria-label="Initialize Footer Transmission"
-                    className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[#DF8142] rounded-lg hover:bg-[#5A270F] dark:hover:bg-white transition-all duration-300 text-white dark:hover:text-[#5A270F] shadow-lg shadow-[#DF8142]/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    {footerSubscribing ? (
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                    ) : footerSubscribed ? (
-                      <CheckCircle className="h-5 w-5" />
-                    ) : (
-                      <ArrowRight className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
-                {footerError && (
-                  <p className="mt-2 text-xs text-red-400 font-medium flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-300">
-                    <span className="inline-block w-1 h-1 rounded-full bg-red-400" />
-                    {footerError}
-                  </p>
-                )}
-              </form>
-
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 py-4 px-4 sm:px-6 bg-[#EFEDED] dark:bg-[#6C3B1C]/30 rounded-[1.5rem] border border-black/5 dark:border-white/5">
-                <div className="flex -space-x-2">
-                  {(stats.activeSquad && stats.activeSquad.length > 0
-                    ? stats.activeSquad.slice(0, 3)
-                    : [1, 2, 3]
-                  ).map((item, i) => (
-                    <div
-                      key={i}
-                      className="w-7 h-7 rounded-full border-2 border-[#FAF8F4] dark:border-[#5A270F] bg-[#92664A] overflow-hidden group/avatar"
-                    >
-                      <img
-                        src={
-                          typeof item === "object" && item.image
-                            ? `${import.meta.env.VITE_API_URL}/${item.image}`
-                            : `https://ui-avatars.com/api/?name=${typeof item === "object" ? item.email : i}&background=5A270F&color=fff&bold=true`
-                        }
-                        className="grayscale group-hover/avatar:grayscale-0 transition-all duration-500 w-full h-full object-cover"
-                        alt="Node Member"
-                      />
-                    </div>
-                  ))}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+          
+          {/* Institutional Branding Block */}
+          <div className="lg:col-span-12 border-b border-[#D9D9C2]/40 dark:border-white/5 pb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-10">
+            <div className="space-y-6">
+              <Link to="/" className="flex items-center gap-4 group">
+                <div className="w-10 h-10 bg-[#5A270F] flex items-center justify-center p-2.5 rounded-lg shadow-xl">
+                    <BookOpen className="w-full h-full text-white" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[8px] font-black text-[#5A270F]/60 dark:text-white/40 uppercase tracking-[0.3em]">
-                    ACTIVE SQUAD
-                  </span>
-                  <span className="text-[10px] font-black text-[#DF8142] dark:text-[#EEB38C] uppercase tracking-widest">
-                    {(
-                      stats.totalUsers + stats.newsletterCount
-                    ).toLocaleString()}{" "}
-                    ARCHITECTS
-                  </span>
+                    <span className="text-4xl font-black tracking-tighter text-[#5A270F] dark:text-white uppercase italic leading-none">
+                        ARCH<span className="text-[#DF8142]">VAULT.</span>
+                    </span>
+                    <span className="text-[10px] font-black tracking-[0.6em] text-[#DF8142] uppercase mt-1">
+                        CENTRAL_REPOSITORY
+                    </span>
+                </div>
+              </Link>
+              <div className="flex flex-col gap-1">
+                <span className="text-xs font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-white">
+                    Wollo University // KIOT Campus
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#5A270F]/40 dark:text-white/20">
+                    Faculty of Architecture & Urban Design
+                </span>
+              </div>
+            </div>
+            
+            <div className="flex flex-col items-start md:items-end gap-3 text-left md:text-right max-w-md">
+                <p className="text-[11px] font-bold leading-relaxed text-[#6C3B1C] dark:text-white/40 uppercase tracking-widest">
+                    The authenticated architectural archive for professional thesis standards and engineering blueprints at Wollo University.
+                </p>
+                <div className="h-0.5 w-12 bg-[#DF8142]" />
+            </div>
+          </div>
+
+          {/* Site Matrix & Sync Node */}
+          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-12 lg:gap-20">
+            {/* Index 01 */}
+            <div className="space-y-8">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-[#5A270F] dark:text-white flex items-center gap-3">
+                <div className="w-1 h-1 bg-[#DF8142]" />
+                INDEX_MATRICES
+              </h3>
+              <ul className="space-y-4">
+                {[
+                  { label: "EXPLORE_ALL", to: "/explore" },
+                  { label: "BLUEPRINT_ARCHIVE", to: "/browse" },
+                  { label: "THESIS_REPORTS", to: "/resources" },
+                  { label: "KNOWLEDGE_BASE", to: "/blog" },
+                ].map((link) => (
+                  <li key={link.label}>
+                    <Link to={link.to} className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#6C3B1C]/60 dark:text-white/30 hover:text-[#5A270F] dark:hover:text-white transition-all">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Index 02 */}
+            <div className="space-y-8">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-[#5A270F] dark:text-white flex items-center gap-3">
+                <div className="w-1 h-1 bg-[#DF8142]" />
+                PROTOCOL_NODES
+              </h3>
+              <ul className="space-y-4">
+                {[
+                  { label: "SYNC_PORTAL", to: "/login" },
+                  { label: "UPLOAD_PROTOCOL", to: "/dashboard/upload" },
+                  { label: "SECURITY_LEGACY", to: "/about" },
+                  { label: "ACCESS_TERMS", to: "/terms" },
+                ].map((link) => (
+                  <li key={link.label}>
+                    <Link to={link.to} className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#6C3B1C]/60 dark:text-white/30 hover:text-[#5A270F] dark:hover:text-white transition-all">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Index 03 - Technical Metadata */}
+            <div className="space-y-8">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-[#5A270F] dark:text-white flex items-center gap-3">
+                <div className="w-1 h-1 bg-[#5A270F] dark:bg-white" />
+                SYSTEM_STATUS
+              </h3>
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                    <Globe className="h-3 w-3 text-[#DF8142]" />
+                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#5A270F]/60 dark:text-white/40">
+                        RELAY: ACTIVE
+                    </span>
+                </div>
+                <div className="flex items-center gap-3">
+                    <ShieldCheck className="h-3 w-3 text-[#DF8142]" />
+                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#5A270F]/60 dark:text-white/40">
+                        TLS_1.3 ENCRYPTED
+                    </span>
+                </div>
+                <div className="flex items-center gap-3">
+                    <Cpu className="h-3 w-3 text-[#DF8142]" />
+                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#5A270F]/60 dark:text-white/40">
+                        KERNEL_4.2.0
+                    </span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Bottom Bar - Protocol & Legal */}
-        <div className="pt-8 sm:pt-12 border-t border-white/5 flex flex-col lg:flex-row justify-between items-center gap-8 lg:gap-16">
-          <div className="flex flex-col items-center lg:items-start gap-4">
-            <p className="text-[9px] font-bold tracking-[0.3em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 uppercase">
-              &copy; {currentYear} ARCHVAULT DIGITAL ARCHITECTURAL SYSTEMS.
-            </p>
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 sm:gap-x-10 gap-y-3 sm:gap-y-4">
-              {[
-                { label: "PRIVACY PROTOCOL", to: "/privacy" },
-                { label: "SERVICE TERMS", to: "/terms" },
-              ].map((item) => (
-                <Link
-                  key={item.label}
-                  to={item.to}
-                  className="text-[10px] font-black tracking-[0.3em] uppercase text-[#6C3B1C] dark:text-[#EEB38C]/70 hover:text-[#DF8142] transition-all relative group/footer-link"
-                >
-                  {item.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#DF8142] transition-all group-hover/footer-link:w-full rounded-full" />
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center lg:items-end gap-2 w-full lg:w-auto">
-            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 bg-[#EFEDED] dark:bg-card/5 rounded-full border border-black/5 dark:border-white/5 shadow-sm backdrop-blur-md w-full sm:w-auto">
-              <div className="flex items-center gap-3 text-[#5A270F] dark:text-[#EEB38C]">
-                <div className="w-2 h-2 rounded-full bg-[#DF8142] animate-pulse shadow-[0_0_8px_rgba(223,129,66,0.4)]" />
-                <Globe className="h-3.5 w-3.5" />
-                <span className="text-[9px] font-bold uppercase tracking-widest">
-                  GLOBAL RELAY: ACTIVE
-                </span>
-              </div>
-              <div className="h-4 w-px bg-black/10 dark:bg-card/10 hidden sm:block" />
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="h-3.5 w-3.5 text-[#DF8142]" />
-                <p className="text-[9px] font-black text-[#5A270F]/60 dark:text-white/40 uppercase tracking-[0.3em]">
-                  ENCRYPTED TLS 1.3
+          {/* Sync Engine Module */}
+          <div className="lg:col-span-4 lg:pl-16 lg:border-l border-[#D9D9C2]/40 dark:border-white/5 space-y-10">
+            <div className="space-y-4">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-[#5A270F] dark:text-white">
+                    GLOBAL_INTELLIGENCE_SYNC
+                </h3>
+                <p className="text-[11px] font-bold leading-relaxed text-[#6C3B1C] dark:text-white/40 uppercase tracking-widest italic">
+                    Establish an encrypted relay connection for monthly architectural intelligence transmissions.
                 </p>
-              </div>
+            </div>
+
+            <form onSubmit={handleFooterSubscribe} className="space-y-4">
+                <div className="relative group">
+                    <input
+                        type="email"
+                        value={footerEmail}
+                        onChange={(e) => {
+                            setFooterEmail(e.target.value);
+                            if (footerError) setFooterError("");
+                        }}
+                        placeholder="IDENTIFIER@RECIPIENT.EDU"
+                        className="w-full bg-[#EFEDED]/50 dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 px-0 py-3 text-[10px] font-black text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all placeholder:text-[#92664A]/30 transition-all border-b-2 border-t-0 border-l-0 border-r-0 rounded-none bg-transparent"
+                    />
+                    <button
+                        type="submit"
+                        disabled={footerSubscribing || footerSubscribed}
+                        className="absolute right-0 top-0 bottom-0 text-[#DF8142] font-black text-[10px] uppercase tracking-[0.4em] hover:text-[#5A270F] dark:hover:text-white transition-all disabled:opacity-50"
+                    >
+                        {footerSubscribing ? "SYNCING..." : "EXECUTE"}
+                    </button>
+                </div>
+                {footerError && <p className="text-[8px] font-black text-red-500 uppercase tracking-widest">{footerError}</p>}
+            </form>
+
+            <div className="pt-6 border-t border-[#D9D9C2]/40 dark:border-white/5 flex items-center justify-between">
+                <div className="flex flex-col">
+                    <span className="text-[9px] font-black text-[#DF8142] uppercase tracking-[0.3em]">
+                        {(stats.totalUsers + stats.newsletterCount).toLocaleString()} UNITS
+                    </span>
+                    <span className="text-[8px] font-bold text-[#5A270F]/40 dark:text-white/20 uppercase tracking-[0.4em]">
+                        VERIFIED_NODES
+                    </span>
+                </div>
+                <div className="flex -space-x-1.5">
+                    {[1,2,3,4].map(i => (
+                        <div key={i} className="w-6 h-6 rounded border border-white/20 bg-[#5A270F] flex items-center justify-center">
+                            <Users className="w-3 h-3 text-[#EEB38C]" />
+                        </div>
+                    ))}
+                </div>
             </div>
           </div>
+
+          {/* Legal Protocol Bar */}
+          <div className="lg:col-span-12 pt-10 border-t border-[#D9D9C2]/40 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
+            <span className="text-[9px] font-black tracking-[0.6em] text-[#5A270F]/30 dark:text-white/20 uppercase">
+                &copy; {currentYear} ARCHVAULT // CORE_REGISTRY // ALL_RIGHTS_RESERVED
+            </span>
+            <div className="flex items-center gap-8">
+                <Link to="/privacy" className="text-[9px] font-black uppercase tracking-[0.5em] text-[#5A270F]/30 dark:text-white/20 hover:text-[#DF8142] transition-colors">
+                    PRIVACY_PROTOCOL
+                </Link>
+                <Link to="/terms" className="text-[9px] font-black uppercase tracking-[0.5em] text-[#5A270F]/30 dark:text-white/20 hover:text-[#DF8142] transition-colors">
+                    TERMS_SERVICE
+                </Link>
+            </div>
+          </div>
+
         </div>
       </div>
     </footer>
