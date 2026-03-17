@@ -163,10 +163,10 @@ const News = () => {
           HERO HEADER
       ════════════════════════════════════════ */}
       <section
-        className={`relative pt-32 pb-52 overflow-hidden transition-colors duration-700 ${
+        className={`relative pt-24 pb-40 overflow-hidden transition-colors duration-700 ${
           isLight
-            ? "bg-gradient-to-br from-[#5A270F] via-[#7A3A1A] to-[#5A270F]"
-            : "bg-gradient-to-br from-[#1A0B02] via-[#2D1308] to-[#100704]"
+            ? "bg-gradient-to-br from-[#5A270F] via-[#6C3B1C] to-[#5A270F]"
+            : "bg-gradient-to-br from-[#1A0B02] via-[#2A1205] to-[#100704]"
         }`}
       >
         {/* Background accents */}
@@ -212,31 +212,31 @@ const News = () => {
 
           {/* Headline */}
           <h1
-            className="font-space-grotesk text-5xl sm:text-7xl lg:text-8xl font-black text-white tracking-tighter mb-6 leading-[0.9] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200"
+            className="font-space-grotesk text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter mb-5 leading-[0.9] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 uppercase italic"
           >
-            CHRONICLES
+            Terminal <span className="text-[#DF8142] not-italic">Chronicles</span>
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#EEB38C] to-[#DF8142]">
-              &amp; ANNOUNCEMENTS.
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#EEB38C] to-[#DF8142] not-italic">
+              & ANNOUNCEMENTS.
             </span>
           </h1>
 
           {/* Subheading */}
-          <p className="max-w-2xl mx-auto text-[#EEB38C]/70 text-base sm:text-lg font-medium leading-relaxed mb-14 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-400">
-            Synchronize with the latest developments in our architectural nexus.
-            From system upgrades to global industry summits.
+          <p className="max-w-xl mx-auto text-[#EEB38C]/60 text-sm sm:text-base font-medium leading-relaxed mb-10 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-400">
+            Real-time synchronization of the architectural nexus.
+            System status, event sequencing, and strategic briefings.
           </p>
 
           {/* Filter Pills */}
-          <div className="flex items-center justify-center gap-2 p-2 bg-black/20 backdrop-blur-xl border border-white/10 rounded-2xl max-w-xs mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 delay-600">
+          <div className="flex items-center justify-center gap-1.5 p-1.5 bg-black/30 backdrop-blur-2xl border border-white/10 rounded-xl max-w-xs mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 delay-600">
             {(["all", "news", "events"] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setFilter(t)}
-                className={`flex-1 py-3 px-5 rounded-xl text-[10px] font-extrabold uppercase tracking-widest transition-all duration-300 ${
+                className={`flex-1 py-1.5 px-4 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${
                   filter === t
-                    ? "bg-[#DF8142] text-white shadow-2xl shadow-[#DF8142]/40"
-                    : "text-white/50 hover:text-white hover:bg-white/8"
+                    ? "bg-[#DF8142] text-white shadow-lg shadow-[#DF8142]/30"
+                    : "text-white/40 hover:text-white hover:bg-white/5"
                 }`}
               >
                 {t}
@@ -269,16 +269,16 @@ const News = () => {
               filteredNews.map((item) => (
                 <article
                   key={item.id}
-                  className={`group rounded-[2.5rem] overflow-hidden transition-all duration-500 flex flex-col sm:flex-row border hover:-translate-y-1 ${
+                  className={`group rounded-2xl overflow-hidden transition-all duration-500 flex flex-col sm:flex-row border shadow-lg ${
                     isLight
-                      ? "bg-white border-[#E4DDD4] shadow-xl shadow-[#92664A]/8 hover:shadow-2xl hover:shadow-[#DF8142]/15 hover:border-[#DF8142]/30"
-                      : "bg-[#1A0B02] border-white/8 shadow-xl shadow-black/30 hover:shadow-2xl hover:shadow-[#DF8142]/10 hover:border-white/15"
+                      ? "bg-white border-[#D9D9C2]/30 shadow-[#5A270F]/5 hover:border-[#DF8142]/40"
+                      : "bg-[#1A0B02] border-white/5 shadow-black/40 hover:border-white/10"
                   }`}
                 >
                   {/* Left accent panel */}
                   <div
-                    className={`sm:w-[220px] p-10 flex flex-col items-center justify-center text-center relative overflow-hidden shrink-0 ${
-                      isLight ? "bg-[#FAF6F0]" : "bg-white/[0.03]"
+                    className={`sm:w-[160px] p-6 flex flex-col items-center justify-center text-center relative overflow-hidden shrink-0 ${
+                      isLight ? "bg-[#EEB38C]/5" : "bg-white/[0.02]"
                     }`}
                   >
                     {/* Hover bar */}
@@ -286,17 +286,17 @@ const News = () => {
 
                     {item.isEvent ? (
                       <>
-                        <div className={`h-16 w-16 rounded-2xl flex items-center justify-center mb-5 ${isLight ? "bg-[#DF8142]/10" : "bg-[#DF8142]/15"}`}>
-                          <Calendar className="h-8 w-8 text-[#DF8142] group-hover:scale-110 transition-transform duration-300" />
+                        <div className={`h-12 w-12 rounded-xl flex items-center justify-center mb-4 ${isLight ? "bg-[#DF8142]/10" : "bg-[#DF8142]/15"}`}>
+                          <Calendar className="h-6 w-6 text-[#DF8142] group-hover:scale-110 transition-transform duration-300" />
                         </div>
                         <p
-                          className={`font-space-grotesk text-3xl font-black tracking-tight leading-none mb-1 ${
+                          className={`font-space-grotesk text-2xl font-black tracking-tight leading-none mb-0.5 ${
                             isLight ? "text-[#5A270F]" : "text-[#EEB38C]"
                           }`}
                         >
                           {item.eventDate ? new Date(item.eventDate).getDate() : "--"}
                         </p>
-                        <p className={`text-[10px] font-extrabold uppercase tracking-[0.3em] ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/50"}`}>
+                        <p className={`text-[8px] font-black uppercase tracking-[0.2em] ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/40"}`}>
                           {item.eventDate
                             ? new Date(item.eventDate).toLocaleString("default", { month: "short" })
                             : "Event"}
@@ -304,37 +304,37 @@ const News = () => {
                       </>
                     ) : (
                       <>
-                        <div className={`h-16 w-16 rounded-2xl flex items-center justify-center mb-5 ${isLight ? "bg-[#DF8142]/10" : "bg-[#DF8142]/15"}`}>
-                          <Zap className="h-8 w-8 text-[#DF8142] group-hover:scale-110 transition-transform duration-300" />
+                        <div className={`h-12 w-12 rounded-xl flex items-center justify-center mb-4 ${isLight ? "bg-[#DF8142]/10" : "bg-[#DF8142]/15"}`}>
+                          <Zap className="h-6 w-6 text-[#DF8142] group-hover:scale-110 transition-transform duration-300" />
                         </div>
-                        <p className={`text-[10px] font-extrabold uppercase tracking-[0.3em] ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/50"}`}>
-                          Transmission
+                        <p className={`text-[8px] font-black uppercase tracking-[0.2em] ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/40"}`}>
+                          Update
                         </p>
-                        <p className={`text-sm font-bold mt-2 ${isLight ? "text-[#5A270F]" : "text-[#EEB38C]"}`}>
-                          Update Node
+                        <p className={`text-xs font-black mt-1 uppercase ${isLight ? "text-[#5A270F]" : "text-[#EEB38C]"}`}>
+                          Signal
                         </p>
                       </>
                     )}
                   </div>
 
                   {/* Right content */}
-                  <div className="flex-1 p-8 sm:p-10 flex flex-col">
+                  <div className="flex-1 p-6 sm:p-7 flex flex-col">
                     {/* Meta row */}
-                    <div className="flex items-center gap-3 mb-5 flex-wrap">
+                    <div className="flex items-center gap-3 mb-4 flex-wrap">
                       <span
-                        className={`px-3 py-1.5 rounded-lg text-[9px] font-extrabold uppercase tracking-widest ${
+                        className={`px-2.5 py-1 rounded text-[8px] font-black uppercase tracking-widest ${
                           item.isEvent
-                            ? "bg-[#DF8142]/10 text-[#DF8142]"
+                            ? "bg-[#DF8142] text-white shadow-sm"
                             : isLight
-                            ? "bg-[#EEB38C]/20 text-[#7A4A22]"
-                            : "bg-[#EEB38C]/10 text-[#EEB38C]/70"
+                            ? "bg-[#6C3B1C] text-white"
+                            : "bg-[#EEB38C]/10 text-[#EEB38C]/80 border border-[#EEB38C]/20"
                         }`}
                       >
                         {item.isEvent ? "Protocol Event" : "System Alert"}
                       </span>
                       <span
-                        className={`flex items-center gap-1.5 text-[9px] font-extrabold uppercase tracking-widest ${
-                          isLight ? "text-[#92664A]" : "text-[#EEB38C]/40"
+                        className={`flex items-center gap-1 text-[8px] font-black uppercase tracking-widest ${
+                          isLight ? "text-[#92664A]" : "text-[#EEB38C]/30"
                         }`}
                       >
                         <Clock className="h-3 w-3" />
@@ -344,17 +344,17 @@ const News = () => {
 
                     {/* Title */}
                     <h2 
-                      className={`font-space-grotesk text-2xl sm:text-3xl font-black tracking-tight leading-tight mb-5 group-hover:text-[#DF8142] transition-colors duration-300 ${
-                        isLight ? "text-[#3D1A06]" : "text-[#F5E6D8]"
+                      className={`font-space-grotesk text-xl sm:text-2xl font-black tracking-tight leading-tight mb-3 group-hover:text-[#DF8142] transition-colors duration-300 italic uppercase ${
+                        isLight ? "text-[#5A270F]" : "text-[#F5E6D8]"
                       }`}
                     >
                       {item.title}
                     </h2>
-
+ 
                     {/* Body */}
                     <p
-                      className={`text-sm font-medium leading-relaxed mb-8 line-clamp-3 ${
-                        isLight ? "text-[#6B4226]" : "text-[#C8A882]/80"
+                      className={`text-xs font-medium leading-relaxed mb-6 line-clamp-2 ${
+                        isLight ? "text-[#6C3B1C]" : "text-[#EEB38C]/60"
                       }`}
                     >
                       {item.content}
@@ -362,23 +362,23 @@ const News = () => {
 
                     {/* Footer */}
                     <div
-                      className={`mt-auto flex items-center justify-between pt-6 border-t ${
-                        isLight ? "border-[#EEB38C]/25" : "border-white/8"
+                      className={`mt-auto flex items-center justify-between pt-4 border-t ${
+                        isLight ? "border-[#D9D9C2]/40" : "border-white/5"
                       }`}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
                         <div
-                          className={`h-8 w-8 rounded-full border flex items-center justify-center ${
+                          className={`h-7 w-7 rounded-lg border flex items-center justify-center ${
                             isLight
-                              ? "bg-[#FAF6F0] border-[#EEB38C]/30 text-[#92664A]"
-                              : "bg-white/5 border-white/10 text-[#EEB38C]/60"
+                              ? "bg-[#EEB38C]/5 border-[#D9D9C2]/40 text-[#5A270F]"
+                              : "bg-white/5 border-white/10 text-[#EEB38C]/40"
                           }`}
                         >
-                          <Tag className="h-3.5 w-3.5" />
+                          <Tag className="h-3 w-3" />
                         </div>
                         <span
-                          className={`text-[10px] font-extrabold uppercase tracking-widest ${
-                            isLight ? "text-[#92664A]" : "text-[#EEB38C]/40"
+                          className={`text-[9px] font-black uppercase tracking-widest ${
+                            isLight ? "text-[#92664A]" : "text-[#EEB38C]/30"
                           }`}
                         >
                           {item.source || "Nexus Prime"}
@@ -387,13 +387,13 @@ const News = () => {
 
                       <button
                         title="Share Transmission"
-                        className={`h-11 w-11 rounded-2xl border flex items-center justify-center transition-all duration-300 hover:bg-[#DF8142] hover:text-white hover:border-[#DF8142] hover:shadow-lg hover:shadow-[#DF8142]/30 ${
+                        className={`h-9 w-9 rounded-xl border flex items-center justify-center transition-all duration-300 hover:bg-[#DF8142] hover:text-white hover:border-[#DF8142] hover:shadow-lg ${
                           isLight
-                            ? "bg-[#FAF6F0] border-[#EEB38C]/30 text-[#92664A]"
-                            : "bg-white/5 border-white/10 text-[#EEB38C]/60"
+                            ? "bg-[#EEB38C]/5 border-[#D9D9C2]/40 text-[#5A270F]"
+                            : "bg-white/5 border-white/10 text-[#EEB38C]/40"
                         }`}
                       >
-                        <Share2 className="h-4 w-4" />
+                        <Share2 className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   </div>
@@ -431,23 +431,23 @@ const News = () => {
 
             {/* Search Module */}
             <div
-              className={`p-8 rounded-[2.5rem] border shadow-xl transition-colors duration-300 ${
+              className={`p-6 rounded-2xl border shadow-lg transition-colors duration-300 ${
                 isLight
-                  ? "bg-white border-[#E4DDD4] shadow-[#92664A]/6"
-                  : "bg-[#1A0B02] border-white/8 shadow-black/20"
+                  ? "bg-white border-[#D9D9C2]/40 shadow-[#5A270F]/5"
+                  : "bg-[#1A0B02] border-white/5 shadow-black/30"
               }`}
             >
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-4">
                 <h3
-                  className={`text-[10px] font-extrabold uppercase tracking-[0.35em] ${
-                    isLight ? "text-[#92664A]" : "text-[#EEB38C]/50"
+                  className={`text-[9px] font-black uppercase tracking-[0.3em] ${
+                    isLight ? "text-[#5A270F]" : "text-[#EEB38C]/40"
                   }`}
                 >
                   Signal Scan
                 </h3>
                 {searchQuery && (
-                  <span className="text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full bg-[#DF8142]/12 text-[#DF8142] animate-in fade-in duration-200">
-                    {filteredNews.length} result{filteredNews.length !== 1 ? "s" : ""}
+                  <span className="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#DF8142]/10 text-[#DF8142] animate-in fade-in duration-200">
+                    {filteredNews.length}
                   </span>
                 )}
               </div>
@@ -459,11 +459,11 @@ const News = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search news & events..."
-                  className={`font-inter w-full h-14 rounded-2xl pl-11 pr-10 text-sm font-semibold outline-none transition-all duration-200 placeholder:font-medium border ${
+                  placeholder="Scan nexus news..."
+                  className={`font-inter w-full h-10 rounded-xl pl-9 pr-8 text-[11px] font-bold outline-none transition-all duration-200 border ${
                     isLight
-                      ? "bg-[#FAF6F0] border-[#DDD0C0] text-[#3D1A06] placeholder:text-[#B8967A] focus:bg-white focus:border-[#DF8142] focus:ring-4 focus:ring-[#DF8142]/10"
-                      : "bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#DF8142]/70 focus:ring-4 focus:ring-[#DF8142]/10"
+                      ? "bg-slate-50 border-[#D9D9C2]/50 text-[#5A270F] placeholder:text-[#92664A]/40 focus:bg-white focus:border-[#DF8142]"
+                      : "bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#DF8142]/60"
                   }`}
                 />
                 <Search
@@ -493,10 +493,10 @@ const News = () => {
 
             {/* Studio Digest Newsletter */}
             <div
-              className={`p-8 rounded-[2.5rem] shadow-2xl relative overflow-hidden group transition-all duration-500 ${
+              className={`p-6 rounded-2xl shadow-xl relative overflow-hidden group transition-all duration-500 ${
                 isLight
-                  ? "bg-gradient-to-br from-[#DF8142] to-[#C56A2A] shadow-[#DF8142]/35"
-                  : "bg-gradient-to-br from-[#5A270F] to-[#3D1A06] shadow-[#DF8142]/20 border border-[#DF8142]/20"
+                  ? "bg-gradient-to-br from-[#5A270F] via-[#6C3B1C] to-[#5A270F] shadow-[#5A270F]/20"
+                  : "bg-gradient-to-br from-[#1A0B02] to-[#2A1205] shadow-black/40 border border-white/5"
               }`}
             >
               {/* Decorative orb */}
@@ -504,12 +504,12 @@ const News = () => {
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/5 rounded-tr-[4rem] -translate-x-10 translate-y-10 group-hover:-translate-x-6 group-hover:translate-y-6 transition-transform duration-700 pointer-events-none" />
 
               <h3
-                className="font-space-grotesk text-2xl font-black mb-3 relative z-10 leading-tight text-white"
+                className="font-space-grotesk text-xl font-black mb-2 relative z-10 leading-tight text-white italic uppercase"
               >
-                THE STUDIO <br /> DIGEST.
+                THE STUDIO <br /> <span className="text-[#DF8142] not-italic">DIGEST.</span>
               </h3>
-              <p className={`text-sm font-medium mb-7 relative z-10 ${isLight ? "text-white/75" : "text-[#EEB38C]/80"}`}>
-                Monthly curation of technical benchmarks delivered directly to your studio terminal.
+              <p className={`text-[10px] font-medium mb-6 relative z-10 ${isLight ? "text-white/70" : "text-[#EEB38C]/50"}`}>
+                Monthly technical benchmarks delivered directly to your studio terminal.
               </p>
 
               <form onSubmit={handleNewsletterSubscribe} className="relative z-10" noValidate>
@@ -603,32 +603,32 @@ const News = () => {
 
             {/* Support Link */}
             <div
-              className={`p-8 rounded-[2.5rem] border shadow-xl text-center transition-colors duration-300 ${
+              className={`p-6 rounded-2xl border shadow-lg text-center transition-colors duration-300 ${
                 isLight
-                  ? "bg-white border-[#E4DDD4] shadow-[#92664A]/6"
-                  : "bg-[#1A0B02] border-white/8 shadow-black/20"
+                  ? "bg-white border-[#D9D9C2]/40 shadow-[#5A270F]/5"
+                  : "bg-[#1A0B02] border-white/5 shadow-black/30"
               }`}
             >
               <div
-                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[8px] font-extrabold uppercase tracking-widest mb-5 ${
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[7.5px] font-black uppercase tracking-widest mb-4 ${
                   isLight
-                    ? "bg-[#5A270F]/8 text-[#5A270F]"
-                    : "bg-[#EEB38C]/12 text-[#EEB38C]"
+                    ? "bg-[#5A270F]/5 text-[#5A270F]"
+                    : "bg-[#EEB38C]/10 text-[#EEB38C]"
                 }`}
               >
-                <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142] animate-pulse" />
-                Live Support
+                <div className="h-1 w-1 rounded-full bg-[#DF8142] animate-pulse" />
+                Control Relay
               </div>
 
               <h3
-                className={`font-space-grotesk text-sm font-black uppercase tracking-widest mb-2 ${
-                  isLight ? "text-[#3D1A06]" : "text-white"
+                className={`font-space-grotesk text-xs font-black uppercase tracking-[0.2em] mb-2 ${
+                  isLight ? "text-[#5A270F]" : "text-white"
                 }`}
               >
-                Need Field Intel?
+                Strategic Support
               </h3>
-              <p className={`text-xs font-medium mb-7 leading-relaxed ${isLight ? "text-[#92664A]" : "text-white/40"}`}>
-                Contact our operations node for priority technical support.
+              <p className={`text-[9.5px] font-medium mb-6 leading-relaxed ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/40"}`}>
+                Contact our operations node for priority technical briefing.
               </p>
 
               <Link

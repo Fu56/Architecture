@@ -142,37 +142,38 @@ const NewsManager = () => {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Header & Toggle */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#EEB38C]/5 dark:bg-background p-5 rounded-[2rem] border border-[#92664A]/20 dark:border-white/10 shadow-sm relative overflow-hidden group">
+    <div className="min-h-screen -m-4 sm:-m-6 p-4 sm:p-6 bg-[#FAF8F4] dark:bg-[#0C0603] transition-colors duration-500">
+      <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in duration-1000">
+        {/* Header & Toggle */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-[#EEB38C]/5 dark:bg-[#1A0B02] p-4 rounded-xl border border-[#92664A]/20 dark:border-white/10 shadow-sm relative overflow-hidden group">
         <div className="absolute inset-0 bg-gradient-to-r from-[#DF8142]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-        <div className="flex items-center gap-4 relative z-10">
-          <div className="h-10 w-10 bg-[#5A270F] rounded-xl flex items-center justify-center text-white shadow-lg">
-            <Megaphone className="h-5 w-5" />
+        <div className="flex items-center gap-3 relative z-10">
+          <div className="h-8 w-8 bg-[#5A270F] rounded-lg flex items-center justify-center text-white shadow-md">
+            <Megaphone className="h-4 w-4" />
           </div>
           <div>
-            <h2 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase italic leading-tight">
-              Announcement Terminal
+            <h2 className="text-lg font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase italic leading-none mb-1">
+              Nexus Broadcast <span className="not-italic text-[#DF8142]">Hub</span>
             </h2>
-            <p className="text-[8px] text-[#92664A] dark:text-[#EEB38C]/40 font-black tracking-widest uppercase leading-none">
-              Broadcasting Global Intelligence
+            <p className="text-[7.5px] text-[#92664A] dark:text-[#EEB38C]/40 font-black tracking-widest uppercase leading-none">
+              Deploy Global Intelligence
             </p>
           </div>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className={`relative z-10 w-full md:w-auto flex items-center justify-center gap-2.5 px-6 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-[0.15em] transition-all duration-500 ${
+          className={`relative z-10 w-full md:w-auto flex items-center justify-center gap-2 px-5 py-2 rounded-lg text-[8px] font-black uppercase tracking-[0.1em] transition-all duration-300 ${
             showForm
-              ? "bg-white dark:bg-card border-2 border-[#92664A]/20 dark:border-white/10 text-[#5A270F] dark:text-[#EEB38C]/40 hover:text-rose-600 hover:border-rose-100 shadow-md"
-              : "bg-[#5A270F] text-white shadow-xl shadow-[#5A270F]/20 hover:-translate-y-0.5 hover:bg-[#6C3B1C]"
+              ? "bg-white dark:bg-[#1A0B02] border border-[#92664A]/20 dark:border-white/10 text-[#5A270F] dark:text-[#EEB38C] hover:text-rose-600 shadow-sm"
+              : "bg-[#5A270F] text-white shadow-lg shadow-[#5A270F]/20 hover:bg-[#6C3B1C]"
           }`}
         >
           {showForm ? (
-            <>Cancel Release</>
+            <>Cancel Transmission</>
           ) : (
             <>
-              <Plus className="h-3.5 w-3.5" />
-              Initialize Release
+              <Plus className="h-3 w-3" />
+              Init Broadcast
             </>
           )}
         </button>
@@ -180,16 +181,16 @@ const NewsManager = () => {
 
       {/* Form Section */}
       {showForm && (
-        <div className="bg-white dark:bg-card rounded-[2rem] border border-[#92664A]/20 dark:border-white/10 p-8 sm:p-10 shadow-2xl animate-in zoom-in-95 duration-500 relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-12 opacity-[0.02]">
-            <Zap className="h-48 w-48" />
+        <div className="bg-white dark:bg-[#1A0B02] rounded-xl border border-[#D9D9C2] dark:border-[#DF8142]/20 p-6 sm:p-8 shadow-2xl animate-in zoom-in-95 duration-500 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-8 opacity-[0.02]">
+            <Zap className="h-32 w-32" />
           </div>
-          <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-[#EEB38C]/40 mb-2 ml-1">
-                    Announcement Headline
+                  <label className="block text-[8px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-[#EEB38C]/40 mb-1.5 ml-1">
+                    Signal Headline
                   </label>
                   <input
                     type="text"
@@ -199,104 +200,95 @@ const NewsManager = () => {
                       if (errors.title)
                         setErrors((prev) => ({ ...prev, title: "" }));
                     }}
-                    placeholder="E.g., Winter Semester Thesis Submissions Open"
-                    className={`w-full bg-[#EEB38C]/5 dark:bg-background border ${
+                    placeholder="Broadcast Subject..."
+                    className={`w-full h-10 bg-[#EEB38C]/5 dark:bg-white/5 border ${
                       errors.title
-                        ? "border-rose-400 bg-red-50/20"
+                        ? "border-rose-400 bg-red-50/10"
                         : "border-[#92664A]/20 dark:border-white/10"
-                    } rounded-xl px-5 py-3 text-[#5A270F] dark:text-[#EEB38C] font-black text-sm outline-none focus:ring-4 focus:ring-[#DF8142]/5 focus:bg-white dark:bg-card transition-all placeholder:text-[#5A270F]/20`}
+                    } rounded-lg px-4 text-[#5A270F] dark:text-[#EEB38C] font-black text-xs outline-none focus:ring-4 focus:ring-[#DF8142]/5 focus:bg-white dark:bg-[#1A0B02] transition-all`}
                   />
                   <FieldError message={errors.title} />
                 </div>
 
-                <div className="p-6 bg-[#EEB38C]/5 dark:bg-background rounded-[1.5rem] border border-[#92664A]/20 dark:border-white/10 space-y-4">
+                <div className="p-4 bg-[#EEB38C]/5 dark:bg-white/5 rounded-xl border border-[#92664A]/20 dark:border-white/10 space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-[0.1em]">
-                        Event Sequencing
+                      <h4 className="text-[9px] font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-[0.1em]">
+                        Temporal Event
                       </h4>
-                      <p className="text-[8px] text-[#92664A] dark:text-[#EEB38C]/40 font-black uppercase tracking-wider leading-none">
-                        Enable temporal event scheduling
+                      <p className="text-[7.5px] text-[#92664A] dark:text-[#EEB38C]/40 font-black uppercase tracking-wider leading-none">
+                        Sequence for scheduling
                       </p>
                     </div>
                     <button
                       type="button"
                       title="Toggle Event Sequencing"
                       onClick={() => setIsEvent(!isEvent)}
-                      className={`relative w-12 h-6 rounded-full transition-all duration-500 ${
+                      className={`relative w-9 h-5 rounded-full transition-all duration-500 ${
                         isEvent ? "bg-[#DF8142]" : "bg-slate-200"
                       }`}
                     >
                       <div
-                        className={`absolute top-0.5 w-5 h-5 bg-white dark:bg-card rounded-full shadow-md transition-all duration-500 ${
-                          isEvent ? "left-6.5" : "left-0.5"
+                        className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-500 ${
+                          isEvent ? "left-4.5" : "left-0.5"
                         }`}
                       />
                     </button>
                   </div>
-
+ 
                   {isEvent && (
                     <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-                      <label className="block text-[9px] font-black uppercase tracking-widest text-gray-500 dark:text-white/40 mb-2 ml-1">
-                        Temporal Markers (Date & Time)
+                      <label className="block text-[8px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/30 mb-1.5 ml-1">
+                        Timeline Marker
                       </label>
                       <input
                         id="eventDate"
                         type="datetime-local"
-                        title="Temporal Markers (Date & Time)"
+                        title="Temporal Markers"
                         value={eventDate}
                         onChange={(e) => {
                           setEventDate(e.target.value);
                           if (errors.eventDate)
                             setErrors((prev) => ({ ...prev, eventDate: "" }));
                         }}
-                        className={`w-full bg-white dark:bg-card border ${
-                          errors.eventDate
-                            ? "border-rose-400 bg-red-50/20"
-                            : "border-[#92664A]/20 dark:border-white/10"
-                        } rounded-xl px-4 py-2.5 text-xs font-black text-[#2A1205] outline-none focus:ring-4 focus:ring-[#DF8142]/10 transition-all`}
+                        className={`w-full h-10 bg-white dark:bg-white/5 border border-[#92664A]/20 dark:border-white/10 rounded-lg px-3 text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] outline-none transition-all`}
                       />
-                      <FieldError message={errors.eventDate} />
                     </div>
                   )}
                 </div>
               </div>
 
-              <div>
-                <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-[#EEB38C]/40 mb-2 ml-1">
-                  Message Body
-                </label>
-                <textarea
-                  rows={6}
-                  value={content}
-                  onChange={(e) => {
-                    setContent(e.target.value);
-                    if (errors.content)
-                      setErrors((prev) => ({ ...prev, content: "" }));
-                  }}
-                  placeholder="Draft your intelligence transmission here..."
-                  className={`w-full bg-[#EEB38C]/5 dark:bg-background border ${
-                    errors.content
-                      ? "border-rose-400 bg-red-50/20"
-                      : "border-[#92664A]/20 dark:border-white/10"
-                  } rounded-[1.5rem] px-6 py-4 text-[#5A270F] dark:text-[#EEB38C] font-medium text-sm outline-none focus:ring-4 focus:ring-[#DF8142]/5 focus:bg-white dark:bg-card transition-all resize-none min-h-[180px]`}
-                />
-                <FieldError message={errors.content} />
-              </div>
+                <div>
+                  <label className="block text-[8px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-[#EEB38C]/40 mb-1.5 ml-1">
+                    Transmission Body
+                  </label>
+                  <textarea
+                    rows={6}
+                    value={content}
+                    onChange={(e) => {
+                      setContent(e.target.value);
+                      if (errors.content)
+                        setErrors((prev) => ({ ...prev, content: "" }));
+                    }}
+                    placeholder="Intelligence narrative..."
+                    className={`w-full bg-[#EEB38C]/5 dark:bg-white/5 border border-[#92664A]/20 dark:border-white/10 rounded-xl px-4 py-3 text-[#5A270F] dark:text-[#EEB38C] font-medium text-xs outline-none focus:bg-white dark:bg-[#1A0B02] focus:ring-4 focus:ring-[#DF8142]/5 transition-all resize-none min-h-[140px]`}
+                  />
+                  <FieldError message={errors.content} />
+                </div>
             </div>
 
-            <div className="flex justify-end pt-6 border-t border-slate-50 dark:border-white/5">
+            <div className="flex justify-end pt-4 border-t border-[#D9D9C2]/40 dark:border-white/5">
               <button
                 type="submit"
                 disabled={processing}
-                className="flex items-center gap-3 px-8 py-3 bg-[#5A270F] text-white rounded-xl text-[9px] font-black uppercase tracking-[0.15em] hover:bg-[#6C3B1C] transition-all hover:-translate-y-0.5 shadow-xl shadow-[#5A270F]/20 disabled:opacity-50"
+                className="flex items-center gap-2.5 px-6 py-2 bg-[#5A270F] text-white rounded-lg text-[8px] font-black uppercase tracking-[0.1em] hover:bg-[#6C3B1C] transition-all shadow-lg shadow-[#5A270F]/20 disabled:opacity-50"
               >
                 {processing ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-3 w-3 animate-spin" />
                 ) : (
                   <>
                     Deploy Transmission
-                    <ChevronRight className="h-4 w-4" />
+                    <ChevronRight className="h-3 w-3" />
                   </>
                 )}
               </button>
@@ -307,18 +299,28 @@ const NewsManager = () => {
 
       {/* Feed Section */}
       <div className="space-y-6">
-        <div className="flex items-center gap-3 ml-2">
-          <Clock className="h-3.5 w-3.5 text-[#DF8142]/90" />
-          <h3 className="text-[9px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.3em]">
-            Journal Archive Transmission
+        <div className="flex items-center gap-2.5 ml-1">
+          <Clock className="h-3 w-3 text-[#DF8142]" />
+          <h3 className="text-[8px] font-black text-[#5A270F] dark:text-[#EEB38C]/40 uppercase tracking-[0.2em]">
+            Archive Registry
           </h3>
         </div>
 
         {news.length === 0 ? (
-          <div className="p-16 text-center bg-[#EEB38C]/5 dark:bg-background rounded-[2.5rem] border border-dashed border-[#92664A]/20 dark:border-white/10">
-            <Info className="h-12 w-12 text-[#EEB38C] mx-auto mb-4" />
-            <p className="text-[#92664A] dark:text-[#EEB38C]/40 text-[9px] font-black uppercase tracking-widest">
-              Awaiting Signal: No archives detected.
+          <div className="flex flex-col items-center justify-center py-24 px-10 bg-white dark:bg-[#1A0B02] rounded-2xl border border-[#D9D9C2] dark:border-white/5 shadow-xl shadow-[#5A270F]/5">
+            <div className="relative mb-8">
+              <div className="h-20 w-20 bg-[#EEB38C]/10 dark:bg-white/5 rounded-[2rem] flex items-center justify-center animate-pulse">
+                <Info className="h-10 w-10 text-[#EEB38C]/60" />
+              </div>
+              <div className="absolute -bottom-2 -right-2 h-8 w-8 bg-[#DF8142] rounded-xl flex items-center justify-center text-white shadow-lg animate-bounce">
+                <Zap className="h-4 w-4" />
+              </div>
+            </div>
+            <h3 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase italic mb-2">
+              Awaiting <span className="text-[#DF8142] not-italic">Signal</span>
+            </h3>
+            <p className="text-[9px] text-[#92664A] dark:text-[#EEB38C]/40 font-black uppercase tracking-[0.3em] text-center max-w-[240px] leading-relaxed">
+              The broadcast registry is currently void. Initialize a new transmission node to begin.
             </p>
           </div>
         ) : (
@@ -326,40 +328,40 @@ const NewsManager = () => {
             {news.map((item) => (
               <div
                 key={item.id}
-                className="group relative bg-white dark:bg-card p-6 sm:p-8 rounded-[2rem] border border-[#92664A]/20 dark:border-white/10 transition-all duration-700 hover:border-[#DF8142]/20 hover:shadow-2xl hover:-translate-y-1 overflow-hidden"
+                className="group relative bg-white dark:bg-[#1A0B02] p-6 rounded-xl border border-[#D9D9C2] dark:border-white/10 transition-all duration-500 hover:border-[#DF8142]/40 hover:shadow-lg overflow-hidden"
               >
-                <div className="absolute top-0 right-0 w-48 h-48 bg-[#EEB38C]/10 dark:bg-background rounded-bl-[6rem] -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#EEB38C]/5 dark:bg-white/5 rounded-bl-[4rem] -z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
 
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
                   <div className="flex-1 space-y-4">
-                    <div className="flex items-center gap-3 flex-wrap">
+                    <div className="flex items-center gap-2.5 flex-wrap">
                       {item.isEvent ? (
-                        <span className="px-3 py-1 bg-amber-50 dark:bg-amber-900/10 text-amber-600 text-[8px] font-black uppercase tracking-[0.1em] border border-amber-100 dark:border-amber-900/20 rounded-full flex items-center gap-1.5">
-                          <Calendar className="h-2.5 w-2.5" />
-                          Temporal Event
+                        <span className="px-2 py-0.5 bg-[#DF8142] text-white text-[7px] font-black uppercase tracking-[0.1em] rounded flex items-center gap-1">
+                          <Calendar className="h-2 w-2" />
+                          Event
                         </span>
                       ) : (
-                        <span className="px-3 py-1 bg-[#DF8142]/10 text-[#DF8142] text-[8px] font-black uppercase tracking-[0.1em] border border-[#DF8142]/20 rounded-full flex items-center gap-1.5">
-                          <Sparkles className="h-2.5 w-2.5" />
-                          Nexus News
+                        <span className="px-2 py-0.5 bg-[#5A270F] text-white text-[7px] font-black uppercase tracking-[0.1em] rounded flex items-center gap-1">
+                          <Sparkles className="h-2 w-2" />
+                          News
                         </span>
                       )}
-                      <span className="text-[8.5px] font-bold text-gray-400 dark:text-white/30 uppercase tracking-widest flex items-center gap-1.5">
-                        <Clock className="h-2.5 w-2.5" />
+                      <span className="text-[7.5px] font-black text-[#92664A] dark:text-white/30 uppercase tracking-widest flex items-center gap-1">
+                        <Clock className="h-2 w-2" />
                         {new Date(item.createdAt).toLocaleDateString()}
                       </span>
                       {item.source && (
-                        <span className="text-[8.5px] font-black text-[#DF8142] uppercase tracking-widest flex items-center gap-1.5 px-2.5 py-0.5 bg-[#DF8142]/5 border border-[#DF8142]/10 rounded-lg">
+                        <span className="text-[7.5px] font-black text-[#DF8142] uppercase tracking-widest px-2 py-0.5 bg-[#DF8142]/5 border border-[#DF8142]/10 rounded">
                           Auth: {item.source}
                         </span>
                       )}
                     </div>
 
-                    <h4 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter leading-tight italic uppercase">
+                    <h4 className="text-lg font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter leading-none italic uppercase">
                       {item.title}
                     </h4>
-
-                    <p className="text-[#5A270F] dark:text-[#EEB38C] font-medium text-sm leading-relaxed max-w-4xl opacity-80">
+ 
+                    <p className="text-[#5A270F] dark:text-[#EEB38C] font-medium text-xs leading-relaxed max-w-4xl opacity-70">
                       {item.content}
                     </p>
 
@@ -378,10 +380,10 @@ const NewsManager = () => {
 
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="p-3 text-gray-400 dark:text-white/30 hover:text-rose-600 hover:bg-red-50 dark:hover:bg-rose-900/10 rounded-lg transition-all self-end lg:self-start opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0"
+                    className="p-2 text-gray-400 dark:text-white/20 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/10 rounded-md transition-all self-end lg:self-start opacity-0 group-hover:opacity-100"
                     title="Terminate Node"
                   >
-                    <Trash2 className="h-5 w-5" />
+                    <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
               </div>
@@ -390,6 +392,7 @@ const NewsManager = () => {
         )}
       </div>
     </div>
+  </div>
   );
 };
 
