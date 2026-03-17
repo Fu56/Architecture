@@ -562,42 +562,42 @@ const ManageUsers = () => {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-1000">
-      <div className="flex items-center gap-6 mb-2">
-        <div className="h-14 w-14 bg-[#5A270F] rounded-[1.25rem] flex items-center justify-center text-[#EEB38C] shadow-2xl">
-          <Shield className="h-7 w-7" />
+    <div className="space-y-6 animate-in fade-in duration-1000">
+      <div className="flex items-center gap-3 mb-1">
+        <div className="h-10 w-10 bg-[#5A270F] rounded-xl flex items-center justify-center text-[#EEB38C] shadow-lg">
+          <Shield className="h-5 w-5" />
         </div>
         <div>
-          <h1 className="text-4xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase italic">
+          <h1 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase italic leading-tight">
             Nexus Registry <span className="not-italic text-[#DF8142]">Authority</span>
           </h1>
-          <p className="text-[10px] font-black text-[#92664A] dark:text-white/70 uppercase tracking-[0.5em]">
+          <p className="text-[8px] font-black text-[#92664A] dark:text-white/60 uppercase tracking-[0.3em] leading-none">
             Central Identity Management Matrix
           </p>
         </div>
       </div>
       {/* Top Controller */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-white dark:bg-[#1A0B04] p-6 rounded-[2.5rem] border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-2xl shadow-[#5A270F]/5 transition-all duration-700">
-        <div className="relative w-full md:w-80 group">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#92664A] dark:text-[#EEB38C]/70 group-focus-within:text-[#DF8142] transition-colors" />
+      <div className="flex flex-col xl:flex-row justify-between items-center gap-4 bg-white dark:bg-[#1A0B04] p-3 rounded-[1.5rem] border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-xl shadow-[#5A270F]/5 transition-all duration-700">
+        <div className="relative w-full xl:w-72 group">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-[#92664A] dark:text-[#EEB38C]/70 group-focus-within:text-[#DF8142] transition-colors" />
           <input
             type="text"
             placeholder="Search specific user node..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-11 pl-11 pr-4 bg-[#EFEDED] dark:bg-white/5 border border-transparent focus:border-[#DF8142] rounded-xl text-xs font-black text-[#5A270F] dark:text-white placeholder:text-[#92664A] dark:placeholder-white/50 transition-all outline-none uppercase tracking-tight"
+            className="w-full h-9 pl-9 pr-3 bg-[#EFEDED] dark:bg-white/5 border border-transparent focus:border-[#DF8142] rounded-lg text-[9px] font-black text-[#5A270F] dark:text-white placeholder:text-[#92664A] dark:placeholder-white/50 transition-all outline-none uppercase tracking-tight"
           />
         </div>
-        <div className="flex flex-wrap gap-4 w-full md:w-auto">
+        <div className="flex flex-wrap gap-2 w-full xl:w-auto">
           <div className="relative">
             <button
               onClick={() => setIsDownloadFormatOpen(!isDownloadFormatOpen)}
-              className="h-11 px-6 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2.5 border border-[#BCAF9C] dark:border-white/10"
+              className="h-9 px-4 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[8px] font-black uppercase tracking-[0.15em] rounded-lg hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 border border-[#BCAF9C] dark:border-white/10"
             >
-              <Download className="h-3.5 w-3.5" />
+              <Download className="h-3 w-3" />
               Download
               <ChevronDown
-                className={`h-3 w-3 transition-transform ${isDownloadFormatOpen ? "rotate-180" : ""}`}
+                className={`h-2.5 w-2.5 transition-transform ${isDownloadFormatOpen ? "rotate-180" : ""}`}
               />
             </button>
             {isDownloadFormatOpen && (
@@ -629,11 +629,11 @@ const ManageUsers = () => {
               <button
                 onClick={handleAdvanceAcademic}
                 disabled={isAdvancing}
-                className="h-11 px-6 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2.5 border border-[#BCAF9C] dark:border-white/10"
+                className="h-9 px-4 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[8px] font-black uppercase tracking-[0.15em] rounded-lg hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 border border-[#BCAF9C] dark:border-white/10"
                 title="Synchronize student academic standing based on Ethiopian calendar registry"
               >
                 {isAdvancing ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <Loader2 className="h-3 w-3 animate-spin" />
                 ) : (
                   <ArrowUpCircle className="h-3.5 w-3.5" />
                 )}
@@ -642,54 +642,54 @@ const ManageUsers = () => {
               <button
                 onClick={handleCheckSuspension}
                 disabled={isSuspending}
-                className="h-11 px-6 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2.5 border border-[#BCAF9C] dark:border-white/10"
+                className="h-9 px-4 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[8px] font-black uppercase tracking-[0.15em] rounded-lg hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 border border-[#BCAF9C] dark:border-white/10"
                 title="Automatically suspend expired student nodes"
               >
                 {isSuspending ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin text-rose-500" />
+                  <Loader2 className="h-3 w-3 animate-spin text-rose-500" />
                 ) : (
-                  <Shield className="h-3.5 w-3.5 text-rose-500" />
+                  <Shield className="h-3 w-3 text-rose-500" />
                 )}
                 Check Expired
               </button>
               <button
                 onClick={() => setIsBroadcastModalOpen(true)}
-                className="h-11 px-6 bg-gradient-to-r from-[#DF8142] to-[#EEB38C] text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:scale-[1.02] transition-all shadow-xl shadow-[#DF8142]/20 active:scale-95 flex items-center justify-center gap-2.5"
+                className="h-9 px-4 bg-gradient-to-r from-[#DF8142] to-[#EEB38C] text-white text-[8px] font-black uppercase tracking-[0.15em] rounded-lg hover:scale-[1.02] transition-all shadow-md shadow-[#DF8142]/20 active:scale-95 flex items-center justify-center gap-2"
               >
-                <Zap className="h-3.5 w-3.5" />
+                <Zap className="h-3 w-3" />
                 Broadcaster
               </button>
             </>
           )}
           <button
             onClick={handleOpenCreate}
-            className="h-11 px-6 bg-[#5A270F] text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-[#1A0B04] hover:scale-[1.02] transition-all shadow-2xl shadow-[#5A270F]/30 active:scale-95 flex items-center justify-center gap-2.5"
+            className="h-9 px-4 bg-[#5A270F] text-white text-[8px] font-black uppercase tracking-[0.15em] rounded-lg hover:bg-[#1A0B04] hover:scale-[1.02] transition-all shadow-md shadow-[#5A270F]/30 active:scale-95 flex items-center justify-center gap-2"
           >
-            <UserPlus className="h-3.5 w-3.5" />
+            <UserPlus className="h-3 w-3" />
             Initialize Node
           </button>
         </div>
       </div>
 
       {/* User Registry Table */}
-      <div className="bg-white dark:bg-[#1A0B04] rounded-[3.5rem] border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-2xl shadow-[#5A270F]/5 overflow-hidden transition-all duration-700">
+      <div className="bg-white dark:bg-[#1A0B04] rounded-[1.5rem] border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-xl shadow-[#5A270F]/5 overflow-hidden transition-all duration-700">
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+          <table className="w-full border-collapse min-w-[800px]">
             <thead>
               <tr className="bg-[#5A270F]">
-                <th className="px-10 py-7 text-left text-[10px] font-black text-[#EEB38C] uppercase tracking-[0.4em]">
+                <th className="px-6 py-4 text-left text-[8.5px] font-black text-[#EEB38C] uppercase tracking-[0.3em]">
                   User Specimen
                 </th>
-                <th className="px-8 py-7 text-left text-[10px] font-black text-white/70 uppercase tracking-[0.4em]">
+                <th className="px-5 py-4 text-left text-[8.5px] font-black text-white/70 uppercase tracking-[0.3em]">
                   Identity ID
                 </th>
-                <th className="px-8 py-7 text-left text-[10px] font-black text-white/70 uppercase tracking-[0.4em]">
+                <th className="px-5 py-4 text-left text-[8.5px] font-black text-white/70 uppercase tracking-[0.3em]">
                   Role Cluster
                 </th>
-                <th className="px-8 py-7 text-left text-[10px] font-black text-white/70 uppercase tracking-[0.4em]">
+                <th className="px-5 py-4 text-left text-[8.5px] font-black text-white/70 uppercase tracking-[0.3em]">
                   Status
                 </th>
-                <th className="px-10 py-7 text-right text-[10px] font-black text-white/70 uppercase tracking-[0.4em]">
+                <th className="px-6 py-4 text-right text-[8.5px] font-black text-white/70 uppercase tracking-[0.3em]">
                   Operations
                 </th>
               </tr>
@@ -705,59 +705,47 @@ const ManageUsers = () => {
                     key={user.id}
                     className="hover:bg-[#EFEDED] dark:hover:bg-white/5 transition-all duration-300 group"
                   >
-                    <td className="px-10 py-8 whitespace-nowrap">
-                      <div className="flex items-center gap-6">
-                        <div className="h-14 w-14 bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                    <td className="px-6 py-3.5 whitespace-nowrap">
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] rounded-lg flex items-center justify-center text-white text-xs font-black shadow-md group-hover:scale-110 transition-all duration-500">
                           {(user.firstName || user.first_name)?.[0]}
                         </div>
                         <div>
-                          <div className="text-[15px] font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight mb-1">
+                          <div className="text-xs font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight mb-0.5">
                             {user.firstName || user.first_name}{" "}
                             {user.lastName || user.last_name}
                           </div>
-                          <div className="text-[10px] text-[#92664A] dark:text-white/70 font-black uppercase tracking-widest leading-none mb-1.5">
+                          <div className="text-[8px] text-[#92664A] dark:text-white/60 font-black uppercase tracking-widest leading-none mb-1">
                             {user.email}
                           </div>
-                          <div className="text-[9px] text-[#DF8142] font-black uppercase tracking-[0.3em] flex items-center gap-2 flex-wrap">
+                          <div className="text-[7.5px] text-[#DF8142] font-black uppercase tracking-[0.15em] flex items-center gap-1 flex-wrap">
                              <span className="h-1 w-1 rounded-full bg-[#DF8142]" /> {user.department || "Architecture"}
                              {roleName === "Student" && (
                                <>
-                                 <span className="h-1 w-1 rounded-full bg-[#BCAF9C] mx-1" />
-                                 <span className="text-[#92664A] dark:text-[#EEB38C]/60">Batch {user.batch}</span>
-                                 <span className="h-1 w-1 rounded-full bg-[#BCAF9C] mx-1" />
+                                 <span className="h-1 w-1 rounded-full bg-[#BCAF9C] mx-0.5" />
+                                 <span className="text-[#92664A] dark:text-[#EEB38C]/40">Batch {user.batch}</span>
+                                 <span className="h-1 w-1 rounded-full bg-[#BCAF9C] mx-0.5" />
                                  <span className="text-[#5A270F] dark:text-[#EEB38C]">Y{user.year} S{user.semester}</span>
-                                 {user.academicEndDateEth && (
-                                   <>
-                                     <span className="h-1 w-1 rounded-full bg-rose-400 mx-1" />
-                                     <span className="text-rose-600 dark:text-rose-400/80 lowercase tracking-normal">Expires: {user.academicEndDateEth}</span>
-                                   </>
-                                 )}
-                               </>
-                             )}
-                             {roleName === "Faculty" && user.specialization && (
-                               <>
-                                 <span className="h-1 w-1 rounded-full bg-[#BCAF9C] mx-1" />
-                                 <span className="text-[#92664A] dark:text-[#EEB38C]/60 italic tracking-normal capitalize">{user.specialization}</span>
                                </>
                              )}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-8 py-6 whitespace-nowrap">
-                      <span className="text-xs font-mono font-black text-gray-700 dark:text-white/80 uppercase tracking-widest bg-[#EFEDED] dark:bg-white/5 px-3 py-1 rounded-lg border border-[#D9D9C2] dark:border-white/10">
+                    <td className="px-5 py-3.5 whitespace-nowrap">
+                      <span className="text-[9px] font-mono font-black text-gray-700 dark:text-white/80 uppercase tracking-widest bg-[#EFEDED] dark:bg-white/5 px-2 py-1 rounded-md border border-[#D9D9C2] dark:border-white/10">
                         {user.university_id ||
                           (user as { universityId?: string }).universityId ||
                           "EXT-NODE"}
                       </span>
                     </td>
-                    <td className="px-8 py-8 whitespace-nowrap">
-                      <span className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] bg-[#5A270F] dark:bg-[#EEB38C] text-white dark:text-[#5A270F] shadow-lg shadow-[#5A270F]/10">
-                        <Shield className="h-3 w-3" />
+                    <td className="px-5 py-3.5 whitespace-nowrap">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[7.5px] font-black uppercase tracking-[0.15em] bg-[#5A270F] dark:bg-[#EEB38C] text-white dark:text-[#5A270F] shadow-sm">
+                        <Shield className="h-2 w-2" />
                         {roleName}
                       </span>
                     </td>
-                    <td className="px-8 py-6 whitespace-nowrap">
+                    <td className="px-5 py-3.5 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         <div
                           className={`h-1.5 w-1.5 rounded-full ${
@@ -769,7 +757,7 @@ const ManageUsers = () => {
                           }`}
                         />
                         <span
-                          className={`text-[10px] font-black uppercase tracking-widest ${
+                          className={`text-[8px] font-black uppercase tracking-[0.15em] ${
                             user.status === "active"
                               ? "text-[#5A270F] dark:text-white/90"
                               : (user.status === "pending_approval" || user.status === "admin_approved_node")
@@ -780,34 +768,34 @@ const ManageUsers = () => {
                           {user.status === "active"
                             ? "Active"
                             : user.status === "admin_approved_node"
-                              ? "Admin Pre-verified"
+                              ? "Pre-verified"
                               : user.status === "pending_approval"
-                                ? "Pending Approval"
+                                ? "Pending"
                                 : "Suspended"}
                         </span>
                       </div>
                     </td>
-                    <td className="px-10 py-6 whitespace-nowrap text-right">
-                      <div className="flex items-center justify-end gap-3">
+                    <td className="px-6 py-3.5 whitespace-nowrap text-right">
+                      <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => {
                             setSelectedUser(user);
                             setIsNotifyModalOpen(true);
                           }}
-                          className="p-3 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] hover:bg-[#DF8142]/10 rounded-xl transition-all"
+                          className="p-2 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] hover:bg-[#DF8142]/10 rounded-lg transition-all"
                           title="Direct Transmission"
                         >
-                          <Mail className="h-4 w-4" />
+                          <Mail className="h-3.5 w-3.5" />
                         </button>
 
                         {((user.status === "pending_approval" && (currentRoleName === "Admin" || currentRoleName === "DepartmentHead" || currentRoleName === "SuperAdmin")) || 
                           (user.status === "admin_approved_node" && (currentRoleName === "DepartmentHead" || currentRoleName === "SuperAdmin"))) && (
                              <button
                                onClick={() => handleApprove(user.id)}
-                               className="p-3 text-[#DF8142] hover:text-[#2A1205] hover:bg-[#5A270F]/5 rounded-xl transition-all"
+                               className="p-2 text-[#DF8142] hover:text-[#2A1205] hover:bg-[#5A270F]/5 rounded-lg transition-all"
                                title={currentRoleName === "Admin" ? "Pre-Verify Node" : "Final Authorize"}
                              >
-                               <CheckCircle2 className="h-4 w-4" />
+                               <CheckCircle2 className="h-3.5 w-3.5" />
                              </button>
                            )}
 
@@ -818,10 +806,10 @@ const ManageUsers = () => {
                             <>
                               <button
                                 onClick={() => handleOpenEdit(user)}
-                                className="p-3 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] hover:bg-[#DF8142]/10 rounded-xl transition-all"
+                                className="p-2 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] hover:bg-[#DF8142]/10 rounded-lg transition-all"
                                 title="Configure"
                               >
-                                <Edit2 className="h-4 w-4" />
+                                <Edit2 className="h-3.5 w-3.5" />
                               </button>
 
                               {!(
@@ -830,10 +818,10 @@ const ManageUsers = () => {
                               ) && (
                                 <button
                                   onClick={() => handleDelete(user)}
-                                  className="p-3 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-rose-600 hover:bg-red-50 rounded-xl transition-all"
+                                  className="p-2 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-rose-600 hover:bg-red-50 rounded-lg transition-all"
                                   title="Terminate"
                                 >
-                                  <Trash2 className="h-4 w-4" />
+                                  <Trash2 className="h-3.5 w-3.5" />
                                 </button>
                               )}
                             </>

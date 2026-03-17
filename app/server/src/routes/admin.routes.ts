@@ -1,127 +1,52 @@
-// admin.routes.ts
 import { Router } from "express";
-import { requireAuth } from "../middleware/auth";
-import { requireRole } from "../middleware/roles";
 import {
   getPendingResources,
   approveResource,
   rejectResource,
-  archiveResource,
-  restoreResource,
-  getAllUsers,
-  manageUserRole,
-  getStats,
   getFlags,
   resolveFlag,
-  bulkRegisterStudents,
-  registerFaculty,
-  createUser,
-  updateUser,
-  deleteUser,
-  approveUser,
   createNews,
   deleteNews,
-  sendDirectNotification,
-  broadcastNotification,
-  deleteResource,
-  getArchivedResources,
   advanceAcademicStatus,
   checkAndSuspendExpiredStudents,
-  toggleResourcePublicStatus,
+  broadcastNotification,
+  updateUser,
+  getAllUsers,
+  registerFaculty,
+  bulkRegisterStudents,
+  deleteUser,
+  createUser,
 } from "../controllers/admin.controller";
+import { requireAuth } from "../middleware/auth";
+import { requireRole } from "../middleware/roles";
 
 const router = Router();
 
-router.use(requireAuth, requireRole(["Admin", "SuperAdmin", "DepartmentHead"])); // Adjust role names as needed
+// Protect all admin routes
+router.use(requireAuth, requireRole(["Admin", "DepartmentHead", "SuperAdmin"]));
 
-// Resource Approval — Admin can propose, Dept Head can finalize
-router.get(
-  "/resources/pending",
-  requireRole(["Admin", "DepartmentHead", "SuperAdmin"]),
-  getPendingResources,
-);
-router.patch(
-  "/resources/:id/approve",
-  requireRole(["Admin", "DepartmentHead", "SuperAdmin"]),
-  approveResource,
-);
-router.patch(
-  "/resources/:id/reject",
-  requireRole(["Admin", "DepartmentHead", "SuperAdmin"]),
-  rejectResource,
-);
-router.patch(
-  "/resources/:id/archive",
-  requireRole(["Admin", "DepartmentHead", "SuperAdmin"]),
-  archiveResource,
-);
-router.patch(
-  "/resources/:id/restore",
-  requireRole(["Admin", "DepartmentHead", "SuperAdmin"]),
-  restoreResource,
-);
-router.patch(
-  "/resources/:id/visibility",
-  requireRole(["DepartmentHead", "SuperAdmin"]),
-  toggleResourcePublicStatus,
-);
-router.delete(
-  "/resources/:id/permanent",
-  requireRole(["DepartmentHead", "SuperAdmin"]), // Permanent deletion remains restricted
-  deleteResource,
-);
-router.get(
-  "/resources/archived",
-  requireRole(["Admin", "DepartmentHead", "SuperAdmin"]),
-  getArchivedResources,
-);
+// Resource Management
+router.get("/resources/pending", getPendingResources);
+router.patch("/resources/:id/approve", approveResource);
+router.patch("/resources/:id/reject", rejectResource);
+router.post("/resources/advance", advanceAcademicStatus);
+router.post("/resources/check-expired", checkAndSuspendExpiredStudents);
 
-router.get("/flags", requireRole(["Admin", "DepartmentHead", "SuperAdmin"]), getFlags);
-router.patch(
-  "/flags/:id/resolve",
-  requireRole(["Admin", "DepartmentHead", "SuperAdmin"]),
-  resolveFlag,
-);
+// Flag Management
+router.get("/flags", getFlags);
+router.patch("/flags/:id/resolve", resolveFlag);
 
+// News & Broadcasts
+router.post("/news", createNews);
+router.delete("/news/:id", deleteNews);
+router.post("/broadcast", broadcastNotification);
+
+// User Management
 router.get("/users", getAllUsers);
-router.post("/users/create", createUser);
-router.patch("/users/:id", updateUser); // Generic update
-router.delete("/users/:id", deleteUser);
-// User Registration Approval — restricted to DepartmentHead and SuperAdmin only
-router.patch(
-  "/users/:id/approve",
-  requireRole(["DepartmentHead"]),
-  approveUser,
-);
-router.patch("/users/:id/role", manageUserRole); // Keep specific if needed, or deprecate
-router.post("/users/bulk-register", bulkRegisterStudents);
+router.post("/users", createUser);
+router.put("/users/:id", updateUser);
 router.post("/users/register-faculty", registerFaculty);
-router.post(
-  "/users/advance-academic",
-  requireRole(["DepartmentHead", "SuperAdmin"]),
-  advanceAcademicStatus,
-);
-router.post(
-  "/users/check-suspension",
-  requireRole(["DepartmentHead", "SuperAdmin"]),
-  checkAndSuspendExpiredStudents,
-);
-
-router.get("/stats", getStats);
-
-// News management
-router.post("/news", requireRole(["DepartmentHead", "SuperAdmin"]), createNews);
-router.delete(
-  "/news/:id",
-  requireRole(["DepartmentHead", "SuperAdmin"]),
-  deleteNews,
-);
-router.post("/notifications/send", sendDirectNotification);
-// Global Broadcast — restricted to DepartmentHead and SuperAdmin only
-router.post(
-  "/notifications/broadcast",
-  requireRole(["DepartmentHead", "SuperAdmin"]),
-  broadcastNotification,
-);
+router.post("/users/bulk-register", bulkRegisterStudents);
+router.delete("/users/:id", deleteUser);
 
 export default router;

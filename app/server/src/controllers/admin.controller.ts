@@ -13,7 +13,11 @@ import {
   getRestoreNotificationHtml,
   getSuspendedHtml,
 } from "../utils/email";
-import { getMonthGap, parseEthiopianDateString, getEthiopianDate } from "../utils/ethiopianDate";
+import {
+  getMonthGap,
+  parseEthiopianDateString,
+  getEthiopianDate,
+} from "../utils/ethiopianDate";
 
 export const getPendingResources = async (req: Request, res: Response) => {
   try {
@@ -72,7 +76,11 @@ export const approveResource = async (req: Request, res: Response) => {
     const { comment, is_public } = req.body;
 
     const requester = (req as any).user;
-    const requesterRole = (requester?.role?.name || requester?.role || "").toLowerCase();
+    const requesterRole = (
+      requester?.role?.name ||
+      requester?.role ||
+      ""
+    ).toLowerCase();
     const isDeptHead = ["departmenthead", "superadmin"].includes(requesterRole);
 
     const reviewerId = requester?.id;
@@ -84,7 +92,9 @@ export const approveResource = async (req: Request, res: Response) => {
       : null;
     const reviewerName = reviewerData
       ? `${reviewerData.first_name || ""} ${reviewerData.last_name || ""}`.trim()
-      : isDeptHead ? "Department Head" : "Administrator";
+      : isDeptHead
+        ? "Department Head"
+        : "Administrator";
 
     const newStatus = isDeptHead ? "student" : "admin_approved";
 
@@ -110,8 +120,10 @@ export const approveResource = async (req: Request, res: Response) => {
         `${uploader.first_name || ""} ${uploader.last_name || ""}`.trim() ||
         "User";
 
-      const title = isDeptHead ? "✅ Resource Approved" : "⏳ Resource Pre-approved";
-      const message = isDeptHead 
+      const title = isDeptHead
+        ? "✅ Resource Approved"
+        : "⏳ Resource Pre-approved";
+      const message = isDeptHead
         ? `Your resource "${resource.title}" has been reviewed and approved by ${reviewerName}.`
         : `Your resource "${resource.title}" has been pre-approved by Admin ${reviewerName} and is awaiting final Department Head authorization.`;
 
@@ -138,9 +150,11 @@ export const approveResource = async (req: Request, res: Response) => {
       }
     }
 
-    res.json({ 
-      message: isDeptHead ? "Resource final approved" : "Resource pre-approved by admin", 
-      resource 
+    res.json({
+      message: isDeptHead
+        ? "Resource final approved"
+        : "Resource pre-approved by admin",
+      resource,
     });
   } catch (error) {
     console.error("Approval Error:", error);
@@ -154,7 +168,11 @@ export const rejectResource = async (req: Request, res: Response) => {
     const { reason } = req.body;
 
     const requester = (req as any).user;
-    const requesterRole = (requester?.role?.name || requester?.role || "").toLowerCase();
+    const requesterRole = (
+      requester?.role?.name ||
+      requester?.role ||
+      ""
+    ).toLowerCase();
     const isDeptHead = ["departmenthead", "superadmin"].includes(requesterRole);
 
     const reviewerId = requester?.id;
@@ -166,7 +184,9 @@ export const rejectResource = async (req: Request, res: Response) => {
       : null;
     const reviewerName = reviewerData
       ? `${reviewerData.first_name || ""} ${reviewerData.last_name || ""}`.trim()
-      : isDeptHead ? "Department Head" : "Administrator";
+      : isDeptHead
+        ? "Department Head"
+        : "Administrator";
 
     const newStatus = isDeptHead ? "rejected" : "admin_rejected";
 
@@ -191,7 +211,9 @@ export const rejectResource = async (req: Request, res: Response) => {
         `${uploader.first_name || ""} ${uploader.last_name || ""}`.trim() ||
         "User";
 
-      const title = isDeptHead ? "❌ Resource Rejected" : "⚠️ Resource Flagged for Rejection";
+      const title = isDeptHead
+        ? "❌ Resource Rejected"
+        : "⚠️ Resource Flagged for Rejection";
       const message = isDeptHead
         ? `Your resource "${resource.title}" was reviewed by ${reviewerName} and has been rejected.`
         : `Your resource "${resource.title}" was reviewed by Admin ${reviewerName} and is recommended for rejection.`;
@@ -210,9 +232,11 @@ export const rejectResource = async (req: Request, res: Response) => {
       });
     }
 
-    res.json({ 
-      message: isDeptHead ? "Resource final rejected" : "Resource proposed for rejection by admin", 
-      resource 
+    res.json({
+      message: isDeptHead
+        ? "Resource final rejected"
+        : "Resource proposed for rejection by admin",
+      resource,
     });
   } catch (error) {
     console.error("Rejection Error:", error);
@@ -230,11 +254,11 @@ export const getAllUsers = async (req: Request, res: Response) => {
     // Map to camelCase for frontend consistency
     const formattedUsers = users.map((user) => {
       const u = user as any;
-      
+
       const formatEthDate = (date: Date | null) => {
         if (!date) return "";
         const eth = getEthiopianDate(date);
-        return `${eth.year}-${String(eth.month).padStart(2, '0')}-${String(eth.day).padStart(2, '0')}`;
+        return `${eth.year}-${String(eth.month).padStart(2, "0")}-${String(eth.day).padStart(2, "0")}`;
       };
 
       return {
@@ -494,18 +518,31 @@ export const restoreResource = async (req: Request, res: Response) => {
   }
 };
 
-export const toggleResourcePublicStatus = async (req: Request, res: Response) => {
+export const toggleResourcePublicStatus = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const { id } = req.params;
     const { is_public } = req.body;
     const resourceId = Number(id);
 
     const requester = (req as any).user;
-    const requesterRole = (requester?.role?.name || requester?.role || "").toLowerCase();
-    const isAuthorized = ["departmenthead", "superadmin"].includes(requesterRole);
+    const requesterRole = (
+      requester?.role?.name ||
+      requester?.role ||
+      ""
+    ).toLowerCase();
+    const isAuthorized = ["departmenthead", "superadmin"].includes(
+      requesterRole,
+    );
 
     if (!isAuthorized) {
-      return res.status(403).json({ message: "Only Department Heads can toggle public visibility" });
+      return res
+        .status(403)
+        .json({
+          message: "Only Department Heads can toggle public visibility",
+        });
     }
 
     const updatedResource = await prisma.resource.update({
@@ -584,10 +621,14 @@ export const resolveFlag = async (req: Request, res: Response) => {
     const { status } = req.body; // e.g. 'resolved', 'ignored'
 
     const requester = (req as any).user;
-    const requesterRole = (requester?.role?.name || requester?.role || "").toLowerCase();
+    const requesterRole = (
+      requester?.role?.name ||
+      requester?.role ||
+      ""
+    ).toLowerCase();
     const isDeptHead = ["departmenthead", "superadmin"].includes(requesterRole);
-    
-    const newStatus = isDeptHead ? (status || "resolved") : "admin_resolved";
+
+    const newStatus = isDeptHead ? status || "resolved" : "admin_resolved";
 
     await prisma.flag.update({
       where: { id: Number(id) },
@@ -597,9 +638,11 @@ export const resolveFlag = async (req: Request, res: Response) => {
         resolved_by_id: userId,
       },
     });
-    res.json({ 
-      message: isDeptHead ? "Flag finalized" : "Flag resolved by admin (pending final verification)", 
-      status: newStatus 
+    res.json({
+      message: isDeptHead
+        ? "Flag finalized"
+        : "Flag resolved by admin (pending final verification)",
+      status: newStatus,
     });
   } catch (error) {
     res.status(500).json({ message: "Error resolving flag" });
@@ -658,7 +701,7 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
           password,
           university_id,
           academic_start_date, // New field support
-          academic_end_date,   // New field support
+          academic_end_date, // New field support
         } = student;
 
         // Validate email format
@@ -716,8 +759,12 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
               `${email.split("@")[0].toUpperCase()}${Math.floor(
                 1000 + Math.random() * 9000,
               )}`,
-            academic_start_date: academic_start_date ? new Date(academic_start_date) : null,
-            academic_end_date: academic_end_date ? new Date(academic_end_date) : null,
+            academic_start_date: academic_start_date
+              ? new Date(academic_start_date)
+              : null,
+            academic_end_date: academic_end_date
+              ? new Date(academic_end_date)
+              : null,
           } as any,
         });
 
@@ -931,7 +978,7 @@ export const createUser = async (req: Request, res: Response) => {
       department,
       workerId,
       academicStartDate, // Ethiopian string YYYY-MM-DD
-      academicEndDate,   // Ethiopian string YYYY-MM-DD
+      academicEndDate, // Ethiopian string YYYY-MM-DD
     } = req.body;
 
     // Normalize roles to array
@@ -1063,8 +1110,12 @@ export const createUser = async (req: Request, res: Response) => {
         specialization: specialization || null,
         department: department || null,
         worker_id: workerId || null,
-        academic_start_date: academicStartDate ? parseEthiopianDateString(academicStartDate) : null,
-        academic_end_date: academicEndDate ? parseEthiopianDateString(academicEndDate) : null,
+        academic_start_date: academicStartDate
+          ? parseEthiopianDateString(academicStartDate)
+          : null,
+        academic_end_date: academicEndDate
+          ? parseEthiopianDateString(academicEndDate)
+          : null,
       } as any,
     });
 
@@ -1084,15 +1135,19 @@ export const createUser = async (req: Request, res: Response) => {
     // Notify User about account provisioning
     await notifyUsers({
       userIds: [user.id],
-      title: initialStatus === "active" ? "Account Created" : "Account Provisioned (Pending Approval)",
-      message: initialStatus === "active" 
-        ? "Your account has been created by the administrator."
-        : "Your account has been provisioned and is awaiting approval.",
+      title:
+        initialStatus === "active"
+          ? "Account Created"
+          : "Account Provisioned (Pending Approval)",
+      message:
+        initialStatus === "active"
+          ? "Your account has been created by the administrator."
+          : "Your account has been provisioned and is awaiting approval.",
       html: getRegistrationHtml(
-        `${firstName} ${lastName}`, 
-        email, 
-        password, 
-        initialStatus
+        `${firstName} ${lastName}`,
+        email,
+        password,
+        initialStatus,
       ),
     });
 
@@ -1157,8 +1212,12 @@ export const updateUser = async (req: Request, res: Response) => {
         specialization === "" ? null : specialization || undefined,
       department: department === "" ? null : department || undefined,
       worker_id: workerId === "" ? null : workerId || undefined,
-      academic_start_date: academicStartDate ? parseEthiopianDateString(academicStartDate) : undefined,
-      academic_end_date: academicEndDate ? parseEthiopianDateString(academicEndDate) : undefined,
+      academic_start_date: academicStartDate
+        ? parseEthiopianDateString(academicStartDate)
+        : undefined,
+      academic_end_date: academicEndDate
+        ? parseEthiopianDateString(academicEndDate)
+        : undefined,
     };
 
     // Status Change Authorization Protocol
@@ -1244,7 +1303,8 @@ export const updateUser = async (req: Request, res: Response) => {
         ),
       });
     } else if (status === "suspended" && targetUser.status !== "suspended") {
-      const execName = requester?.name || requester?.first_name || "Department Head";
+      const execName =
+        requester?.name || requester?.first_name || "Department Head";
       await notifyUsers({
         userIds: [updatedUser.id],
         title: "Account Suspended",
@@ -1252,7 +1312,7 @@ export const updateUser = async (req: Request, res: Response) => {
         html: getSuspendedHtml(
           `${updatedUser.first_name || "User"}`,
           execName,
-          suspendReason
+          suspendReason,
         ),
       });
     } else {
@@ -1350,7 +1410,11 @@ export const approveUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const requester = (req as any).user;
-    const requesterRole = (requester?.role?.name || requester?.role || "").toLowerCase();
+    const requesterRole = (
+      requester?.role?.name ||
+      requester?.role ||
+      ""
+    ).toLowerCase();
     const isDeptHead = ["departmenthead", "superadmin"].includes(requesterRole);
 
     const newStatus = isDeptHead ? "active" : "admin_approved_node";
@@ -1367,7 +1431,7 @@ export const approveUser = async (req: Request, res: Response) => {
         title: "Account Authorized",
         message: `Your system node has been authorized by the Department Head. You can now access the Nexus.`,
         html: getAccountAuthorizationHtml(
-          `${user.first_name} ${user.last_name}`
+          `${user.first_name} ${user.last_name}`,
         ),
       });
     } else {
@@ -1378,14 +1442,14 @@ export const approveUser = async (req: Request, res: Response) => {
         html: getGenericHtml(
           `${user.first_name} ${user.last_name}`,
           "Account Pre-verified",
-          "Your account has been pre-verified by an administrator and is now in the final authorization queue."
+          "Your account has been pre-verified by an administrator and is now in the final authorization queue.",
         ),
       });
     }
 
     res.json({
-      message: isDeptHead 
-        ? "User node authorized and activated in the matrix." 
+      message: isDeptHead
+        ? "User node authorized and activated in the matrix."
         : "User node pre-verified by Admin; awaiting final Dept Head authorization.",
       user,
     });
@@ -1591,26 +1655,31 @@ export const advanceAcademicStatus = async (req: Request, res: Response) => {
 
       // Calculate gap in Ethiopian months since registration
       const monthGap = getMonthGap(student.createdAt, now);
-      
-      // Logic: 
+
+      // Logic:
       // 1 year = 13 months in Ethiopian calendar
       // Semester 1 -> 2 happens after a gap of 5 months
       // Year increments every 13 months
-      
+
       const yearsElapsed = Math.floor(monthGap / 13);
       const remainingMonths = monthGap % 13;
       const semestersElapsedInCurrentYear = Math.floor(remainingMonths / 5);
-      
+
       // Target state (starting from Year 1, Semester 1)
       const targetYear = 1 + yearsElapsed;
-      const targetSemester = 1 + (semestersElapsedInCurrentYear > 1 ? 1 : semestersElapsedInCurrentYear); // Cap at 2 semesters
+      const targetSemester =
+        1 +
+        (semestersElapsedInCurrentYear > 1 ? 1 : semestersElapsedInCurrentYear); // Cap at 2 semesters
 
       // Only advance if the calculated targets are greater than current values
       // Note: We use the existing year/semester as base if they exist
       const currentYear = student.year || 1;
       const currentSemester = student.semester || 1;
 
-      if (targetYear > currentYear || (targetYear === currentYear && targetSemester > currentSemester)) {
+      if (
+        targetYear > currentYear ||
+        (targetYear === currentYear && targetSemester > currentSemester)
+      ) {
         await prisma.user.update({
           where: { id: student.id },
           data: {
@@ -1619,7 +1688,7 @@ export const advanceAcademicStatus = async (req: Request, res: Response) => {
             status: "active", // Maintain active status as requested
           },
         });
-        
+
         // Notify the student about their promotion
         await notifyUsers({
           userIds: [student.id],
@@ -1628,8 +1697,8 @@ export const advanceAcademicStatus = async (req: Request, res: Response) => {
           html: getGenericHtml(
             `${student.first_name} ${student.last_name}`,
             "Academic Progression Protocol",
-            `Greetings ${student.first_name || "Student"},<br/><br/>The system has synchronized your academic standing. Your current node is now positioned in:<br/><b>Year: ${targetYear}</b><br/><b>Semester: ${targetSemester}</b><br/><br/>Your access levels have been updated accordingly.`
-          )
+            `Greetings ${student.first_name || "Student"},<br/><br/>The system has synchronized your academic standing. Your current node is now positioned in:<br/><b>Year: ${targetYear}</b><br/><b>Semester: ${targetSemester}</b><br/><br/>Your access levels have been updated accordingly.`,
+          ),
         });
 
         updatedCount++;
@@ -1639,14 +1708,14 @@ export const advanceAcademicStatus = async (req: Request, res: Response) => {
     // Log the system action
     const actorId = (req as any).user?.id;
     if (actorId && (prisma as any).systemLog) {
-        await (prisma as any).systemLog.create({
-          data: {
-            action: "BULK_ACADEMIC_PROMOTION",
-            entity: "User",
-            details: `Advanced ${updatedCount} student nodes based on Ethiopian calendar gap analysis.`,
-            actorId: actorId,
-          },
-        });
+      await (prisma as any).systemLog.create({
+        data: {
+          action: "BULK_ACADEMIC_PROMOTION",
+          entity: "User",
+          details: `Advanced ${updatedCount} student nodes based on Ethiopian calendar gap analysis.`,
+          actorId: actorId,
+        },
+      });
     }
 
     res.json({
@@ -1656,11 +1725,18 @@ export const advanceAcademicStatus = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Advance Academic Status Error:", error);
-    res.status(500).json({ message: "Protocol Error: Failed to synchronize academic progression." });
+    res
+      .status(500)
+      .json({
+        message: "Protocol Error: Failed to synchronize academic progression.",
+      });
   }
 };
 
-export const checkAndSuspendExpiredStudents = async (req: Request, res: Response) => {
+export const checkAndSuspendExpiredStudents = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const studentRole = await prisma.role.findUnique({
       where: { name: "Student" },
@@ -1697,12 +1773,13 @@ export const checkAndSuspendExpiredStudents = async (req: Request, res: Response
       await notifyUsers({
         userIds: [student.id],
         title: "⚠️ Account Automatically Suspended",
-        message: "Your academic term has concluded and the grace period has expired. Your node access has been automatically terminated.",
+        message:
+          "Your academic term has concluded and the grace period has expired. Your node access has been automatically terminated.",
         html: getSuspendedHtml(
-            student.first_name || "User",
-            "System Autopilot",
-            "Academic term concluded + 1-month grace period expired."
-        )
+          student.first_name || "User",
+          "System Autopilot",
+          "Academic term concluded + 1-month grace period expired.",
+        ),
       });
       suspendedCount++;
     }
@@ -1713,6 +1790,11 @@ export const checkAndSuspendExpiredStudents = async (req: Request, res: Response
     });
   } catch (error) {
     console.error("Auto-suspension Error:", error);
-    res.status(500).json({ message: "Protocol Error: Failed to execute automated suspension sequence." });
+    res
+      .status(500)
+      .json({
+        message:
+          "Protocol Error: Failed to execute automated suspension sequence.",
+      });
   }
 };

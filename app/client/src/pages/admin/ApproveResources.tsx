@@ -51,9 +51,11 @@ const ApproveResources = () => {
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Approve Resources</h2>
-      <div className="space-y-4">
+    <div className="space-y-6">
+      <h2 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase italic">
+        Approve <span className="not-italic text-[#DF8142]">Resources</span>
+      </h2>
+      <div className="space-y-3">
         {resources.map((resource) => (
           <ResourceApprovalCard
             key={resource.id}
@@ -64,7 +66,7 @@ const ApproveResources = () => {
           />
         ))}
         {resources.length === 0 && !loading && (
-          <p className="text-gray-500 dark:text-white/40 text-center py-8">
+          <p className="text-[10px] text-gray-500 dark:text-[#EEB38C]/40 text-center py-12 font-black uppercase tracking-[0.2em]">
             No pending resources found.
           </p>
         )}
@@ -87,43 +89,50 @@ const ResourceApprovalCard = ({
   const [comment, setComment] = useState("");
 
   return (
-    <div className="p-4 border rounded-lg bg-white dark:bg-card shadow-sm">
-      <div className="flex justify-between items-start mb-4">
+    <div className="p-5 border border-[#D9D9C2] dark:border-[#DF8142]/20 rounded-xl bg-white dark:bg-[#1A0B04] shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex justify-between items-start mb-3">
         <div>
-          <h3 className="font-semibold text-lg">{resource.title}</h3>
-          <div className="text-sm text-gray-600 dark:text-white/50 mt-1 space-y-1">
-            <p>
+          <h3 className="font-black text-sm text-[#5A270F] dark:text-[#EEB38C] tracking-tight italic uppercase">
+            {resource.title}
+          </h3>
+          <div className="text-[9px] text-[#92664A] dark:text-white/50 mt-1.5 space-y-1 font-black uppercase tracking-widest leading-none">
+            <p className="flex items-center gap-1.5">
+              <span className="h-1 w-1 rounded-full bg-[#DF8142]" />
               Uploaded by:{" "}
-              <span className="font-medium text-gray-900 dark:text-white">
+              <span className="text-[#5A270F] dark:text-[#EEB38C]">
                 {resource.uploader.firstName} {resource.uploader.lastName}
               </span>
             </p>
-            <p>
+            <p className="flex items-center gap-1.5">
+              <span className="h-1 w-1 rounded-full bg-[#BCAF9C]" />
               Design Stage:{" "}
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#EEB38C]/20 text-[#5A270F] dark:text-[#EEB38C]">
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[8px] font-black bg-[#EEB38C]/20 text-[#5A270F] dark:text-[#EEB38C] border border-[#EEB38C]/40">
                 {resource.designStage?.name || "Unspecified"}
               </span>
             </p>
-            <p>
+            <p className="flex items-center gap-1.5">
+              <span className="h-1 w-1 rounded-full bg-[#BCAF9C]" />
               For Year:{" "}
-              {resource.batchYear ? `Batch ${resource.batchYear}` : "N/A"}
+              <span className="text-[#5A270F] dark:text-[#EEB38C]">
+                {resource.batchYear ? `Batch ${resource.batchYear}` : "N/A"}
+              </span>
             </p>
           </div>
         </div>
-        <div className="text-xs text-gray-400 dark:text-white/30">
+        <div className="text-[8px] font-black text-gray-400 dark:text-white/30 uppercase tracking-[0.2em] bg-[#EFEDED] dark:bg-white/5 px-2 py-1 rounded-md">
           {new Date(resource.uploadedAt).toLocaleDateString()}
         </div>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-4 pt-4 border-t border-slate-50 dark:border-white/5">
         <textarea
           placeholder="Add a comment or rejection reason (optional)..."
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          className="w-full text-sm p-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-primary/90"
+          className="w-full text-[10px] font-medium p-3 bg-[#EFEDED]/50 dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DF8142] resize-none"
           rows={2}
         />
-        <div className="flex justify-end gap-3 mt-3">
+        <div className="flex justify-end gap-2 mt-3">
           <a
             href={`${import.meta.env.VITE_API_URL}/resources/${
               resource.id
@@ -132,7 +141,7 @@ const ResourceApprovalCard = ({
             )}`}
             target="_blank"
             rel="noreferrer"
-            className="px-4 py-2 text-sm font-medium text-primary/90 bg-primary/10 rounded-md hover:bg-primary/20 border border-transparent flex items-center gap-1"
+            className="px-3.5 py-1.5 text-[9px] font-black uppercase tracking-[0.1em] text-[#5A270F] dark:text-[#EEB38C] bg-[#EEB38C]/10 rounded-lg hover:bg-[#EEB38C]/20 border border-transparent flex items-center gap-1 transition-all"
           >
             Review Resource
           </a>
@@ -140,13 +149,13 @@ const ResourceApprovalCard = ({
             <>
               <button
                 onClick={() => onReject(resource.id, comment)}
-                className="px-4 py-2 text-sm font-medium text-red-700 bg-red-50 rounded-md hover:bg-red-100 border border-transparent"
+                className="px-3.5 py-1.5 text-[9px] font-black uppercase tracking-[0.1em] text-rose-700 bg-red-50 dark:bg-rose-900/10 rounded-lg hover:bg-red-100 dark:hover:bg-rose-900/20 border border-transparent transition-all"
               >
                 Reject
               </button>
               <button
                 onClick={() => onApprove(resource.id, comment)}
-                className="px-4 py-2 text-sm font-medium text-white bg-[#2A1205] rounded-md hover:bg-[#2A1205]/90 shadow-sm"
+                className="px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.1em] text-white bg-[#5A270F] rounded-lg hover:bg-[#2A1205] shadow-md transition-all active:scale-95"
               >
                 Approve
               </button>

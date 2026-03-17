@@ -76,35 +76,35 @@ const ArchivedResources = () => {
   return (
     <div className="space-y-12 animate-in fade-in duration-1000 pb-20">
       {/* ── Archive Hero ── */}
-      <div className="relative overflow-hidden bg-[#5A270F] dark:bg-[#1A0B04] rounded-[4rem] p-12 lg:p-16 border border-white/10 shadow-[0_50px_100px_-20px_rgba(90,39,15,0.4)]">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#EEB38C]/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute inset-0 architectural-dot-grid opacity-10" />
+      <div className="relative overflow-hidden bg-[#5A270F] dark:bg-[#1A0B04] rounded-[2rem] p-6 lg:p-8 border border-white/5 shadow-xl shadow-[#5A270F]/20">
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#EEB38C]/10 blur-[60px] rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute inset-0 architectural-dot-grid opacity-[0.03]" />
         
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10">
-          <div className="space-y-6">
-            <div className="flex items-center gap-4">
-              <div className="h-[1px] w-10 bg-[#EEB38C]" />
-              <p className="text-[11px] font-black uppercase tracking-[0.6em] text-[#EEB38C] drop-shadow-sm">
-                Containment Zone
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2.5">
+            <div className="flex items-center gap-2.5">
+              <span className="h-[1.5px] w-6 bg-[#EEB38C]" />
+              <p className="text-[8px] font-black uppercase tracking-[0.4em] text-[#EEB38C] drop-shadow-sm">
+                CONTAINMENT ZONE
               </p>
             </div>
-            <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tighter uppercase leading-[0.9] font-space-grotesk italic">
+            <h1 className="text-2xl lg:text-3xl font-black text-white tracking-tighter uppercase leading-none font-space-grotesk italic">
               SYSTEM <span className="text-[#EEB38C]">ARCHIVE</span>
             </h1>
-            <p className="text-base text-[#EEB38C]/60 font-medium leading-relaxed max-w-lg">
+            <p className="text-[9px] lg:text-[10px] text-[#EEB38C]/60 font-medium leading-relaxed max-w-lg uppercase tracking-wider">
               Secure vault for sequestered intelligence nodes. Only authorized personnel can restore nodes back to the active library.
             </p>
           </div>
 
-          <div className="flex items-center gap-6 px-10 py-6 bg-white/5 backdrop-blur-xl rounded-[2.5rem] border border-white/10 shadow-2xl">
-            <div className="h-16 w-16 rounded-2xl bg-[#5A270F] border border-white/20 flex items-center justify-center text-white shadow-2xl shadow-black/50">
-              <Archive className="h-8 w-8 text-[#EEB38C]" />
+          <div className="flex items-center gap-5 px-6 py-4 bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10 shadow-lg">
+            <div className="h-10 w-10 rounded-xl bg-[#5A270F] border border-white/10 flex items-center justify-center text-white shadow-xl">
+              <Archive className="h-5 w-5 text-[#EEB38C]" />
             </div>
             <div>
-              <span className="text-4xl font-black text-white leading-none font-mono">
+              <span className="text-2xl font-black text-white leading-none font-mono">
                 {resources.length.toString().padStart(2, '0')}
               </span>
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#EEB38C]/60 mt-1 uppercase italic">
+              <p className="text-[6px] font-black uppercase tracking-[0.3em] text-[#EEB38C]/60 mt-1 uppercase italic">
                 Sequestered Units
               </p>
             </div>
@@ -114,55 +114,55 @@ const ArchivedResources = () => {
 
       {/* ── Archived Resources List ── */}
       {resources.length > 0 ? (
-        <div className="grid grid-cols-1 gap-12">
+        <div className="grid grid-cols-1 gap-8">
           {resources.map((resource) => (
             <div
               key={resource.id}
-              className="group relative bg-white dark:bg-card/50 backdrop-blur-3xl rounded-[4rem] border border-[#D9D9C2]/60 dark:border-white/5 shadow-2xl shadow-[#5A270F]/5 overflow-hidden transition-all duration-700 hover:shadow-[0_40px_80px_-20px_rgba(90,39,15,0.15)]"
+              className="group relative bg-[#FDFCFB] dark:bg-[#0F0602] rounded-[2rem] border border-[#BCAF9C]/20 dark:border-white/5 shadow-lg overflow-hidden hover:border-rose-500/30 transition-all duration-700"
             >
-              <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-rose-500/5 to-transparent blur-[100px] transition-all duration-1000 group-hover:from-rose-500/10" />
+              <div className="absolute top-0 right-0 w-64 h-full bg-rose-500/5 blur-[80px] -z-10" />
               
-              <div className="p-10 lg:p-14 relative z-10 flex flex-col lg:grid lg:grid-cols-12 gap-12 items-start">
+              <div className="p-6 lg:p-8 lg:grid lg:grid-cols-12 gap-8">
                 
-                <div className="lg:col-span-8 space-y-8">
-                  <div className="flex flex-wrap items-center gap-6">
-                    <span className="px-5 py-2 bg-rose-900 text-rose-200 text-[10px] font-black uppercase tracking-[0.3em] rounded-xl shadow-xl shadow-rose-900/20">
+                <div className="lg:col-span-8 space-y-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="px-3 py-1 bg-[#5A270F] text-[#EEB38C] text-[8px] font-black uppercase tracking-[0.2em] rounded-lg shadow-md border border-white/10">
                       SEQUESTERED PROTOCOL
                     </span>
-                    <div className="flex items-center gap-2 text-[10px] text-[#92664A] dark:text-[#EEB38C]/60 font-black uppercase tracking-[0.4em]">
-                      <Clock className="h-4 w-4" />
-                      Asset Born: {new Date(resource.uploadedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
+                    <div className="flex items-center gap-1.5 text-[8px] text-[#92664A] dark:text-[#EEB38C]/60 font-black uppercase tracking-[0.3em]">
+                      <Clock className="h-3 w-3 text-[#DF8142]" />
+                      {new Date(resource.uploadedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
                     </div>
                   </div>
 
                   <Link
                     to={`/admin/resources/${resource.id}`}
-                    className="block text-4xl lg:text-5xl font-black text-[#5A270F] dark:text-white tracking-tighter leading-[0.9] hover:text-[#DF8142] transition-all uppercase italic font-space-grotesk"
+                    className="block text-xl lg:text-2xl font-black text-[#5A270F] dark:text-white tracking-tighter leading-tight hover:text-rose-500 transition-all uppercase italic font-space-grotesk"
                   >
                     {resource.title}
                   </Link>
 
-                  <div className="flex flex-wrap items-center gap-6">
-                    <div className="flex items-center gap-4 p-4 bg-[#FAF8F4] dark:bg-white/5 rounded-[1.75rem] border border-[#D9D9C2]/40 dark:border-white/10 group-hover:bg-white transition-all duration-500">
-                      <div className="h-12 w-12 bg-white dark:bg-[#1A0B04] border border-[#D9D9C2]/50 dark:border-white/10 rounded-2xl flex items-center justify-center text-[#DF8142] shadow-xl">
-                        <User className="h-6 w-6" />
+                  <div className="flex flex-wrap items-center gap-4">
+                    <div className="flex items-center gap-3 p-2.5 bg-[#6C3B1C]/5 dark:bg-white/5 rounded-xl border border-[#D9D9C2]/40 dark:border-white/10 group-hover:bg-white transition-all duration-500 shadow-sm">
+                      <div className="h-8 w-8 bg-[#5A270F] text-[#EEB38C] rounded-lg flex items-center justify-center shadow-md">
+                        <User className="h-4 w-4" />
                       </div>
                       <div>
-                        <p className="text-[9px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] mb-1">Origin Authority</p>
-                        <p className="text-sm font-black text-[#5A270F] dark:text-white">
+                        <p className="text-[7px] font-black text-[#6C3B1C]/60 dark:text-[#EEB38C]/40 uppercase tracking-[0.3em] mb-0.5">AUTHORITY</p>
+                        <p className="text-[10px] font-black text-[#5A270F] dark:text-white uppercase">
                           {(resource.uploader as any)?.firstName || (resource.uploader as any)?.first_name} {(resource.uploader as any)?.lastName || (resource.uploader as any)?.last_name}
                         </p>
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-4 p-4 bg-[#FAF8F4] dark:bg-white/5 rounded-[1.75rem] border border-[#D9D9C2]/40 dark:border-white/10">
-                      <div className="h-12 w-12 bg-white dark:bg-[#1A0B04] border border-[#D9D9C2]/50 dark:border-white/10 rounded-2xl flex items-center justify-center text-[#92664A] shadow-xl">
-                        <Database className="h-6 w-6" />
+                    <div className="flex items-center gap-3 p-2.5 bg-[#6C3B1C]/5 dark:bg-white/5 rounded-xl border border-[#D9D9C2]/40 dark:border-white/10">
+                      <div className="h-8 w-8 bg-[#6C3B1C] text-[#EEB38C] rounded-lg flex items-center justify-center shadow-md">
+                        <Database className="h-4 w-4" />
                       </div>
                       <div>
-                        <p className="text-[9px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] mb-1">Design Phase</p>
-                        <p className="text-sm font-black text-[#5A270F] dark:text-white">
-                          {resource.designStage?.name || 'Protocol-01'}
+                        <p className="text-[7px] font-black text-[#6C3B1C]/60 dark:text-[#EEB38C]/40 uppercase tracking-[0.3em] mb-0.5">STATION</p>
+                        <p className="text-[10px] font-black text-[#5A270F] dark:text-white uppercase">
+                          {resource.designStage?.name || 'CORE'}
                         </p>
                       </div>
                     </div>
@@ -170,68 +170,71 @@ const ArchivedResources = () => {
                 </div>
 
                 {/* Vertical Center Action Side */}
-                <div className="lg:col-span-4 flex flex-col gap-6 w-full lg:sticky lg:top-12">
-                   <a
-                    href={`${import.meta.env.VITE_API_URL}/resources/${resource.id}/view?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
-                    target="_blank" rel="noreferrer"
-                    className="h-20 flex items-center justify-center gap-4 bg-white dark:bg-white/5 border-2 border-[#D9D9C2]/60 dark:border-white/10 text-[11px] font-black uppercase tracking-[0.4em] rounded-[2rem] text-[#5A270F] dark:text-white hover:border-[#DF8142] hover:text-[#DF8142] transition-all active:scale-95 shadow-2xl"
-                  >
-                    <Eye className="h-6 w-6" /> Inspect Artifact
-                  </a>
+                <div className="lg:col-span-4 flex flex-col gap-6 w-full lg:sticky lg:top-10">
+                   <div className="bg-[#5A270F] dark:bg-black p-6 rounded-[2rem] border border-white/5 shadow-2xl shadow-[#5A270F]/30 space-y-4 relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-20 h-20 bg-[#DF8142]/10 blur-3xl rounded-full" />
+                      <div className="flex items-center gap-2.5 border-b border-white/10 pb-3">
+                        <Archive className="h-4 w-4 text-[#DF8142] animate-pulse" />
+                        <span className="text-[9px] font-black text-white uppercase tracking-[0.3em]">CONTAINMENT STATUS</span>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center group/log">
+                          <span className="text-[7px] font-black text-[#EEB38C]/50 uppercase tracking-widest text-rose-500">SEQUESTERED</span>
+                          <span className="px-2 py-0.5 bg-rose-500/20 text-rose-400 rounded-md text-[7px] font-black tracking-[0.1em] border border-rose-500/10">ACTIVE</span>
+                        </div>
+                        <div className="flex justify-between items-center group/log">
+                          <span className="text-[7px] font-black text-[#EEB38C]/50 uppercase tracking-widest">ISOLATION</span>
+                          <span className="text-[8px] font-black text-white block uppercase italic tracking-widest">LEVEL-MAX</span>
+                        </div>
+                      </div>
+                   </div>
 
-                  {isAuthorized ? (
-                    <div className="flex h-20">
-                      <button
-                        onClick={() => handleRestore(resource.id)}
-                        className="w-full h-full bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 text-emerald-600 dark:text-emerald-400 text-[12px] font-black uppercase tracking-[0.2em] rounded-[2rem] hover:bg-emerald-500 hover:text-white transition-all shadow-xl shadow-emerald-500/10 active:scale-95 flex items-center justify-center gap-3"
+                   <div className="flex flex-col gap-2">
+                      <a
+                        href={`${import.meta.env.VITE_API_URL}/resources/${resource.id}/view?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
+                        target="_blank" rel="noreferrer"
+                        className="h-10 flex items-center justify-center gap-2 bg-white dark:bg-white/5 border border-[#BCAF9C]/20 dark:border-white/10 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#5A270F] hover:text-white transition-all shadow-md group/view"
                       >
-                        <RotateCcw className="h-5 w-5" /> Restore Logic
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="h-20 flex items-center justify-center gap-4 bg-amber-50 dark:bg-amber-950/20 rounded-[2rem] border-2 border-amber-200 dark:border-amber-900/30">
-                      <ShieldAlert className="h-6 w-6 text-amber-600" />
-                      <span className="text-[10px] font-black uppercase tracking-widest text-amber-900 dark:text-amber-400">Node Locked</span>
-                    </div>
-                  )}
-                  
-                  <div className="bg-[#FAF8F4] dark:bg-black p-8 rounded-[2.5rem] border border-[#D9D9C2]/40 dark:border-white/10 space-y-4">
-                     <p className="text-[9px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.4em] flex items-center gap-3">
-                       <Archive className="h-4 w-4" /> Containment Status
-                     </p>
-                     <div className="space-y-2">
-                       <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-white/60">
-                         <span>Structural State</span>
-                         <span className="text-rose-500">Archived</span>
-                       </div>
-                       <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-white/60">
-                         <span>Isolation Level</span>
-                         <span>Maximum</span>
-                       </div>
-                     </div>
-                  </div>
+                        <Eye className="h-4 w-4" /> INSPECT ARTIFACT
+                      </a>
+
+                      {isAuthorized ? (
+                        <button
+                          onClick={() => handleRestore(resource.id)}
+                          className="h-10 w-full bg-[#5A270F] text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-[#DF8142] transition-all shadow-lg shadow-[#5A270F]/20 active:scale-95 flex items-center justify-center gap-2"
+                        >
+                          <RotateCcw className="h-3.5 w-3.5" /> RESTORE LOGIC
+                        </button>
+                      ) : (
+                        <div className="h-10 flex items-center justify-center gap-3 bg-amber-50 dark:bg-white/5 rounded-xl border border-amber-200 dark:border-white/10 opacity-50">
+                          <ShieldAlert className="h-4 w-4 text-amber-600" />
+                          <span className="text-[8px] font-black uppercase tracking-[0.15em] text-amber-900 dark:text-amber-400">Restricted Node</span>
+                        </div>
+                      )}
+                   </div>
                 </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="py-40 flex flex-col items-center justify-center bg-[#FAF8F4] dark:bg-[#1A0B04] rounded-[4rem] border border-dashed border-[#D9D9C2] dark:border-white/10 transition-all duration-500 group shadow-inner">
-           <div className="relative mb-12">
+        <div className="py-24 flex flex-col items-center justify-center bg-[#FAF8F4] dark:bg-[#1A0B04] rounded-[3rem] border border-dashed border-[#D9D9C2] dark:border-white/10 transition-all duration-500 group shadow-inner">
+           <div className="relative mb-10">
               <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[#DF8142] blur-3xl opacity-10 group-hover:opacity-20 transition-opacity" />
-              <div className="relative h-28 w-28 bg-[#5A270F] border border-[#EEB38C]/30 rounded-[2.5rem] flex items-center justify-center text-[#EEB38C] shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-700 hover:scale-110">
-                <ShieldAlert className="h-12 w-12" />
+              <div className="relative h-20 w-20 bg-[#5A270F] border border-[#EEB38C]/30 rounded-[2rem] flex items-center justify-center text-[#EEB38C] shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-700 hover:scale-110">
+                <ShieldAlert className="h-8 w-8" />
               </div>
           </div>
-          <h3 className="text-4xl font-black text-[#5A270F] dark:text-white uppercase tracking-tighter italic">
+          <h3 className="text-3xl font-black text-[#5A270F] dark:text-white uppercase tracking-tighter italic">
             ARCHIVE <span className="text-[#EEB38C]">EMPTY</span>
           </h3>
-          <p className="text-[#92664A] dark:text-[#EEB38C]/40 text-[11px] font-black uppercase tracking-[0.5em] mt-6 opacity-60">
+          <p className="text-[#92664A] dark:text-[#EEB38C]/40 text-[9px] font-black uppercase tracking-[0.4em] mt-4 opacity-60">
             No active resources are currently sequestered.
           </p>
           <Link 
             to="/admin/resources"
-            className="mt-12 flex items-center gap-4 px-12 py-5 bg-[#5A270F] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-110 transition-all active:scale-95 shadow-2xl"
+            className="mt-10 flex items-center gap-3 px-8 py-4 bg-[#5A270F] text-white rounded-xl text-[9px] font-black uppercase tracking-[0.2em] hover:scale-105 transition-all active:scale-95 shadow-xl"
           >
             Review Active Database
             <ArrowRight className="h-4 w-4" />

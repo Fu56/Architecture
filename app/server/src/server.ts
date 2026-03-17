@@ -1,11 +1,19 @@
 import { app } from "./app";
 import { connectDB } from "./config/db";
-import { env } from "./config/env";
+import "dotenv/config";
 
-(async () => {
-  await connectDB();
-  const server = app.listen(env.port, () =>
-    console.log(`Server running on http://localhost:${env.port}`)
-  );
-  server.timeout = 3600000; // 1 hour
-})();
+const PORT = process.env.PORT || 5000;
+
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();

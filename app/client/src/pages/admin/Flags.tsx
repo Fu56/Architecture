@@ -12,6 +12,7 @@ import {
   AlertTriangle,
   Zap,
   Clock,
+  ArrowRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "../../lib/toast";
@@ -21,17 +22,17 @@ const Flags = () => {
   const [flags, setFlags] = useState<FlagModel[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchFlags();
-  }, []);
-
   const { data: session } = useSession();
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const user = session?.user as any;
-    const role = typeof user?.role === "object" ? user.role.name : user?.role;
+  const role = typeof user?.role === "object" ? user.role.name : user?.role;
   const isDeptHead = role === "DepartmentHead" || role === "SuperAdmin";
   const isAdmin = role === "Admin";
   const isAuthorized = isDeptHead || isAdmin;
+
+  useEffect(() => {
+    fetchFlags();
+  }, []);
 
   const fetchFlags = async () => {
     setLoading(true);
@@ -49,11 +50,10 @@ const Flags = () => {
   };
 
   const handleResolveFlag = async (flagId: number) => {
-    // Optimistic update
     setFlags((prev) => prev.filter((f) => f.id !== flagId));
     try {
       await api.patch(`/admin/flags/${flagId}/resolve`, { status: "resolved" });
-      toast.success(isDeptHead ? "Security Alert dismissed successfully" : "Resolution proposed as admin");
+      toast.success(isDeptHead ? "Security Alert dismissed" : "Resolution proposed");
     } catch (err) {
       console.error("Failed to resolve flag:", err);
       toast.error("Protocol Error: Failed to dismiss alert");
@@ -62,17 +62,11 @@ const Flags = () => {
   };
 
   const handleArchiveResource = async (resourceId: number, flagId: number) => {
-    // Optimistic update
     setFlags((prev) => prev.filter((f) => f.id !== flagId));
     try {
-      // For Admin, it will be a proposal in a real case, but here it archives directly.
-      // Based on user request, Dept Head is final step for EVERYTHING.
-      // So maybe archive should also have an intermediate state?
-      // But resource status 'archived' is already hidden.
-      // Let's stick to the status flow.
       await api.patch(`/admin/resources/${resourceId}/archive`);
       await api.patch(`/admin/flags/${flagId}/resolve`, { status: "resolved" });
-      toast.success(isDeptHead ? "Asset quarantined" : "Quarantine proposed by admin");
+      toast.success(isDeptHead ? "Asset quarantined" : "Quarantine proposed");
     } catch (err) {
       console.error("Failed to archive resource:", err);
       toast.error("Security Breach: Failed to quarantine asset");
@@ -82,163 +76,204 @@ const Flags = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
-        <div className="relative">
-          <div className="h-16 w-16 border-4 border-[#D9D9C2] dark:border-white/10 border-t-rose-600 rounded-full animate-spin" />
-          <Loader2 className="h-8 w-8 text-rose-600 animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+      <div className="flex flex-col items-center justify-center min-h-[500px] gap-6 animate-in fade-in duration-1000">
+        <div className="relative h-16 w-16">
+          <div className="absolute inset-0 rounded-full border-2 border-[#DF8142]/10 border-t-[#DF8142] animate-spin" />
+          <Loader2 className="absolute inset-0 m-auto h-6 w-6 text-[#DF8142] animate-pulse" />
         </div>
-        <p className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-[0.4em]">
-          Scanning for Breaches...
+        <p className="text-[9px] font-black text-[#5A270F] dark:text-[#EEB38C]/40 uppercase tracking-[1em]">
+          Scanning Protocols...
         </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-10">
-      <div className="flex items-center justify-between bg-[#EFEDED] dark:bg-background p-6 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-sm relative overflow-hidden">
-        <div className="flex items-center gap-4 relative z-10">
-          <div className="h-10 w-10 bg-[#2A1205] rounded-xl flex items-center justify-center text-white shadow-lg">
-            <ShieldAlert className="h-5 w-5" />
-          </div>
-          <div>
-            <h3 className="text-sm font-black uppercase tracking-[0.3em] text-[#2A1205]">
-              Security Violation Detection
-            </h3>
-            <p className="text-xs text-gray-500 dark:text-white/40 font-medium tracking-wide uppercase">
-              Protocol: Active Scan
+    <div className="max-w-[1400px] mx-auto space-y-8 pb-20 animate-in slide-in-from-bottom-4 duration-1000">
+      {/* ── Compact Security Header ── */}
+      <div className="relative h-32 md:h-36 flex items-center px-8 lg:px-10 overflow-hidden bg-[#5A270F] rounded-[2rem] group border border-white/5 shadow-2xl shadow-[#5A270F]/20">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#5A270F] to-[#6C3B1C] transition-all duration-1000 group-hover:scale-105" />
+        <div className="absolute right-0 top-0 w-2/3 h-full bg-gradient-to-l from-[#DF8142]/10 to-transparent blur-3xl rounded-full" />
+        <div className="absolute inset-0 opacity-[0.03] architectural-grid" />
+        
+        <div className="relative z-10 w-full flex flex-col md:flex-row md:items-center justify-between items-start gap-6">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2.5">
+              <span className="h-[1.5px] w-6 bg-[#DF8142] shadow-[0_0_10px_#DF8142]" />
+              <p className="text-[8px] font-black text-[#EEB38C] uppercase tracking-[0.5em]">SECURITY PROTOCOL</p>
+            </div>
+            <h1 className="text-2xl lg:text-3xl font-black text-white tracking-tight uppercase font-space-grotesk leading-none italic">
+                VIOLATION <span className="text-[#DF8142]">MATRIX</span>
+            </h1>
+            <p className="text-[9px] lg:text-[10px] text-[#EEB38C]/60 font-medium max-w-lg leading-relaxed uppercase tracking-wider">
+              Diagnostic overview of reported node breaches and asset integrity violations.
             </p>
           </div>
-        </div>
-        <div className="px-4 py-1.5 bg-red-50 text-rose-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-rose-100 relative z-10">
-          {flags.length} Breach Reports
-        </div>
-      </div>
 
+          <div className="flex items-center gap-4 bg-black/40 backdrop-blur-2xl px-6 py-3 rounded-[1.5rem] border border-white/10 shadow-xl">
+            <div className="relative">
+              < ShieldAlert className="h-5 w-5 text-[#DF8142] relative z-10" />
+            </div>
+            <div>
+              <span className="text-xl font-black text-white leading-none font-mono block">
+                {flags.length.toString().padStart(2, '0')}
+              </span>
+              <p className="text-[6px] font-black text-[#EEB38C]/40 uppercase tracking-[0.4em] mt-0.5">ACTIVE BREACHES</p>
+            </div>
+          </div>
+        </div>
       {flags.length > 0 ? (
-        <div className="grid gap-8">
+        <div className="space-y-5">
           {flags.map((flag) => (
             <div
               key={flag.id}
-              className="bg-white dark:bg-card rounded-[3.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-2xl shadow-slate-200/60 overflow-hidden group hover:border-rose-500/10 transition-all duration-300"
+              className="group relative bg-[#FDFCFB] dark:bg-[#0F0602] rounded-[2rem] border border-[#BCAF9C]/20 dark:border-white/5 shadow-lg overflow-hidden hover:border-[#DF8142]/40 transition-all duration-700"
             >
-              <div className="p-8 sm:p-12">
-                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8 mb-10">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <span className="px-3 py-1 bg-red-700 text-white text-[9px] font-black uppercase tracking-widest rounded-lg flex items-center gap-2">
-                        <AlertTriangle className="h-3 w-3" /> Urgent Review
-                      </span>
-                      {flag.status === "admin_resolved" && (
-                         <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-[9px] font-black uppercase tracking-widest rounded-lg flex items-center gap-2">
-                           <ShieldCheck className="h-3 w-3" /> Admin Pre-resolved
-                         </span>
-                      )}
-                      <span className="flex items-center gap-1.5 text-[10px] text-gray-500 dark:text-white/40 font-bold uppercase tracking-widest">
-                        <Clock className="h-3 w-3" />
-                        Detected:{" "}
-                        {new Date(flag.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <Link
-                      to={`/resources/${flag.resourceId}`}
-                      className="block text-3xl font-black text-[#2A1205] tracking-tighter hover:text-rose-600 transition-colors"
-                    >
-                      {flag.resource.title}
-                    </Link>
-                    <div className="flex flex-wrap items-center gap-4 text-xs">
-                      <div className="flex items-center gap-2 px-3 py-1 bg-[#EFEDED] dark:bg-background rounded-full border border-[#D9D9C2] dark:border-white/10">
-                        <User className="h-3.5 w-3.5 text-gray-500 dark:text-white/40" />
-                        <span className="text-[#5A270F] dark:text-[#EEB38C]">
-                          Source:{" "}
-                          <span className="font-black text-[#2A1205]">
-                            {
-                              (flag.resource.uploader as { firstName?: string })
-                                .firstName
-                            }{" "}
-                            {
-                              (flag.resource.uploader as { lastName?: string })
-                                .lastName
-                            }
+              <div className="absolute top-0 right-0 w-[200px] h-full bg-[#DF8142]/5 blur-3xl -z-10 transition-all duration-1000 group-hover:bg-[#DF8142]/10" />
+              
+              <div className="p-6 lg:p-8 lg:grid lg:grid-cols-12 gap-8">
+                
+                {/* ── Violation Metadata ── */}
+                <div className="lg:col-span-8 flex flex-col justify-between space-y-6">
+                   <div className="space-y-4">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <div className="flex items-center gap-2 px-3 py-1 bg-[#5A270F] text-[#EEB38C] rounded-lg shadow-md border border-white/5 group/proto hover:-translate-y-0.5 transition-all">
+                          <AlertTriangle className="h-3 w-3 animate-pulse text-[#DF8142]" />
+                          <span className="text-[8px] font-black uppercase tracking-[0.1em]">
+                            URGENT REVIEW <span className="text-white/40 italic ml-2">VIOL-0{flag.id % 9 + 1}</span>
                           </span>
-                        </span>
+                        </div>
+                        {flag.status === "admin_resolved" && (
+                          <div className="flex items-center gap-1 px-2 py-1 bg-emerald-500/10 text-emerald-600 rounded-md text-[7px] font-black uppercase tracking-widest border border-emerald-500/10">
+                            <ShieldCheck className="h-2.5 w-2.5" /> PRE-RESOLVED
+                          </div>
+                        )}
+                        <div className="flex items-center gap-1.5 text-[7px] text-[#5A270F]/50 dark:text-[#EEB38C]/40 font-black uppercase tracking-[0.2em]">
+                          <Clock className="h-3 w-3 text-[#DF8142]" />
+                          {new Date(flag.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2 px-3 py-1 bg-red-50 rounded-full border border-rose-100">
-                        <Flag className="h-3.5 w-3.5 text-rose-400" />
-                        <span className="text-rose-600">
-                          Reporter:{" "}
-                          <span className="font-black">
-                            {
-                              (flag.reporter as { firstName?: string })
-                                .firstName
-                            }{" "}
-                            {(flag.reporter as { lastName?: string }).lastName}
-                          </span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="flex flex-wrap gap-4">
-                    <Link
-                      to={`/resources/${flag.resourceId}`}
-                      className="h-14 flex items-center gap-4 px-8 bg-white dark:bg-card border-2 border-[#D9D9C2] dark:border-white/10 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl text-[#2A1205] hover:border-primary/90 hover:text-primary transition-all active:scale-95 shadow-lg shadow-slate-100"
-                    >
-                      <Eye className="h-4 w-4" /> Inspect
-                    </Link>
-                    {isAuthorized && (
-                      <>
-                        <button
-                          onClick={() =>
-                            handleArchiveResource(flag.resourceId, flag.id)
-                          }
-                          className="h-14 flex items-center gap-4 px-8 bg-white dark:bg-card border-2 border-amber-100 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl text-amber-600 hover:bg-amber-50 transition-all active:scale-95 shadow-lg shadow-amber-50"
-                        >
-                          <Archive className="h-4 w-4" /> {isDeptHead ? "Quarantine" : "Propose Quarantine"}
-                        </button>
-                        <button
-                          onClick={() => handleResolveFlag(flag.id)}
-                          className="h-14 flex items-center gap-4 px-8 bg-[#2A1205] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#5A270F] transition-all hover:-translate-y-1 shadow-2xl shadow-[#2A1205]/20 active:scale-95"
-                        >
-                          <ShieldCheck className="h-4 w-4" /> {isDeptHead ? (flag.status === "admin_resolved" ? "Confirm Resolution" : "Dismiss Report") : "Propose Dismissal"}
-                        </button>
-                      </>
-                    )}
-                  </div>
+                      <Link
+                        to={`/admin/resources/${flag.resourceId}`}
+                        className="block text-xl lg:text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight leading-tight hover:text-[#DF8142] transition-colors font-space-grotesk uppercase italic"
+                      >
+                        {flag.resource.title}
+                      </Link>
+
+                      <div className="flex flex-wrap items-center gap-4">
+                        <div className="flex items-center gap-3 p-2.5 bg-[#6C3B1C]/5 dark:bg-white/5 rounded-xl border border-[#6C3B1C]/10 dark:border-white/10 group/item hover:bg-white dark:hover:bg-[#1A0B04] transition-all duration-500 shadow-sm">
+                          <div className="h-7 w-7 bg-[#5A270F] text-[#EEB38C] rounded-md flex items-center justify-center shadow-lg group-hover/item:scale-105 transition-transform">
+                            <User className="h-3.5 w-3.5" />
+                          </div>
+                          <div>
+                            <p className="text-[6px] font-black text-[#6C3B1C]/60 dark:text-[#EEB38C]/40 uppercase tracking-[0.3em] mb-0.5">SOURCE</p>
+                            <p className="text-[9px] font-black text-[#5A270F] dark:text-white uppercase tracking-tight">
+                              {(flag.resource.uploader as any)?.firstName} {(flag.resource.uploader as any)?.lastName}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 p-2.5 bg-[#6C3B1C]/5 dark:bg-white/5 rounded-xl border border-[#6C3B1C]/10 dark:border-white/10 group/item hover:bg-white dark:hover:bg-[#1A0B04] transition-all duration-500 shadow-sm">
+                          <div className="h-7 w-7 bg-[#6C3B1C] text-[#EEB38C] rounded-md flex items-center justify-center shadow-lg group-hover/item:scale-105 transition-transform">
+                            <Flag className="h-3.5 w-3.5" />
+                          </div>
+                          <div>
+                            <p className="text-[6px] font-black text-[#6C3B1C]/60 dark:text-[#EEB38C]/40 uppercase tracking-[0.3em] mb-0.5">REPORTER</p>
+                            <p className="text-[9px] font-black text-[#5A270F] dark:text-white uppercase tracking-tight">
+                              {(flag.reporter as any)?.firstName} {(flag.reporter as any)?.lastName}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                   </div>
+
+                   {/* Violation Abstract */}
+                   <div className="pt-4 border-t border-[#BCAF9C]/20 dark:border-white/10 space-y-3">
+                      <p className="text-[8px] font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-[0.5em] flex items-center gap-2">
+                        <Zap className="h-3 w-3 text-[#DF8142]" /> EVIDENCE ABSTRACT
+                      </p>
+                      <div className="w-full px-4 py-3 bg-[#6C3B1C]/5 dark:bg-white/5 border border-[#BCAF9C]/10 dark:border-white/5 rounded-xl">
+                        <p className="text-[10px] font-bold text-[#5A270F] dark:text-white/80 leading-relaxed italic uppercase tracking-wider">
+                          "{flag.reason || "AUTOMATIC DETECTION SIGNAL: NO REASON PROVIDED."}"
+                        </p>
+                      </div>
+                   </div>
                 </div>
 
-                <div className="bg-[#EFEDED] dark:bg-background rounded-[2.5rem] p-8 sm:p-10 border border-[#D9D9C2] dark:border-white/10 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-10 opacity-5">
-                    <ShieldAlert className="h-32 w-32" />
-                  </div>
-                  <div className="relative z-10">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 dark:text-white/40 mb-4 flex items-center gap-2">
-                      <Zap className="h-3 w-3 text-red-700" /> Evidence Abstract
-                    </p>
-                    <p className="text-lg font-medium text-[#5A270F] dark:text-[#EEB38C] leading-relaxed italic">
-                      "
-                      {flag.reason ||
-                        "Automatic detection signal: No reason provided by reporter."}
-                      "
-                    </p>
-                  </div>
+                {/* ── Compact Control Side ── */}
+                <div className="lg:col-span-4 mt-6 lg:mt-0 flex flex-col gap-4 lg:sticky lg:top-10">
+                   <div className="bg-[#5A270F] dark:bg-black p-6 rounded-[2rem] border border-white/5 shadow-2xl shadow-[#5A270F]/30 space-y-4 relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-20 h-20 bg-[#DF8142]/10 blur-3xl rounded-full" />
+                      <div className="flex items-center gap-2.5 border-b border-white/10 pb-3">
+                        <ShieldAlert className="h-4 w-4 text-[#DF8142] animate-pulse" />
+                        <span className="text-[9px] font-black text-white uppercase tracking-[0.3em]">SECURITY STATUS</span>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[7px] font-black text-[#EEB38C]/50 uppercase tracking-widest">THREAT LVL</span>
+                          <span className="px-2 py-0.5 bg-[#EEB38C]/10 text-[#EEB38C] rounded-md text-[7px] font-black tracking-[0.1em] border border-[#EEB38C]/20">ELEVATED</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-[7px] font-black text-[#EEB38C]/50 uppercase tracking-widest">DIAGNOSTIC</span>
+                          <span className="text-[8px] font-black text-white block uppercase italic tracking-widest">RECO-PENDING</span>
+                        </div>
+                      </div>
+                   </div>
+
+                   <div className="flex flex-col gap-2">
+                      <Link
+                        to={`/admin/resources/${flag.resourceId}`}
+                        className="h-10 flex items-center justify-center gap-2.5 bg-white dark:bg-white/5 border border-[#BCAF9C]/20 dark:border-white/10 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#5A270F] hover:text-white transition-all shadow-md group/view"
+                      >
+                        <Eye className="h-4 w-4" /> INSPECT NODE
+                      </Link>
+
+                      {isAuthorized && (
+                        <div className="grid grid-cols-2 gap-2 h-10">
+                           <button
+                             onClick={() => handleArchiveResource(flag.resourceId, flag.id)}
+                             className="bg-[#92664A] text-white text-[8px] font-black uppercase tracking-[0.1em] rounded-xl hover:bg-[#DF8142] transition-all flex items-center justify-center gap-1.5 shadow-md active:scale-95"
+                           >
+                             <Archive className="h-3.5 w-3.5" /> {isDeptHead ? "QUARANTINE" : "PROPOSE"}
+                           </button>
+                           <button
+                             onClick={() => handleResolveFlag(flag.id)}
+                             className="bg-[#5A270F] text-white text-[8px] font-black uppercase tracking-[0.1em] rounded-xl hover:bg-[#6C3B1C] transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-[#5A270F]/20 active:scale-95"
+                           >
+                             <ShieldCheck className="h-3.5 w-3.5" /> {isDeptHead ? "RESOLVE" : "PRE-RES"}
+                           </button>
+                        </div>
+                      )}
+                   </div>
                 </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="text-center py-32 bg-[#EFEDED] dark:bg-background rounded-[4rem] border border-dashed border-[#D9D9C2] dark:border-white/10">
-          <div className="h-24 w-24 bg-white dark:bg-card rounded-[2.5rem] flex items-center justify-center text-emerald-400 mx-auto mb-8 shadow-xl">
-            <ShieldCheck className="h-12 w-12" />
-          </div>
-          <h3 className="text-2xl font-black text-[#2A1205] tracking-tight">
-            Security Perimeter Clear
-          </h3>
-          <p className="text-xs text-gray-500 dark:text-white/40 font-medium mt-2 max-w-xs mx-auto uppercase tracking-widest leading-loose">
-            No active security violations detected in the registry. Current
-            status: OPTIMAL.
-          </p>
+        <div className="py-32 flex flex-col items-center justify-center bg-[#FDFCFB] dark:bg-[#1A0B04] rounded-[3rem] border-2 border-dashed border-[#BCAF9C]/20 relative overflow-hidden group">
+           <div className="absolute inset-0 architectural-dot-grid opacity-5" />
+           <div className="relative mb-12">
+              <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[#DF8142] blur-3xl opacity-20 group-hover:opacity-40 transition-opacity" />
+              <div className="h-24 w-24 bg-[#5A270F] rounded-[2.5rem] flex items-center justify-center text-[#EEB38C] shadow-2xl shadow-[#5A270F]/40 rotate-12 group-hover:rotate-0 transition-all duration-1000 border-2 border-white/5">
+                <ShieldCheck className="h-10 w-10" />
+              </div>
+           </div>
+           <h3 className="text-3xl lg:text-5xl font-black text-[#5A270F] dark:text-white uppercase tracking-tighter italic font-space-grotesk text-center">
+             SECURITY <br/> <span className="text-[#DF8142]">PERIMETER CLEAR</span>
+           </h3>
+           <p className="text-[#92664A] dark:text-[#EEB38C]/40 text-[9px] font-black uppercase tracking-[0.6em] mt-8 text-center text-opacity-60">
+             NO ACTIVE VIOLATIONS DETECTED
+           </p>
+           <Link 
+             to="/admin/resources"
+             className="mt-12 flex items-center gap-4 px-10 py-5 bg-[#5A270F] text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#6C3B1C] hover:scale-105 transition-all shadow-xl shadow-[#5A270F]/30"
+           >
+             RETURN TO DATABASE
+             <ArrowRight className="h-4 w-4" />
+           </Link>
         </div>
       )}
     </div>

@@ -47,22 +47,24 @@ const FlaggedResources = () => {
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Flagged Resources</h2>
-      <div className="space-y-4">
+    <div className="space-y-6">
+      <h2 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase italic">
+        Flagged <span className="not-italic text-[#DF8142]">Resources</span>
+      </h2>
+      <div className="space-y-3">
         {flags.map((flag) => (
           <div
             key={flag.id}
-            className="p-4 border rounded-lg bg-white dark:bg-card flex justify-between items-center"
+            className="p-4 border border-[#D9D9C2] dark:border-[#DF8142]/20 rounded-xl bg-white dark:bg-[#1A0B04] flex justify-between items-center shadow-sm"
           >
             <div>
-              <h3 className="font-semibold">{flag.resource.title}</h3>
-              <p className="text-sm text-gray-600 dark:text-white/50">Reason: {flag.reason}</p>
+              <h3 className="font-black text-sm text-[#5A270F] dark:text-[#EEB38C] tracking-tight uppercase italic">{flag.resource.title}</h3>
+              <p className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest mt-1">Reason: {flag.reason}</p>
             </div>
             {isAuthorized && (
               <button
                 onClick={() => handleResolve(flag.id)}
-                className="px-3 py-1 bg-primary/80 text-white rounded hover:bg-primary"
+                className="px-4 py-1.5 bg-[#5A270F] text-white text-[9px] font-black uppercase tracking-[0.1em] rounded-lg hover:bg-[#2A1205] transition-all active:scale-95 shadow-md"
               >
                 Mark as Resolved
               </button>
