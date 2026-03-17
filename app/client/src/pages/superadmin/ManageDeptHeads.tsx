@@ -148,24 +148,25 @@ const ManageDeptHeads = () => {
     );
 
   return (
-    <div className="space-y-10 animate-in fade-in duration-700">
-      {/* Super Header */}
-      <div className="bg-gradient-to-r from-[#2A1205] to-[#5A270F] rounded-[2.5rem] sm:rounded-[3rem] p-6 sm:p-10 text-white relative overflow-hidden group shadow-2xl shadow-[#2A1205]/20">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#DF8142]/20 blur-[100px] -translate-y-1/2 translate-x-1/2 group-hover:bg-[#DF8142]/30 transition-all duration-1000" />
-        <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EEB38C]/20 border border-[#EEB38C]/30 dark:border-white/5 rounded-full text-[10px] font-black uppercase tracking-widest text-[#EEB38C] mb-6 shadow-sm">
-              <ShieldAlert className="h-3 w-3" /> System Developer Interface
+    <div className="space-y-8 animate-in fade-in duration-700">
+      {/* Super Header Matrix - Compactized */}
+      <div className="bg-gradient-to-br from-[#5A270F] via-[#6C3B1C] to-[#2A1205] rounded-[2rem] lg:rounded-[2.5rem] p-6 lg:p-10 text-white relative overflow-hidden group shadow-[0_20px_50px_-10px_rgba(42,18,5,0.3)] border border-[#92664A]/20">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#DF8142]/10 blur-[110px] -translate-y-1/2 translate-x-1/2 group-hover:bg-[#DF8142]/20 transition-all duration-1000 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-full h-full blueprint-grid-dark opacity-5 pointer-events-none" />
+        
+        <div className="relative z-10 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8">
+          <div className="max-w-xl">
+            <div className="inline-flex items-center gap-2.5 px-3 py-1 bg-[#EEB38C]/10 border border-[#EEB38C]/20 rounded-full text-[8px] font-black uppercase tracking-[0.4em] text-[#EEB38C] mb-6 backdrop-blur-md">
+              <ShieldAlert className="h-3 w-3" /> AUTHORITY_TERMINAL_v1.0
             </div>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
-              Authority{" "}
+            <h1 className="text-4xl lg:text-5xl font-black tracking-tighter mb-4 leading-[0.9] uppercase italic">
+              AUTHORITY{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] to-[#EEB38C]">
-                Architect
+                ARCHITECT
               </span>
             </h1>
-            <p className="text-white/40 font-bold uppercase tracking-[0.2em] text-[10px] max-w-md">
-              Managing top-tier administrative nodes and departmental authority
-              matrix synchronization.
+            <p className="text-[#EEB38C]/60 font-bold uppercase tracking-[0.12em] text-[9px] leading-relaxed border-l-2 border-[#DF8142] pl-6">
+              Managing high-level administrative nodes and executive administrative synchronization.
             </p>
           </div>
           <button
@@ -173,79 +174,80 @@ const ManageDeptHeads = () => {
               resetForm();
               setIsModalOpen(true);
             }}
-            className="px-10 py-5 bg-white dark:bg-card text-[#2A1205] text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#EEB38C] hover:text-[#2A1205] transition-all shadow-2xl shadow-black/20 active:scale-95 flex items-center gap-4 group"
+            className="px-8 py-4 bg-[#DF8142] text-white text-[9px] font-black uppercase tracking-[0.3em] rounded-xl hover:bg-white hover:text-[#5A270F] transition-all duration-500 shadow-xl active:scale-95 flex items-center gap-4 group/btn"
           >
-            <UserPlus className="h-5 w-5 group-hover:rotate-12 transition-transform text-[#DF8142] group-hover:text-[#2A1205]" />
-            Appoint Dept Head
+            <UserPlus className="h-4 w-4 group-hover/btn:rotate-[15deg] transition-transform text-white group-hover/btn:text-[#DF8142]" />
+            APPOINT_HEAD_NODE
           </button>
         </div>
       </div>
 
-      {/* Control Panel */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white dark:bg-card p-6 sm:p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10 shadow-xl shadow-slate-200/50">
+      {/* Authority Control Matrix - High Density */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
+        <div className="xl:col-span-8 space-y-6">
+          <div className="bg-white dark:bg-[#0C0603] p-6 lg:p-8 rounded-[2.5rem] border border-[#D9D9C2]/50 dark:border-white/5 shadow-lg dark:shadow-none">
             <div className="relative group mb-8">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500 dark:text-white/40 group-focus-within:text-primary/90 transition-colors" />
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-[#92664A] dark:text-white/20 group-focus-within:text-[#DF8142] transition-colors" />
               <input
                 type="text"
-                placeholder="Search Authority Nodes..."
-                className="w-full h-16 pl-16 pr-8 bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-3xl text-sm font-bold focus:ring-4 focus:ring-primary/10 focus:border-primary/90 outline-none transition-all"
+                placeholder="SEARCH_AUTHORITY_ID..."
+                className="w-full h-14 pl-14 pr-8 bg-[#FAF8F4] dark:bg-white/5 border border-[#D9D9C2]/40 dark:border-white/10 rounded-2xl text-[12px] font-black uppercase tracking-widest focus:ring-4 focus:ring-[#DF8142]/5 focus:border-[#DF8142] outline-none transition-all placeholder:text-[#92664A]/30"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-4">
               {filteredHeads.map((head) => (
                 <div
                   key={head.id}
-                  className="group relative bg-[#faf9f6] border border-[#D9D9C2] dark:border-white/10 rounded-3xl p-6 hover:border-[#DF8142]/40 hover:shadow-2xl hover:shadow-[#DF8142]/5 transition-all duration-500"
+                  className="group relative bg-[#FAF8F4]/50 dark:bg-white/[0.02] border border-[#D9D9C2]/30 dark:border-white/5 rounded-2xl p-5 hover:border-[#DF8142]/40 hover:bg-white dark:hover:bg-white/5 transition-all duration-500"
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                    <div className="flex items-center gap-6">
-                      <div className="h-16 w-16 shrink-0 bg-[#2A1205] rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-2xl group-hover:bg-primary transition-all duration-500">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-5">
+                      <div className="h-14 w-14 shrink-0 bg-[#5A270F] rounded-xl flex items-center justify-center text-white text-lg font-black shadow-lg group-hover:bg-[#DF8142] transition-all duration-500">
                         {(head.first_name || head.firstName)?.[0]}
                       </div>
-                      <div className="min-w-0">
-                        <h3 className="text-lg font-black text-[#2A1205] mb-1 truncate">
+                      <div className="min-w-0 space-y-1">
+                        <h3 className="text-base font-black text-[#6C3B1C] dark:text-white uppercase italic leading-none truncate">
                           {head.first_name || head.firstName}{" "}
                           {head.last_name || head.lastName}
                         </h3>
-                        <div className="flex flex-wrap items-center gap-3">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] bg-[#EEB38C]/20 px-3 py-1 rounded-full border border-[#EEB38C]/30 dark:border-white/5 shrink-0">
-                            Department Head
+                        <div className="flex items-center gap-3">
+                          <span className="text-[8px] font-black uppercase tracking-[0.2em] text-[#DF8142] bg-[#DF8142]/10 px-2 py-1 rounded border border-[#DF8142]/20 shrink-0">
+                            ID: {head.id.slice(0, 8)}
                           </span>
-                          <span className="text-[10px] font-bold text-gray-500 dark:text-white/40 truncate">
+                          <span className="text-[9px] font-black text-[#92664A] dark:text-white/30 uppercase tracking-widest truncate">
                             {head.email}
                           </span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 sm:justify-end">
+                    <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleEdit(head)}
                         title="Recalibrate Credentials"
-                        className="flex-1 sm:flex-none p-4 bg-primary/10 text-primary rounded-2xl hover:bg-primary hover:text-white transition-all shadow-sm active:scale-90"
+                        className="p-3 bg-[#6C3B1C]/5 dark:bg-white/5 text-[#6C3B1C] dark:text-white rounded-xl hover:bg-[#DF8142] hover:text-white transition-all shadow-sm active:scale-90"
                       >
-                        <Edit2 className="h-5 w-5 mx-auto" />
+                        <Edit2 className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(head.id)}
                         title="Revoke Authority"
-                        className="flex-1 sm:flex-none p-4 bg-red-50 text-red-700 rounded-2xl hover:bg-red-700 hover:text-white transition-all shadow-sm active:scale-90"
+                        className="p-3 bg-red-50 text-red-700 rounded-xl hover:bg-red-700 hover:text-white transition-all shadow-sm active:scale-90"
                       >
-                        <Trash2 className="h-5 w-5 mx-auto" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </div>
                 </div>
               ))}
+              
               {filteredHeads.length === 0 && (
-                <div className="py-20 text-center bg-[#EFEDED] dark:bg-background rounded-[2rem] border border-dashed border-[#D9D9C2] dark:border-white/10">
-                  <Globe className="h-12 w-12 text-[#EEB38C] mx-auto mb-4" />
-                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-white/40">
-                    No Authority Nodes Found
+                <div className="py-16 text-center bg-[#FAF8F4] dark:bg-white/[0.02] rounded-[2rem] border border-[#D9D9C2] dark:border-white/5">
+                  <Globe className="h-12 w-12 text-[#EEB38C]/30 mx-auto mb-4" />
+                  <p className="text-[9px] font-black uppercase tracking-[0.5em] text-[#92664A] dark:text-white/30">
+                    EMPTY_AUTHORITY_MATRIX
                   </p>
                 </div>
               )}
@@ -253,35 +255,31 @@ const ManageDeptHeads = () => {
           </div>
         </div>
 
-        <div className="space-y-8">
-          <div className="bg-gradient-to-b from-[#5A270F] to-[#2A1205] p-6 sm:p-8 rounded-[2.5rem] border border-[#92664A]/30 shadow-xl shadow-[#2A1205]/20 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/10 blur-[80px]" />
-            <h3 className="text-sm font-black uppercase tracking-[0.2em] text-[#EEB38C] mb-6 flex items-center gap-3 relative z-10">
-              <Zap className="h-4 w-4 text-[#DF8142]" /> System Stats
+        {/* Sidebar Intel - Compact */}
+        <div className="xl:col-span-4 space-y-6">
+          <div className="bg-[#5A270F] p-6 lg:p-7 rounded-[2.5rem] border border-[#92664A]/40 shadow-xl relative overflow-hidden group">
+            <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-[#EEB38C] mb-8 flex items-center gap-3 relative z-10">
+              <Zap className="h-3.5 w-3.5 text-[#DF8142]" /> ACTIVE_INDICES
             </h3>
-            <div className="grid grid-cols-1 gap-4 relative z-10">
+            <div className="space-y-4 relative z-10">
               {[
-                {
-                  label: "Active Dept Heads",
-                  val: deptHeads.length,
-                  icon: Shield,
-                },
-                { label: "Matrix Integrity", val: "99.9%", icon: Cpu },
-                { label: "System Uptime", val: "2,400h", icon: Globe },
+                { label: "AUTH_NODES", val: deptHeads.length, icon: Shield },
+                { label: "STABILITY", val: "99.9_%", icon: Cpu },
+                { label: "UPTIME", val: "02:40", icon: Globe },
               ].map((stat, i) => (
                 <div
                   key={i}
-                  className="p-5 bg-[#6C3B1C]/40 hover:bg-[#6C3B1C]/60 transition-colors rounded-2xl border border-[#92664A]/20 flex items-center justify-between group"
+                  className="p-4 bg-[#6C3B1C]/50 hover:bg-[#6C3B1C]/80 transition-all rounded-xl border border-[#92664A]/30 flex items-center justify-between group/stat"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-[#2A1205]/50 rounded-xl shadow-sm border border-[#92664A]/30 group-hover:border-[#DF8142] transition-colors">
-                      <stat.icon className="h-4 w-4 text-[#DF8142]" />
+                    <div className="p-2.5 bg-[#5A270F] rounded-lg border border-[#92664A]/30 group-hover/stat:border-[#DF8142] transition-colors">
+                      <stat.icon className="h-3.5 w-3.5 text-[#DF8142]" />
                     </div>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#EEB38C]/70">
+                    <span className="text-[8px] font-black uppercase tracking-[0.2em] text-[#EEB38C]/70">
                       {stat.label}
                     </span>
                   </div>
-                  <span className="text-sm font-black text-white group-hover:text-[#EEB38C] transition-colors">
+                  <span className="text-xs font-black text-white tracking-widest uppercase">
                     {stat.val}
                   </span>
                 </div>
@@ -289,162 +287,70 @@ const ManageDeptHeads = () => {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-[#92664A] to-[#6C3B1C] rounded-[2.5rem] p-6 sm:p-8 text-white relative overflow-hidden shadow-xl shadow-[#6C3B1C]/20">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#EEB38C]/10 blur-3xl" />
-            <Settings className="h-10 w-10 mb-6 relative z-10 text-[#EEB38C]/80" />
-            <h3 className="text-xl font-black mb-2 relative z-10">
-              Matrix Maintenance
+          <div className="bg-gradient-to-br from-[#EEB38C] to-[#DF8142] rounded-[2.5rem] p-8 text-[#5A270F] relative overflow-hidden shadow-xl group">
+            <Settings className="h-10 w-10 mb-6 relative z-10 group-hover:rotate-90 transition-transform duration-1000 opacity-60" />
+            <h3 className="text-xl font-black mb-3 relative z-10 italic uppercase tracking-tighter">
+              MATRIX_PROTOCOL
             </h3>
-            <p className="text-[#EEB38C]/60 text-[10px] font-bold uppercase tracking-widest leading-relaxed mb-6 relative z-10">
-              Automated subsystem integrity checks are active. All authority
-              revocations are logged in the secure vault.
+            <p className="text-[#5A270F]/80 text-[9px] font-black uppercase tracking-[0.15em] leading-relaxed mb-8 relative z-10">
+              Authority nodes are monitored via encrypted institutional relays. All re-authorizations are logged.
             </p>
             <Link
               to="/super-admin/logs"
-              className="block w-full text-center py-4 bg-[#EEB38C]/10 hover:bg-[#EEB38C] text-[#EEB38C] hover:text-[#2A1205] border border-[#EEB38C]/20 hover:border-[#EEB38C] rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-transparent hover:shadow-[#6C3B1C]/20"
+              className="block w-full py-4 bg-[#5A270F] text-white rounded-xl text-[9px] font-black uppercase tracking-[0.3em] hover:bg-black transition-all text-center"
             >
-              System Logs
+              AUDIT_SYSTEM_LOGS
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Creation/Edit Modal */}
+      {/* Creation/Edit Matrix Modal - Shrunken */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-[#2A1205]/60 backdrop-blur-2xl animate-in fade-in duration-500"
-            onClick={() => setIsModalOpen(false)}
-          />
-          <div className="relative w-full max-w-xl bg-white dark:bg-card rounded-[3.5rem] shadow-2xl border border-white overflow-hidden animate-in zoom-in-95 duration-500">
-            <div className="bg-gradient-to-br from-[#5A270F] to-[#2A1205] p-12 text-white overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/20 blur-[80px]" />
-              <div className="relative z-10">
-                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#EEB38C] mb-4">
-                  {modalMode === "create"
-                    ? "Grant Elevated Access"
-                    : "Recalibrate Matrix Node"}
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-[#0C0603]/80 backdrop-blur-md animate-in fade-in duration-500" onClick={() => setIsModalOpen(false)} />
+          <div className="relative w-full max-w-xl bg-white dark:bg-[#0C0603] rounded-[2.5rem] shadow-2xl border border-[#D9D9C2]/20 overflow-hidden animate-in zoom-in-95 duration-500">
+            <div className="bg-gradient-to-br from-[#5A270F] via-[#6C3B1C] to-[#2A1205] p-10 text-white overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/10 blur-[80px]" />
+              <div className="relative z-10 text-center md:text-left">
+                <p className="text-[9px] font-black uppercase tracking-[0.5em] text-[#EEB38C] mb-4">
+                   {modalMode === "create" ? "NODE_INITIALIZATION" : "RECALIBRAT_v12"}
                 </p>
-                <h2 className="text-3xl font-black tracking-tight">
-                  {modalMode === "create"
-                    ? "Appoint Department Head"
-                    : "Update Credentials"}
+                <h2 className="text-2xl lg:text-3xl font-black tracking-tight uppercase italic leading-none">
+                  {modalMode === "create" ? "APPOINT HEAD" : "UPDATE NODE"}
                 </h2>
               </div>
             </div>
 
-            <form onSubmit={handleCreateOrUpdate} className="p-12 space-y-8">
-              <div className="grid grid-cols-2 gap-6">
+            <form onSubmit={handleCreateOrUpdate} className="p-10 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest ml-2">
-                    First Name
-                  </label>
-                  <input
-                    required
-                    id="firstName"
-                    title="First Name"
-                    placeholder="Enter first name"
-                    className="w-full h-14 px-6 bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 dark:text-white/30 text-[#2A1205]"
-                    value={formData.firstName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, firstName: e.target.value })
-                    }
-                  />
+                  <label className="text-[8px] font-black text-[#92664A] uppercase tracking-[0.4em] ml-1">IDENTIFIER_FIRST</label>
+                  <input required placeholder="INPUT_KEY" className="w-full h-13 px-6 bg-[#FAF8F4] dark:bg-white/5 border border-[#D9D9C2]/40 rounded-xl text-[11px] font-black uppercase tracking-widest focus:border-[#DF8142] outline-none transition-all dark:text-white" value={formData.firstName} onChange={(e) => setFormData({ ...formData, firstName: e.target.value })} />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest ml-2">
-                    Last Name
-                  </label>
-                  <input
-                    required
-                    id="lastName"
-                    title="Last Name"
-                    placeholder="Enter last name"
-                    className="w-full h-14 px-6 bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 dark:text-white/30 text-[#2A1205]"
-                    value={formData.lastName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, lastName: e.target.value })
-                    }
-                  />
+                  <label className="text-[8px] font-black text-[#92664A] uppercase tracking-[0.4em] ml-1">IDENTIFIER_LAST</label>
+                  <input required placeholder="INPUT_VAL" className="w-full h-13 px-6 bg-[#FAF8F4] dark:bg-white/5 border border-[#D9D9C2]/40 rounded-xl text-[11px] font-black uppercase tracking-widest focus:border-[#DF8142] outline-none transition-all dark:text-white" value={formData.lastName} onChange={(e) => setFormData({ ...formData, lastName: e.target.value })} />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest ml-2">
-                  Official Email
-                </label>
-                <input
-                  required
-                  type="email"
-                  id="email"
-                  title="Official Email"
-                  placeholder="e.g. head@department.edu"
-                  className="w-full h-14 px-6 bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 dark:text-white/30 text-[#2A1205]"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                />
+                <label className="text-[8px] font-black text-[#92664A] uppercase tracking-[0.4em] ml-1">SECURE_EMAIL_RELAY</label>
+                <input required type="email" placeholder="HEAD@INSTITUTE.EDU" className="w-full h-13 px-6 bg-[#FAF8F4] dark:bg-white/5 border border-[#D9D9C2]/40 rounded-xl text-[11px] font-black uppercase tracking-widest focus:border-[#DF8142] outline-none transition-all dark:text-white" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-gray-500 dark:text-white/40 uppercase tracking-widest ml-2">
-                  Access Key{" "}
-                  {modalMode === "edit"
-                    ? "(Leave blank to keep current)"
-                    : "(Password)"}
-                </label>
+                <label className="text-[8px] font-black text-[#92664A] uppercase tracking-[0.4em] ml-1">ACCESS_KEY {modalMode === "edit" && "(OPTIONAL)"}</label>
                 <div className="relative">
-                  <input
-                    required={modalMode === "create"}
-                    type="text"
-                    id="password"
-                    title="Access Key"
-                    placeholder="••••••••"
-                    className="w-full h-14 pl-6 pr-14 bg-[#EFEDED] dark:bg-background border border-[#D9D9C2] dark:border-white/10 rounded-2xl text-sm font-bold focus:ring-4 focus:ring-[#DF8142]/10 focus:border-[#DF8142] outline-none transition-all placeholder:text-gray-400 dark:text-white/30 text-[#2A1205]"
-                    value={formData.password}
-                    onChange={(e) =>
-                      setFormData({ ...formData, password: e.target.value })
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={generatePassword}
-                    title="Auto-Generate Secure Key"
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-[#DF8142] hover:bg-[#EEB38C]/20 rounded-xl transition-all active:rotate-180"
-                  >
-                    <RefreshCw className="h-4 w-4" />
-                  </button>
+                  <input required={modalMode === "create"} type="text" placeholder="••••••••" className="w-full h-13 pl-6 pr-16 bg-[#FAF8F4] dark:bg-white/5 border border-[#D9D9C2]/40 rounded-xl text-[11px] font-black tracking-widest focus:border-[#DF8142] outline-none transition-all dark:text-white" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
+                  <button type="button" onClick={generatePassword} title="Generate Secure Access Key" className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-[#DF8142] hover:bg-[#EEB38C]/10 rounded-lg transition-all"><RefreshCw className="h-4 w-4" /></button>
                 </div>
-                {modalMode === "create" && (
-                  <p className="flex items-center gap-2 pl-2 text-[10px] font-bold text-[#DF8142]">
-                    <Shield className="h-3 w-3" />
-                    Secure credentials will be automatically dispatched to this
-                    email.
-                  </p>
-                )}
               </div>
 
-              <div className="pt-6 flex justify-end gap-6 border-t border-slate-50">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-white/40 hover:text-[#2A1205] transition-colors"
-                >
-                  Terminate Operation
-                </button>
-                <button
-                  type="submit"
-                  disabled={processing}
-                  className="px-10 py-4 bg-[#2A1205] text-white text-[11px] font-black uppercase tracking-widest rounded-2xl hover:bg-[#5A270F] transition-all shadow-xl disabled:opacity-50 flex items-center gap-3 shadow-[#2A1205]/20"
-                >
-                  {processing ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : modalMode === "create" ? (
-                    "Authorize & Send Access"
-                  ) : (
-                    "Recalibrate Node"
-                  )}
+              <div className="pt-8 flex flex-col md:flex-row justify-end gap-5 border-t border-[#D9D9C2]/10">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-3 text-[9px] font-black uppercase tracking-[0.3em] text-[#92664A] hover:text-[#5A270F] transition-colors">TERMINATE</button>
+                <button type="submit" disabled={processing} className="px-10 py-4 bg-[#5A270F] text-white text-[9px] font-black uppercase tracking-[0.4em] rounded-xl hover:bg-[#DF8142] transition-all shadow-xl disabled:opacity-50 flex items-center justify-center gap-3">
+                  {processing ? <Loader2 className="h-3 w-3 animate-spin" /> : "EXECUTE_SYNC"}
                 </button>
               </div>
             </form>
