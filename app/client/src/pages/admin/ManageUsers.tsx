@@ -563,62 +563,62 @@ const ManageUsers = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-1000">
-      <div className="flex items-center gap-3 mb-1">
-        <div className="h-10 w-10 bg-[#5A270F] rounded-xl flex items-center justify-center text-[#EEB38C] shadow-lg">
-          <Shield className="h-5 w-5" />
+      <div className="flex items-center gap-2.5 mb-0">
+        <div className="h-8 w-8 bg-[#5A270F] rounded-lg flex items-center justify-center text-[#EEB38C] shadow-md">
+          <Shield className="h-4 w-4" />
         </div>
         <div>
-          <h1 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase italic leading-tight">
+          <h1 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase italic leading-none">
             Nexus Registry <span className="not-italic text-[#DF8142]">Authority</span>
           </h1>
-          <p className="text-[8px] font-black text-[#92664A] dark:text-white/60 uppercase tracking-[0.3em] leading-none">
+          <p className="text-[7.5px] font-black text-[#92664A] dark:text-white/60 uppercase tracking-[0.25em] mt-1 leading-none">
             Central Identity Management Matrix
           </p>
         </div>
       </div>
       {/* Top Controller */}
-      <div className="flex flex-col xl:flex-row justify-between items-center gap-4 bg-white dark:bg-[#1A0B04] p-3 rounded-[1.5rem] border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-xl shadow-[#5A270F]/5 transition-all duration-700">
-        <div className="relative w-full xl:w-72 group">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-[#92664A] dark:text-[#EEB38C]/70 group-focus-within:text-[#DF8142] transition-colors" />
+      <div className="flex flex-col lg:flex-row justify-between items-center gap-3 bg-white dark:bg-[#1A0B04] p-2.5 rounded-xl border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-lg shadow-[#5A270F]/5 transition-all duration-700">
+        <div className="relative w-full lg:w-64 group">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-[#92664A] dark:text-[#EEB38C]/70 group-focus-within:text-[#DF8142] transition-colors" />
           <input
             type="text"
-            placeholder="Search specific user node..."
+            placeholder="Search identity node..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-9 pl-9 pr-3 bg-[#EFEDED] dark:bg-white/5 border border-transparent focus:border-[#DF8142] rounded-lg text-[9px] font-black text-[#5A270F] dark:text-white placeholder:text-[#92664A] dark:placeholder-white/50 transition-all outline-none uppercase tracking-tight"
+            className="w-full h-8 pl-8 pr-3 bg-slate-50 dark:bg-white/5 border border-transparent focus:border-[#DF8142] rounded-md text-[8.5px] font-black text-[#5A270F] dark:text-white placeholder:text-[#92664A]/50 transition-all outline-none uppercase tracking-tight"
           />
         </div>
-        <div className="flex flex-wrap gap-2 w-full xl:w-auto">
+        <div className="flex flex-wrap gap-1.5 w-full lg:w-auto">
           <div className="relative">
             <button
               onClick={() => setIsDownloadFormatOpen(!isDownloadFormatOpen)}
-              className="h-9 px-4 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[8px] font-black uppercase tracking-[0.15em] rounded-lg hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 border border-[#BCAF9C] dark:border-white/10"
+              className="h-8 px-3 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[7.5px] font-black uppercase tracking-[0.1em] rounded-md hover:bg-[#5A270F] hover:text-white transition-all active:scale-95 flex items-center justify-center gap-1.5 border border-[#BCAF9C] dark:border-white/10"
             >
-              <Download className="h-3 w-3" />
-              Download
+              <Download className="h-2.5 w-2.5" />
+              Relay
               <ChevronDown
-                className={`h-2.5 w-2.5 transition-transform ${isDownloadFormatOpen ? "rotate-180" : ""}`}
+                className={`h-2 w-2 transition-transform ${isDownloadFormatOpen ? "rotate-180" : ""}`}
               />
             </button>
             {isDownloadFormatOpen && (
-              <div className="absolute top-16 right-0 w-48 bg-white dark:bg-[#1A0B04] border border-[#BCAF9C] dark:border-[#DF8142]/20 rounded-2xl shadow-2xl overflow-hidden z-20 p-1">
+              <div className="absolute top-10 right-0 w-40 bg-white dark:bg-[#1A0B04] border border-[#BCAF9C] dark:border-[#DF8142]/20 rounded-xl shadow-xl overflow-hidden z-20 p-1 animate-in slide-in-from-top-2 duration-300">
                 <button
                   onClick={() => handleDownload("csv")}
-                  className="w-full px-5 py-3.5 text-left text-[9px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:hover:bg-[#DF8142] dark:hover:text-white rounded-xl transition-all"
+                  className="w-full px-4 py-2.5 text-left text-[8px] font-black uppercase tracking-[0.15em] text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:hover:bg-[#DF8142] dark:hover:text-white rounded-lg transition-all"
                 >
-                  Export CSV Node
+                  XLS Node
                 </button>
                 <button
                   onClick={() => handleDownload("excel")}
-                  className="w-full px-5 py-3.5 text-left text-[9px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:hover:bg-[#DF8142] dark:hover:text-white rounded-xl transition-all"
+                  className="w-full px-4 py-2.5 text-left text-[8px] font-black uppercase tracking-[0.15em] text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:hover:bg-[#DF8142] dark:hover:text-white rounded-lg transition-all"
                 >
-                  Export Excel Grid
+                  Grid Map
                 </button>
                 <button
                   onClick={() => handleDownload("pdf")}
-                  className="w-full px-5 py-3.5 text-left text-[9px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:hover:bg-[#DF8142] dark:hover:text-white rounded-xl transition-all"
+                  className="w-full px-4 py-2.5 text-left text-[8px] font-black uppercase tracking-[0.15em] text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EFEDED] dark:hover:bg-[#DF8142] dark:hover:text-white rounded-lg transition-all"
                 >
-                  Export PDF Document
+                  PDF Document
                 </button>
               </div>
             )}
@@ -629,68 +629,66 @@ const ManageUsers = () => {
               <button
                 onClick={handleAdvanceAcademic}
                 disabled={isAdvancing}
-                className="h-9 px-4 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[8px] font-black uppercase tracking-[0.15em] rounded-lg hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 border border-[#BCAF9C] dark:border-white/10"
-                title="Synchronize student academic standing based on Ethiopian calendar registry"
+                className="h-8 px-3 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[7.5px] font-black uppercase tracking-[0.1em] rounded-md hover:bg-[#5A270F] hover:text-white transition-all active:scale-95 flex items-center justify-center gap-1.5 border border-[#BCAF9C] dark:border-white/10"
               >
                 {isAdvancing ? (
-                  <Loader2 className="h-3 w-3 animate-spin" />
+                  <Loader2 className="h-2.5 w-2.5 animate-spin" />
                 ) : (
-                  <ArrowUpCircle className="h-3.5 w-3.5" />
+                  <ArrowUpCircle className="h-3 w-3" />
                 )}
                 Advance
               </button>
               <button
                 onClick={handleCheckSuspension}
                 disabled={isSuspending}
-                className="h-9 px-4 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[8px] font-black uppercase tracking-[0.15em] rounded-lg hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 border border-[#BCAF9C] dark:border-white/10"
-                title="Automatically suspend expired student nodes"
+                className="h-8 px-3 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[7.5px] font-black uppercase tracking-[0.1em] rounded-md hover:bg-[#5A270F] hover:text-white transition-all active:scale-95 flex items-center justify-center gap-1.5 border border-[#BCAF9C] dark:border-white/10"
               >
                 {isSuspending ? (
-                  <Loader2 className="h-3 w-3 animate-spin text-rose-500" />
+                  <Loader2 className="h-2.5 w-2.5 animate-spin text-rose-500" />
                 ) : (
-                  <Shield className="h-3 w-3 text-rose-500" />
+                  <Shield className="h-2.5 w-2.5 text-rose-500" />
                 )}
-                Check Expired
+                Check
               </button>
               <button
                 onClick={() => setIsBroadcastModalOpen(true)}
-                className="h-9 px-4 bg-gradient-to-r from-[#DF8142] to-[#EEB38C] text-white text-[8px] font-black uppercase tracking-[0.15em] rounded-lg hover:scale-[1.02] transition-all shadow-md shadow-[#DF8142]/20 active:scale-95 flex items-center justify-center gap-2"
+                className="h-8 px-3 bg-gradient-to-r from-[#DF8142] to-[#EEB38C] text-white text-[7.5px] font-black uppercase tracking-[0.1em] rounded-md hover:scale-[1.02] transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5"
               >
-                <Zap className="h-3 w-3" />
-                Broadcaster
+                <Zap className="h-2.5 w-2.5" />
+                Relay
               </button>
             </>
           )}
           <button
             onClick={handleOpenCreate}
-            className="h-9 px-4 bg-[#5A270F] text-white text-[8px] font-black uppercase tracking-[0.15em] rounded-lg hover:bg-[#1A0B04] hover:scale-[1.02] transition-all shadow-md shadow-[#5A270F]/30 active:scale-95 flex items-center justify-center gap-2"
+            className="h-8 px-3 bg-[#5A270F] text-white text-[7.5px] font-black uppercase tracking-[0.1em] rounded-md hover:bg-[#1A0B04] transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5"
           >
-            <UserPlus className="h-3 w-3" />
-            Initialize Node
+            <UserPlus className="h-2.5 w-2.5" />
+            Initialize
           </button>
         </div>
       </div>
 
       {/* User Registry Table */}
-      <div className="bg-white dark:bg-[#1A0B04] rounded-[1.5rem] border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-xl shadow-[#5A270F]/5 overflow-hidden transition-all duration-700">
+      <div className="bg-white dark:bg-[#1A0B04] rounded-xl border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-lg shadow-[#5A270F]/5 overflow-hidden transition-all duration-700">
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse min-w-[800px]">
+          <table className="w-full border-collapse min-w-[700px]">
             <thead>
               <tr className="bg-[#5A270F]">
-                <th className="px-6 py-4 text-left text-[8.5px] font-black text-[#EEB38C] uppercase tracking-[0.3em]">
+                <th className="px-5 py-3 text-left text-[7.5px] font-black text-[#EEB38C] uppercase tracking-[0.2em]">
                   User Specimen
                 </th>
-                <th className="px-5 py-4 text-left text-[8.5px] font-black text-white/70 uppercase tracking-[0.3em]">
-                  Identity ID
+                <th className="px-4 py-3 text-left text-[7.5px] font-black text-white/70 uppercase tracking-[0.2em]">
+                  Identity
                 </th>
-                <th className="px-5 py-4 text-left text-[8.5px] font-black text-white/70 uppercase tracking-[0.3em]">
-                  Role Cluster
+                <th className="px-4 py-3 text-left text-[7.5px] font-black text-white/70 uppercase tracking-[0.2em]">
+                  Clearance
                 </th>
-                <th className="px-5 py-4 text-left text-[8.5px] font-black text-white/70 uppercase tracking-[0.3em]">
+                <th className="px-4 py-3 text-left text-[7.5px] font-black text-white/70 uppercase tracking-[0.2em]">
                   Status
                 </th>
-                <th className="px-6 py-4 text-right text-[8.5px] font-black text-white/70 uppercase tracking-[0.3em]">
-                  Operations
+                <th className="px-5 py-3 text-right text-[7.5px] font-black text-white/70 uppercase tracking-[0.2em]">
+                  Ops
                 </th>
               </tr>
             </thead>
@@ -705,26 +703,26 @@ const ManageUsers = () => {
                     key={user.id}
                     className="hover:bg-[#EFEDED] dark:hover:bg-white/5 transition-all duration-300 group"
                   >
-                    <td className="px-6 py-3.5 whitespace-nowrap">
-                      <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] rounded-lg flex items-center justify-center text-white text-xs font-black shadow-md group-hover:scale-110 transition-all duration-500">
+                    <td className="px-5 py-2.5 whitespace-nowrap">
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-7 w-7 bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] rounded-md flex items-center justify-center text-white text-[10px] font-black shadow-sm group-hover:scale-110 transition-all duration-500">
                           {(user.firstName || user.first_name)?.[0]}
                         </div>
                         <div>
-                          <div className="text-xs font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight mb-0.5">
+                          <div className="text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight leading-none mb-1">
                             {user.firstName || user.first_name}{" "}
                             {user.lastName || user.last_name}
                           </div>
-                          <div className="text-[8px] text-[#92664A] dark:text-white/60 font-black uppercase tracking-widest leading-none mb-1">
+                          <div className="text-[7.5px] text-[#92664A] dark:text-white/60 font-black uppercase tracking-wider leading-none mb-1">
                             {user.email}
                           </div>
-                          <div className="text-[7.5px] text-[#DF8142] font-black uppercase tracking-[0.15em] flex items-center gap-1 flex-wrap">
-                             <span className="h-1 w-1 rounded-full bg-[#DF8142]" /> {user.department || "Architecture"}
+                          <div className="text-[7px] text-[#DF8142] font-black uppercase tracking-[0.1em] flex items-center gap-1 flex-wrap">
+                             <span className="h-0.5 w-0.5 rounded-full bg-[#DF8142]" /> {user.department || "Architecture"}
                              {roleName === "Student" && (
                                <>
-                                 <span className="h-1 w-1 rounded-full bg-[#BCAF9C] mx-0.5" />
-                                 <span className="text-[#92664A] dark:text-[#EEB38C]/40">Batch {user.batch}</span>
-                                 <span className="h-1 w-1 rounded-full bg-[#BCAF9C] mx-0.5" />
+                                 <span className="h-0.5 w-0.5 rounded-full bg-[#BCAF9C] mx-0.5" />
+                                 <span className="text-[#92664A]/70 dark:text-[#EEB38C]/30">{user.batch}</span>
+                                 <span className="h-0.5 w-0.5 rounded-full bg-[#BCAF9C] mx-0.5" />
                                  <span className="text-[#5A270F] dark:text-[#EEB38C]">Y{user.year} S{user.semester}</span>
                                </>
                              )}
@@ -732,46 +730,45 @@ const ManageUsers = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-3.5 whitespace-nowrap">
-                      <span className="text-[9px] font-mono font-black text-gray-700 dark:text-white/80 uppercase tracking-widest bg-[#EFEDED] dark:bg-white/5 px-2 py-1 rounded-md border border-[#D9D9C2] dark:border-white/10">
+                    <td className="px-4 py-2.5 whitespace-nowrap">
+                      <span className="text-[8px] font-mono font-black text-gray-700 dark:text-white/80 uppercase tracking-widest bg-slate-100 dark:bg-white/5 px-1.5 py-0.5 rounded border border-[#D9D9C2] dark:border-white/10">
                         {user.university_id ||
                           (user as { universityId?: string }).universityId ||
-                          "EXT-NODE"}
+                          "NODE"}
                       </span>
                     </td>
-                    <td className="px-5 py-3.5 whitespace-nowrap">
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[7.5px] font-black uppercase tracking-[0.15em] bg-[#5A270F] dark:bg-[#EEB38C] text-white dark:text-[#5A270F] shadow-sm">
-                        <Shield className="h-2 w-2" />
+                    <td className="px-4 py-2.5 whitespace-nowrap">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[7px] font-black uppercase tracking-wider bg-[#5A270F] dark:bg-[#EEB38C] text-white dark:text-[#5A270F]">
                         {roleName}
                       </span>
                     </td>
-                    <td className="px-5 py-3.5 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
+                    <td className="px-4 py-2.5 whitespace-nowrap">
+                      <div className="flex items-center gap-1.5">
                         <div
-                          className={`h-1.5 w-1.5 rounded-full ${
+                          className={`h-1 w-1 rounded-full ${
                             user.status === "active"
-                              ? "bg-[#5A270F] animate-pulse"
+                              ? "bg-[#5A270F]"
                               : (user.status === "pending_approval" || user.status === "admin_approved_node")
-                                ? "bg-[#DF8142] animate-bounce"
+                                ? "bg-[#DF8142] animate-pulse"
                                 : "bg-red-700"
                           }`}
                         />
                         <span
-                          className={`text-[8px] font-black uppercase tracking-[0.15em] ${
+                          className={`text-[7.5px] font-black uppercase tracking-widest ${
                             user.status === "active"
-                              ? "text-[#5A270F] dark:text-white/90"
+                              ? "text-[#5A270F] dark:text-white/70"
                               : (user.status === "pending_approval" || user.status === "admin_approved_node")
                                 ? "text-[#DF8142] dark:text-[#EEB38C]"
-                                : "text-rose-600 dark:text-rose-500"
+                                : "text-rose-600"
                           }`}
                         >
                           {user.status === "active"
-                            ? "Active"
+                            ? "Live"
                             : user.status === "admin_approved_node"
-                              ? "Pre-verified"
+                              ? "Verified"
                               : user.status === "pending_approval"
-                                ? "Pending"
-                                : "Suspended"}
+                                ? "Wait"
+                                : "Void"}
                         </span>
                       </div>
                     </td>

@@ -134,37 +134,37 @@ const PostBlog = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#0F0602] lg:bg-[#EEB38C]/10 dark:bg-background transition-colors duration-500 relative">
-      <div className="absolute inset-0 blueprint-grid opacity-[0.03] pointer-events-none" />
+    <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#0F0602] lg:bg-[#EEB38C]/5 dark:bg-background transition-colors duration-500 relative">
+      <div className="absolute inset-0 blueprint-grid opacity-[0.02] pointer-events-none" />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 max-w-6xl relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 max-w-5xl relative z-10">
         {/* ── Page Header ─────────────────────────────────── */}
-        <div className="mb-12 md:mb-16 text-center space-y-5">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#DF8142]/10 border border-[#DF8142]/25 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-[#DF8142] animate-in fade-in slide-in-from-top-4 duration-1000">
-            <Sparkles className="h-3 w-3" />
+        <div className="mb-8 md:mb-10 text-center space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#DF8142]/10 border border-[#DF8142]/20 rounded-full text-[9px] font-black uppercase tracking-[0.25em] text-[#DF8142] animate-in fade-in slide-in-from-top-2 duration-700">
+            <Sparkles className="h-2.5 w-2.5" />
             Narrative Nexus
           </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-[#5A270F] dark:text-[#EEB38C] italic uppercase leading-none">
-            Create New Story
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-[#5A270F] dark:text-[#EEB38C] italic uppercase leading-none">
+            Create New <span className="not-italic text-[#DF8142]">Story</span>
           </h1>
-          <p className="text-[12px] text-[#5A270F] dark:text-[#EEB38C]/60 max-w-lg mx-auto font-bold uppercase tracking-[0.3em]">
-            Share your architectural insights with the community
-          </p>
         </div>
+        <p className="text-[12px] text-[#5A270F] dark:text-[#EEB38C]/60 max-w-lg mx-auto font-bold uppercase tracking-[0.3em]">
+          Share your architectural insights with the community
+        </p>
 
         {/* ── Form ────────────────────────────────────────── */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="mt-10 md:mt-12">
           <div className="grid lg:grid-cols-3 gap-8 items-start">
             {/* ── LEFT: Main Content ── */}
             <div className="lg:col-span-2">
-              <div className="bg-white dark:bg-[#1A0B04] p-8 md:p-12 space-y-10 border-2 border-[#92664A]/20 dark:border-white/10 shadow-xl shadow-[#5A270F]/5 rounded-3xl md:rounded-[3.5rem] relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-80 h-80 bg-[#DF8142]/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+              <div className="bg-white dark:bg-[#1A0B04] p-6 md:p-8 space-y-6 border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-lg shadow-[#5A270F]/5 rounded-2xl md:rounded-3xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
 
-                <div className="relative z-10 space-y-10">
+                <div className="relative z-10 space-y-6">
                   {/* Story Title */}
-                  <div className="space-y-3">
-                    <label className="flex items-center gap-2 text-[13px] font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-[#EEB38C]">
-                      <span className="w-2 h-2 bg-[#DF8142] rounded-full block flex-shrink-0" />
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-[#EEB38C]">
+                      <span className="w-1.5 h-1.5 bg-[#DF8142] rounded-full block flex-shrink-0" />
                       Story Title
                     </label>
                     <input
@@ -173,25 +173,25 @@ const PostBlog = () => {
                       value={formData.title}
                       onChange={handleInputChange}
                       placeholder="Enter a compelling title..."
-                      className={`w-full px-8 py-5 md:py-7 bg-white dark:bg-black/30 border-2 rounded-2xl md:rounded-3xl
-                        focus:outline-none focus:ring-4 focus:ring-[#DF8142]/15 focus:border-[#DF8142]
+                      className={`w-full px-5 py-4 bg-[#EFEDED]/30 dark:bg-black/30 border border-[#D9D9C2] dark:border-white/10 rounded-xl
+                        focus:outline-none focus:ring-2 focus:ring-[#DF8142]/15 focus:border-[#DF8142]
                         transition-all duration-300
-                        text-xl md:text-3xl font-black uppercase tracking-tight
+                        text-lg md:text-xl font-black uppercase tracking-tight
                         text-[#5A270F] dark:text-white
-                        placeholder:text-[#5A270F]/25 dark:placeholder-white/20
+                        placeholder:text-[#92664A]/30 dark:placeholder-white/20
                         ${
                           errors.title
-                            ? "border-rose-500 bg-rose-50/30"
-                            : "border-[#92664A]/25 dark:border-white/15 hover:border-[#DF8142]/50"
+                            ? "border-rose-500 bg-rose-50/10"
+                            : "hover:border-[#DF8142]/50"
                         }`}
                     />
                     <FieldError message={errors.title} />
                   </div>
 
                   {/* Narrative Content */}
-                  <div className="space-y-3">
-                    <label className="flex items-center gap-2 text-[13px] font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-[#EEB38C]">
-                      <span className="w-2 h-2 bg-[#DF8142] rounded-full block flex-shrink-0" />
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-[#EEB38C]">
+                      <span className="w-1.5 h-1.5 bg-[#DF8142] rounded-full block flex-shrink-0" />
                       Narrative Content
                     </label>
                     <textarea
@@ -199,17 +199,17 @@ const PostBlog = () => {
                       value={formData.content}
                       onChange={handleInputChange}
                       placeholder="Share your architectural wisdom here (Markdown supported)..."
-                      className={`w-full px-8 py-8 bg-white dark:bg-black/30 border-2 rounded-3xl md:rounded-[2.5rem]
-                        focus:outline-none focus:ring-4 focus:ring-[#DF8142]/15 focus:border-[#DF8142]
+                      className={`w-full px-5 py-5 bg-[#EFEDED]/30 dark:bg-black/30 border border-[#D9D9C2] dark:border-white/10 rounded-xl
+                        focus:outline-none focus:ring-2 focus:ring-[#DF8142]/15 focus:border-[#DF8142]
                         transition-all duration-300
-                        text-base md:text-lg leading-relaxed font-medium
+                        text-xs md:text-sm leading-relaxed font-medium
                         text-[#5A270F] dark:text-white/90
-                        placeholder:text-[#5A270F]/25 dark:placeholder-white/20
-                        resize-none min-h-[500px] md:min-h-[700px]
+                        placeholder:text-[#92664A]/30 dark:placeholder-white/20
+                        resize-none min-h-[400px] md:min-h-[500px]
                         ${
                           errors.content
-                            ? "border-rose-500 bg-rose-50/30"
-                            : "border-[#92664A]/25 dark:border-white/15 hover:border-[#DF8142]/50"
+                            ? "border-rose-500 bg-rose-50/10"
+                            : "hover:border-[#DF8142]/50"
                         }`}
                     />
                     <FieldError message={errors.content} />
@@ -221,19 +221,19 @@ const PostBlog = () => {
             {/* ── RIGHT: Sidebar ── */}
             <div className="space-y-6 lg:sticky lg:top-8">
               {/* Cover Image */}
-              <div className="bg-white dark:bg-[#1A0B04] p-6 space-y-5 border-2 border-[#92664A]/20 dark:border-white/10 rounded-3xl shadow-xl shadow-[#5A270F]/5">
-                <label className="block text-[13px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] italic">
+              <div className="bg-white dark:bg-[#1A0B04] p-5 space-y-4 border border-[#D9D9C2] dark:border-[#DF8142]/20 rounded-2xl shadow-lg shadow-[#5A270F]/5">
+                <label className="block text-[11px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] italic">
                   Featured Cover
                 </label>
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className={`group relative aspect-video rounded-2xl border-2 border-dashed cursor-pointer overflow-hidden flex flex-col items-center justify-center transition-all duration-300
+                  className={`group relative aspect-video rounded-xl border-2 border-dashed cursor-pointer overflow-hidden flex flex-col items-center justify-center transition-all duration-300
                     ${
                       imagePreview
                         ? "border-[#DF8142]"
                         : errors.image
-                          ? "border-rose-400 bg-rose-50/20"
-                          : "border-[#92664A]/30 dark:border-white/15 hover:border-[#DF8142] bg-[#EEB38C]/5 dark:bg-white/5"
+                          ? "border-rose-400 bg-rose-50/10"
+                          : "border-[#D9D9C2] dark:border-[#DF8142]/20 hover:border-[#DF8142] bg-[#EEB38C]/5 dark:bg-white/5"
                     }`}
                 >
                   {imagePreview ? (
@@ -290,15 +290,15 @@ const PostBlog = () => {
               </div>
 
               {/* Tags & Settings */}
-              <div className="bg-white dark:bg-[#1A0B04] p-6 space-y-6 border-2 border-[#92664A]/20 dark:border-white/10 rounded-3xl shadow-xl shadow-[#5A270F]/5">
+              <div className="bg-white dark:bg-[#1A0B04] p-5 space-y-5 border border-[#D9D9C2] dark:border-[#DF8142]/20 rounded-2xl shadow-lg shadow-[#5A270F]/5">
                 {/* Tags Input */}
-                <div className="space-y-3">
-                  <label className="block text-[13px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] italic">
+                <div className="space-y-2">
+                  <label className="block text-[11px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] italic">
                     Tags
                   </label>
                   <div className="relative">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#DF8142]/10 flex items-center justify-center text-[#DF8142]">
-                      <PlusCircle className="h-5 w-5" />
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#DF8142]/10 flex items-center justify-center text-[#DF8142]">
+                      <PlusCircle className="h-3.5 w-3.5" />
                     </div>
                     <input
                       type="text"
@@ -306,16 +306,16 @@ const PostBlog = () => {
                       value={formData.tags}
                       onChange={handleInputChange}
                       placeholder="architecture, design..."
-                      className={`w-full pl-16 pr-4 py-5 bg-white dark:bg-black/30 border-2 rounded-2xl
-                        focus:outline-none focus:ring-4 focus:ring-[#DF8142]/15 focus:border-[#DF8142]
+                      className={`w-full pl-12 pr-4 py-3.5 bg-[#EFEDED]/30 dark:bg-black/30 border border-[#D9D9C2] dark:border-white/10 rounded-xl
+                        focus:outline-none focus:ring-2 focus:ring-[#DF8142]/15 focus:border-[#DF8142]
                         transition-all duration-300
-                        font-black uppercase tracking-widest text-[11px]
+                        font-black uppercase tracking-widest text-[9px]
                         text-[#5A270F] dark:text-white
-                        placeholder:text-[#5A270F]/30 dark:placeholder-white/20
+                        placeholder:text-[#92664A]/30 dark:placeholder-white/20
                         ${
                           errors.tags
-                            ? "border-rose-500 bg-rose-50/30"
-                            : "border-[#92664A]/25 dark:border-white/15 hover:border-[#DF8142]/50"
+                            ? "border-rose-500 bg-rose-50/10"
+                            : "hover:border-[#DF8142]/50"
                         }`}
                     />
                   </div>
@@ -323,7 +323,7 @@ const PostBlog = () => {
                 </div>
 
                 {/* Publish Toggle */}
-                <div className="flex items-center gap-4 p-5 bg-[#EEB38C]/10 dark:bg-black/30 rounded-2xl border-2 border-[#92664A]/15 dark:border-white/10 hover:border-[#DF8142]/40 transition-all duration-300">
+                <div className="flex items-center gap-3 p-4 bg-[#EEB38C]/10 dark:bg-black/30 rounded-xl border border-[#D9D9C2] dark:border-[#DF8142]/20 hover:border-[#DF8142]/40 transition-all duration-300">
                   <div className="relative flex-shrink-0">
                     <input
                       type="checkbox"
@@ -331,7 +331,7 @@ const PostBlog = () => {
                       checked={formData.published}
                       onChange={handleInputChange}
                       id="published"
-                      className="peer h-6 w-6 cursor-pointer appearance-none rounded-lg border-2 border-[#92664A]/50 bg-white dark:bg-black/60 transition-all checked:border-[#DF8142] checked:bg-[#DF8142] hover:border-[#DF8142] focus:outline-none focus:ring-4 focus:ring-[#DF8142]/20"
+                      className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-[#D9D9C2] dark:border-white/20 bg-white dark:bg-black/60 transition-all checked:border-[#DF8142] checked:bg-[#DF8142] hover:border-[#DF8142] focus:outline-none focus:ring-2 focus:ring-[#DF8142]/20"
                     />
                     <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                       <svg
@@ -342,7 +342,7 @@ const PostBlog = () => {
                         strokeWidth="4"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="h-3.5 w-3.5"
+                        className="h-3 w-3"
                       >
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
@@ -350,7 +350,7 @@ const PostBlog = () => {
                   </div>
                   <label
                     htmlFor="published"
-                    className="font-black text-[12px] uppercase tracking-widest text-[#5A270F] dark:text-white cursor-pointer select-none italic"
+                    className="font-black text-[10px] uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C]/80 cursor-pointer select-none italic"
                   >
                     Publish Immediately
                   </label>
@@ -360,13 +360,13 @@ const PostBlog = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="hidden lg:flex w-full py-7 items-center justify-center gap-3 bg-[#5A270F] dark:bg-[#DF8142] text-white rounded-2xl text-[13px] font-black uppercase tracking-[0.35em] shadow-2xl shadow-[#5A270F]/30 hover:bg-[#6C3B1C] dark:hover:bg-[#c4703a] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-50"
+                  className="hidden lg:flex w-full py-5 items-center justify-center gap-2.5 bg-[#5A270F] dark:bg-[#DF8142] text-white rounded-xl text-[11px] font-black uppercase tracking-[0.25em] shadow-xl shadow-[#5A270F]/20 hover:bg-[#2A1205] dark:hover:bg-[#c4703a] hover:scale-[1.01] active:scale-[0.98] transition-all duration-300 disabled:opacity-50"
                 >
                   {loading ? (
-                    <Loader2 className="h-6 w-6 animate-spin" />
+                    <Loader2 className="h-5 w-5 animate-spin" />
                   ) : (
                     <>
-                      <Save className="h-6 w-6" />
+                      <Save className="h-4 w-4" />
                       Publish Story
                     </>
                   )}
