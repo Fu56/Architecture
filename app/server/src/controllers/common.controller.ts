@@ -41,9 +41,33 @@ export const getPublicStats = async (req: Request, res: Response) => {
       where: { role: { name: "Faculty" } },
     });
 
-    const newsletterCount = await (
-      prisma as any
-    ).newsletterSubscription.count();
+    const newsletterCount = await (prisma as any).newsletterSubscription.count();
+
+    // DYNAMIC CHANNELS: Group users by batch to create Telegram-style automatic channels
+    const userBatches = await prisma.user.groupBy({
+      by: ['batch'],
+      where: { batch: { not: null } },
+      _count: { _all: true }
+    });
+
+    // Group subscriptions by batch
+    const subBatches = await (prisma as any).newsletterSubscription.groupBy({
+      by: ['batch'],
+      where: { batch: { not: null } },
+      _count: { _all: true }
+    });
+
+    // Merge into channels
+    const channels = userBatches.map(ub => {
+      const sb = (subBatches as any[]).find((s: any) => s.batch === ub.batch);
+      const totalUnits = ub._count._all + (sb?._count?._all || 0);
+      return {
+        id: `BATCH_${ub.batch}`,
+        name: `BATCH_${ub.batch}_CORE`,
+        units: totalUnits,
+        type: 'ARCH_STUDIO'
+      };
+    }).sort((a, b) => b.id.localeCompare(a.id));
 
     // Fetch latest for the "Active Squad" visuals
     const latestUsers = await prisma.user.findMany({
@@ -69,6 +93,7 @@ export const getPublicStats = async (req: Request, res: Response) => {
       facultyCount,
       newsletterCount,
       activeSquad,
+      channels // Added high-fidelity channel matrix
     });
   } catch (error) {
     console.error("Public Stats Error:", error);

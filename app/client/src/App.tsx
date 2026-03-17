@@ -33,6 +33,9 @@ import SuperAdminDashboard from "./pages/superadmin/Dashboard";
 import ManageDeptHeads from "./pages/superadmin/ManageDeptHeads";
 import SystemLogs from "./pages/superadmin/SystemLogs";
 import SuperAdminSettings from "./pages/superadmin/Settings";
+import Maintenance from "./pages/superadmin/Maintenance";
+import Backup from "./pages/superadmin/Backup";
+import External from "./pages/superadmin/External";
 import BlogDetails from "./pages/library/BlogDetails";
 import PostBlog from "./pages/library/PostBlog";
 import Privacy from "./pages/Privacy"; // Added
@@ -130,6 +133,9 @@ const App = () => {
               <Route path="dept-heads" element={<ManageDeptHeads />} />
               <Route path="analytics" element={<Analytics />} />
               <Route path="logs" element={<SystemLogs />} />
+              <Route path="maintenance" element={<Maintenance />} />
+              <Route path="backup" element={<Backup />} />
+              <Route path="external" element={<External />} />
               <Route path="settings" element={<SuperAdminSettings />} />
               <Route path="system-stats" element={<Analytics />} />{" "}
               {/* Placeholder to Analytics */}

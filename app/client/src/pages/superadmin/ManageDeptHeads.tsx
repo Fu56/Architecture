@@ -187,11 +187,11 @@ const ManageDeptHeads = () => {
         <div className="xl:col-span-8 space-y-6">
           <div className="bg-white dark:bg-[#0C0603] p-6 lg:p-8 rounded-[2.5rem] border border-[#D9D9C2]/50 dark:border-white/5 shadow-lg dark:shadow-none">
             <div className="relative group mb-8">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-[#92664A] dark:text-white/20 group-focus-within:text-[#DF8142] transition-colors" />
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5A270F] dark:text-white/20 group-focus-within:text-[#DF8142] transition-colors" />
               <input
                 type="text"
                 placeholder="SEARCH_AUTHORITY_ID..."
-                className="w-full h-14 pl-14 pr-8 bg-[#FAF8F4] dark:bg-white/5 border border-[#D9D9C2]/40 dark:border-white/10 rounded-2xl text-[12px] font-black uppercase tracking-widest focus:ring-4 focus:ring-[#DF8142]/5 focus:border-[#DF8142] outline-none transition-all placeholder:text-[#92664A]/30"
+                className="w-full h-14 pl-14 pr-8 bg-[#FAF8F4] dark:bg-white/5 border border-[#D9D9C2]/40 dark:border-white/10 rounded-2xl text-[12px] font-black uppercase tracking-widest focus:ring-4 focus:ring-[#DF8142]/5 focus:border-[#DF8142] outline-none transition-all placeholder:text-[#6C3B1C]/40 text-[#5A270F] dark:text-white"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -213,11 +213,11 @@ const ManageDeptHeads = () => {
                           {head.first_name || head.firstName}{" "}
                           {head.last_name || head.lastName}
                         </h3>
-                        <div className="flex items-center gap-3">
-                          <span className="text-[8px] font-black uppercase tracking-[0.2em] text-[#DF8142] bg-[#DF8142]/10 px-2 py-1 rounded border border-[#DF8142]/20 shrink-0">
+                        <div className="flex flex-col gap-1.5">
+                          <span className="text-[8px] font-black uppercase tracking-[0.2em] text-[#DF8142] bg-[#DF8142]/10 px-2.5 py-1 rounded border border-[#DF8142]/20 w-fit">
                             ID: {head.id.slice(0, 8)}
                           </span>
-                          <span className="text-[9px] font-black text-[#92664A] dark:text-white/30 uppercase tracking-widest truncate">
+                          <span className="text-[9px] font-black text-[#6C3B1C] dark:text-white/40 uppercase tracking-[0.2em] truncate">
                             {head.email}
                           </span>
                         </div>
@@ -245,8 +245,8 @@ const ManageDeptHeads = () => {
               
               {filteredHeads.length === 0 && (
                 <div className="py-16 text-center bg-[#FAF8F4] dark:bg-white/[0.02] rounded-[2rem] border border-[#D9D9C2] dark:border-white/5">
-                  <Globe className="h-12 w-12 text-[#EEB38C]/30 mx-auto mb-4" />
-                  <p className="text-[9px] font-black uppercase tracking-[0.5em] text-[#92664A] dark:text-white/30">
+                  <Globe className="h-12 w-12 text-[#DF8142]/60 mx-auto mb-4" />
+                  <p className="text-[9px] font-black uppercase tracking-[0.5em] text-[#6C3B1C] dark:text-white/30">
                     EMPTY_AUTHORITY_MATRIX
                   </p>
                 </div>

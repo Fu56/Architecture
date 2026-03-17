@@ -165,7 +165,7 @@ const SuperAdminDashboard = () => {
         className={`flex-1 min-w-0 transition-all duration-500 ${isSettingsPage ? "max-w-6xl w-full" : isSidebarVisible ? "" : "lg:max-w-full"}`}
       >
         <div className="bg-white dark:bg-card p-6 sm:p-10 rounded-3xl shadow-sm border border-[#D9D9C2] dark:border-white/10 min-h-[calc(100vh-140px)] relative overflow-hidden flex flex-col transition-colors duration-500">
-          <header className={`flex items-center justify-between mb-8 pb-6 border-b border-slate-50 dark:border-white/5 ${!isSidebarVisible && !isSettingsPage ? "pl-2" : ""}`}>
+          <header className={`flex items-center justify-between mb-8 pb-6 border-b border-[#D9D9C2]/50 dark:border-white/5 ${!isSidebarVisible && !isSettingsPage ? "pl-2" : ""}`}>
             <div className="flex items-center gap-6">
               {/* Toggle Grip for Hidden State */}
               {!isSidebarVisible && !isSettingsPage && (
@@ -179,8 +179,8 @@ const SuperAdminDashboard = () => {
               )}
               <div className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142]" />
-                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F]/40 dark:text-white/40">
-                  Core Management Hub
+                <p className="text-xs font-black uppercase tracking-[0.5em] text-[#2A1205] dark:text-[#DF8142] drop-shadow-sm">
+                  CORE_MANAGEMENT_HUB
                 </p>
               </div>
             </div>

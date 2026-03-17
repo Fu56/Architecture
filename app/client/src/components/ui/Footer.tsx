@@ -14,6 +14,7 @@ interface Stats {
   totalUsers: number;
   newsletterCount: number;
   activeSquad: { email: string; image: string | null }[];
+  channels?: { id: string; name: string; units: number; type: string }[];
 }
 
 /**
@@ -30,6 +31,7 @@ const Footer = () => {
     totalUsers: 0,
     newsletterCount: 0,
     activeSquad: [],
+    channels: [],
   });
 
   const fetchStats = useCallback(async () => {
@@ -40,6 +42,7 @@ const Footer = () => {
           totalUsers: data.totalUsers || 0,
           newsletterCount: data.newsletterCount || 0,
           activeSquad: data.activeSquad || [],
+          channels: data.channels || [],
         });
       }
     } catch (err) {
@@ -115,14 +118,14 @@ const Footer = () => {
                 <span className="text-xs font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-white">
                     Wollo University // KIOT Campus
                 </span>
-                <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#5A270F]/40 dark:text-white/20">
+                <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#6C3B1C] dark:text-white/20">
                     Faculty of Architecture & Urban Design
                 </span>
               </div>
             </div>
             
             <div className="flex flex-col items-start md:items-end gap-3 text-left md:text-right max-w-md">
-                <p className="text-[11px] font-bold leading-relaxed text-[#6C3B1C] dark:text-white/40 uppercase tracking-widest">
+                <p className="text-[11px] font-bold leading-relaxed text-[#5A270F] dark:text-white/60 uppercase tracking-widest">
                     The authenticated architectural archive for professional thesis standards and engineering blueprints at Wollo University.
                 </p>
                 <div className="h-0.5 w-12 bg-[#DF8142]" />
@@ -184,20 +187,20 @@ const Footer = () => {
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
                     <Globe className="h-3 w-3 text-[#DF8142]" />
-                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#5A270F]/60 dark:text-white/40">
-                        RELAY: ACTIVE
+                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#6C3B1C] dark:text-white/50">
+                        RELAY_STATUS: ACTIVE
                     </span>
                 </div>
                 <div className="flex items-center gap-3">
                     <ShieldCheck className="h-3 w-3 text-[#DF8142]" />
-                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#5A270F]/60 dark:text-white/40">
-                        TLS_1.3 ENCRYPTED
+                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#6C3B1C] dark:text-white/50">
+                        TLS_PROTOCOL: 1.3_ENCRYPTED
                     </span>
                 </div>
                 <div className="flex items-center gap-3">
                     <Cpu className="h-3 w-3 text-[#DF8142]" />
-                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#5A270F]/60 dark:text-white/40">
-                        KERNEL_4.2.0
+                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[#6C3B1C] dark:text-white/50">
+                        KERNEL_VERSION: 4.2.0
                     </span>
                 </div>
               </div>
@@ -210,7 +213,7 @@ const Footer = () => {
                 <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-[#5A270F] dark:text-white">
                     GLOBAL_INTELLIGENCE_SYNC
                 </h3>
-                <p className="text-[11px] font-bold leading-relaxed text-[#6C3B1C] dark:text-white/40 uppercase tracking-widest italic">
+                <p className="text-[11px] font-bold leading-relaxed text-[#5A270F] dark:text-white/60 uppercase tracking-widest italic">
                     Establish an encrypted relay connection for monthly architectural intelligence transmissions.
                 </p>
             </div>
@@ -225,7 +228,7 @@ const Footer = () => {
                             if (footerError) setFooterError("");
                         }}
                         placeholder="IDENTIFIER@RECIPIENT.EDU"
-                        className="w-full bg-[#EFEDED]/50 dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 px-0 py-3 text-[10px] font-black text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all placeholder:text-[#92664A]/30 transition-all border-b-2 border-t-0 border-l-0 border-r-0 rounded-none bg-transparent"
+                        className="w-full bg-[#EFEDED]/50 dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 px-0 py-3 text-[10px] font-black text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all placeholder:text-[#6C3B1C]/50 transition-all border-b-2 border-t-0 border-l-0 border-r-0 rounded-none bg-transparent"
                     />
                     <button
                         type="submit"
@@ -238,19 +241,34 @@ const Footer = () => {
                 {footerError && <p className="text-[8px] font-black text-red-500 uppercase tracking-widest">{footerError}</p>}
             </form>
 
-            <div className="pt-6 border-t border-[#D9D9C2]/40 dark:border-white/5 flex items-center justify-between">
-                <div className="flex flex-col">
-                    <span className="text-[9px] font-black text-[#DF8142] uppercase tracking-[0.3em]">
-                        {(stats.totalUsers + stats.newsletterCount).toLocaleString()} UNITS
-                    </span>
-                    <span className="text-[8px] font-bold text-[#5A270F]/40 dark:text-white/20 uppercase tracking-[0.4em]">
-                        VERIFIED_NODES
-                    </span>
+            <div className="pt-6 border-t border-[#D9D9C2]/40 dark:border-white/5 space-y-6">
+                <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                        <span className="text-[9px] font-black text-[#DF8142] uppercase tracking-[0.3em]">
+                            {(stats.totalUsers + stats.newsletterCount).toLocaleString()} UNITS
+                        </span>
+                        <span className="text-[8px] font-bold text-[#6C3B1C] dark:text-white/30 uppercase tracking-[0.4em]">
+                            TOTAL_NETWORK_NODES
+                        </span>
+                    </div>
+                    <div className="flex -space-x-1.5">
+                        {[1,2,3,4].map(i => (
+                            <div key={i} className="w-6 h-6 rounded border border-white/20 bg-[#5A270F] flex items-center justify-center">
+                                <Users className="w-3 h-3 text-[#EEB38C]" />
+                            </div>
+                        ))}
+                    </div>
                 </div>
-                <div className="flex -space-x-1.5">
-                    {[1,2,3,4].map(i => (
-                        <div key={i} className="w-6 h-6 rounded border border-white/20 bg-[#5A270F] flex items-center justify-center">
-                            <Users className="w-3 h-3 text-[#EEB38C]" />
+
+                {/* Telegram-style Dynamic Authority Channels */}
+                <div className="grid grid-cols-2 gap-3 pt-4 border-t border-[#D9D9C2]/20">
+                    {stats.channels?.slice(0, 4).map((channel) => (
+                        <div key={channel.id} className="p-3 bg-white dark:bg-white/[0.03] border border-[#D9D9C2]/40 dark:border-white/5 rounded-lg flex flex-col gap-1 hover:border-[#DF8142]/40 transition-all group">
+                            <span className="text-[7px] font-black text-[#DF8142] uppercase tracking-widest">{channel.name}</span>
+                            <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-black text-[#5A270F] dark:text-white/60 tabular-nums">{channel.units} SUBS</span>
+                                <div className="h-1 w-1 rounded-full bg-green-500 animate-pulse" />
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -259,14 +277,14 @@ const Footer = () => {
 
           {/* Legal Protocol Bar */}
           <div className="lg:col-span-12 pt-10 border-t border-[#D9D9C2]/40 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
-            <span className="text-[9px] font-black tracking-[0.6em] text-[#5A270F]/30 dark:text-white/20 uppercase">
+            <span className="text-[9px] font-black tracking-[0.6em] text-[#6C3B1C] dark:text-white/30 uppercase">
                 &copy; {currentYear} ARCHVAULT // CORE_REGISTRY // ALL_RIGHTS_RESERVED
             </span>
             <div className="flex items-center gap-8">
-                <Link to="/privacy" className="text-[9px] font-black uppercase tracking-[0.5em] text-[#5A270F]/30 dark:text-white/20 hover:text-[#DF8142] transition-colors">
+                <Link to="/privacy" className="text-[9px] font-black uppercase tracking-[0.5em] text-[#6C3B1C] dark:text-white/30 hover:text-[#5A270F] transition-colors">
                     PRIVACY_PROTOCOL
                 </Link>
-                <Link to="/terms" className="text-[9px] font-black uppercase tracking-[0.5em] text-[#5A270F]/30 dark:text-white/20 hover:text-[#DF8142] transition-colors">
+                <Link to="/terms" className="text-[9px] font-black uppercase tracking-[0.5em] text-[#6C3B1C] dark:text-white/30 hover:text-[#5A270F] transition-colors">
                     TERMS_SERVICE
                 </Link>
             </div>

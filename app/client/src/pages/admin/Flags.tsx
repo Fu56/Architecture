@@ -112,7 +112,7 @@ const Flags = () => {
 
           <div className="flex items-center gap-4 bg-black/40 backdrop-blur-2xl px-6 py-3 rounded-[1.5rem] border border-white/10 shadow-xl">
             <div className="relative">
-              < ShieldAlert className="h-5 w-5 text-[#DF8142] relative z-10" />
+              <ShieldAlert className="h-5 w-5 text-[#DF8142] relative z-10" />
             </div>
             <div>
               <span className="text-xl font-black text-white leading-none font-mono block">
@@ -122,6 +122,7 @@ const Flags = () => {
             </div>
           </div>
         </div>
+      </div>
       {flags.length > 0 ? (
         <div className="space-y-5">
           {flags.map((flag) => (
