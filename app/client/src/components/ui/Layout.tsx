@@ -164,7 +164,7 @@ const Layout = () => {
                   className={`relative p-2.5 rounded-2xl transition-all duration-500 overflow-hidden ${
                     isScrolled || !isHomePage
                       ? "bg-[#DF8142] shadow-[0_12px_24px_-6px_rgba(223,129,66,0.5)]"
-                      : "bg-white/10 dark:bg-card/10 backdrop-blur-md border border-white/30"
+                      : "bg-[#1A0B04]/40 backdrop-blur-xl border border-white/20 shadow-2xl"
                   }`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-tr from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity bg-[length:200%_200%] animate-gradient-xy" />
@@ -190,7 +190,7 @@ const Layout = () => {
                         : "text-white/70"
                     }`}
                   >
-                    Architectural Excellence
+                    Wollo University KIOT Campus
                   </span>
                 </div>
               </Link>

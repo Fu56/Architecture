@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { api } from "../../lib/api";
 import Filters, { type FilterState } from "../../components/ui/Filters";
 import ResourceCard from "../../components/ui/ResourceCard";
@@ -82,51 +82,37 @@ const Browse = () => {
   }, [initialFilters, fetchResources]);
 
   return (
-    <div className="min-h-screen bg-[#FAF8F4] dark:bg-[#0F0602] font-inter selection:bg-[#DF8142]/20 selection:text-[#5A270F] transition-colors duration-500">
-      {/* Header Section */}
-      <div className="relative pt-16 pb-12 overflow-hidden bg-[#5A270F] dark:bg-[#1A0B02]">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(223,129,66,0.1),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5" />
-        </div>
- 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <div className="flex justify-between items-center mb-6">
+    <div className="min-h-screen bg-[#FAF8F4] dark:bg-[#0C0603] font-inter selection:bg-[#DF8142]/20 selection:text-white transition-colors duration-500 overflow-x-hidden">
+      {/* ── Repository Registry Header ── */}
+      <div className="relative pt-12 pb-10 overflow-hidden bg-[#5A270F] border-b-2 border-[#DF8142]">
+        <div className="absolute inset-0 blueprint-grid opacity-10 pointer-events-none" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5 pointer-events-none" />
+        
+        <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
+          <div className="flex justify-between items-center mb-8">
             <button
               onClick={() => window.history.back()}
-              className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-[8.5px] font-black uppercase tracking-widest text-[#EEB38C] hover:bg-white/10 transition-all group"
+              className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-md text-[7px] font-black uppercase tracking-[0.4em] text-[#EEB38C] hover:bg-white/10 transition-all group"
             >
-              <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1 transition-transform" />
-              Return
+              <ArrowLeft className="h-2.5 w-2.5 group-hover:-translate-x-1 transition-transform" />
+              BACK_TO_ORIGIN
             </button>
             <div className="flex gap-2">
-              {searchParams.get("search") && (
-                <Link
-                  to="/"
-                  className="px-3 py-1.5 bg-[#DF8142]/20 border border-[#DF8142]/20 rounded-lg text-[8.5px] font-black uppercase tracking-widest text-white hover:bg-[#DF8142]/30 transition-all"
-                >
-                  Origin
-                </Link>
-              )}
-              {searchParams.get("stage") && (
-                <Link
-                  to="/explore"
-                  className="px-3 py-1.5 bg-[#DF8142]/20 border border-[#DF8142]/20 rounded-lg text-[8.5px] font-black uppercase tracking-widest text-white hover:bg-[#DF8142]/30 transition-all"
-                >
-                  Nexus
-                </Link>
-              )}
+              <div className="px-3 py-1 bg-[#EEB38C]/5 border border-[#EEB38C]/10 rounded-md text-[7px] font-black uppercase tracking-[0.4em] text-[#EEB38C]">
+                INDEX_NODE: 0xRE77
+              </div>
             </div>
           </div>
  
-          <div className="inline-flex items-center gap-2 px-2 py-0.5 bg-white/5 border border-white/10 rounded-full text-[7.5px] font-black uppercase tracking-[0.2em] text-[#EEB38C] mb-3">
-            <Library className="h-2.5 w-2.5" /> DATA REPOSITORY
+          <div className="inline-flex items-center gap-2 px-2 py-0.5 bg-white/5 border border-white/10 rounded-md text-[7px] font-black uppercase tracking-[0.4em] text-[#EEB38C] mb-4 backdrop-blur-md">
+            <Library className="h-3 w-3 text-[#DF8142]" /> MASTER_REPOSITORY_REGISTRY
           </div>
-          <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tighter mb-2 uppercase italic leading-none">
-            DATA <span className="text-[#DF8142] not-italic">EXCAVATION</span>
+          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tighter mb-4 uppercase italic leading-none font-space-grotesk">
+            REPOSITORY <span className="text-[#DF8142] not-italic uppercase">INDEX_v2.</span>
           </h1>
-          <p className="max-w-md mx-auto text-white/30 text-[9px] font-black uppercase tracking-widest">
-            BIM protocols & academic schemas.
+          <div className="max-w-md mx-auto h-px bg-gradient-to-r from-transparent via-[#DF8142]/40 to-transparent mb-4" />
+          <p className="max-w-md mx-auto text-[#EEB38C]/40 text-[7px] font-black uppercase tracking-[0.6em] leading-relaxed">
+            VERIFIED_ASSET_CLUSTER // BIM_PROTOCOLS // SCHED_v5
           </p>
         </div>
       </div>

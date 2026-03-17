@@ -265,6 +265,20 @@ h4,
   }
 }
 
+@keyframes scroll-matrix {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
 .animate-shimmer {
   animation: shimmer 2s infinite;
 }

@@ -166,37 +166,37 @@ const Upload = () => {
     "block text-[11px] font-black uppercase tracking-[0.25em] text-[#5A270F] dark:text-[#EEB38C] mb-2";
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#0C0603] px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-700">
+    <div className="min-h-screen bg-[#FAF8F4] dark:bg-[#0C0603] px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-700 overflow-x-hidden">
       <div className="max-w-6xl mx-auto">
 
       {/* ── Page Header ─────────────────────────────── */}
       <div className="mb-10 sm:mb-14 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div className="space-y-3">
           <div className="flex items-center gap-3">
-            <div className="h-1.5 w-10 bg-[#DF8142] rounded-full" />
-            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#92664A] dark:text-[#EEB38C]">
-              Resource Upload
+            <div className="h-1 w-10 bg-[#DF8142] rounded-full" />
+            <p className="text-[7.5px] font-black uppercase tracking-[0.5em] text-[#92664A] dark:text-[#EEB38C]/40">
+              SYNCHRONIZATION_MODULE // v2.0
             </p>
           </div>
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-[#5A270F] dark:text-white tracking-tighter uppercase leading-none italic">
-            Upload <span className="text-[#DF8142]">Resource</span>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-[#5A270F] dark:text-white tracking-tighter uppercase leading-none italic font-space-grotesk">
+            ASSET_CLUSTER <br /> <span className="text-[#DF8142] uppercase not-italic">SUBMISSION.</span>
           </h1>
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#6C3B1C] dark:text-[#EEB38C]">
-            Submit architectural materials to the library
+          <p className="text-[7px] font-black uppercase tracking-[0.6em] text-[#6C3B1C] dark:text-[#EEB38C]/30 italic">
+            CONTRIBUTE_TO_MASTER_REPOSITORY_MATRIX
           </p>
         </div>
 
         {/* Auth chip */}
-        <div className="flex items-center gap-4 bg-white dark:bg-[#1A0B04] px-5 py-4 rounded-2xl border-2 border-[#92664A]/20 dark:border-white/10 shadow-lg self-start sm:self-auto">
-          <div className="h-11 w-11 bg-[#5A270F] rounded-xl flex items-center justify-center text-[#EEB38C] shadow-md flex-shrink-0">
-            <UploadCloud className="h-5 w-5" />
+        <div className="flex items-center gap-4 bg-white dark:bg-[#1A0B04] px-5 py-4 rounded-2xl border-2 border-[#D9D9C2] dark:border-white/5 shadow-lg self-start sm:self-auto group">
+          <div className="h-11 w-11 bg-[#5A270F] rounded-xl flex items-center justify-center text-[#EEB38C] shadow-md flex-shrink-0 group-hover:bg-[#DF8142] transition-colors">
+            <Database className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C] uppercase tracking-[0.3em] mb-0.5">
-              Authorization
+            <p className="text-[8px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.3em] mb-0.5">
+              UP_LINK_AUTH_0x8C
             </p>
-            <p className="text-sm font-black text-[#5A270F] dark:text-white uppercase tracking-widest">
-              {userRole || "Verifying..."}
+            <p className="text-[11px] font-black text-[#5A270F] dark:text-white uppercase tracking-widest">
+              {userRole || "IDENTIFYING..."}
             </p>
           </div>
         </div>
