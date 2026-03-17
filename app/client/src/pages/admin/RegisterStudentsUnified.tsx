@@ -10,7 +10,6 @@ import {
   Award,
   Zap,
   AtSign,
-  Calendar,
   Layers,
   Hash,
   Upload,
@@ -43,6 +42,8 @@ interface StudentFormData {
   batch: string;
   year: string;
   semester: string;
+  academic_start_date: string;
+  academic_end_date: string;
   agreedToTerms: boolean;
 }
 
@@ -55,6 +56,8 @@ interface StudentRow {
   year?: number;
   semester?: number;
   password?: string;
+  academic_start_date?: string; // New field
+  academic_end_date?: string;   // New field
 }
 
 interface ValidationResult {
@@ -100,6 +103,8 @@ const RegisterStudentsUnified = () => {
     batch: "",
     year: "",
     semester: "",
+    academic_start_date: "",
+    academic_end_date: "",
     agreedToTerms: false,
   });
 
@@ -169,6 +174,8 @@ const RegisterStudentsUnified = () => {
         batch: formData.batch,
         year: formData.year,
         semester: formData.semester,
+        academicStartDate: formData.academic_start_date,
+        academicEndDate: formData.academic_end_date,
         roleName: "Student",
       });
 
@@ -187,6 +194,8 @@ const RegisterStudentsUnified = () => {
         batch: "",
         year: "",
         semester: "",
+        academic_start_date: "",
+        academic_end_date: "",
         agreedToTerms: false,
       });
       setErrors({});
@@ -238,6 +247,8 @@ const RegisterStudentsUnified = () => {
             year: row.year ? parseInt(row.year.toString()) : undefined,
             semester: row.semester ? parseInt(row.semester.toString()) : undefined,
             password: row.password?.toString() || undefined,
+            academic_start_date: row.academic_start_date?.toString() || undefined,
+            academic_end_date: row.academic_end_date?.toString() || undefined,
           }));
 
           setPreview(students);
@@ -319,8 +330,8 @@ const RegisterStudentsUnified = () => {
   };
 
   const downloadTemplate = () => {
-    const headers = [["first_name", "last_name", "email", "university_id", "batch", "year", "semester", "password"]];
-    const example = [["Julien", "Wright", "julien.wright@example.com", "U12345", 2024, 1, 1, "pass123"]];
+    const headers = [["first_name", "last_name", "email", "university_id", "batch", "year", "semester", "password", "academic_start_date", "academic_end_date"]];
+    const example = [["Julien", "Wright", "julien.wright@example.com", "U12345", 2024, 1, 1, "pass123", "2016-01-01", "2020-10-30"]];
     const worksheet = XLSX.utils.aoa_to_sheet([...headers, ...example]);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Integration Template");
@@ -472,14 +483,22 @@ const RegisterStudentsUnified = () => {
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1">Year</label>
-                    <div className="relative">
-                      <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[#92664A]/40" />
-                      <input name="year" type="number" placeholder="1" value={formData.year} onChange={handleChange} className={`${inputBase(!!errors.year)} pl-11 font-mono`} />
-                    </div>
+                    <input name="year" type="number" placeholder="1" value={formData.year} onChange={handleChange} className={`${inputBase(!!errors.year)} font-mono`} />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1">Semester</label>
                     <input name="semester" type="number" placeholder="1" value={formData.semester} onChange={handleChange} className={`${inputBase(!!errors.semester)} font-mono`} />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-5 mt-6 border-t border-[#D9D9C2]/40 dark:border-white/5 pt-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1">Academic Start (YYYY-MM-DD)</label>
+                    <input name="academic_start_date" placeholder="2016-01-01" value={formData.academic_start_date} onChange={handleChange} className={`${inputBase(false)} font-mono`} />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1">Academic End (YYYY-MM-DD)</label>
+                    <input name="academic_end_date" placeholder="2020-10-30" value={formData.academic_end_date} onChange={handleChange} className={`${inputBase(false)} font-mono`} />
                   </div>
                 </div>
               </div>
@@ -675,7 +694,7 @@ const RegisterStudentsUnified = () => {
                     <table className="w-full text-left">
                       <thead className="bg-[#FAF8F4] dark:bg-[#1A0B04] border-b border-[#D9D9C2]/40 sticky top-0 z-10 transition-colors">
                         <tr>
-                          {["Identity", "Endpoint", "Protocol Data"].map(h => (
+                          {["Identity", "Endpoint", "Protocol Data", "Academic Timeline"].map(h => (
                             <th key={h} className="px-10 py-5 text-[9px] font-black text-[#92664A] uppercase tracking-[0.4em]">{h}</th>
                           ))}
                         </tr>
@@ -694,6 +713,12 @@ const RegisterStudentsUnified = () => {
                               <div className="flex gap-2">
                                 <span className="px-2.5 py-1 bg-[#DF8142]/10 text-[#DF8142] text-[9px] font-black rounded-lg border border-[#DF8142]/20 whitespace-nowrap uppercase">B:{s.batch || "?"}</span>
                                 <span className="px-2.5 py-1 bg-[#5A270F]/5 text-[#5A270F]/60 text-[9px] font-black rounded-lg border border-[#5A270F]/10 whitespace-nowrap uppercase">Y:{s.year || "?"}</span>
+                              </div>
+                            </td>
+                            <td className="px-10 py-6">
+                              <div className="flex flex-col gap-1">
+                                <p className="text-[9px] font-black text-[#92664A]/60 uppercase tracking-widest">Start: {s.academic_start_date || "N/A"}</p>
+                                <p className="text-[9px] font-black text-rose-500/60 uppercase tracking-widest">End: {s.academic_end_date || "N/A"}</p>
                               </div>
                             </td>
                           </tr>

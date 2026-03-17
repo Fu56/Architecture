@@ -577,27 +577,27 @@ const ManageUsers = () => {
         </div>
       </div>
       {/* Top Controller */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-white dark:bg-[#1A0B04] p-8 rounded-[3rem] border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-2xl shadow-[#5A270F]/5 transition-all duration-700">
-        <div className="relative w-full md:w-96 group">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-[#92664A] dark:text-[#EEB38C]/70 group-focus-within:text-[#DF8142] transition-colors" />
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-white dark:bg-[#1A0B04] p-6 rounded-[2.5rem] border border-[#D9D9C2] dark:border-[#DF8142]/20 shadow-2xl shadow-[#5A270F]/5 transition-all duration-700">
+        <div className="relative w-full md:w-80 group">
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#92664A] dark:text-[#EEB38C]/70 group-focus-within:text-[#DF8142] transition-colors" />
           <input
             type="text"
             placeholder="Search specific user node..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-14 pl-14 pr-6 bg-[#EFEDED] dark:bg-white/5 border border-transparent focus:border-[#DF8142] rounded-[1.5rem] text-[13px] font-black text-[#5A270F] dark:text-white placeholder:text-[#92664A] dark:placeholder-white/50 transition-all outline-none uppercase tracking-tight"
+            className="w-full h-11 pl-11 pr-4 bg-[#EFEDED] dark:bg-white/5 border border-transparent focus:border-[#DF8142] rounded-xl text-xs font-black text-[#5A270F] dark:text-white placeholder:text-[#92664A] dark:placeholder-white/50 transition-all outline-none uppercase tracking-tight"
           />
         </div>
         <div className="flex flex-wrap gap-4 w-full md:w-auto">
           <div className="relative">
             <button
               onClick={() => setIsDownloadFormatOpen(!isDownloadFormatOpen)}
-              className="h-14 px-8 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3 border border-[#BCAF9C] dark:border-white/10"
+              className="h-11 px-6 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2.5 border border-[#BCAF9C] dark:border-white/10"
             >
-              <Download className="h-4 w-4" />
-              Download Registry
+              <Download className="h-3.5 w-3.5" />
+              Download
               <ChevronDown
-                className={`h-3.5 w-3.5 transition-transform ${isDownloadFormatOpen ? "rotate-180" : ""}`}
+                className={`h-3 w-3 transition-transform ${isDownloadFormatOpen ? "rotate-180" : ""}`}
               />
             </button>
             {isDownloadFormatOpen && (
@@ -629,43 +629,43 @@ const ManageUsers = () => {
               <button
                 onClick={handleAdvanceAcademic}
                 disabled={isAdvancing}
-                className="h-14 px-8 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3 border border-[#BCAF9C] dark:border-white/10"
+                className="h-11 px-6 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2.5 border border-[#BCAF9C] dark:border-white/10"
                 title="Synchronize student academic standing based on Ethiopian calendar registry"
               >
                 {isAdvancing ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
                 ) : (
-                  <ArrowUpCircle className="h-4 w-4" />
+                  <ArrowUpCircle className="h-3.5 w-3.5" />
                 )}
-                Advance Status
+                Advance
               </button>
               <button
                 onClick={handleCheckSuspension}
                 disabled={isSuspending}
-                className="h-14 px-8 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3 border border-[#BCAF9C] dark:border-white/10"
+                className="h-11 px-6 bg-[#EFEDED] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-[#5A270F] hover:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2.5 border border-[#BCAF9C] dark:border-white/10"
                 title="Automatically suspend expired student nodes"
               >
                 {isSuspending ? (
-                  <Loader2 className="h-4 w-4 animate-spin text-rose-500" />
+                  <Loader2 className="h-3.5 w-3.5 animate-spin text-rose-500" />
                 ) : (
-                  <Shield className="h-4 w-4 text-rose-500" />
+                  <Shield className="h-3.5 w-3.5 text-rose-500" />
                 )}
                 Check Expired
               </button>
               <button
                 onClick={() => setIsBroadcastModalOpen(true)}
-                className="h-14 px-8 bg-gradient-to-r from-[#DF8142] to-[#EEB38C] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:scale-[1.02] transition-all shadow-xl shadow-[#DF8142]/20 active:scale-95 flex items-center justify-center gap-3"
+                className="h-11 px-6 bg-gradient-to-r from-[#DF8142] to-[#EEB38C] text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:scale-[1.02] transition-all shadow-xl shadow-[#DF8142]/20 active:scale-95 flex items-center justify-center gap-2.5"
               >
-                <Zap className="h-4 w-4" />
+                <Zap className="h-3.5 w-3.5" />
                 Broadcaster
               </button>
             </>
           )}
           <button
             onClick={handleOpenCreate}
-            className="h-14 px-10 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-[#1A0B04] hover:scale-[1.02] transition-all shadow-2xl shadow-[#5A270F]/30 active:scale-95 flex items-center justify-center gap-3"
+            className="h-11 px-6 bg-[#5A270F] text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-[#1A0B04] hover:scale-[1.02] transition-all shadow-2xl shadow-[#5A270F]/30 active:scale-95 flex items-center justify-center gap-2.5"
           >
-            <UserPlus className="h-4 w-4" />
+            <UserPlus className="h-3.5 w-3.5" />
             Initialize Node
           </button>
         </div>

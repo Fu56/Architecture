@@ -627,6 +627,8 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
           semester,
           password,
           university_id,
+          academic_start_date, // New field support
+          academic_end_date,   // New field support
         } = student;
 
         // Validate email format
@@ -684,6 +686,8 @@ export const bulkRegisterStudents = async (req: Request, res: Response) => {
               `${email.split("@")[0].toUpperCase()}${Math.floor(
                 1000 + Math.random() * 9000,
               )}`,
+            academic_start_date: academic_start_date ? new Date(academic_start_date) : null,
+            academic_end_date: academic_end_date ? new Date(academic_end_date) : null,
           } as any,
         });
 
