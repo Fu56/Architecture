@@ -11,10 +11,10 @@ import {
   Clock,
   User,
   Zap,
-  MessageSquare,
-  ShieldAlert,
   ArrowRight,
-  Database
+  Database,
+  FileScan,
+  MessageSquare
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "../../lib/toast";
@@ -27,8 +27,7 @@ const Approvals = () => {
   const user = session?.user as any;
   const role = typeof user?.role === "object" ? user.role.name : user?.role;
   const isDeptHead = role === "DepartmentHead" || role === "SuperAdmin";
-  const isAdmin = role === "Admin";
-  const isAuthorized = isDeptHead || isAdmin;
+
 
   const [resources, setResources] = useState<Resource[]>([]);
   const [comments, setComments] = useState<{ [key: number]: string }>({});
@@ -48,7 +47,7 @@ const Approvals = () => {
       }
     } catch (err) {
       console.error("Failed to fetch pending resources:", err);
-      toast.error("Protocol Error: Failed to synchronize verification queue");
+      toast.error("Protocol Error: Status Synchronization Failed");
     } finally {
       setLoading(false);
     }
@@ -59,7 +58,6 @@ const Approvals = () => {
     status: "approved" | "rejected",
   ) => {
     const feedback = comments[resourceId] || "";
-    // Optimistic update
     setResources(resources.filter((r) => r.id !== resourceId));
     try {
       if (status === "approved") {
@@ -73,14 +71,12 @@ const Approvals = () => {
         });
       }
       toast.success(
-        `Asset ${
-          status === "approved" ? "verified" : "sequestered"
-        } successfully`,
+        `Asset ${status === "approved" ? "Verified" : "Sequestered"} Successfully`,
       );
     } catch (err) {
       console.error(`Failed to set status to ${status}:`, err);
-      toast.error(`Protocol Breach: Failed to ${status} asset`);
-      fetchPendingResources(); // Re-sync on failure
+      toast.error(`Verification Breach: Failed to ${status} asset`);
+      fetchPendingResources();
     }
   };
 
@@ -90,226 +86,229 @@ const Approvals = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[600px] space-y-8 animate-in fade-in duration-700">
-        <div className="relative">
-          <div className="absolute inset-0 bg-[#DF8142] blur-3xl opacity-20 animate-pulse" />
-          <Loader2 className="h-20 w-20 animate-spin text-[#DF8142] relative z-10" />
+      <div className="flex flex-col items-center justify-center min-h-[500px] gap-6 animate-in fade-in duration-1000">
+        <div className="relative h-16 w-16">
+          <div className="absolute inset-0 rounded-full border-2 border-[#DF8142]/10 border-t-[#DF8142] animate-spin" />
+          <Loader2 className="absolute inset-0 m-auto h-6 w-6 text-[#DF8142] animate-pulse" />
         </div>
-        <p className="text-[11px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.6em] animate-pulse">
-          Synchronizing Verification Queue...
+        <p className="text-[9px] font-black text-[#5A270F] dark:text-[#EEB38C]/40 uppercase tracking-[1em]">
+          Initializing Matrix...
         </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-12 animate-in fade-in duration-1000 pb-20">
-      {/* ── Verification Hub Hero ── */}
-      <div className="relative overflow-hidden bg-[#5A270F] dark:bg-[#1A0B04] rounded-[4rem] p-12 lg:p-16 border border-white/10 shadow-[0_50px_100px_-20px_rgba(90,39,15,0.4)]">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#DF8142]/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute inset-0 architectural-dot-grid opacity-10" />
+    <div className="max-w-[1400px] mx-auto space-y-8 pb-20 animate-in slide-in-from-bottom-4 duration-1000">
+      {/* ── Compact Verification Header ── */}
+      <div className="relative h-48 md:h-52 flex items-center px-10 lg:px-14 overflow-hidden bg-[#5A270F] rounded-[2.5rem] group border border-white/5 shadow-2xl shadow-[#5A270F]/20">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#5A270F] to-[#6C3B1C] transition-all duration-1000 group-hover:scale-105" />
+        <div className="absolute right-0 top-0 w-2/3 h-full bg-gradient-to-l from-[#DF8142]/10 to-transparent blur-3xl rounded-full" />
+        <div className="absolute inset-0 opacity-[0.03] architectural-grid" />
         
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-10">
-          <div className="space-y-6">
-            <div className="flex items-center gap-4">
-              <div className="h-[1px] w-10 bg-[#EEB38C]" />
-              <p className="text-[11px] font-black uppercase tracking-[0.6em] text-[#EEB38C] drop-shadow-sm">
-                Deployment Authority
-              </p>
+        <div className="relative z-10 w-full flex flex-col md:flex-row md:items-center justify-between items-start gap-8">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <span className="h-[1.5px] w-8 bg-[#DF8142] shadow-[0_0_10px_#DF8142]" />
+              <p className="text-[9px] font-black text-[#EEB38C] uppercase tracking-[0.6em]">ADMINISTRATIVE NEXUS</p>
             </div>
-            <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tighter uppercase leading-[0.9] font-space-grotesk italic">
-              VERIFICATION <span className="text-[#DF8142]">MATRIX</span>
+            <h1 className="text-3xl lg:text-5xl font-black text-white tracking-tight uppercase font-space-grotesk leading-none italic">
+                VERIFICATION <span className="text-[#DF8142]">MATRIX</span>
             </h1>
-            <p className="text-base text-[#EEB38C]/60 font-medium leading-relaxed max-w-lg">
-              Authorized review of pending intelligence nodes. Ensure architectural standards before global deployment.
+            <p className="text-[10px] lg:text-xs text-[#EEB38C]/60 font-medium max-w-lg leading-relaxed">
+              Diagnostic overview of pending architectural intelligence nodes. Review telemetry and authorize global deployment protocols.
             </p>
           </div>
 
-          <div className="flex items-center gap-6 px-10 py-6 bg-white/5 backdrop-blur-xl rounded-[2.5rem] border border-white/10 shadow-2xl">
-            <div className="h-16 w-16 rounded-2xl bg-[#DF8142] flex items-center justify-center text-white shadow-2xl shadow-[#DF8142]/20">
-              <Zap className="h-8 w-8 animate-pulse text-white" />
+          <div className="flex items-center gap-6 bg-black/40 backdrop-blur-2xl px-8 py-5 rounded-[2rem] border border-white/10 shadow-xl">
+            <div className="relative">
+              <div className="absolute inset-0 bg-[#DF8142] blur-lg opacity-30 animate-pulse" />
+              <Zap className="h-6 w-6 text-[#DF8142] relative z-10" />
             </div>
             <div>
-              <span className="text-4xl font-black text-white leading-none font-mono">
+              <span className="text-2xl font-black text-white leading-none font-mono block">
                 {resources.length.toString().padStart(2, '0')}
               </span>
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#EEB38C]/60 mt-1 uppercase italic">
-                Pending Units
-              </p>
+              <p className="text-[7px] font-black text-[#EEB38C]/40 uppercase tracking-[0.4em] mt-1">PENDING UNITS</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── Pending Resource Matrix ── */}
+      {/* ── Unified Workspace ── */}
       {resources.length > 0 ? (
-        <div className="grid grid-cols-1 gap-12">
+        <div className="space-y-8">
           {resources.map((resource) => (
             <div
               key={resource.id}
-              className="group relative bg-white dark:bg-card/50 backdrop-blur-3xl rounded-[4rem] border border-[#D9D9C2]/60 dark:border-white/5 shadow-2xl shadow-[#5A270F]/5 overflow-hidden transition-all duration-700 hover:shadow-[0_40px_80px_-20px_rgba(90,39,15,0.15)]"
+              className="group relative bg-[#FDFCFB] dark:bg-[#0F0602] rounded-[2.5rem] border border-[#BCAF9C]/20 dark:border-white/5 shadow-xl overflow-hidden hover:border-[#DF8142]/40 transition-all duration-700"
             >
-              <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-[#DF8142]/5 to-transparent blur-[100px] transition-all duration-1000 group-hover:from-[#DF8142]/10" />
+              <div className="absolute top-0 right-0 w-[300px] h-full bg-[#DF8142]/5 blur-3xl -z-10 transition-all duration-1000 group-hover:bg-[#DF8142]/10" />
               
-              <div className="p-10 lg:p-14 relative z-10 flex flex-col lg:grid lg:grid-cols-12 gap-12 items-start">
+              <div className="p-8 lg:p-10 lg:grid lg:grid-cols-12 gap-10">
                 
-                <div className="lg:col-span-8 space-y-8">
-                    <div className="flex flex-wrap items-center gap-6">
-                      <span className="px-5 py-2 bg-[#5A270F] text-[#EEB38C] text-[10px] font-black uppercase tracking-[0.3em] rounded-xl shadow-xl shadow-[#5A270F]/20">
-                        {((resource as any).fileType || 'Asset Core').toUpperCase()} Protocol
-                      </span>
-                      <div className="flex items-center gap-2 text-[10px] text-[#92664A] dark:text-[#EEB38C]/60 font-black uppercase tracking-[0.4em]">
-                        <Clock className="h-4 w-4" />
-                        Ingestion Date: {new Date(resource.uploadedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
-                      </div>
-                      {resource.status === "admin_approved" && (
-                        <span className="px-5 py-2 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-[0.3em] rounded-xl border border-emerald-200 dark:border-emerald-800/30 flex items-center gap-2 shadow-sm">
-                          <ShieldCheck className="h-4 w-4" /> Admin Recommended
-                        </span>
-                      )}
-                      {resource.status === "admin_rejected" && (
-                        <span className="px-5 py-2 bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-[0.3em] rounded-xl border border-rose-200 dark:border-rose-800/30 flex items-center gap-2 shadow-sm">
-                          <X className="h-4 w-4" /> Admin Flagged REJECT
-                        </span>
-                      )}
-                    </div>
-
-                  <Link
-                    to={`/admin/resources/${resource.id}`}
-                    className="block text-4xl lg:text-5xl font-black text-[#5A270F] dark:text-white tracking-tighter leading-[0.9] hover:text-[#DF8142] transition-all uppercase italic font-space-grotesk"
-                  >
-                    {resource.title}
-                  </Link>
-
-                  <div className="flex flex-wrap items-center gap-6">
-                    <div className="flex items-center gap-4 p-4 bg-[#FAF8F4] dark:bg-white/5 rounded-[1.75rem] border border-[#D9D9C2]/40 dark:border-white/10 group-hover:bg-white transition-all duration-500">
-                      <div className="h-12 w-12 bg-white dark:bg-[#1A0B04] border border-[#D9D9C2]/50 dark:border-white/10 rounded-2xl flex items-center justify-center text-[#DF8142] shadow-xl">
-                        <User className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <p className="text-[9px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] mb-1">Origin Authority</p>
-                        <p className="text-sm font-black text-[#5A270F] dark:text-white">
-                          {(resource.uploader as any)?.firstName} {(resource.uploader as any)?.lastName}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-4 p-4 bg-[#FAF8F4] dark:bg-white/5 rounded-[1.75rem] border border-[#D9D9C2]/40 dark:border-white/10">
-                      <div className="h-12 w-12 bg-white dark:bg-[#1A0B04] border border-[#D9D9C2]/50 dark:border-white/10 rounded-2xl flex items-center justify-center text-[#92664A] shadow-xl">
-                        <Database className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <p className="text-[9px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] mb-1">Design Phase</p>
-                        <p className="text-sm font-black text-[#5A270F] dark:text-white">
-                          {resource.designStage?.name || 'Protocol-01'}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Directive Input */}
-                  <div className="space-y-4 pt-6">
-                    <label className="text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C]/60 uppercase tracking-[0.6em] ml-2 flex items-center gap-3">
-                      <MessageSquare className="h-4 w-4 text-[#DF8142]" /> Operations Directive Input
-                    </label>
-                    <textarea
-                      placeholder="Input optional verification notes or sequestration reason for the user node..."
-                      className="w-full px-8 py-6 bg-[#FAF8F4] dark:bg-white/5 border-2 border-[#D9D9C2]/40 dark:border-white/10 rounded-[2.5rem] text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none resize-none min-h-[120px] shadow-inner"
-                      value={comments[resource.id] || ""}
-                      onChange={(e) => handleCommentChange(resource.id, e.target.value)}
-                    />
-
-                    {isDeptHead && (
-                      <div className="flex items-center gap-4 px-6 py-4 bg-[#DF8142]/5 border-2 border-[#DF8142]/20 rounded-2xl group/toggle cursor-pointer mt-4" onClick={() => setIsPublic(prev => ({...prev, [resource.id]: !prev[resource.id]}))}>
-                        <div className={`h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all ${isPublic[resource.id] ? "bg-[#DF8142] border-[#DF8142]" : "border-[#BCAF9C] dark:border-white/20"}`}>
-                          {isPublic[resource.id] && <Check className="h-4 w-4 text-white" />}
+                {/* ── Resource Metadata ── */}
+                <div className="lg:col-span-8 flex flex-col justify-between space-y-10">
+                   <div className="space-y-6">
+                      <div className="flex flex-wrap items-center gap-4">
+                        <div className="flex items-center gap-2.5 px-4 py-2 bg-[#5A270F] text-[#EEB38C] rounded-xl shadow-lg shadow-[#5A270F]/20 group/proto hover:-translate-y-0.5 transition-all border border-white/10">
+                          <FileScan className="h-4 w-4 animate-pulse text-[#DF8142]" />
+                          <span className="text-[9px] font-black uppercase tracking-[0.2em]">
+                            {((resource as any).fileType || 'Asset').toUpperCase()} <span className="text-white/40 italic">PR-0{resource.id % 9 + 1}</span>
+                          </span>
                         </div>
-                        <div>
-                          <p className="text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-widest">Deploy to Public Matrix</p>
-                          <p className="text-[9px] font-bold text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-widest">Mark this asset as globally visible to all student nodes</p>
+                        <div className="flex items-center gap-2 text-[8px] text-[#5A270F]/50 dark:text-[#EEB38C]/40 font-black uppercase tracking-[0.3em]">
+                          <Clock className="h-3.5 w-3.5 text-[#DF8142]" />
+                          {new Date(resource.uploadedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </div>
+                        
+                        {resource.status.includes("approved") && (
+                          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 text-emerald-600 rounded-lg text-[8px] font-black uppercase tracking-widest border border-emerald-500/10">
+                            <ShieldCheck className="h-3 w-3" /> ANALYZED
+                          </div>
+                        )}
+                      </div>
+
+                      <Link
+                        to={`/admin/resources/${resource.id}`}
+                        className="block text-2xl lg:text-3xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tight leading-tight hover:text-[#DF8142] transition-colors font-space-grotesk uppercase italic"
+                      >
+                        {resource.title}
+                      </Link>
+
+                      <div className="flex flex-wrap items-center gap-6">
+                        <div className="flex items-center gap-4 p-3 bg-[#6C3B1C]/5 dark:bg-white/5 rounded-2xl border border-[#6C3B1C]/10 dark:border-white/10 group/item hover:bg-white dark:hover:bg-[#1A0B04] transition-all duration-500 shadow-sm hover:shadow-lg">
+                          <div className="h-10 w-10 bg-[#5A270F] text-[#EEB38C] rounded-xl flex items-center justify-center shadow-lg group-hover/item:scale-105 transition-transform">
+                            <User className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <p className="text-[8px] font-black text-[#6C3B1C]/60 dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] mb-1">AUTHORITY</p>
+                            <p className="text-xs font-black text-[#5A270F] dark:text-white">
+                              {(resource.uploader as any)?.firstName} {(resource.uploader as any)?.lastName}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-4 p-3 bg-[#6C3B1C]/5 dark:bg-white/5 rounded-2xl border border-[#6C3B1C]/10 dark:border-white/10 group/item hover:bg-white dark:hover:bg-[#1A0B04] transition-all duration-500 shadow-sm hover:shadow-lg">
+                          <div className="h-10 w-10 bg-[#6C3B1C] text-[#EEB38C] rounded-xl flex items-center justify-center shadow-lg group-hover/item:scale-105 transition-transform">
+                            <Database className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <p className="text-[8px] font-black text-[#6C3B1C]/60 dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] mb-1">STATION</p>
+                            <p className="text-xs font-black text-[#5A270F] dark:text-white">
+                              {resource.designStage?.name || 'CORE'}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    )}
-                  </div>
+                   </div>
+
+                   {/* Verification Directive */}
+                   <div className="pt-8 border-t border-[#BCAF9C]/20 dark:border-white/10 space-y-4">
+                      <div className="flex items-center justify-between">
+                         <label className="text-[9px] font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-[0.6em] flex items-center gap-3">
+                           <MessageSquare className="h-4 w-4 text-[#DF8142]" /> DIRECTIVE
+                         </label>
+                         {isDeptHead && (
+                           <div 
+                             onClick={() => setIsPublic(prev => ({...prev, [resource.id]: !prev[resource.id]}))}
+                             className={`flex items-center gap-3 px-4 py-2 rounded-xl cursor-pointer transition-all border ${isPublic[resource.id] ? "bg-[#DF8142]/10 border-[#DF8142] text-[#DF8142]" : "bg-[#FDFCFB] border-[#BCAF9C]/20 text-[#5A270F]/40"}`}
+                           >
+                              <div className={`h-4 w-4 rounded border flex items-center justify-center ${isPublic[resource.id] ? "border-[#DF8142] bg-[#DF8142] shadow-[0_0_8px_#DF8142]" : "border-[#BCAF9C]/40"}`}>
+                                {isPublic[resource.id] && <Check className="h-2.5 w-2.5 text-white" />}
+                              </div>
+                              <span className="text-[9px] font-black uppercase tracking-widest">Public Access</span>
+                           </div>
+                         )}
+                      </div>
+                      <textarea
+                        placeholder="ADMINISTRATIVE NOTES..."
+                        className="w-full px-6 py-4 bg-white dark:bg-white/5 border-2 border-[#BCAF9C]/10 dark:border-white/5 rounded-2xl text-xs font-bold text-[#5A270F] dark:text-white placeholder-[#5A270F]/20 focus:border-[#DF8142] transition-all outline-none resize-none min-h-[100px] shadow-inner"
+                        value={comments[resource.id] || ""}
+                        onChange={(e) => handleCommentChange(resource.id, e.target.value)}
+                      />
+                   </div>
                 </div>
 
-                {/* Vertical Center Action Side */}
-                <div className="lg:col-span-4 flex flex-col gap-6 w-full lg:sticky lg:top-12">
-                   <a
-                    href={`${import.meta.env.VITE_API_URL}/resources/${resource.id}/view?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
-                    target="_blank" rel="noreferrer"
-                    className="h-20 flex items-center justify-center gap-4 bg-white dark:bg-white/5 border-2 border-[#D9D9C2]/60 dark:border-white/10 text-[11px] font-black uppercase tracking-[0.4em] rounded-[2rem] text-[#5A270F] dark:text-white hover:border-[#DF8142] hover:text-[#DF8142] transition-all active:scale-95 shadow-2xl"
-                  >
-                    <Eye className="h-6 w-6" /> Inspect Artifact
-                  </a>
+                {/* ── Compact Controls ── */}
+                <div className="lg:col-span-4 mt-8 lg:mt-0 flex flex-col gap-8 lg:sticky lg:top-14">
+                   <div className="bg-[#5A270F] dark:bg-black p-8 rounded-[2.5rem] border border-white/5 shadow-2xl shadow-[#5A270F]/30 space-y-6 relative overflow-hidden group/card">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-[#DF8142]/10 blur-3xl rounded-full" />
+                      <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+                        <ShieldCheck className="h-5 w-5 text-[#DF8142] animate-pulse" />
+                        <span className="text-[10px] font-black text-white uppercase tracking-[0.4em]">DATA TELEMETRY</span>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center group/log">
+                          <span className="text-[8px] font-black text-[#EEB38C]/50 uppercase tracking-widest">STRUCTURE</span>
+                          <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-md text-[8px] font-black tracking-[0.2em] border border-emerald-500/10 hover:scale-105 transition-transform">VERIFIED</span>
+                        </div>
+                        <div className="flex justify-between items-center group/log">
+                          <span className="text-[8px] font-black text-[#EEB38C]/50 uppercase tracking-widest">CLEARANCE</span>
+                          <span className="text-[10px] font-black text-white block uppercase italic tracking-widest">ARCH-LEVEL</span>
+                        </div>
+                        <div className="flex justify-between items-center group/log">
+                          <span className="text-[8px] font-black text-[#EEB38C]/50 uppercase tracking-widest">BIM MATCH</span>
+                          <span className="text-emerald-400 font-mono text-[10px]">98.4%</span>
+                        </div>
+                      </div>
+                   </div>
 
-                  {isAuthorized ? (
-                    <div className="grid grid-cols-2 gap-4 h-20">
-                      <button
-                        onClick={() => handleDecision(resource.id, "rejected")}
-                        className="h-full bg-rose-50 dark:bg-rose-950/20 border-2 border-rose-200 dark:border-rose-900/30 text-[12px] font-black uppercase tracking-[0.2em] rounded-[2rem] text-rose-700 dark:text-rose-400 hover:bg-rose-600 hover:text-white transition-all active:scale-95 flex items-center justify-center gap-3 shadow-xl"
+                   <div className="flex flex-col gap-3">
+                      <a
+                        href={`${import.meta.env.VITE_API_URL}/resources/${resource.id}/view?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
+                        target="_blank" rel="noreferrer"
+                        className="h-14 flex items-center justify-center gap-3 bg-white dark:bg-white/5 border border-[#BCAF9C]/20 dark:border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#5A270F] hover:text-white transition-all shadow-lg hover:shadow-[#5A270F]/15 group/view"
                       >
-                        <X className="h-5 w-5" /> {isDeptHead ? "Final Reject" : "Propose Reject"}
-                      </button>
-                      <button
-                        onClick={() => handleDecision(resource.id, "approved")}
-                        className="h-full bg-[#5A270F] text-white text-[12px] font-black uppercase tracking-[0.2em] rounded-[2rem] hover:bg-[#1A0B04] transition-all shadow-2xl shadow-[#5A270F]/30 active:scale-95 flex items-center justify-center gap-3"
-                      >
-                        <Check className="h-5 w-5" /> {isDeptHead ? "Final Deploy" : "Pre-Approve"}
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="h-20 flex items-center justify-center gap-4 bg-amber-50 dark:bg-amber-950/20 rounded-[2rem] border-2 border-amber-200 dark:border-amber-900/30">
-                      <ShieldAlert className="h-6 w-6 text-amber-600" />
-                      <span className="text-[10px] font-black uppercase tracking-widest text-amber-900 dark:text-amber-400">Node Locked: Level 4 Clearance Req.</span>
-                    </div>
-                  )}
-                  
-                  <div className="bg-[#FAF8F4] dark:bg-black p-8 rounded-[2.5rem] border border-[#D9D9C2]/40 dark:border-white/10 space-y-4">
-                     <p className="text-[9px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.4em] flex items-center gap-3">
-                       <ShieldCheck className="h-4 w-4" /> Integrity Analysis
-                     </p>
-                     <div className="space-y-2">
-                       <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-white/60">
-                         <span>Structural State</span>
-                         <span className="text-emerald-500">Verified</span>
-                       </div>
-                       <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-white/60">
-                         <span>BIM Family</span>
-                         <span>Compatible</span>
-                       </div>
-                     </div>
-                  </div>
+                        <Eye className="h-5 w-5 group-hover:scale-110 transition-transform" /> INSPECT ARTIFACT
+                      </a>
+
+                      <div className="grid grid-cols-2 gap-3 h-14">
+                         <button
+                           onClick={() => handleDecision(resource.id, "rejected")}
+                           className="bg-[#92664A] text-white text-[9px] font-black uppercase tracking-[0.1em] rounded-2xl hover:bg-rose-700 transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95"
+                         >
+                           <X className="h-4 w-4" /> {isDeptHead ? "REJECT" : "PROPOSE"}
+                         </button>
+                         <button
+                           onClick={() => handleDecision(resource.id, "approved")}
+                           className="bg-[#5A270F] text-white text-[9px] font-black uppercase tracking-[0.1em] rounded-2xl hover:bg-[#DF8142] transition-all flex items-center justify-center gap-2 shadow-xl shadow-[#5A270F]/20 active:scale-95"
+                         >
+                           <Check className="h-4 w-4" /> {isDeptHead ? "DEPLOY" : "APPROVE"}
+                         </button>
+                      </div>
+                   </div>
                 </div>
+
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="py-40 flex flex-col items-center justify-center bg-[#FAF8F4] dark:bg-[#1A0B04] rounded-[4rem] border border-dashed border-[#D9D9C2] dark:border-white/10 transition-all duration-500 group shadow-inner">
+        <div className="py-32 flex flex-col items-center justify-center bg-[#FDFCFB] dark:bg-[#1A0B04] rounded-[3rem] border-2 border-dashed border-[#BCAF9C]/20 relative overflow-hidden group">
+           <div className="absolute inset-0 architectural-dot-grid opacity-5" />
            <div className="relative mb-12">
-              <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[#DF8142] blur-3xl opacity-10 group-hover:opacity-20 transition-opacity" />
-              <div className="relative h-28 w-28 bg-[#5A270F] rounded-[2.5rem] flex items-center justify-center text-[#EEB38C] shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-700">
-                <CheckSquare className="h-14 w-14" />
+              <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[#DF8142] blur-3xl opacity-20 group-hover:opacity-40 transition-opacity" />
+              <div className="h-24 w-24 bg-[#5A270F] rounded-[2.5rem] flex items-center justify-center text-[#EEB38C] shadow-2xl shadow-[#5A270F]/40 rotate-12 group-hover:rotate-0 transition-all duration-1000 border-2 border-white/5">
+                <CheckSquare className="h-10 w-10" />
               </div>
-          </div>
-          <h3 className="text-4xl font-black text-[#5A270F] dark:text-white uppercase tracking-tighter italic">
-            REGISTRY <span className="text-[#DF8142]">SYNCHRONIZED</span>
-          </h3>
-          <p className="text-[#92664A] dark:text-[#EEB38C]/40 text-[11px] font-black uppercase tracking-[0.5em] mt-6 opacity-60">
-            No pending units detected in the verification nexus.
-          </p>
-          <Link 
-            to="/admin/resources"
-            className="mt-12 flex items-center gap-4 px-12 py-5 bg-[#5A270F] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-110 transition-all active:scale-95 shadow-2xl"
-          >
-            Review Active Database
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+           </div>
+           <h3 className="text-3xl lg:text-5xl font-black text-[#5A270F] dark:text-white uppercase tracking-tighter italic font-space-grotesk text-center">
+             REGISTRY <br/> <span className="text-[#DF8142]">SYNCHRONIZED</span>
+           </h3>
+           <p className="text-[#92664A] dark:text-[#EEB38C]/40 text-[9px] font-black uppercase tracking-[0.6em] mt-8 text-center text-opacity-60">
+             NO PENDING TELEMETRY DETECTED
+           </p>
+           <Link 
+             to="/admin/resources"
+             className="mt-12 flex items-center gap-4 px-10 py-5 bg-[#5A270F] text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#6C3B1C] hover:scale-105 transition-all shadow-xl shadow-[#5A270F]/30"
+           >
+             RETURN TO DATABASE
+             <ArrowRight className="h-4 w-4" />
+           </Link>
         </div>
       )}
-      
-      <div className="w-full h-px bg-gradient-to-r from-transparent via-[#5A270F]/10 dark:via-[#EEB38C]/10 to-transparent" />
     </div>
   );
 };
