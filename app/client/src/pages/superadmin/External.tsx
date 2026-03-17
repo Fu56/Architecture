@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { api } from "../../lib/api";
 import { 
   Settings, 
   ShieldCheck, 
@@ -11,22 +12,44 @@ import {
 } from "lucide-react";
 import { toast } from "../../lib/toast";
 
-const External = () => {
-    const [nodes] = useState([
-        { id: "S3_MEDIA_CLUSTER", url: "https://arch-vault.s3.us-east-1.amazonaws.com", status: "CONNECTED", type: "STORAGE", latency: "42ms" },
-        { id: "SMTP_RELAY_GATEWAY", url: "smtp.mailgun.net:587", status: "CONNECTED", type: "COMMUNICATION", latency: "128ms" },
-        { id: "AUTH_BEYOND_OIDC", url: "https://auth.google.com/o/oauth2/v2/auth", status: "CONNECTED", type: "INTEGRITY", latency: "84ms" },
-        { id: "SEARCH_ELASTIC_NODE", url: "http://10.0.4.12:9200", status: "DEGRADED", type: "INDEXING", latency: "950ms" }
-    ]);
+interface ExternalNode {
+    id: number;
+    name: string;
+    url: string;
+    type: string;
+    status: string;
+    latency: string;
+    lastChecked?: string;
+}
 
+const External = () => {
+    const [nodes, setNodes] = useState<ExternalNode[]>([]);
     const [isConnecting, setIsConnecting] = useState(false);
 
-    const handleReconnect = (id: string) => {
+    const fetchNodes = async () => {
+        try {
+            const { data } = await api.get('/super-admin/external/nodes');
+            setNodes(data);
+        } catch {
+            console.error("Topology Scan Failure: Universal node matrix currently unreachable.");
+        }
+    };
+
+    useEffect(() => {
+        fetchNodes();
+    }, []);
+
+    const handleReconnect = async (id: number) => {
         setIsConnecting(true);
-        setTimeout(() => {
+        try {
+            await api.post(`/super-admin/external/nodes/${id}/reconnect`);
+            await fetchNodes();
+            toast.success(`CONNECTION_RESTORED: NODE_${id} HANDSHAKE RECALIBRATED.`);
+        } catch {
+            toast.error("TERMINAL_LINK_FAILED: PROTOCOL BREACH DETECTED.");
+        } finally {
             setIsConnecting(false);
-            toast.success(`CONNECTION_RESTORED: ${id} HANDSHAKE RECALIBRATED.`);
-        }, 2000);
+        }
     };
 
     return (
@@ -73,7 +96,7 @@ const External = () => {
                                                 <Radio className="h-4 w-4" />
                                             </div>
                                             <div>
-                                                <h3 className="text-[10px] font-black text-[#5A270F] dark:text-white uppercase tracking-tighter">{node.id}</h3>
+                                                <h3 className="text-[10px] font-black text-[#5A270F] dark:text-white uppercase tracking-tighter">{node.name}</h3>
                                                 <p className="text-[7px] font-black text-[#92664A] dark:text-[#EEB38C]/30 uppercase tracking-[0.2em]">{node.type}</p>
                                             </div>
                                         </div>
@@ -92,7 +115,7 @@ const External = () => {
                                         </div>
                                         <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest font-mono">
                                             <span className="text-[#92664A] dark:text-[#EEB38C]/30">Latency</span>
-                                            <span className={node.latency.includes('950') ? 'text-[#DF8142]' : 'text-emerald-500'} >{node.latency}</span>
+                                            <span className={node.latency?.includes('900') ? 'text-[#DF8142]' : 'text-emerald-500'} >{node.latency || "---"}</span>
                                         </div>
                                     </div>
 
@@ -128,7 +151,7 @@ const External = () => {
                             {[
                                 { label: "Success Rate", val: "99.8%", color: "text-emerald-500" },
                                 { label: "Total Egress", val: "4.2 TB", color: "text-[#EEB38C]" },
-                                { label: "Active Nodes", val: "04/04", color: "text-[#EEB38C]" }
+                                { label: "Active Nodes", val: `0${nodes.length}/0${nodes.length}`, color: "text-[#EEB38C]" }
                             ].map((stat, i) => (
                                 <div key={i} className="flex justify-between items-baseline border-b border-white/10 pb-4 last:border-0 last:pb-0">
                                     <span className="text-[9px] font-black uppercase tracking-widest text-white/40">{stat.label}</span>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { api } from "../../lib/api";
 import { 
   Cpu, 
   Activity, 
@@ -24,24 +25,32 @@ const Maintenance = () => {
     });
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setHealth(prev => ({
-                ...prev,
-                cpu: Math.floor(Math.random() * 20) + 10,
-                dbLatency: Math.floor(Math.random() * 5) + 10
-            }));
-        }, 5000);
+        const fetchHealth = async () => {
+            try {
+                const { data } = await api.get('/super-admin/health');
+                setHealth(data);
+            } catch {
+                console.error("Pulse Lost: Failed to synchronize with system health matrix");
+            }
+        };
+
+        fetchHealth();
+        const interval = setInterval(fetchHealth, 10000);
         return () => clearInterval(interval);
     }, []);
 
     const [isSimulating, setIsSimulating] = useState(false);
 
-    const handleSimulation = () => {
+    const handleSimulation = async () => {
         setIsSimulating(true);
-        setTimeout(() => {
-            setIsSimulating(false);
+        try {
+            await api.post('/super-admin/maintenance/diagnose');
             toast.success("DIAGNOSTIC_CYCLE_COMPLETE: ALL CORE INDICES VERIFIED.");
-        }, 2000);
+        } catch {
+            toast.error("DIAGNOSTIC_FAILURE: PROTOCOL BREACH DETECTED.");
+        } finally {
+            setIsSimulating(false);
+        }
     };
 
     return (
@@ -91,7 +100,7 @@ const Maintenance = () => {
                         <div className="bg-white dark:bg-[#1A0B04] p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/5 shadow-xl relative group">
                             <div className="flex items-center justify-between mb-8">
                                 <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C]/40 flex items-center gap-3">
-                                    <Cpu className="h-4 w-4 text-[#DF8142]" /> PROCES_LOAD
+                                    <Cpu className="h-4 w-4 text-[#DF8142]" /> PROCESS_LOAD
                                 </h3>
                                 <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">ACTIVE</span>
                             </div>
@@ -232,7 +241,7 @@ const Maintenance = () => {
                                 <span className="text-[8px] font-black uppercase tracking-[0.2em]">HEALTH_CERTIFIED</span>
                             </div>
                             <button className="w-full py-4 bg-[#6C3B1C]/5 hover:bg-[#6C3B1C]/10 dark:bg-white/5 dark:hover:bg-white/10 text-[#5A270F] dark:text-white rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all">
-                                LOG_FULL_MANIFAST
+                                LOG_FULL_MANIFEST
                             </button>
                         </div>
                     </div>

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { api } from "../../lib/api";
 import { 
   Database, 
   Download, 
@@ -12,29 +13,44 @@ import {
 } from "lucide-react";
 import { toast } from "../../lib/toast";
 
-const Backup = () => {
-    const [backups, setBackups] = useState([
-        { id: "SNAP_2026_03_17_0800", date: "2026-03-17 08:00", size: "128 MB", type: "AUTOMATED", status: "VERIFIED" },
-        { id: "SNAP_2026_03_16_0800", date: "2026-03-16 08:00", size: "126 MB", type: "AUTOMATED", status: "VERIFIED" },
-        { id: "SNAP_2026_03_15_MANUAL", date: "2026-03-15 14:22", size: "124 MB", type: "MANUAL", status: "VERIFIED" }
-    ]);
+interface BackupData {
+    id: number;
+    name: string;
+    filePath: string;
+    size: string;
+    type: string;
+    status: string;
+    createdAt: string;
+}
 
+const Backup = () => {
+    const [backups, setBackups] = useState<BackupData[]>([]);
     const [processing, setProcessing] = useState(false);
 
-    const handleCreateBackup = () => {
+    const fetchBackups = async () => {
+        try {
+            const { data } = await api.get('/super-admin/backups');
+            setBackups(data);
+        } catch {
+            console.error("Vault Access Failure: Historical manifest currently unavailable.");
+        }
+    };
+
+    useEffect(() => {
+        fetchBackups();
+    }, []);
+
+    const handleCreateBackup = async () => {
         setProcessing(true);
-        setTimeout(() => {
-            const newBackup = {
-                id: `SNAP_${new Date().toISOString().replace(/[-:T]/g, '_').slice(0, 16)}`,
-                date: new Date().toLocaleString(),
-                size: "130 MB",
-                type: "MANUAL",
-                status: "VERIFIED"
-            };
-            setBackups([newBackup, ...backups]);
-            setProcessing(false);
+        try {
+            await api.post('/super-admin/backups');
+            await fetchBackups();
             toast.success("VAULT_SNAPSHOT_RETAINED: DATABASE MATRIX ENCRYPTED AND ARCHIVED.");
-        }, 3000);
+        } catch {
+            toast.error("BACKUP_PROTOCOL_VIOLATION: ARCHIVAL SEQUENCE FAILED.");
+        } finally {
+            setProcessing(false);
+        }
     };
 
     return (
@@ -111,13 +127,13 @@ const Backup = () => {
                                                             title="View Snapshot Details"
                                                             className="text-[10px] font-black text-[#5A270F] dark:text-white uppercase tracking-tighter hover:underline"
                                                         >
-                                                            {b.id}
+                                                            {b.name}
                                                         </button>
                                                         <p className="text-[7px] font-bold text-[#92664A] dark:text-white/20 uppercase tracking-widest mt-0.5">{b.type}</p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-6 text-[10px] font-mono font-bold text-[#92664A] dark:text-white/40">{b.date}</td>
+                                            <td className="px-8 py-6 text-[10px] font-mono font-bold text-[#92664A] dark:text-white/40">{new Date(b.createdAt).toLocaleString()}</td>
                                             <td className="px-8 py-6 text-[10px] font-mono font-bold text-[#92664A] dark:text-white/40">{b.size}</td>
                                             <td className="px-8 py-6 text-right">
                                                 <div className="flex items-center justify-end gap-2">

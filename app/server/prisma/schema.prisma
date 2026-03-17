@@ -298,8 +298,30 @@ model SubscriberChannel {
     batch       Int?     // Link to a specific student batch
     type        String   @default("BATCH") // BATCH, GENERAL, DEPARTMENT
     isActive    Boolean  @default(true)
+    units       Int      @default(0) // Subscriber count
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
+}
+
+model ExternalNode {
+    id          Int      @id @default(autoincrement())
+    name        String   @unique
+    url         String
+    type        String   // STORAGE, COMMUNICATION, INTEGRITY, INDEXING
+    status      String   @default("CONNECTED")
+    latency     String?
+    lastChecked DateTime?
+    createdAt   DateTime @default(now())
+}
+
+model BackupRegistry {
+    id        Int      @id @default(autoincrement())
+    name      String   @unique
+    filePath  String
+    size      String?
+    type      String?
+    status    String?  @default("VERIFIED")
+    createdAt DateTime @default(now())
 }
 
 model Favorite {
