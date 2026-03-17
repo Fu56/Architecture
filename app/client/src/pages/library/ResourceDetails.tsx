@@ -483,12 +483,22 @@ const ResourceDetails = () => {
                            <span>LOG_COUNT</span>
                            <span className="text-[#5A270F] dark:text-[#EEB38C] font-mono font-black">{(ratingCount || 0).toString().padStart(3, '0')}</span>
                         </div>
-                        <div className="h-1.5 w-full bg-white dark:bg-white/5 rounded-full overflow-hidden border border-[#D9D9C2]/20 dark:border-white/5 shadow-inner">
-                           <div 
-                              className="h-full bg-gradient-to-r from-[#5A270F] via-[#DF8142] to-[#EEB38C] rounded-full transition-all duration-1000 ease-out" 
-                              style={{ width: `${(averageRating / 5) * 100}%` } as React.CSSProperties}
-                           />
-                        </div>
+                         <div className="h-1.5 w-full bg-white dark:bg-white/5 rounded-full overflow-hidden border border-[#D9D9C2]/20 dark:border-white/5 shadow-inner">
+                            <div 
+                               className={`h-full bg-gradient-to-r from-[#5A270F] via-[#DF8142] to-[#EEB38C] rounded-full transition-all duration-1000 ease-out ${
+                                  averageRating >= 5 ? 'w-full' :
+                                  averageRating >= 4.5 ? 'w-[90%]' :
+                                  averageRating >= 4 ? 'w-[80%]' :
+                                  averageRating >= 3.5 ? 'w-[70%]' :
+                                  averageRating >= 3 ? 'w-[60%]' :
+                                  averageRating >= 2.5 ? 'w-[50%]' :
+                                  averageRating >= 2 ? 'w-[40%]' :
+                                  averageRating >= 1.5 ? 'w-[30%]' :
+                                  averageRating >= 1 ? 'w-[20%]' :
+                                  averageRating >= 0.5 ? 'w-[10%]' : 'w-0'
+                               }`}
+                            />
+                         </div>
                      </div>
                   </div>
                </div>

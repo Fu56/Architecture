@@ -1,134 +1,149 @@
-import { Shield, Lock, Eye, ArrowLeft, Hexagon } from "lucide-react";
+import { Shield, Eye, ArrowLeft, Hexagon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const PrivacyPolicy = () => {
   return (
-    <div className="min-h-screen bg-white dark:bg-card selection:bg-primary/20">
-      {/* Minimal High-Tech Header */}
-      <header className="bg-[#2A1205] pt-32 pb-24 overflow-hidden relative">
-        <div className="absolute inset-0">
-          <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_20%,rgba(79,70,229,0.15),transparent_50%)]" />
-          <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
-        </div>
-
-        <div className="max-w-4xl mx-auto px-4 relative z-10 text-center">
+    <div className="min-h-screen bg-[#FAF8F4] dark:bg-[#0C0603] font-inter selection:bg-[#DF8142]/20 selection:text-white">
+      {/* ── Compact Architectural Header ── */}
+      <header className="relative bg-[#5A270F] pt-12 pb-10 overflow-hidden border-b-2 border-[#DF8142]">
+        <div className="absolute inset-0 blueprint-grid opacity-10 pointer-events-none" />
+        <div className="absolute inset-0 architectural-dot-grid opacity-5 pointer-events-none" />
+        
+        <div className="max-w-5xl mx-auto px-6 relative z-10">
           <Link
             to="/"
-            className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] hover:text-primary/80 mb-12 transition-all group"
+            className="group inline-flex items-center gap-2 text-[6.5px] font-black uppercase tracking-[0.3em] text-[#EEB38C] hover:text-white mb-6 transition-all p-1.5 bg-white/5 rounded border border-white/5"
           >
-            <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-1 transition-transform" />
-            Main Nexus
+            <ArrowLeft className="h-2.5 w-2.5 group-hover:-translate-x-1 transition-transform" />
+            PROTOCOL_ROOT_EXIT
           </Link>
 
-          <div className="inline-flex items-center gap-3 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 mb-8 underline underline-offset-8 decoration-primary/50">
-            <Lock className="h-3 w-3" /> Data Sovereignty
+          <div className="flex flex-col items-start gap-2">
+            <div className="inline-flex items-center gap-2 px-2 py-0.5 bg-[#EEB38C]/10 border border-[#EEB38C]/20 rounded-md text-[7px] font-black uppercase tracking-[0.4em] text-[#EEB38C] backdrop-blur-md">
+              <Shield className="h-2.5 w-2.5 text-[#DF8142]" /> 
+              DATA_SOVEREIGNTY_v2.1
+            </div>
+            
+            <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter leading-[0.85] italic mb-4 drop-shadow-xl">
+              PRIVACY <br />
+              <span className="text-[#DF8142] not-italic text-2xl md:text-4xl">PROTOCOLS.</span>
+            </h1>
+            
+            <div className="max-w-xl border-l-2 border-[#DF8142]/40 pl-4">
+              <p className="text-[#EEB38C]/60 font-medium text-sm leading-tight uppercase tracking-tight">
+                YOUR DATA IS YOUR ARCHITECTURE. WE ENSURE THE 
+                <span className="text-white"> STRUCTURAL INTEGRITY</span> AND 
+                <span className="text-white"> SECURITY</span> OF EVERY METADATA POINT.
+              </p>
+            </div>
           </div>
-          <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-6 leading-none">
-            PRIVACY <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary/80 to-purple-400">
-              PROTOCOLS.
-            </span>
-          </h1>
-          <p className="text-gray-500 dark:text-white/40 font-medium text-lg max-w-2xl mx-auto">
-            Your data is your architecture. We ensure the structural integrity
-            and security of every metadata point collected across the nexus.
-          </p>
+        </div>
+
+        <div className="absolute bottom-2 right-4 text-[8px] font-black text-white/5 uppercase tracking-[0.8em] select-none pointer-events-none">
+          SECURE_NODE_0x2B9
         </div>
       </header>
 
-      {/* Content Core */}
-      <main className="max-w-4xl mx-auto px-4 py-24">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-          <div
-            className="md:col-span-2 prose prose-slate prose-lg max-w-none 
-                        prose-headings:font-black prose-headings:tracking-tight prose-headings:text-[#5A270F] dark:text-[#EEB38C]
-                        prose-p:text-[#5A270F] dark:text-[#EEB38C]/80 prose-p:leading-relaxed prose-p:font-medium
-                        prose-strong:text-[#2A1205] prose-strong:font-black"
-          >
-            <section className="mb-16">
-              <h2 className="text-3xl uppercase tracking-tighter mb-8 flex items-center gap-4">
-                <span className="h-2 w-8 bg-primary rounded-full" />
-                Collection Logic
-              </h2>
-              <p>
-                We collect only the telemetry and personal identifiers necessary
-                to maintain your access to the architectural CDN. This includes
-                session tokens, profile metadata, and contribution logs. At no
-                point is your intellectual property or personal data transmited
-                to third-party nodes without explicit cryptographic approval.
-              </p>
+      {/* ── Content Core - Tightened ── */}
+      <main className="max-w-5xl mx-auto px-6 py-8">
+        <div className="grid lg:grid-cols-12 gap-8">
+          
+          {/* Main Directives Column */}
+          <div className="lg:col-span-8 space-y-8">
+            
+            {/* Protocol 01 */}
+            <section className="relative group">
+              <div className="flex items-center gap-3 mb-4">
+                 <div className="h-8 w-8 bg-[#5A270F] rounded-lg flex items-center justify-center text-[#EEB38C] font-black text-[10px] shadow-md">01</div>
+                 <h2 className="text-lg font-black uppercase tracking-tighter text-[#5A270F] dark:text-white italic">Collection Logic</h2>
+                 <div className="h-px flex-1 bg-gradient-to-r from-[#DF8142]/20 to-transparent" />
+              </div>
+              <div className="prose prose-slate max-w-none pl-11">
+                <p className="text-[10px] font-bold text-[#5A270F]/80 dark:text-[#EEB38C]/60 leading-relaxed uppercase tracking-tight">
+                  We collect only the telemetry and personal identifiers necessary to maintain your access to the architectural CDN. 
+                  This includes session tokens and contribution logs. Intellectual property is never transmitted to <strong>third-party nodes</strong>.
+                </p>
+              </div>
             </section>
 
-            <section className="mb-16">
-              <h2 className="text-3xl uppercase tracking-tighter mb-8 flex items-center gap-4">
-                <span className="h-2 w-8 bg-primary rounded-full" />
-                Secure Storage
-              </h2>
-              <p>
-                Every asset uploaded is stored behind multiple layers of
-                authorization. We employ industry-standard encryption protocols
-                to ensure that even in a nexus breach, your data remains
-                indecipherable to unauthorized actors.
-              </p>
+            {/* Protocol 02 */}
+            <section className="relative group">
+              <div className="flex items-center gap-3 mb-4">
+                 <div className="h-8 w-8 bg-[#5A270F] rounded-lg flex items-center justify-center text-[#EEB38C] font-black text-[10px] shadow-md">02</div>
+                 <h2 className="text-lg font-black uppercase tracking-tighter text-[#5A270F] dark:text-white italic">Encrypted Sequestration</h2>
+                 <div className="h-px flex-1 bg-gradient-to-r from-[#DF8142]/20 to-transparent" />
+              </div>
+              <div className="prose prose-slate max-w-none pl-11">
+                <p className="text-[10px] font-bold text-[#5A270F]/80 dark:text-[#EEB38C]/60 leading-relaxed uppercase tracking-tight italic border-l border-[#DF8142]/20 pl-4">
+                  Every asset uploaded is stored behind multiple layers of authorization. We employ industry-standard encryption protocols. 
+                  Even in a nexus breach, your data remains <strong>indecipherable</strong> to unauthorized actors.
+                </p>
+              </div>
             </section>
 
-            <section className="mb-16">
-              <h2 className="text-3xl uppercase tracking-tighter mb-8 flex items-center gap-4">
-                <span className="h-2 w-8 bg-primary rounded-full" />
-                Your Rights
-              </h2>
-              <p>
-                You retain absolute sovereignty over your data. You may request
-                a full export of your profile metadata or the permanent deletion
-                of your credentials at any time through the administration
-                terminal.
-              </p>
+            {/* Protocol 03 */}
+            <section className="relative group">
+              <div className="flex items-center gap-3 mb-4">
+                 <div className="h-8 w-8 bg-[#5A270F] rounded-lg flex items-center justify-center text-[#EEB38C] font-black text-[10px] shadow-md">03</div>
+                 <h2 className="text-lg font-black uppercase tracking-tighter text-[#5A270F] dark:text-white italic">Data Sovereignty Rights</h2>
+                 <div className="h-px flex-1 bg-gradient-to-r from-[#DF8142]/20 to-transparent" />
+              </div>
+              <div className="prose prose-slate max-w-none pl-11">
+                <p className="text-[10px] font-bold text-[#5A270F]/80 dark:text-[#EEB38C]/60 leading-relaxed uppercase tracking-tight">
+                  You retain absolute sovereignty over your data. You may request a <strong>full export</strong> of your profile metadata 
+                  or the permanent deletion of your credentials through the administration terminal.
+                </p>
+              </div>
             </section>
           </div>
 
-          {/* Sidebar Stats/Info */}
-          <div className="space-y-8">
-            <div className="bg-[#EFEDED] dark:bg-background p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10">
-              <Shield className="h-8 w-8 text-primary mb-6" />
-              <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] mb-2">
-                GDPR Compliant
-              </h3>
-              <p className="text-xs text-[#5A270F] dark:text-[#EEB38C] font-medium leading-relaxed">
-                Our nexus operates under global data protection standards.
-              </p>
+          {/* ── Sidebar Compact Nexus Modules ── */}
+          <div className="lg:col-span-4 space-y-4 lg:sticky lg:top-4">
+            
+            {/* Compliance Module */}
+            <div className="bg-[#5A270F] p-4 rounded-xl text-white relative overflow-hidden shadow-lg border-2 border-[#DF8142]/20">
+               <div className="absolute inset-0 architectural-dot-grid opacity-10" />
+               <Shield className="h-6 w-6 text-[#DF8142] mb-4 relative z-10" />
+               <div className="relative z-10">
+                 <h3 className="text-[8px] font-black uppercase tracking-[0.3em] text-[#EEB38C] mb-1">GDPR_COMPLIANCE</h3>
+                 <p className="text-[7.5px] font-black text-white/40 uppercase tracking-widest leading-loose">
+                   Nexus operations adhere to global protection standards.
+                 </p>
+               </div>
             </div>
-            <div className="bg-[#EFEDED] dark:bg-background p-8 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/10">
-              <Eye className="h-8 w-8 text-primary mb-6" />
-              <h3 className="text-sm font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] mb-2">
-                Transparency Node
-              </h3>
-              <p className="text-xs text-[#5A270F] dark:text-[#EEB38C] font-medium leading-relaxed">
-                View all collected metadata from your user dashboard.
-              </p>
+
+            {/* Transparency Module */}
+            <div className="bg-white dark:bg-[#1A0B02]/30 p-4 rounded-xl border border-[#D9D9C2] dark:border-white/5 shadow-md group">
+               <Eye className="h-6 w-6 text-[#DF8142] mb-4 group-hover:scale-110 transition-transform" />
+               <h3 className="text-[8px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] mb-2">TRANSPARENCY_NODE</h3>
+               <p className="text-[7.5px] font-bold text-[#92664A] dark:text-white/20 uppercase tracking-widest leading-relaxed">
+                 Access and view all collected metadata from your dashboard.
+               </p>
             </div>
-            <div className="bg-primary p-8 rounded-[2.5rem] shadow-xl shadow-primary/20 text-white">
-              <Hexagon className="h-8 w-8 text-white/50 mb-6" />
-              <h3 className="text-sm font-black uppercase tracking-widest mb-2 text-white">
-                Contact Security
-              </h3>
-              <p className="text-xs text-white/70 font-medium leading-relaxed mb-6">
-                Need field intel on our security measures?
-              </p>
-              <Link
+
+            {/* Security Contact */}
+            <div className="bg-white dark:bg-[#1A0B02]/30 p-4 rounded-xl border border-[#D9D9C2] dark:border-white/5 relative overflow-hidden group">
+               <Hexagon className="h-6 w-6 text-[#DF8142] mb-4 group-hover:rotate-12 transition-all" />
+               <h3 className="text-[8px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] mb-2">SECURITY_INTEL</h3>
+               <p className="text-[7.5px] font-bold text-[#92664A] dark:text-white/20 uppercase tracking-widest mb-4 leading-relaxed">
+                 Request detailed field intel on our security measures.
+               </p>
+               <Link
                 to="/about"
-                className="text-[10px] font-black uppercase tracking-widest underline decoration-white/40"
+                className="w-full inline-flex items-center justify-center py-2 bg-[#5A270F] text-[#EEB38C] rounded-lg text-[6.5px] font-black uppercase tracking-[0.3em] hover:bg-[#DF8142] transition-all shadow-md"
               >
-                Open Channel
+                OPEN_SECURE_CHANNEL
               </Link>
             </div>
           </div>
         </div>
       </main>
 
-      {/* Footer Termination */}
-      <footer className="py-20 bg-[#EFEDED] dark:bg-background border-t border-[#D9D9C2] dark:border-white/10 text-center">
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 dark:text-white/30">
-          End of Privacy Protocol Transmission
+      {/* ── Footer Protocol Termination ── */}
+      <footer className="py-12 bg-[#E5E5CA]/30 dark:bg-black/40 border-t border-[#5A270F] text-center relative overflow-hidden">
+        <div className="absolute inset-0 architectural-dot-grid opacity-5" />
+        <p className="text-[7.5px] font-black uppercase tracking-[0.4em] text-[#5A270F]/40 dark:text-white/10 relative z-10">
+          ── END_OF_PRIVACY_TRANSMISSION // ID_002P ──
         </p>
       </footer>
     </div>
