@@ -18,7 +18,11 @@ import { getMonthGap, parseEthiopianDateString, getEthiopianDate } from "../util
 export const getPendingResources = async (req: Request, res: Response) => {
   try {
     const resources = await prisma.resource.findMany({
-      where: { status: "pending" },
+      where: {
+        status: {
+          in: ["pending", "admin_approved", "admin_rejected"],
+        },
+      },
       include: {
         uploader: {
           select: {
@@ -38,16 +42,12 @@ export const getPendingResources = async (req: Request, res: Response) => {
       title: resource.title,
       author: resource.author,
       keywords: resource.keywords,
-      batchYear: resource.batch, // Note: Schema has 'batch' (Int?), Model has 'batchYear' (number?) - mapping might need adjustment based on intention, assuming batch
+      batchYear: resource.batch,
       filePath: resource.file_path,
       fileType: resource.file_type,
       fileSize: resource.file_size,
       uploader: {
-        id: resource.uploader?.id, // specific select didn't include ID, but include: { uploader: ... } typically returns object. Wait, select was specific.
-        // The select in findMany was:
-        // uploader: { select: { email: true, first_name: true, last_name: true, role: true } }
-        // So ID is NOT returned. The frontend Resource interface expects a full User object (with ID).
-        // I should update the select to include ID or map carefully.
+        id: resource.uploader?.id,
         firstName: resource.uploader?.first_name,
         lastName: resource.uploader?.last_name,
         email: resource.uploader?.email,
@@ -71,8 +71,11 @@ export const approveResource = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { comment } = req.body;
 
-    // ── Identify the dept head who is taking action ──────────────────
-    const reviewerId = (req as any).user?.id;
+    const requester = (req as any).user;
+    const requesterRole = (requester?.role?.name || requester?.role || "").toLowerCase();
+    const isDeptHead = ["departmenthead", "superadmin"].includes(requesterRole);
+
+    const reviewerId = requester?.id;
     const reviewerData = reviewerId
       ? await prisma.user.findUnique({
           where: { id: reviewerId },
@@ -81,13 +84,15 @@ export const approveResource = async (req: Request, res: Response) => {
       : null;
     const reviewerName = reviewerData
       ? `${reviewerData.first_name || ""} ${reviewerData.last_name || ""}`.trim()
-      : "Department Head";
+      : isDeptHead ? "Department Head" : "Administrator";
+
+    const newStatus = isDeptHead ? "student" : "admin_approved";
 
     const resource = await prisma.resource.update({
       where: { id: Number(id) },
       data: {
-        status: "student",
-        approved_at: new Date(),
+        status: newStatus,
+        approved_at: isDeptHead ? new Date() : undefined,
         admin_comment: comment,
       } as any,
       include: {
@@ -104,10 +109,10 @@ export const approveResource = async (req: Request, res: Response) => {
         `${uploader.first_name || ""} ${uploader.last_name || ""}`.trim() ||
         "User";
 
-      const title = "✅ Resource Approved";
-      const message = `Your resource "${resource.title}" has been reviewed and approved by ${reviewerName}.${
-        comment ? ` Note: ${comment}` : ""
-      }`;
+      const title = isDeptHead ? "✅ Resource Approved" : "⏳ Resource Pre-approved";
+      const message = isDeptHead 
+        ? `Your resource "${resource.title}" has been reviewed and approved by ${reviewerName}.`
+        : `Your resource "${resource.title}" has been pre-approved by Admin ${reviewerName} and is awaiting final Department Head authorization.`;
 
       await notifyUsers({
         userIds: [resource.uploader_id],
@@ -123,14 +128,19 @@ export const approveResource = async (req: Request, res: Response) => {
         ),
       });
 
-      // Global broadcast — new resource is now live
-      await notifyAll(
-        "New Resource Available",
-        `A new architectural resource "${resource.title}" has been verified by ${reviewerName} and is now live in the repository.`,
-      );
+      // Global broadcast — only if final approval
+      if (isDeptHead) {
+        await notifyAll(
+          "New Resource Available",
+          `A new architectural resource "${resource.title}" has been verified by ${reviewerName} and is now live in the repository.`,
+        );
+      }
     }
 
-    res.json({ message: "Resource approved", resource });
+    res.json({ 
+      message: isDeptHead ? "Resource final approved" : "Resource pre-approved by admin", 
+      resource 
+    });
   } catch (error) {
     console.error("Approval Error:", error);
     res.status(500).json({ message: "Error approving resource" });
@@ -142,8 +152,11 @@ export const rejectResource = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { reason } = req.body;
 
-    // ── Identify the dept head who is taking action ──────────────────
-    const reviewerId = (req as any).user?.id;
+    const requester = (req as any).user;
+    const requesterRole = (requester?.role?.name || requester?.role || "").toLowerCase();
+    const isDeptHead = ["departmenthead", "superadmin"].includes(requesterRole);
+
+    const reviewerId = requester?.id;
     const reviewerData = reviewerId
       ? await prisma.user.findUnique({
           where: { id: reviewerId },
@@ -152,13 +165,15 @@ export const rejectResource = async (req: Request, res: Response) => {
       : null;
     const reviewerName = reviewerData
       ? `${reviewerData.first_name || ""} ${reviewerData.last_name || ""}`.trim()
-      : "Department Head";
+      : isDeptHead ? "Department Head" : "Administrator";
+
+    const newStatus = isDeptHead ? "rejected" : "admin_rejected";
 
     const resource = await prisma.resource.update({
       where: { id: Number(id) },
       data: {
-        status: "rejected",
-        rejected_at: new Date(),
+        status: newStatus,
+        rejected_at: isDeptHead ? new Date() : undefined,
         admin_comment: reason,
       } as any,
       include: {
@@ -175,10 +190,10 @@ export const rejectResource = async (req: Request, res: Response) => {
         `${uploader.first_name || ""} ${uploader.last_name || ""}`.trim() ||
         "User";
 
-      const title = "❌ Resource Requires Revision";
-      const message = `Your resource "${resource.title}" was reviewed by ${reviewerName} and requires revisions.${
-        reason ? ` Reason: ${reason}` : ""
-      }`;
+      const title = isDeptHead ? "❌ Resource Rejected" : "⚠️ Resource Flagged for Rejection";
+      const message = isDeptHead
+        ? `Your resource "${resource.title}" was reviewed by ${reviewerName} and has been rejected.`
+        : `Your resource "${resource.title}" was reviewed by Admin ${reviewerName} and is recommended for rejection.`;
 
       await notifyUsers({
         userIds: [resource.uploader_id],
@@ -194,7 +209,10 @@ export const rejectResource = async (req: Request, res: Response) => {
       });
     }
 
-    res.json({ message: "Resource rejected", resource });
+    res.json({ 
+      message: isDeptHead ? "Resource final rejected" : "Resource proposed for rejection by admin", 
+      resource 
+    });
   } catch (error) {
     console.error("Rejection Error:", error);
     res.status(500).json({ message: "Error rejecting resource" });
@@ -478,7 +496,11 @@ export const restoreResource = async (req: Request, res: Response) => {
 export const getFlags = async (req: Request, res: Response) => {
   try {
     const flags = await (prisma.flag as any).findMany({
-      where: { status: "pending" },
+      where: {
+        status: {
+          in: ["pending", "admin_resolved"],
+        },
+      },
       include: {
         resource: {
           include: {
@@ -531,15 +553,24 @@ export const resolveFlag = async (req: Request, res: Response) => {
     const userId = (req as any).user?.id;
     const { status } = req.body; // e.g. 'resolved', 'ignored'
 
+    const requester = (req as any).user;
+    const requesterRole = (requester?.role?.name || requester?.role || "").toLowerCase();
+    const isDeptHead = ["departmenthead", "superadmin"].includes(requesterRole);
+    
+    const newStatus = isDeptHead ? (status || "resolved") : "admin_resolved";
+
     await prisma.flag.update({
       where: { id: Number(id) },
       data: {
-        status: status || "resolved",
-        resolved_at: new Date(),
+        status: newStatus,
+        resolved_at: isDeptHead ? new Date() : undefined,
         resolved_by_id: userId,
       },
     });
-    res.json({ message: "Flag updated" });
+    res.json({ 
+      message: isDeptHead ? "Flag finalized" : "Flag resolved by admin (pending final verification)", 
+      status: newStatus 
+    });
   } catch (error) {
     res.status(500).json({ message: "Error resolving flag" });
   }
@@ -1200,6 +1231,7 @@ export const updateUser = async (req: Request, res: Response) => {
             : "Administrator"
         }.`,
         html: getGenericHtml(
+          `${updatedUser.first_name} ${updatedUser.last_name}`,
           "Registry Update Protocol",
           `Greetings ${
             updatedUser.first_name || "User"
@@ -1284,32 +1316,43 @@ export const approveUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const requester = (req as any).user;
-    const requesterRole = requester?.role?.name || requester?.role;
+    const requesterRole = (requester?.role?.name || requester?.role || "").toLowerCase();
+    const isDeptHead = ["departmenthead", "superadmin"].includes(requesterRole);
 
-    if (requesterRole !== "DepartmentHead") {
-      return res.status(403).json({
-        message:
-          "Security Protocol: Only Department Head can authorize pending nodes.",
-      });
-    }
+    const newStatus = isDeptHead ? "active" : "admin_approved_node";
 
     const user = await prisma.user.update({
       where: { id: id },
-      data: { status: "active" },
+      data: { status: newStatus },
     });
 
     // Notify User about authorization
-    await notifyUsers({
-      userIds: [user.id],
-      title: "Account Authorized",
-      message: `Your system node has been authorized by the Department Head. You can now access the Nexus.`,
-      html: getAccountAuthorizationHtml(
-        `${user.first_name} ${user.last_name}`
-      ),
-    });
+    if (isDeptHead) {
+      await notifyUsers({
+        userIds: [user.id],
+        title: "Account Authorized",
+        message: `Your system node has been authorized by the Department Head. You can now access the Nexus.`,
+        html: getAccountAuthorizationHtml(
+          `${user.first_name} ${user.last_name}`
+        ),
+      });
+    } else {
+      await notifyUsers({
+        userIds: [user.id],
+        title: "Account Flagged for Activation",
+        message: `Your system node has been pre-verified by an Administrator and is awaiting final Department Head authorization.`,
+        html: getGenericHtml(
+          `${user.first_name} ${user.last_name}`,
+          "Account Pre-verified",
+          "Your account has been pre-verified by an administrator and is now in the final authorization queue."
+        ),
+      });
+    }
 
     res.json({
-      message: "User node authorized and activated in the matrix.",
+      message: isDeptHead 
+        ? "User node authorized and activated in the matrix." 
+        : "User node pre-verified by Admin; awaiting final Dept Head authorization.",
       user,
     });
   } catch (error) {
@@ -1549,6 +1592,7 @@ export const advanceAcademicStatus = async (req: Request, res: Response) => {
           title: "Academic Promotion Synchronized",
           message: `Your account node has been advanced to Year ${targetYear}, Semester ${targetSemester} based on the Ethiopian academic cycle.`,
           html: getGenericHtml(
+            `${student.first_name} ${student.last_name}`,
             "Academic Progression Protocol",
             `Greetings ${student.first_name || "Student"},<br/><br/>The system has synchronized your academic standing. Your current node is now positioned in:<br/><b>Year: ${targetYear}</b><br/><b>Semester: ${targetSemester}</b><br/><br/>Your access levels have been updated accordingly.`
           )

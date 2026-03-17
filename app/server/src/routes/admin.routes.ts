@@ -33,47 +33,47 @@ const router = Router();
 
 router.use(requireAuth, requireRole(["Admin", "SuperAdmin", "DepartmentHead"])); // Adjust role names as needed
 
-// Resource Approval — restricted to DepartmentHead and SuperAdmin only
+// Resource Approval — Admin can propose, Dept Head can finalize
 router.get(
   "/resources/pending",
-  requireRole(["DepartmentHead"]),
+  requireRole(["Admin", "DepartmentHead", "SuperAdmin"]),
   getPendingResources,
 );
 router.patch(
   "/resources/:id/approve",
-  requireRole(["DepartmentHead"]),
+  requireRole(["Admin", "DepartmentHead", "SuperAdmin"]),
   approveResource,
 );
 router.patch(
   "/resources/:id/reject",
-  requireRole(["DepartmentHead"]),
+  requireRole(["Admin", "DepartmentHead", "SuperAdmin"]),
   rejectResource,
 );
 router.patch(
   "/resources/:id/archive",
-  requireRole(["DepartmentHead"]),
+  requireRole(["Admin", "DepartmentHead", "SuperAdmin"]),
   archiveResource,
 );
 router.patch(
   "/resources/:id/restore",
-  requireRole(["DepartmentHead"]),
+  requireRole(["Admin", "DepartmentHead", "SuperAdmin"]),
   restoreResource,
 );
 router.delete(
   "/resources/:id/permanent",
-  requireRole(["DepartmentHead"]),
+  requireRole(["DepartmentHead", "SuperAdmin"]), // Permanent deletion remains restricted
   deleteResource,
 );
 router.get(
   "/resources/archived",
-  requireRole(["DepartmentHead"]),
+  requireRole(["Admin", "DepartmentHead", "SuperAdmin"]),
   getArchivedResources,
 );
 
-router.get("/flags", requireRole(["DepartmentHead"]), getFlags);
+router.get("/flags", requireRole(["Admin", "DepartmentHead", "SuperAdmin"]), getFlags);
 router.patch(
   "/flags/:id/resolve",
-  requireRole(["DepartmentHead"]),
+  requireRole(["Admin", "DepartmentHead", "SuperAdmin"]),
   resolveFlag,
 );
 

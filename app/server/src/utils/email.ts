@@ -206,7 +206,7 @@ export const getRegistrationHtml = (
     `;
 };
 
-export const getGenericHtml = (title: string, message: string) => {
+export const getGenericHtml = (userName: string, title: string, message: string) => {
   return `
     <div ${emailStyle}>
         <div ${headerStyle}>
@@ -214,6 +214,7 @@ export const getGenericHtml = (title: string, message: string) => {
             <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px;">${title.toUpperCase()}</h1>
         </div>
         <div style="padding: 0 20px;">
+            <p>Salutations, ${userName},</p>
             <div style="font-size: 16px; line-height: 1.8; color: #334155;">
                 ${message.replace(/\n/g, "<br>")}
             </div>

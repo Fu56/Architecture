@@ -143,21 +143,26 @@ const Home = () => {
   return (
     <div className="flex flex-col min-h-screen selection:bg-primary/20 bg-white dark:bg-background transition-colors duration-500">
       {/* Hero Section */}
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center pt-16">
-        {/* Animated Background */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          <div className="absolute inset-0 bg-[#5A270F]/40 z-10" />
+      <section className="relative min-h-[95vh] flex items-center overflow-hidden">
+        {/* Cinematic Background Layer */}
+        <div className="absolute inset-0 z-0 select-none">
+          {/* Main Cinematic Image */}
           <img
-            src="/assets/hero.png"
-            alt="Hero Architectural"
-            className="w-full h-full object-cover brightness-[0.7] scale-105 animate-slow-zoom"
+            src="/assets/hero_v2.png"
+            alt="Premium Architectural Nexus"
+            className="w-full h-full object-cover brightness-[1.05] contrast-[1.05] animate-slow-zoom transition-all duration-1000"
           />
-          {/* Overlay Gradients */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-[#5A270F] via-[#6C3B1C]/80 to-transparent z-10" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(223,129,66,0.15),transparent_70%)] z-10" />
-          {/* Grid Overlay */}
-          <div className="absolute inset-0 opacity-[0.05] z-10 blueprint-grid-dark" />
+
+          {/* Master Gradient Overlays - Subtle and elegant */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#1A0B04]/40 via-transparent to-[#1A0B04] z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#1A0B04]/40 via-transparent to-transparent z-10" />
+          
+          {/* Soft Atmospheric Glows */}
+          <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-[#DF8142]/10 blur-[180px] rounded-full -translate-y-1/4 translate-x-1/4 z-10 pointer-events-none animate-pulse" />
+          <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-[#5A270F]/20 blur-[120px] rounded-full translate-y-1/4 -translate-x-1/4 z-10 pointer-events-none" />
+          
+          {/* Refined Architectural Overlay Grid */}
+          <div className="absolute inset-0 opacity-[0.06] z-10 blueprint-grid-dark pointer-events-none" />
         </div>
 
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-20 w-full mt-6">
@@ -206,9 +211,10 @@ const Home = () => {
               className="mb-12 animate-in fade-in slide-in-from-bottom-24 duration-1000 delay-500 relative"
             >
               <div className="relative max-w-4xl group search-container">
-                <div className="absolute -inset-2 bg-gradient-to-r from-[#DF8142] via-[#5A270F] to-[#DF8142] rounded-[3rem] blur-2xl opacity-20 group-focus-within:opacity-40 transition duration-1000 group-hover:duration-200" />
-
-                <div className="relative flex flex-col sm:flex-row items-center bg-white/95 dark:bg-[#1A0B04]/90 backdrop-blur-3xl rounded-[2.5rem] overflow-hidden shadow-[0_40px_80px_-15px_rgba(0,0,0,0.3)] ring-1 ring-white/20 dark:ring-white/10 transition-all duration-700 group-focus-within:ring-[#DF8142]/50 group-focus-within:scale-[1.01]">
+                {/* Advanced Glow Ring */}
+                <div className="absolute -inset-[2px] bg-gradient-to-r from-[#DF8142] via-[#EEB38C] to-[#5A270F] rounded-[2.6rem] blur-2xl opacity-0 group-focus-within:opacity-30 group-hover:opacity-10 transition duration-1000 animate-gradient-xy" />
+                
+                <div className="relative flex flex-col sm:flex-row items-center bg-white/5 dark:bg-[#1A0B04]/30 backdrop-blur-[60px] rounded-[2.5rem] overflow-hidden border border-white/20 dark:border-[#DF8142]/20 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.6)] transition-all duration-700 group-focus-within:border-[#DF8142] group-focus-within:bg-white/10 dark:group-focus-within:bg-[#1A0B04]/50 group-hover:border-white/30">
                   <div className="hidden sm:block pl-10">
                     {searchQuery.length > 0 ? (
                       <button
@@ -219,14 +225,14 @@ const Home = () => {
                           setSearchQuery("");
                           setShowDropdown(false);
                         }}
-                        className="p-1 hover:bg-[#DF8142]/10 rounded-full transition-colors group/back"
+                        className="p-1 hover:bg-white/10 rounded-full transition-colors group/back"
                       >
                         <ArrowLeft className="h-7 w-7 text-[#DF8142] group-hover/back:-translate-x-1 transition-transform" />
                       </button>
                     ) : isSearching ? (
                       <Loader2 className="h-7 w-7 text-[#DF8142] animate-spin" />
                     ) : (
-                      <Search className="h-7 w-7 text-gray-400 dark:text-white/30 group-focus-within:text-[#DF8142] transition-all duration-500 group-focus-within:rotate-90" />
+                      <Search className="h-7 w-7 text-[#EEB38C]/50 group-focus-within:text-[#DF8142] transition-all duration-700 group-focus-within:scale-110 group-focus-within:rotate-12" />
                     )}
                   </div>
                   <input
@@ -236,17 +242,17 @@ const Home = () => {
                       searchQuery.length > 1 && setShowDropdown(true)
                     }
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Enter resource ID, authority, or artifact keyword..."
-                    className="w-full pl-8 sm:pl-8 pr-6 py-6 sm:py-8 bg-transparent text-[#2A1205] dark:text-white placeholder:text-gray-500 dark:text-white/40 text-base sm:text-lg font-black focus:outline-none tracking-tight"
+                    placeholder="Search blueprints, credentials, or faculty nodes..."
+                    className="w-full pl-8 sm:pl-8 pr-6 py-6 sm:py-9 bg-transparent text-white placeholder:text-white/40 text-base sm:text-xl font-black focus:outline-none tracking-tight font-space-grotesk"
                   />
-                  <div className="w-full sm:w-auto p-2 sm:pr-3">
+                  <div className="w-full sm:w-auto p-2 sm:pr-4">
                     <button
                       type="submit"
-                      className="w-full sm:w-auto whitespace-nowrap px-8 sm:px-10 py-4 sm:py-5 bg-[#DF8142] hover:bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-[1.5rem] transition-all duration-700 active:scale-95 shadow-2xl shadow-[#DF8142]/20 flex items-center justify-center gap-3 group/btn overflow-hidden relative"
+                      className="w-full sm:w-auto px-8 sm:px-14 py-4 sm:py-7 bg-gradient-to-r from-[#DF8142] to-[#EEB38C] hover:from-[#EEB38C] hover:to-white hover:text-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-[2rem] transition-all duration-700 active:scale-95 shadow-2xl shadow-[#DF8142]/30 flex items-center justify-center gap-4 group/btn overflow-hidden relative"
                     >
-                      <span className="relative z-10">Initialize Search</span>
+                      <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                      <span className="relative z-10 tracking-[0.5em]">Initialize</span>
                       <ArrowRight className="h-4 w-4 relative z-10 group-hover/btn:translate-x-2 transition-transform duration-500" />
-                      <div className="absolute inset-0 bg-gradient-to-r from-[#DF8142]/90 to-[#5A270F] opacity-0 group-hover/btn:opacity-100 transition-opacity" />
                     </button>
                   </div>
                 </div>

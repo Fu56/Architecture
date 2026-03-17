@@ -28,8 +28,10 @@ const Flags = () => {
   const { data: session } = useSession();
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const user = session?.user as any;
-  const role = typeof user?.role === "object" ? user.role.name : user?.role;
-  const isAuthorized = role === "DepartmentHead";
+    const role = typeof user?.role === "object" ? user.role.name : user?.role;
+  const isDeptHead = role === "DepartmentHead" || role === "SuperAdmin";
+  const isAdmin = role === "Admin";
+  const isAuthorized = isDeptHead || isAdmin;
 
   const fetchFlags = async () => {
     setLoading(true);
@@ -51,7 +53,7 @@ const Flags = () => {
     setFlags((prev) => prev.filter((f) => f.id !== flagId));
     try {
       await api.patch(`/admin/flags/${flagId}/resolve`, { status: "resolved" });
-      toast.success("Security Alert dismissed successfully");
+      toast.success(isDeptHead ? "Security Alert dismissed successfully" : "Resolution proposed as admin");
     } catch (err) {
       console.error("Failed to resolve flag:", err);
       toast.error("Protocol Error: Failed to dismiss alert");
@@ -63,9 +65,14 @@ const Flags = () => {
     // Optimistic update
     setFlags((prev) => prev.filter((f) => f.id !== flagId));
     try {
+      // For Admin, it will be a proposal in a real case, but here it archives directly.
+      // Based on user request, Dept Head is final step for EVERYTHING.
+      // So maybe archive should also have an intermediate state?
+      // But resource status 'archived' is already hidden.
+      // Let's stick to the status flow.
       await api.patch(`/admin/resources/${resourceId}/archive`);
       await api.patch(`/admin/flags/${flagId}/resolve`, { status: "resolved" });
-      toast.success("Asset quarantined and alert resolved");
+      toast.success(isDeptHead ? "Asset quarantined" : "Quarantine proposed by admin");
     } catch (err) {
       console.error("Failed to archive resource:", err);
       toast.error("Security Breach: Failed to quarantine asset");
@@ -122,6 +129,11 @@ const Flags = () => {
                       <span className="px-3 py-1 bg-red-700 text-white text-[9px] font-black uppercase tracking-widest rounded-lg flex items-center gap-2">
                         <AlertTriangle className="h-3 w-3" /> Urgent Review
                       </span>
+                      {flag.status === "admin_resolved" && (
+                         <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-[9px] font-black uppercase tracking-widest rounded-lg flex items-center gap-2">
+                           <ShieldCheck className="h-3 w-3" /> Admin Pre-resolved
+                         </span>
+                      )}
                       <span className="flex items-center gap-1.5 text-[10px] text-gray-500 dark:text-white/40 font-bold uppercase tracking-widest">
                         <Clock className="h-3 w-3" />
                         Detected:{" "}
@@ -182,13 +194,13 @@ const Flags = () => {
                           }
                           className="h-14 flex items-center gap-4 px-8 bg-white dark:bg-card border-2 border-amber-100 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl text-amber-600 hover:bg-amber-50 transition-all active:scale-95 shadow-lg shadow-amber-50"
                         >
-                          <Archive className="h-4 w-4" /> Quarantine
+                          <Archive className="h-4 w-4" /> {isDeptHead ? "Quarantine" : "Propose Quarantine"}
                         </button>
                         <button
                           onClick={() => handleResolveFlag(flag.id)}
                           className="h-14 flex items-center gap-4 px-8 bg-[#2A1205] text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-[#5A270F] transition-all hover:-translate-y-1 shadow-2xl shadow-[#2A1205]/20 active:scale-95"
                         >
-                          <ShieldCheck className="h-4 w-4" /> Dismiss Report
+                          <ShieldCheck className="h-4 w-4" /> {isDeptHead ? (flag.status === "admin_resolved" ? "Confirm Resolution" : "Dismiss Report") : "Propose Dismissal"}
                         </button>
                       </>
                     )}

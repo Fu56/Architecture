@@ -763,7 +763,7 @@ const ManageUsers = () => {
                           className={`h-1.5 w-1.5 rounded-full ${
                             user.status === "active"
                               ? "bg-[#5A270F] animate-pulse"
-                              : user.status === "pending_approval"
+                              : (user.status === "pending_approval" || user.status === "admin_approved_node")
                                 ? "bg-[#DF8142] animate-bounce"
                                 : "bg-red-700"
                           }`}
@@ -772,16 +772,18 @@ const ManageUsers = () => {
                           className={`text-[10px] font-black uppercase tracking-widest ${
                             user.status === "active"
                               ? "text-[#5A270F] dark:text-white/90"
-                              : user.status === "pending_approval"
+                              : (user.status === "pending_approval" || user.status === "admin_approved_node")
                                 ? "text-[#DF8142] dark:text-[#EEB38C]"
                                 : "text-rose-600 dark:text-rose-500"
                           }`}
                         >
                           {user.status === "active"
                             ? "Active"
-                            : user.status === "pending_approval"
-                              ? "Pending Approval"
-                              : "Suspended"}
+                            : user.status === "admin_approved_node"
+                              ? "Admin Pre-verified"
+                              : user.status === "pending_approval"
+                                ? "Pending Approval"
+                                : "Suspended"}
                         </span>
                       </div>
                     </td>
@@ -798,23 +800,21 @@ const ManageUsers = () => {
                           <Mail className="h-4 w-4" />
                         </button>
 
-                        {user.status === "pending_approval" &&
-                          currentRoleName === "DepartmentHead" && (
-                            <button
-                              onClick={() => handleApprove(user.id)}
-                              className="p-3 text-[#DF8142] hover:text-[#2A1205] hover:bg-[#5A270F]/5 rounded-xl transition-all"
-                              title="Authorize Node"
-                            >
-                              <CheckCircle2 className="h-4 w-4" />
-                            </button>
-                          )}
+                        {((user.status === "pending_approval" && (currentRoleName === "Admin" || currentRoleName === "DepartmentHead" || currentRoleName === "SuperAdmin")) || 
+                          (user.status === "admin_approved_node" && (currentRoleName === "DepartmentHead" || currentRoleName === "SuperAdmin"))) && (
+                             <button
+                               onClick={() => handleApprove(user.id)}
+                               className="p-3 text-[#DF8142] hover:text-[#2A1205] hover:bg-[#5A270F]/5 rounded-xl transition-all"
+                               title={currentRoleName === "Admin" ? "Pre-Verify Node" : "Final Authorize"}
+                             >
+                               <CheckCircle2 className="h-4 w-4" />
+                             </button>
+                           )}
 
                         {!(
-                          roleName === "SuperAdmin" &&
-                          currentRoleName !== "SuperAdmin" &&
-                          currentRoleName !== "DepartmentHead"
-                        ) &&
-                          currentRoleName !== "Admin" && (
+                          roleName === "SuperAdmin" || 
+                          (roleName === "DepartmentHead" && currentRoleName === "Admin")
+                        ) && (
                             <>
                               <button
                                 onClick={() => handleOpenEdit(user)}

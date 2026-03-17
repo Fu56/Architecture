@@ -26,7 +26,9 @@ const Approvals = () => {
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const user = session?.user as any;
   const role = typeof user?.role === "object" ? user.role.name : user?.role;
-  const isAuthorized = role === "DepartmentHead";
+  const isDeptHead = role === "DepartmentHead" || role === "SuperAdmin";
+  const isAdmin = role === "Admin";
+  const isAuthorized = isDeptHead || isAdmin;
 
   const [resources, setResources] = useState<Resource[]>([]);
   const [comments, setComments] = useState<{ [key: number]: string }>({});
@@ -150,15 +152,25 @@ const Approvals = () => {
               <div className="p-10 lg:p-14 relative z-10 flex flex-col lg:grid lg:grid-cols-12 gap-12 items-start">
                 
                 <div className="lg:col-span-8 space-y-8">
-                  <div className="flex flex-wrap items-center gap-6">
-                    <span className="px-5 py-2 bg-[#5A270F] text-[#EEB38C] text-[10px] font-black uppercase tracking-[0.3em] rounded-xl shadow-xl shadow-[#5A270F]/20">
-                      {((resource as any).fileType || 'Asset Core').toUpperCase()} Protocol
-                    </span>
-                    <div className="flex items-center gap-2 text-[10px] text-[#92664A] dark:text-[#EEB38C]/60 font-black uppercase tracking-[0.4em]">
-                      <Clock className="h-4 w-4" />
-                      Ingestion Date: {new Date(resource.uploadedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
+                    <div className="flex flex-wrap items-center gap-6">
+                      <span className="px-5 py-2 bg-[#5A270F] text-[#EEB38C] text-[10px] font-black uppercase tracking-[0.3em] rounded-xl shadow-xl shadow-[#5A270F]/20">
+                        {((resource as any).fileType || 'Asset Core').toUpperCase()} Protocol
+                      </span>
+                      <div className="flex items-center gap-2 text-[10px] text-[#92664A] dark:text-[#EEB38C]/60 font-black uppercase tracking-[0.4em]">
+                        <Clock className="h-4 w-4" />
+                        Ingestion Date: {new Date(resource.uploadedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </div>
+                      {resource.status === "admin_approved" && (
+                        <span className="px-5 py-2 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-[0.3em] rounded-xl border border-emerald-200 dark:border-emerald-800/30 flex items-center gap-2 shadow-sm">
+                          <ShieldCheck className="h-4 w-4" /> Admin Recommended
+                        </span>
+                      )}
+                      {resource.status === "admin_rejected" && (
+                        <span className="px-5 py-2 bg-rose-50 dark:bg-rose-950/20 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-[0.3em] rounded-xl border border-rose-200 dark:border-rose-800/30 flex items-center gap-2 shadow-sm">
+                          <X className="h-4 w-4" /> Admin Flagged REJECT
+                        </span>
+                      )}
                     </div>
-                  </div>
 
                   <Link
                     to={`/admin/resources/${resource.id}`}
@@ -223,13 +235,13 @@ const Approvals = () => {
                         onClick={() => handleDecision(resource.id, "rejected")}
                         className="h-full bg-rose-50 dark:bg-rose-950/20 border-2 border-rose-200 dark:border-rose-900/30 text-[12px] font-black uppercase tracking-[0.2em] rounded-[2rem] text-rose-700 dark:text-rose-400 hover:bg-rose-600 hover:text-white transition-all active:scale-95 flex items-center justify-center gap-3 shadow-xl"
                       >
-                        <X className="h-5 w-5" /> Sequester
+                        <X className="h-5 w-5" /> {isDeptHead ? "Final Reject" : "Propose Reject"}
                       </button>
                       <button
                         onClick={() => handleDecision(resource.id, "approved")}
                         className="h-full bg-[#5A270F] text-white text-[12px] font-black uppercase tracking-[0.2em] rounded-[2rem] hover:bg-[#1A0B04] transition-all shadow-2xl shadow-[#5A270F]/30 active:scale-95 flex items-center justify-center gap-3"
                       >
-                        <Check className="h-5 w-5" /> Deploy
+                        <Check className="h-5 w-5" /> {isDeptHead ? "Final Deploy" : "Pre-Approve"}
                       </button>
                     </div>
                   ) : (

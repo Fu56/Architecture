@@ -48,7 +48,7 @@ export interface Resource {
   fileSize: number;
   uploader: User;
   designStage: DesignStage;
-  status: "pending" | "approved" | "rejected" | "student" | "archived";
+  status: "pending" | "approved" | "rejected" | "student" | "archived" | "admin_approved" | "admin_rejected";
   downloadCount: number;
   isArchived: boolean;
   priority: boolean;
@@ -73,7 +73,7 @@ export interface Flag {
   resource: Resource;
   reporter: User;
   reason: string;
-  status: "open" | "resolved";
+  status: "pending" | "admin_resolved" | "resolved" | "ignored";
   createdAt: string;
 }
 
