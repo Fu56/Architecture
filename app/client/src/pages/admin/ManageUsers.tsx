@@ -1,3 +1,4 @@
+// cSpell:ignore autotable
 import { useState, useEffect } from "react";
 import { api } from "../../lib/api";
 import type { User } from "../../models";
@@ -51,6 +52,12 @@ const ManageUsers = () => {
     typeof currentUser?.role === "string"
       ? currentUser.role
       : currentUser?.role?.name || "";
+      
+  const currentUserSecondaryRoles = (currentUser as UserWithRole & { secondaryRoles?: { name: string }[] })?.secondaryRoles?.map((r: { name: string }) => r.name) || [];
+  const currentUserAllRoles = [currentRoleName, ...currentUserSecondaryRoles];
+  const isCurrentDeptHead = currentUserAllRoles.includes("DepartmentHead") || currentUserAllRoles.includes("SuperAdmin");
+  const isCurrentAdmin = isCurrentDeptHead || currentUserAllRoles.includes("Admin");
+  const isCurrentSuperAdmin = currentUserAllRoles.includes("SuperAdmin");
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -114,7 +121,7 @@ const ManageUsers = () => {
       semester: "",
       status: "active",
       specialization: "",
-      department: currentRoleName === "DepartmentHead" ? "Architecture" : "",
+      department: isCurrentDeptHead ? "Architecture" : "",
       workerId: "",
       suspendReason: "",
       academicStartDate: "",
@@ -134,13 +141,14 @@ const ManageUsers = () => {
     setSelectedUser(user);
     const existingRole =
       typeof user.role === "string" ? user.role : user.role?.name || "Student";
+    const additionalRoles = user.secondaryRoles?.map(r => r.name) || [];
 
     setFormData({
       firstName: user.firstName || user.first_name || "",
       lastName: user.lastName || user.last_name || "",
       email: user.email,
       password: "",
-      roleNames: [existingRole],
+      roleNames: Array.from(new Set([existingRole, ...additionalRoles])),
       universityId:
         (user as { university_id?: string }).university_id ||
         (user as { universityId?: string }).universityId ||
@@ -150,7 +158,7 @@ const ManageUsers = () => {
       semester: user.semester?.toString() || "",
       status: user.status,
       specialization: user.specialization || "",
-      department: currentRoleName === "DepartmentHead" ? "Architecture" : (user.department || ""),
+      department: isCurrentDeptHead ? "Architecture" : (user.department || ""),
       workerId: user.workerId || user.worker_id || "",
       suspendReason: "",
       academicStartDate: user.academicStartDateEth || "",
@@ -394,7 +402,7 @@ const ManageUsers = () => {
         });
         fetchUsers();
         toast.success(
-          currentRoleName === "Admin"
+          isCurrentAdmin
             ? "User node initialized: Authorization required for activation."
             : "User node initialized successfully",
         );
@@ -403,6 +411,7 @@ const ManageUsers = () => {
           await api.patch(`/admin/users/${selectedUser.id}`, {
             ...formData,
             roleName: formData.roleNames[0],
+            roleNames: formData.roleNames,
           });
           fetchUsers();
           toast.success("User configuration updated");
@@ -435,13 +444,13 @@ const ManageUsers = () => {
       typeof user.role === "string" ? user.role : user.role?.name || "";
 
     // Security filter: Department Heads cannot see/manage SuperAdmins
-    if (currentRoleName === "DepartmentHead" && userRoleName === "SuperAdmin") {
+    if (isCurrentDeptHead && !isCurrentSuperAdmin && userRoleName === "SuperAdmin") {
       return false;
     }
 
     // Security filter: Admins cannot see/manage DepartmentHeads or SuperAdmins
     if (
-      currentRoleName === "Admin" &&
+      isCurrentAdmin && !isCurrentDeptHead &&
       (userRoleName === "DepartmentHead" || userRoleName === "SuperAdmin")
     ) {
       return false;
@@ -623,8 +632,7 @@ const ManageUsers = () => {
               </div>
             )}
           </div>
-          {(currentRoleName === "DepartmentHead" ||
-            currentRoleName === "SuperAdmin") && (
+          {isCurrentDeptHead && (
             <>
               <button
                 onClick={handleAdvanceAcademic}
@@ -738,9 +746,16 @@ const ManageUsers = () => {
                       </span>
                     </td>
                     <td className="px-4 py-2.5 whitespace-nowrap">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[7px] font-black uppercase tracking-wider bg-[#5A270F] dark:bg-[#EEB38C] text-white dark:text-[#5A270F]">
-                        {roleName}
-                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[7px] font-black uppercase tracking-wider bg-[#5A270F] dark:bg-[#EEB38C] text-white dark:text-[#5A270F]">
+                          {roleName}
+                        </span>
+                        {user.secondaryRoles?.map((r) => (
+                          <span key={r.id} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[7px] font-black uppercase tracking-wider bg-[#DF8142] text-white shadow-sm border border-[#DF8142]/20">
+                            {r.name}
+                          </span>
+                        ))}
+                      </div>
                     </td>
                     <td className="px-4 py-2.5 whitespace-nowrap">
                       <div className="flex items-center gap-1.5">
@@ -785,12 +800,12 @@ const ManageUsers = () => {
                           <Mail className="h-3.5 w-3.5" />
                         </button>
 
-                        {((user.status === "pending_approval" && (currentRoleName === "Admin" || currentRoleName === "DepartmentHead" || currentRoleName === "SuperAdmin")) || 
-                          (user.status === "admin_approved_node" && (currentRoleName === "DepartmentHead" || currentRoleName === "SuperAdmin"))) && (
+                        {((user.status === "pending_approval" && isCurrentAdmin) || 
+                          (user.status === "admin_approved_node" && isCurrentDeptHead)) && (
                              <button
                                onClick={() => handleApprove(user.id)}
                                className="p-2 text-[#DF8142] hover:text-[#2A1205] hover:bg-[#5A270F]/5 rounded-lg transition-all"
-                               title={currentRoleName === "Admin" ? "Pre-Verify Node" : "Final Authorize"}
+                               title={isCurrentAdmin && !isCurrentDeptHead ? "Pre-Verify Node" : "Final Authorize"}
                              >
                                <CheckCircle2 className="h-3.5 w-3.5" />
                              </button>
@@ -798,7 +813,7 @@ const ManageUsers = () => {
 
                         {!(
                           roleName === "SuperAdmin" || 
-                          (roleName === "DepartmentHead" && currentRoleName === "Admin")
+                          (roleName === "DepartmentHead" && isCurrentAdmin && !isCurrentDeptHead)
                         ) && (
                             <>
                               <button
@@ -811,7 +826,7 @@ const ManageUsers = () => {
 
                               {!(
                                 roleName === "DepartmentHead" &&
-                                currentRoleName === "Admin"
+                                isCurrentAdmin && !isCurrentDeptHead
                               ) && (
                                 <button
                                   onClick={() => handleDelete(user)}
@@ -999,7 +1014,7 @@ const ManageUsers = () => {
                 
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                   {["Student", "Faculty", "Admin", "DepartmentHead"]
-                    .filter((role) => role !== "DepartmentHead" || currentRoleName === "SuperAdmin")
+                    .filter((role) => role !== "DepartmentHead" || isCurrentSuperAdmin)
                     .map((role) => {
                       const isSelected = formData.roleNames.includes(role);
                       return (
@@ -1051,8 +1066,8 @@ const ManageUsers = () => {
                         value={formData.department}
                         onChange={handleInputChange}
                         placeholder="e.g. Architectural Systems"
-                        disabled={currentRoleName === "DepartmentHead" && modalMode === "edit"}
-                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] ${errors.department ? "border-[#DF8142] ring-4 ring-[#DF8142]/10" : "border-[#D9D9C2]/60 dark:border-white/10 font-inter"} ${currentRoleName === "DepartmentHead" && modalMode === "edit" ? "opacity-60 cursor-not-allowed bg-[#EFEDED]/20" : ""}`}
+                        disabled={isCurrentDeptHead && !isCurrentSuperAdmin && modalMode === "edit"}
+                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] ${errors.department ? "border-[#DF8142] ring-4 ring-[#DF8142]/10" : "border-[#D9D9C2]/60 dark:border-white/10 font-inter"} ${isCurrentDeptHead && !isCurrentSuperAdmin && modalMode === "edit" ? "opacity-60 cursor-not-allowed bg-[#EFEDED]/20" : ""}`}
                         required
                       />
                       {errors.department && (
@@ -1130,7 +1145,7 @@ const ManageUsers = () => {
                   )}
                 </div>
 
-                {(currentRoleName === "DepartmentHead" || currentRoleName === "SuperAdmin") && modalMode === "edit" && (
+                {isCurrentDeptHead && modalMode === "edit" && (
                   <div className="mt-6 p-8 bg-gradient-to-br from-[#5A270F]/5 to-transparent rounded-[2rem] border-2 border-[#5A270F]/10 space-y-8">
                     <div className="space-y-3 group">
                       <label htmlFor="status" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Operational Status Directive</label>

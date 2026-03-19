@@ -16,6 +16,7 @@ export interface User {
   university_id?: string;
   universityId?: string;
   role: Role | string;
+  secondaryRoles?: Role[];
   status: string;
   batch?: number;
   year?: number;

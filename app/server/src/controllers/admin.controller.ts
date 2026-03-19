@@ -1,3 +1,4 @@
+// cSpell:ignore departmenthead superadmin
 import { Request, Response } from "express";
 import { prisma } from "../config/db";
 import fs from "fs";
@@ -247,7 +248,7 @@ export const rejectResource = async (req: Request, res: Response) => {
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany({
-      include: { role: true },
+      include: { role: true, secondaryRoles: true },
       orderBy: { createdAt: "desc" },
     });
 
@@ -267,6 +268,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
         lastName: user.last_name,
         email: user.email,
         role: u.role,
+        secondaryRoles: u.secondaryRoles,
         status: user.status,
         universityId: u.university_id || u.college_id || "N/A",
         batch: u.batch,

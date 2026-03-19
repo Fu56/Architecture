@@ -27,16 +27,17 @@ export default function AdminRoute() {
     return <Navigate to="/login" replace />;
   }
 
-  const user = session.user as UserWithRole;
+  const user = session.user as UserWithRole & { secondaryRoles?: { name: string }[] };
   const role =
     typeof user.role === "object" && user.role !== null
       ? user.role.name
       : user.role;
-  const isAdmin =
-    role === "admin" ||
-    role === "Admin" ||
-    role === "SuperAdmin" ||
-    role === "DepartmentHead";
+  const secondaryRoles = user.secondaryRoles?.map(r => r.name) || [];
+  const allRoles = [role, ...secondaryRoles];
+
+  const isAdmin = allRoles.some(r => 
+    r === "admin" || r === "Admin" || r === "SuperAdmin" || r === "DepartmentHead"
+  );
 
   return isAdmin ? <Outlet /> : <Navigate to="/" replace />;
 }

@@ -28,13 +28,15 @@ export default function SuperAdminRoute() {
     return <Navigate to="/login" replace />;
   }
 
-  const user = session.user as UserWithRole;
+  const user = session.user as UserWithRole & { secondaryRoles?: { name: string }[] };
   const role =
     typeof user.role === "object" && user.role !== null
       ? user.role.name
       : user.role;
+  const secondaryRoles = user.secondaryRoles?.map(r => r.name) || [];
+  const allRoles = [role, ...secondaryRoles];
 
-  const isSuperAdmin = role === "SuperAdmin";
+  const isSuperAdmin = allRoles.some(r => r === "SuperAdmin");
 
   return isSuperAdmin ? <Outlet /> : <Navigate to="/" replace />;
 }
