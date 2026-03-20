@@ -16,6 +16,7 @@ import userRoutes from "./routes/user.routes";
 import assignmentRoutes from "./routes/assignment.route";
 import blogRoutes from "./routes/blog.route";
 import superadminRoutes from "./routes/superadmin.routes";
+import chatRoutes from "./routes/chat.routes";
 
 export const app = express();
 
@@ -45,6 +46,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/assignments", assignmentRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/superadmin", superadminRoutes);
+app.use("/api/chat", chatRoutes);
 
 // Simple ping
 app.get("/api/health", (_req, res) => {

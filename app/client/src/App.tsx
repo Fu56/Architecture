@@ -11,6 +11,7 @@ import MyUploads from "./pages/user/MyUploads";
 import Notifications from "./pages/user/Notifications";
 import Overview from "./pages/user/Overview";
 import Profile from "./pages/user/Profile";
+import Nexus from "./pages/user/Nexus";
 import AdminDashboard from "./pages/admin/Dashboard";
 import Analytics from "./pages/admin/Analytics";
 import ManageUsers from "./pages/admin/ManageUsers";
@@ -86,6 +87,7 @@ const App = () => {
               <Route path="resources/:id" element={<ResourceDetails />} />
               <Route path="notifications" element={<Notifications />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="nexus" element={<Nexus />} />
               <Route path="assignments" element={<Assignments />} />
               <Route path="assignments/:id" element={<AssignmentDetails />} />
               <Route path="assignments/new" element={<PostAssignment />} />

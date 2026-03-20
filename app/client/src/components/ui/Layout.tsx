@@ -121,6 +121,7 @@ const Layout = () => {
     { name: "Explore", href: "/explore" },
     { name: "Browse Resource", href: "/browse" },
     { name: "About Us", href: "/about" },
+    ...(session ? [{ name: "Nexus", href: "/dashboard/nexus" }] : []),
   ];
 
   const isHomePage = location.pathname === "/";
