@@ -3,6 +3,7 @@ import {
   getPendingResources,
   approveResource,
   rejectResource,
+  updateResourceStatus,
   getFlags,
   resolveFlag,
   createNews,
@@ -31,6 +32,7 @@ router.use(requireAuth, requireRole(["Admin", "DepartmentHead", "SuperAdmin"]));
 router.get("/resources/pending", getPendingResources);
 router.patch("/resources/:id/approve", approveResource);
 router.patch("/resources/:id/reject", rejectResource);
+router.patch("/resources/:id/status", updateResourceStatus);
 router.post("/resources/advance", advanceAcademicStatus);
 router.post("/resources/check-expired", checkAndSuspendExpiredStudents);
 

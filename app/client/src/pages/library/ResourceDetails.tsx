@@ -227,6 +227,18 @@ const ResourceDetails = () => {
     });
   };
 
+  const handleToggleVisibility = async () => {
+    if (!resource) return;
+    const newIsPublic = !resource.is_public;
+    try {
+      await api.patch(`/admin/resources/${id}/status`, { is_public: newIsPublic });
+      toast.success(`Visibility Protocol Updated: Resource is now ${newIsPublic ? 'Public' : 'Private'}`);
+      setResource({ ...resource, is_public: newIsPublic });
+    } catch {
+      toast.error("Security Breach: Failed to update visibility signature");
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col justify-center items-center py-40">
@@ -581,9 +593,18 @@ const ResourceDetails = () => {
                             <RotateCcw className="h-4 w-4 group-hover:-rotate-180 transition-transform duration-700" /> RESTORE_LOGIC_CMD
                           </button>
                         ) : (
-                          <button onClick={handleArchive} className="w-full h-10 bg-rose-500/10 border border-rose-500/30 rounded-lg flex items-center justify-center gap-2 text-rose-400 text-[8px] font-black uppercase tracking-[0.3em] hover:bg-rose-500/20 transition-all active:scale-95 group">
-                            <Trash2 className="h-4 w-4" /> SEQUESTER_NODE_CMD
-                          </button>
+                          <div className="flex flex-col gap-2">
+                             <button 
+                               onClick={handleToggleVisibility}
+                               className={`w-full h-10 border rounded-lg flex items-center justify-center gap-2 text-[8px] font-black uppercase tracking-[0.3em] transition-all active:scale-95 group ${resource.is_public ? "bg-[#DF8142]/10 border-[#DF8142] text-[#DF8142]" : "bg-[#FAF8F4] dark:bg-white/5 border-[#D9D9C2] dark:border-white/10 text-[#5A270F] dark:text-[#EEB38C]"}`}
+                             >
+                                <Eye className={`h-4 w-4 ${resource.is_public ? "animate-pulse" : "opacity-30"}`} /> 
+                                {resource.is_public ? "VISIBILITY: PUBLIC" : "VISIBILITY: PRIVATE"}
+                             </button>
+                             <button onClick={handleArchive} className="w-full h-10 bg-rose-500/10 border border-rose-500/30 rounded-lg flex items-center justify-center gap-2 text-rose-400 text-[8px] font-black uppercase tracking-[0.3em] hover:bg-rose-500/20 transition-all active:scale-95 group">
+                                <Trash2 className="h-4 w-4" /> SEQUESTER_NODE_CMD
+                             </button>
+                          </div>
                         )}
                      </div>
                   )}

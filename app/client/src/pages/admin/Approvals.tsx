@@ -63,7 +63,7 @@ const Approvals = () => {
       if (status === "approved") {
         await api.patch(`/admin/resources/${resourceId}/approve`, {
           comment: feedback,
-          is_public: isDeptHead ? !!isPublic[resourceId] : undefined,
+          is_public: isDeptHead ? (isPublic[resourceId] !== undefined ? !!isPublic[resourceId] : true) : undefined,
         });
       } else {
         await api.patch(`/admin/resources/${resourceId}/reject`, {
@@ -208,17 +208,17 @@ const Approvals = () => {
                          <label className="text-[8px] font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-[0.5em] flex items-center gap-2">
                            <MessageSquare className="h-3 w-3 text-[#DF8142]" /> DIRECTIVE
                          </label>
-                         {isDeptHead && (
-                           <div 
-                             onClick={() => setIsPublic(prev => ({...prev, [resource.id]: !prev[resource.id]}))}
-                             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg cursor-pointer transition-all border ${isPublic[resource.id] ? "bg-[#DF8142]/10 border-[#DF8142] text-[#DF8142]" : "bg-[#FDFCFB] border-[#BCAF9C]/20 text-[#5A270F]/40"}`}
-                           >
-                              <div className={`h-3 w-3 rounded border flex items-center justify-center ${isPublic[resource.id] ? "border-[#DF8142] bg-[#DF8142] shadow-[0_0_8px_#DF8142]" : "border-[#BCAF9C]/40"}`}>
-                                {isPublic[resource.id] && <Check className="h-2 w-2 text-white" />}
-                              </div>
-                              <span className="text-[8px] font-black uppercase tracking-tight">Public Access</span>
-                           </div>
-                         )}
+                          {isDeptHead && (
+                            <div 
+                              onClick={() => setIsPublic(prev => ({...prev, [resource.id]: prev[resource.id] === undefined ? false : !prev[resource.id]}))}
+                              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg cursor-pointer transition-all border ${isPublic[resource.id] !== false ? "bg-[#DF8142]/10 border-[#DF8142] text-[#DF8142]" : "bg-[#FDFCFB] border-[#BCAF9C]/20 text-[#5A270F]/40"}`}
+                            >
+                               <div className={`h-3 w-3 rounded border flex items-center justify-center ${isPublic[resource.id] !== false ? "border-[#DF8142] bg-[#DF8142] shadow-[0_0_8px_#DF8142]" : "border-[#BCAF9C]/40"}`}>
+                                 {isPublic[resource.id] !== false && <Check className="h-2 w-2 text-white" />}
+                               </div>
+                               <span className="text-[8px] font-black uppercase tracking-tight">Public Access</span>
+                            </div>
+                          )}
                       </div>
                       <textarea
                         placeholder="ADMINISTRATIVE NOTES..."

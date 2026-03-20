@@ -82,11 +82,12 @@ export const createResource = async (req: Request, res: Response) => {
         semester: semester ? Number(semester) : null,
         batch: batch ? Number(batch) : null,
         file_path: file.path,
-        file_type: file.mimetype, // or extension
+        file_type: file.mimetype,
         file_size: file.size,
         uploader_id: userId,
         design_stage_id: finalStageId,
-        status: status,
+        status: "pending",
+        is_public: false, // Ensure it's not visible in public gallery until approved
         priority_tag: finalPriorityTag,
         download_count: 0,
       },
@@ -257,17 +258,19 @@ export const getResource = async (req: Request, res: Response) => {
 
     if (!r) return res.status(404).json({ message: "Resource not found" });
 
-    // Security Check: If archived, only admins can view details
+    // Security Check: Archived or Pending resources only for admins/uploader
     const role = getUserRole(req);
     const isPrivileged =
       role === "Admin" ||
       role === "admin" ||
       role === "SuperAdmin" ||
       role === "DepartmentHead";
-    if (r.status === "archived" && !isPrivileged) {
+    const isUploader = r.uploader_id === userId;
+
+    if ((r.status === "archived" || r.status === "pending") && !isPrivileged && !isUploader) {
       return res
         .status(403)
-        .json({ message: "Access denied: Resource is archived" });
+        .json({ message: "Access denied: Resource is not yet officially verified or has been archived." });
     }
 
     const ratings = r.ratings || [];

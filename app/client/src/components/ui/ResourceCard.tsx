@@ -8,6 +8,8 @@ import {
   Layers,
   Star,
   Heart,
+  Clock,
+  ShieldAlert,
   type LucideIcon,
 } from "lucide-react";
 import { useState } from "react";
@@ -25,7 +27,7 @@ const fileTypeStyles: {
 } = {
   pdf: {
     bg: "bg-[#DF8142]", // Caramel
-    text: "text-white", 
+    text: "text-white",
     icon: FileText,
     light: "bg-[#EEB38C]/10", // Buff
   },
@@ -55,7 +57,7 @@ const fileTypeStyles: {
   },
   rfa: {
     bg: "bg-[#92664A]", // Raw Umber
-    text: "text-white", 
+    text: "text-white",
     icon: Package,
     light: "bg-[#92664A]/10",
   },
@@ -123,7 +125,6 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
     (fileType && fileTypeStyles[fileType.toLowerCase()]) ||
     fileTypeStyles.default;
 
-
   const uploaderName = uploader
     ? uploader.firstName && uploader.lastName
       ? `${uploader.firstName} ${uploader.lastName}`
@@ -133,123 +134,167 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
     : "Anonymous Architect";
 
   return (
-    <div className="group relative bg-white dark:bg-[#1A0B02] rounded-2xl border border-[#D9D9C2] dark:border-white/5 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col h-full animate-in fade-in slide-in-from-bottom-2 hover:-translate-y-1 overflow-hidden">
-      {/* ── Visual Node Header ── */}
-      <div className="relative h-20 bg-[#5A270F] overflow-hidden">
-        {/* Architectural Background Layers */}
-        <div className="absolute inset-0 blueprint-grid opacity-20" />
-        <div className={`absolute inset-0 opacity-40 ${style.bg} blur-[60px] translate-y-1/2 scale-150`} />
-        <div className="absolute inset-0 architectural-dot-grid opacity-10 text-[#EEB38C]" />
-        
-        {/* Protocol Label */}
-        <div className="absolute top-0 right-0 p-2 text-[24px] font-black text-white/5 uppercase select-none tracking-tighter italic">
-          NODE
-        </div>
+    <div className="group relative bg-[#FDFCFB] dark:bg-[#0F0602] rounded-3xl border border-[#BCAF9C]/20 dark:border-white/5 shadow-sm hover:shadow-[0_32px_64px_-16px_rgba(90,39,15,0.15)] transition-all duration-700 flex flex-col h-full animate-in fade-in slide-in-from-bottom-4 hover:-translate-y-2 overflow-hidden">
+      {/* ── Visual Node Infrastructure ── */}
+      <div className="relative h-24 bg-[#5A270F] overflow-hidden">
+        {/* Living Blueprint Background */}
+        <div className="absolute inset-0 blueprint-grid opacity-[0.15] group-hover:scale-110 group-hover:rotate-1 transition-transform duration-1000" />
+        <div
+          className={`absolute -inset-4 opacity-50 ${style.bg} blur-[40px] translate-y-1/2 scale-110 group-hover:opacity-70 transition-opacity duration-700`}
+        />
 
-        {/* Status indicator (Top Left) */}
-        <div className="absolute top-2.5 left-2.5 z-10 flex items-center gap-1.5">
-          <div className="px-1.5 py-0.5 bg-white/10 backdrop-blur-md rounded border border-white/20 flex items-center gap-1.5">
-             <div className={`h-1 w-1 rounded-full ${resource.status === 'archived' ? 'bg-rose-500' : 'bg-[#DF8142]'} animate-pulse`} />
-             <span className="text-[6.5px] font-black uppercase tracking-widest text-[#EEB38C]">
-               {fileType?.toUpperCase() || "GEN"}
-             </span>
+        {/* Atmospheric Glow Nodes */}
+        <div className="absolute top-0 left-0 w-32 h-32 bg-[#DF8142]/20 blur-[60px] -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#EEB38C]/10 blur-[60px] translate-x-1/2 translate-y-1/2" />
+
+        {/* Identification Layer */}
+        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
+          <div
+            className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md backdrop-blur-xl border border-white/20 shadow-lg ${style.bg} ${style.text} group-hover:scale-105 transition-transform duration-500`}
+          >
+            <style.icon className="h-3 w-3" />
+            <span className="text-[7.5px] font-black uppercase tracking-[0.2em]">
+              {fileType?.toUpperCase() || "GEN"}
+            </span>
           </div>
-          {resource.averageRating !== undefined && resource.averageRating > 0 && (
-            <div className="flex items-center gap-0.5 px-1 py-0.5 bg-[#DF8142] rounded border border-white/10 shadow-lg">
-              <Star className="h-2 w-2 text-white fill-white" />
-              <span className="text-[7.5px] font-black text-white">{resource.averageRating.toFixed(1)}</span>
-            </div>
-          )}
+          {resource.averageRating !== undefined &&
+            resource.averageRating > 0 && (
+              <div className="flex items-center gap-1 px-1.5 py-0.5 bg-white/10 backdrop-blur-md rounded border border-white/10 w-fit">
+                <Star className="h-2 w-2 text-[#DF8142] fill-[#DF8142]" />
+                <span className="text-[7.5px] font-black text-white">
+                  {resource.averageRating.toFixed(1)}
+                </span>
+              </div>
+            )}
         </div>
 
-        {/* Favorite Trigger (Top Right) */}
+        {/* Sync Node Trigger - Heart */}
         {(resource.status === "approved" || resource.status === "student") && (
           <button
             onClick={toggleFavorite}
             title={isFavorite ? "De-sync heart" : "Synchronize heart"}
             aria-label={isFavorite ? "De-sync heart" : "Synchronize heart"}
-            className="absolute top-2.5 right-2.5 z-20 p-1.5 rounded-lg bg-white/10 backdrop-blur-md border border-white/10 hover:bg-[#rose-500]/20 hover:border-rose-500/30 transition-all group/fav active:scale-90"
+            className="absolute top-3 right-3 z-20 h-8 w-8 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center hover:bg-rose-500/20 hover:border-rose-500/30 transition-all group/fav active:scale-90 shadow-xl"
           >
             <Heart
-              className={`h-3 w-3 ${isFavorite ? "fill-[#DF8142] text-[#DF8142]" : "text-white group-hover/fav:text-rose-400"}`}
+              className={`h-3.5 w-3.5 transition-all duration-500 ${isFavorite ? "fill-[#DF8142] text-[#DF8142] scale-110 drop-shadow-[0_0_8px_rgba(223,129,66,0.5)]" : "text-white/60 group-hover/fav:text-rose-400"}`}
             />
           </button>
         )}
+
+        {/* Structural Identifier */}
+        <div className="absolute bottom-0 right-0 p-3 opacity-10 pointer-events-none">
+          <Layout className="h-8 w-8 text-white group-hover:rotate-12 transition-transform duration-1000" />
+        </div>
       </div>
 
-      {/* ── Content Intelligence Body ── */}
-      <div className="p-4 pb-2 flex-grow flex flex-col">
-        <div className="mb-3">
-          <p className="text-[7.5px] font-black text-[#DF8142] uppercase tracking-[0.2em] mb-1 italic">
-            Identification
-          </p>
-          <h3 className="text-[12px] font-black text-[#5A270F] dark:text-white tracking-tighter hover:text-[#DF8142] transition-colors line-clamp-2 uppercase italic leading-[1.1]">
+      {/* ── Intelligence Body ── */}
+      <div className="p-6 pb-2 flex-grow flex flex-col gap-4 relative">
+        <div className="absolute top-0 right-6 -translate-y-1/2 flex gap-1">
+          <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142]" />
+          <div className="h-1.5 w-1.5 rounded-full bg-[#BCAF9C]/20" />
+          <div className="h-1.5 w-1.5 rounded-full bg-[#BCAF9C]/20" />
+        </div>
+
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-1.5">
+            <span className="h-px w-4 bg-[#DF8142]/40" />
+            <p className="text-[7px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] italic">
+              ID_IDENTIFICATION
+            </p>
+          </div>
+          <h3 className="text-[14px] font-black text-[#5A270F] dark:text-white tracking-tighter hover:text-[#DF8142] transition-colors line-clamp-2 uppercase italic leading-[1.15] font-space-grotesk">
             <Link to={detailPath}>{title}</Link>
           </h3>
         </div>
- 
-        <div className="grid grid-cols-2 gap-4 mt-auto">
-          <div className="space-y-0.5">
-             <p className="text-[7.5px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-widest">Architect</p>
-             <div className="flex items-center gap-1.5 opacity-80">
-                <p className="text-[9px] font-black text-[#5A270F] dark:text-[#EEB38C] truncate uppercase">
-                  {author || uploaderName}
-                </p>
-             </div>
+
+        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#BCAF9C]/10 dark:border-white/5 mt-auto">
+          <div className="space-y-1">
+            <p className="text-[6.5px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em]">
+              Architect
+            </p>
+            <div className="flex items-center gap-2">
+              <div className="h-4 w-4 rounded bg-[#5A270F] text-[#EEB38C] flex items-center justify-center text-[6px] font-black">
+                {(author || uploaderName)[0].toUpperCase()}
+              </div>
+              <p className="text-[9.5px] font-black text-[#5A270F] dark:text-[#EEB38C] truncate uppercase tracking-tight">
+                {author || uploaderName}
+              </p>
+            </div>
           </div>
-          <div className="space-y-0.5 text-right">
-             <p className="text-[7.5px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-widest">Phase</p>
-             <p className="text-[9px] font-black text-[#DF8142] uppercase italic">
-               {new Date(uploadedAt).toLocaleDateString(undefined, { month: "short", year: "2-digit" })}
-             </p>
+          <div className="space-y-1 text-right">
+            <p className="text-[6.5px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em]">
+              Temporal Stamp
+            </p>
+            <div className="flex items-center justify-end gap-1.5">
+              <Clock className="h-2.5 w-2.5 text-[#DF8142]" />
+              <p className="text-[9.5px] font-black text-[#5A270F] dark:text-white/40 uppercase tracking-tight">
+                {new Date(uploadedAt).toLocaleDateString(undefined, {
+                  month: "short",
+                  year: "numeric",
+                })}
+              </p>
+            </div>
           </div>
         </div>
 
         {resource.status &&
           resource.status !== "student" &&
           resource.status !== "approved" && (
-            <div className={`mt-4 p-2 rounded-lg flex items-center justify-between text-[8px] font-black uppercase tracking-widest border border-current opacity-70 ${resource.status === 'rejected' ? 'text-rose-500 bg-rose-500/5' : 'text-[#DF8142] bg-[#DF8142]/5'}`}>
-              <span className="flex items-center gap-2">
-                <div className={`h-1 w-1 rounded-full ${resource.status === 'rejected' ? 'bg-rose-500' : 'bg-[#DF8142]'}`} />
-                NODE_STATE_{resource.status}
-              </span>
+            <div
+              className={`p-2.5 rounded-xl flex items-center justify-between text-[7px] font-black uppercase tracking-[0.2em] border shadow-sm ${resource.status === "rejected" ? "text-rose-500 bg-rose-500/5 border-rose-500/20" : "text-[#DF8142] bg-[#DF8142]/5 border-[#DF8142]/20"}`}
+            >
+              <div className="flex items-center gap-2">
+                <div
+                  className={`h-1.5 w-1.5 rounded-full ${resource.status === "rejected" ? "bg-rose-500 animate-pulse" : "bg-[#DF8142]"}`}
+                />
+                NODE_PROTOCOL: {resource.status}
+              </div>
+              <ShieldAlert className="h-2.5 w-2.5" />
             </div>
           )}
       </div>
- 
-      {/* ── Operational Terminals ── */}
-      <div className="p-4 pt-1">
-        <div className="h-px bg-gradient-to-r from-[#D9D9C2]/0 via-[#D9D9C2]/50 to-[#D9D9C2]/0 dark:via-white/5 mb-3" />
-        
-        <div className="flex items-center justify-between mb-3 px-1">
-          <div className="flex items-center gap-1.5 group/dl">
-            <Download className="h-2.5 w-2.5 text-[#DF8142]" />
-            <span className="text-[8px] font-black text-[#5A270F] dark:text-white/60 tracking-widest">
-              {downloadCount.toString().padStart(3, '0')}
+
+      {/* ── Operational Operational Terminals ── */}
+      <div className="p-6 pt-0 mt-2">
+        <div className="flex items-center justify-between mb-4 px-1">
+          <div className="flex items-center gap-2 px-2 py-1 bg-[#6C3B1C]/5 dark:bg-white/5 rounded-lg border border-[#6C3B1C]/10 dark:border-white/10 group/stat">
+            <Download className="h-3 w-3 text-[#DF8142] group-hover:translate-y-0.5 transition-transform" />
+            <span className="text-[9px] font-black text-[#5A270F] dark:text-white font-mono leading-none">
+              {downloadCount.toString().padStart(3, "0")}{" "}
+              <span className="text-[6px] text-zinc-400 group-hover:text-[#DF8142] transition-colors ml-0.5">
+                PULLS
+              </span>
             </span>
           </div>
           <div className="flex gap-1">
-             {Array.isArray(keywords) && keywords.slice(0, 1).map((keyword) => (
-                <span key={keyword} className="text-[7px] font-black uppercase tracking-widest text-[#92664A] dark:text-white/20">
-                  {keyword}
+            {Array.isArray(keywords) &&
+              keywords.slice(0, 1).map((keyword) => (
+                <span
+                  key={keyword}
+                  className="px-2 py-0.5 bg-white dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-full text-[7px] font-black uppercase tracking-widest text-[#92664A] dark:text-white/40 hover:text-[#DF8142] transition-all cursor-default"
+                >
+                  # {keyword}
                 </span>
-             ))}
+              ))}
           </div>
         </div>
- 
-         <div className="grid grid-cols-2 gap-2">
+
+        <div className="grid grid-cols-2 gap-2.5">
           <Link
             to={detailPath}
-            className="flex items-center justify-center gap-2 py-2 bg-white dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] rounded-xl text-[8.5px] font-black uppercase tracking-widest hover:bg-[#FAF8F4] dark:hover:bg-white/10 transition-all border border-[#D9D9C2] dark:border-white/10 shadow-sm active:scale-95"
+            className="flex items-center justify-center gap-2.5 h-10 bg-white dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] hover:bg-[#5A270F] hover:text-white transition-all border border-[#D9D9C2] dark:border-white/10 shadow-sm active:scale-95 group/inspect"
           >
-            <Eye className="h-3 w-3" /> Inspect
+            <Eye className="h-4 w-4 group-hover:scale-110 transition-transform" />{" "}
+            INSPECT
           </Link>
           <a
             href={`${import.meta.env.VITE_API_URL}/resources/${id}/download?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
             download
-            className="flex items-center justify-center gap-2 py-2 bg-[#5A270F] text-white rounded-xl text-[8.5px] font-black uppercase tracking-widest hover:bg-[#6C3B1C] transition-all shadow-lg shadow-[#5A270F]/10 active:scale-95"
+            className="flex items-center justify-center gap-2.5 h-10 bg-[#5A270F] text-white rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] hover:bg-[#DF8142] transition-all shadow-xl shadow-[#5A270F]/20 active:scale-95 group/pull"
           >
-            <Download className="h-3 w-3 text-[#EEB38C]" /> PULL
+            <Download className="h-4 w-4 text-[#EEB38C] group-hover:translate-y-0.5 transition-transform duration-500" />{" "}
+            Download
           </a>
         </div>
       </div>

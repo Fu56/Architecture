@@ -125,7 +125,7 @@ export const approveResource = async (req: Request, res: Response) => {
         status: newStatus,
         approved_at: isDeptHead ? new Date() : undefined,
         admin_comment: comment,
-        is_public: isDeptHead ? !!is_public : undefined,
+        is_public: isDeptHead ? (is_public !== undefined ? !!is_public : true) : undefined,
       } as any,
       include: {
         uploader: {
@@ -1989,5 +1989,25 @@ export const updateUserPermissions = async (req: Request, res: Response) => {
     res.json({ message: "Permissions matrix updated.", user });
   } catch (error) {
     res.status(500).json({ message: "Failed to update permissions." });
+  }
+};
+
+export const updateResourceStatus = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { status, is_public } = req.body;
+
+    const resource = await prisma.resource.update({
+      where: { id: Number(id) },
+      data: {
+        status: status !== undefined ? status : undefined,
+        is_public: is_public !== undefined ? !!is_public : undefined,
+      },
+    });
+
+    res.json({ message: "Resource telemetry updated.", resource });
+  } catch (error) {
+    console.error("Update Resource Status Error:", error);
+    res.status(500).json({ message: "Failed to update resource state." });
   }
 };
