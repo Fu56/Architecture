@@ -17,19 +17,28 @@ export const updateProfile = async (req: Request, res: Response) => {
       worker_id,
     } = req.body;
 
+    const reqUser = (req as any).user;
+    const roleName = (reqUser.role?.name || "").toLowerCase();
+
+    // Students cannot modify academic status - only name, specialization, etc.
+    const updateData: any = {
+      first_name,
+      last_name,
+      specialization: specialization || null,
+      department: department || null,
+    };
+
+    if (roleName !== "student") {
+      updateData.university_id = university_id;
+      updateData.batch = batch ? Number(batch) : undefined;
+      updateData.year = year ? Number(year) : undefined;
+      updateData.semester = semester ? Number(semester) : undefined;
+      updateData.worker_id = worker_id || null;
+    }
+
     const user = await prisma.user.update({
       where: { id: userId },
-      data: {
-        first_name,
-        last_name,
-        university_id,
-        batch: batch ? Number(batch) : undefined,
-        year: year ? Number(year) : undefined,
-        semester: semester ? Number(semester) : undefined,
-        specialization: specialization || null,
-        department: department || null,
-        worker_id: worker_id || null,
-      },
+      data: updateData,
       include: {
         role: true,
       },

@@ -1287,6 +1287,20 @@ export const updateUser = async (req: Request, res: Response) => {
       (key) => updateData[key] === undefined && delete updateData[key],
     );
 
+    // Enforce Graduation / Suspension Policy for Students
+    const isStudentRole =
+      targetUser.role?.name?.toLowerCase() === "student" ||
+      (rolesToAssign.length > 0 && rolesToAssign[0].toLowerCase() === "student");
+
+    if (isStudentRole) {
+      const targetUpdateYear = updateData.year !== undefined ? updateData.year : targetUser.year;
+      if (targetUpdateYear !== null && targetUpdateYear > 5) {
+        updateData.year = 5;
+        updateData.semester = 2;
+        updateData.status = "suspended";
+      }
+    }
+
     const updatedUser = await prisma.user.update({
       where: { id },
       data: updateData,
@@ -1653,10 +1667,11 @@ export const advanceAcademicStatus = async (req: Request, res: Response) => {
     const now = new Date();
 
     for (const student of students) {
-      if (!student.createdAt) continue;
+      const registrationDate = student.academic_start_date || student.createdAt;
+      if (!registrationDate) continue;
 
       // Calculate gap in Ethiopian months since registration
-      const monthGap = getMonthGap(student.createdAt, now);
+      const monthGap = getMonthGap(registrationDate, now);
 
       // Logic:
       // 1 year = 13 months in Ethiopian calendar
@@ -1682,26 +1697,45 @@ export const advanceAcademicStatus = async (req: Request, res: Response) => {
         targetYear > currentYear ||
         (targetYear === currentYear && targetSemester > currentSemester)
       ) {
+        const isGraduating = targetYear > 5;
+        const finalYear = isGraduating ? 5 : targetYear;
+        const finalSemester = isGraduating ? 2 : targetSemester;
+        const newStatus = isGraduating ? "suspended" : "active";
+
         await prisma.user.update({
           where: { id: student.id },
           data: {
-            year: targetYear,
-            semester: targetSemester,
-            status: "active", // Maintain active status as requested
+            year: finalYear,
+            semester: finalSemester,
+            status: newStatus,
           },
         });
 
-        // Notify the student about their promotion
-        await notifyUsers({
-          userIds: [student.id],
-          title: "Academic Promotion Synchronized",
-          message: `Your account node has been advanced to Year ${targetYear}, Semester ${targetSemester} based on the Ethiopian academic cycle.`,
-          html: getGenericHtml(
-            `${student.first_name} ${student.last_name}`,
-            "Academic Progression Protocol",
-            `Greetings ${student.first_name || "Student"},<br/><br/>The system has synchronized your academic standing. Your current node is now positioned in:<br/><b>Year: ${targetYear}</b><br/><b>Semester: ${targetSemester}</b><br/><br/>Your access levels have been updated accordingly.`,
-          ),
-        });
+        if (isGraduating) {
+          // Notify the student about their graduation & account suspension
+          await notifyUsers({
+            userIds: [student.id],
+            title: "Graduation: Account Terminated",
+            message: `Congratulations! You have been marked as graduated. Your system node access has been automatically suspended in accordance with standard registry policy.`,
+            html: getGenericHtml(
+              `${student.first_name} ${student.last_name}`,
+              "Graduation Protocol: Off-boarding",
+              `Greetings ${student.first_name || "Student"},<br/><br/>The system has calculated that you have met the 5-year academic threshold for graduation. Congratulations!<br/><br/>As a result, your academic node registration has expired, and your system access has been suspended.`
+            ),
+          });
+        } else {
+          // Notify the student about their promotion
+          await notifyUsers({
+            userIds: [student.id],
+            title: "Academic Promotion Synchronized",
+            message: `Your account node has been advanced to Year ${finalYear}, Semester ${finalSemester} based on the Ethiopian academic cycle.`,
+            html: getGenericHtml(
+              `${student.first_name} ${student.last_name}`,
+              "Academic Progression Protocol",
+              `Greetings ${student.first_name || "Student"},<br/><br/>The system has synchronized your academic standing. Your current node is now positioned in:<br/><b>Year: ${finalYear}</b><br/><b>Semester: ${finalSemester}</b><br/><br/>Your access levels have been updated accordingly.`
+            ),
+          });
+        }
 
         updatedCount++;
       }
