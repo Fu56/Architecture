@@ -18,12 +18,14 @@ import {
   Bell,
   ChevronDown,
   LayoutDashboard,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { useSession, authClient } from "../../lib/auth-client";
+import { useTheme } from "../../context/useTheme";
 import { api } from "../../lib/api";
 import { syncSessionToStorage } from "../../lib/auth";
 import Footer from "./Footer";
-import ThemeToggle from "./ThemeToggle";
 import { Toaster } from "./sonner";
 import { toast } from "../../lib/toast";
 
@@ -43,6 +45,8 @@ const Layout = () => {
   const [notificationCount, setNotificationCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
+  const isLight = theme === "light";
   const { data: session } = useSession();
   const user = session?.user as UserWithRole | undefined;
 
@@ -115,11 +119,11 @@ const Layout = () => {
   const notificationsPath = isAdmin ? "/admin/notifications" : "/dashboard/notifications";
 
   return (
-    <div className="min-h-screen flex flex-col font-sans selection:bg-[#DF8142]/20 selection:text-[#5A270F] dark:text-[#EEB38C] dark:selection:text-white transition-colors duration-500">
+    <div className={`min-h-screen flex flex-col font-sans selection:bg-[#DF8142]/20 selection:text-[#5A270F] text-[#5A270F] dark:text-[#EEB38C] dark:selection:text-white transition-colors duration-500 ${isLight ? 'bg-white' : 'bg-[#0C0603]'}`}>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-in-out ${
           isScrolled
-            ? "bg-white/80 dark:bg-[#1A0B04]/80 backdrop-blur-3xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] border-b border-primary/40 py-2"
+            ? "bg-white/80 dark:bg-[#1A0B04]/80 backdrop-blur-3xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] border-b border-[#DF8142]/20 py-2"
             : isHomePage
             ? "bg-transparent py-4"
             : "bg-white/90 dark:bg-[#1A0B04]/90 backdrop-blur-2xl py-3 border-b border-gray-100 dark:border-white/5"
@@ -134,7 +138,7 @@ const Layout = () => {
                   className={`relative p-2 rounded-xl transition-all duration-500 overflow-hidden ${
                     isScrolled || !isHomePage
                       ? "bg-[#DF8142] shadow-[0_8px_16px_-4px_rgba(223,129,66,0.4)]"
-                      : "bg-[#1A0B04]/40 backdrop-blur-xl border border-white/20 shadow-2xl"
+                      : isLight ? "bg-[#5A270F] shadow-xl" : "bg-[#1A0B04]/40 backdrop-blur-xl border border-white/20 shadow-2xl"
                   }`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-tr from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity bg-[length:200%_200%] animate-gradient-xy" />
@@ -143,14 +147,14 @@ const Layout = () => {
                 <div className="flex flex-col">
                   <span
                     className={`text-lg font-black tracking-tighter leading-none transition-all duration-500 font-display ${
-                      isScrolled || !isHomePage ? "text-[#5A270F] dark:text-[#EEB38C] group-hover:text-[#DF8142]" : "text-white group-hover:scale-105"
+                      isScrolled || !isHomePage ? "text-[#5A270F] dark:text-[#EEB38C] group-hover:text-[#DF8142]" : isLight ? "text-[#5A270F]" : "text-white group-hover:scale-105"
                     }`}
                   >
                     ARCH<span className="text-[#DF8142] ml-0.5">VAULT</span>
                   </span>
                   <span
                     className={`text-[9px] font-black tracking-[0.3em] uppercase transition-all duration-500 ${
-                      isScrolled || !isHomePage ? "text-[#5A270F] dark:text-[#EEB38C]/60" : "text-white/70"
+                      isScrolled || !isHomePage ? "text-[#5A270F]/60 dark:text-[#EEB38C]/60" : isLight ? "text-[#5A270F]/40" : "text-white/70"
                     }`}
                   >
                     Wollo University KIOT Campus
@@ -170,8 +174,8 @@ const Layout = () => {
                     className={({ isActive }) =>
                       `relative px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all duration-500 group/nav ${
                         isActive
-                          ? isScrolled || !isHomePage ? "text-[#DF8142]" : "text-white"
-                          : isScrolled || !isHomePage ? "text-[#5A270F] dark:text-[#EEB38C]/80 hover:text-[#DF8142]" : "text-white/70 hover:text-white"
+                          ? isScrolled || !isHomePage ? "text-[#DF8142]" : isLight ? "text-[#DF8142]" : "text-white"
+                          : isScrolled || !isHomePage ? "text-[#5A270F] dark:text-[#EEB38C]/80 hover:text-[#DF8142]" : isLight ? "text-[#5A270F]/60 hover:text-[#5A270F]" : "text-white/70 hover:text-white"
                       }`
                     }
                   >
@@ -209,7 +213,7 @@ const Layout = () => {
                   <Link
                     to={notificationsPath}
                     className={`relative p-2 rounded-full transition-all hover:scale-110 ${
-                      isScrolled || !isHomePage ? "text-[#5A270F]/60 dark:text-white/50 hover:bg-gray-100 dark:bg-white/10" : "text-white hover:bg-white/10 dark:bg-card/10"
+                      isScrolled || !isHomePage ? "text-[#5A270F]/60 dark:text-white/50 hover:bg-gray-100 dark:bg-white/10" : isLight ? "text-[#5A270F]/40 hover:bg-[#5A270F]/5" : "text-white hover:bg-white/10 dark:bg-card/10"
                     }`}
                   >
                     <Bell className="h-4.5 w-4.5" />
@@ -221,14 +225,22 @@ const Layout = () => {
                   </Link>
                 )}
 
-                <ThemeToggle isScrolled={isScrolled} isHomePage={isHomePage} />
+                <button
+                  onClick={toggleTheme}
+                  title="Switch Theme"
+                  className={`p-2 rounded-full transition-all hover:scale-110 ${
+                    isScrolled || !isHomePage ? "text-[#5A270F]/60 dark:text-white/50 hover:bg-gray-100 dark:bg-white/10" : isLight ? "text-[#5A270F]/40 hover:bg-[#5A270F]/5" : "text-white hover:bg-white/10 dark:bg-card/10"
+                  }`}
+                >
+                  {isLight ? <Moon className="h-4.5 w-4.5" /> : <Sun className="h-4.5 w-4.5" />}
+                </button>
 
                 {isAuthenticated ? (
                   <div className="relative user-menu-container">
                     <button
                       onClick={() => setUserMenuOpen(!isUserMenuOpen)}
                       className={`flex items-center gap-1.5 p-1 pr-2 rounded-full border transition-all ${
-                        isScrolled || !isHomePage ? "border-gray-200 hover:border-[#DF8142]/60 hover:bg-[#DF8142]/10" : "border-white/20 hover:border-white/40 hover:bg-white/10 dark:bg-card/10"
+                        isScrolled || !isHomePage ? "border-gray-200 hover:border-[#DF8142]/60 hover:bg-[#DF8142]/10" : isLight ? "border-[#5A270F]/10 hover:border-[#5A270F]/30 hover:bg-[#5A270F]/5" : "border-white/20 hover:border-white/40 hover:bg-white/10 dark:bg-card/10"
                       }`}
                     >
                       <div className="relative h-7 w-7 rounded-full overflow-hidden border-2 border-[#DF8142]/90">
@@ -237,14 +249,14 @@ const Layout = () => {
                         </div>
                       </div>
                       <div className="hidden md:block text-left">
-                        <p className={`text-[11px] font-bold leading-none ${isScrolled || !isHomePage ? "text-slate-900 dark:text-white" : "text-white"}`}>
+                        <p className={`text-[11px] font-bold leading-none ${isScrolled || !isHomePage ? "text-slate-900 dark:text-white" : isLight ? "text-[#5A270F]" : "text-white"}`}>
                           {user?.first_name || user?.firstName || "User"}
                         </p>
-                        <p className={`text-[9px] ${isScrolled || !isHomePage ? "text-[#5A270F]/40 dark:text-white/60" : "text-white/60"}`}>
+                        <p className={`text-[9px] ${isScrolled || !isHomePage ? "text-[#5A270F]/40 dark:text-white/60" : isLight ? "text-[#5A270F]/40" : "text-white/60"}`}>
                           {typeof user?.role === "object" ? user.role.name : user?.role || "Member"}
                         </p>
                       </div>
-                      <ChevronDown className={`h-3 w-3 transition-transform ${isUserMenuOpen ? "rotate-180" : ""} ${isScrolled || !isHomePage ? "text-[#5A270F]/60" : "text-white/60"}`} />
+                      <ChevronDown className={`h-3 w-3 transition-transform ${isUserMenuOpen ? "rotate-180" : ""} ${isScrolled || !isHomePage ? "text-[#5A270F]/60" : isLight ? "text-[#5A270F]/60" : "text-white/60"}`} />
                     </button>
 
                     {isUserMenuOpen && (
@@ -281,7 +293,7 @@ const Layout = () => {
                     )}
                   </div>
                 ) : (
-                  <Link to="/login" className={`group relative px-6 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-full transition-all duration-500 hover:scale-105 active:scale-95 shadow-xl ${isScrolled || !isHomePage ? "bg-[#5A270F] text-white" : "bg-white text-[#5A270F]"}`}>
+                  <Link to="/login" className={`group relative px-6 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-full transition-all duration-500 hover:scale-105 active:scale-95 shadow-xl ${isScrolled || !isHomePage ? "bg-[#5A270F] text-white" : isLight ? "bg-[#5A270F] text-white" : "bg-white text-[#5A270F]"}`}>
                     Sign In
                   </Link>
                 )}
@@ -290,10 +302,16 @@ const Layout = () => {
 
             {/* Mobile Interactivity */}
             <div className="flex lg:hidden items-center gap-2 ml-auto">
-              <ThemeToggle isScrolled={isScrolled} isHomePage={isHomePage} />
+              <button
+                onClick={toggleTheme}
+                title="Switch Theme"
+                className={`p-2 rounded-xl transition-all shadow-md active:scale-95 ${isScrolled || !isHomePage ? (isLight ? "text-[#5A270F] bg-white border border-[#D9D9C2]" : "text-[#EEB38C] bg-white/10") : isLight ? "text-[#5A270F] bg-white border border-[#D9D9C2]" : "text-white bg-white/10 backdrop-blur-md border border-white/20"}`}
+              >
+                {isLight ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+              </button>
               <button
                 onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-                className={`p-2 rounded-xl transition-all shadow-md active:scale-95 ${isScrolled || !isHomePage ? "text-[#5A270F] bg-white border border-[#D9D9C2]" : "text-white bg-white/10 backdrop-blur-md border border-white/20"}`}
+                className={`p-2 rounded-xl transition-all shadow-md active:scale-95 ${isScrolled || !isHomePage ? "text-[#5A270F] bg-white border border-[#D9D9C2]" : isLight ? "text-[#5A270F] bg-white border border-[#D9D9C2]" : "text-white bg-white/10 backdrop-blur-md border border-white/20"}`}
               >
                 {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
