@@ -23,6 +23,7 @@ import {
 import { api } from "../lib/api";
 import type { Resource, Blog } from "../models";
 import ResourceCard from "../components/ui/ResourceCard";
+import { useTheme } from "../context/useTheme";
 
 interface NewsItem {
   id: number;
@@ -57,6 +58,8 @@ const Home = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const isLight = theme === "light";
 
   const fetchHomeData = useCallback(async () => {
     try {
@@ -140,7 +143,7 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen selection:bg-primary/20 bg-white dark:bg-background transition-colors duration-500">
+    <div className={`flex flex-col min-h-screen selection:bg-[#DF8142]/20 transition-colors duration-700 ${isLight ? "bg-[#FCFBF8]" : "bg-[#0C0603]"}`}>
       {/* Hero Section */}
       <section className="relative min-h-[95vh] flex items-center overflow-hidden">
         {/* Cinematic Background Layer */}
@@ -153,16 +156,15 @@ const Home = () => {
           />
 
           {/* Master Gradient Overlays - Subtle and elegant */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1A0B04]/40 via-transparent to-[#1A0B04] z-10" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#1A0B04]/40 via-transparent to-transparent z-10" />
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white dark:from-[#0C0603] to-transparent z-20 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-[#5A270F] via-transparent to-[#DF8142]/10 z-10 opacity-60" />
+          <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#FCFBF8] dark:from-[#0C0603] to-transparent z-20 pointer-events-none" />
 
-          {/* Soft Atmospheric Glows */}
-          <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-[#DF8142]/10 blur-[180px] rounded-full -translate-y-1/4 translate-x-1/4 z-10 pointer-events-none animate-pulse" />
-          <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-[#5A270F]/20 blur-[120px] rounded-full translate-y-1/4 -translate-x-1/4 z-10 pointer-events-none" />
+          {/* Soft Atmospheric Glows - CALIBRATED */}
+          <div className="absolute top-0 right-0 w-[60%] h-[60%] bg-[#DF8142]/15 blur-[180px] rounded-full -translate-y-1/4 translate-x-1/4 z-10 pointer-events-none animate-pulse" />
+          <div className="absolute bottom-0 left-0 w-[50%] h-[50%] bg-[#6C3B1C]/25 blur-[120px] rounded-full translate-y-1/4 -translate-x-1/4 z-10 pointer-events-none" />
 
           {/* Refined Architectural Overlay Grid */}
-          <div className="absolute inset-0 opacity-[0.06] z-10 blueprint-grid-dark pointer-events-none" />
+          <div className="absolute inset-0 opacity-[0.08] z-10 blueprint-grid-dark pointer-events-none" />
         </div>
 
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-20 w-full mt-6">
@@ -339,9 +341,6 @@ const Home = () => {
             })
           }
         >
-          <span className="text-[7.5px] font-black uppercase tracking-[0.5em] text-[#EEB38C]/40 group-hover:text-[#DF8142] transition-colors duration-500">
-            REACH_ARCHIVE
-          </span>
           <div className="relative h-12 w-[1px] bg-white/10 overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-transparent via-[#DF8142] to-transparent animate-[scroll-matrix_2s_infinite]" />
           </div>
@@ -352,9 +351,9 @@ const Home = () => {
       </section>
 
       {/* Stats Section - Strategic Precision */}
-      <section className="relative z-30 py-8 -mt-24 sm:-mt-28 transition-colors duration-500">
+      <section className="relative z-30 py-8 -mt-24 sm:-mt-28">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="bg-[#FAF8F4] dark:bg-[#0C0603] backdrop-blur-3xl rounded-[2.5rem] p-2 shadow-2xl border border-[#D9D9C2] dark:border-white/5 overflow-hidden group transition-all duration-500">
+          <div className="bg-[#FAF8F4] dark:bg-[#150A05] backdrop-blur-3xl rounded-[2.5rem] p-2 shadow-[0_50px_100px_-20px_rgba(90,39,15,0.15)] border border-[#EEB38C]/30 dark:border-white/5 overflow-hidden group transition-all duration-700">
             <div className="bg-white dark:bg-[#1A0B04] rounded-[2rem] p-6 lg:p-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 divide-y sm:divide-y-0 lg:divide-x divide-[#D9D9C2]/40 dark:divide-white/5 transition-colors duration-500">
               {/* Stat 1 */}
               <div className="flex flex-col items-center text-center space-y-3 py-6 lg:py-4 lg:px-4 group/stat">
@@ -712,8 +711,17 @@ const Home = () => {
           </div>
         </div>
       </section>
+      {/* Main Content Area - Overhauled Background */}
+      <div className="relative overflow-hidden bg-gradient-to-b from-transparent via-[#FAF8F4]/50 dark:via-[#1A0B04]/30 to-transparent">
+        <div className="absolute inset-0 opacity-[0.03] blueprint-grid-dark pointer-events-none" />
+        
+        {/* Dynamic Nodes Background */}
+        <div className="absolute top-[20%] left-[-10%] w-[40%] h-[40%] bg-[#EEB38C]/10 blur-[120px] rounded-full pointer-events-none animate-pulse" />
+        <div className="absolute top-[60%] right-[-10%] w-[40%] h-[40%] bg-[#DF8142]/5 blur-[120px] rounded-full pointer-events-none" />
 
-      <section className="py-24 bg-white dark:bg-[#0C0603] transition-colors duration-500 relative overflow-hidden">
+        {/* Top Intelligence Nexus Section */}
+        {/* Top Intelligence Nexus Section */}
+        <section className="py-24 sm:py-32 relative z-10 transition-colors duration-500 overflow-hidden">
         {/* Soft Atmosphere Glows */}
         <div className="absolute top-0 right-0 w-1/2 h-full bg-[#FAF8F4] dark:bg-white/5 -skew-x-12 translate-x-1/4 z-0 transition-colors duration-500" />
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#DF8142]/5 blur-[120px] rounded-full pointer-events-none" />
@@ -819,6 +827,7 @@ const Home = () => {
         </div>
       </section>
     </div>
+  </div>
   );
 };
 
