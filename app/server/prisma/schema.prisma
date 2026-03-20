@@ -1,3 +1,4 @@
+// cSpell:ignore Participations
 generator client {
     provider = "prisma-client-js"
 }

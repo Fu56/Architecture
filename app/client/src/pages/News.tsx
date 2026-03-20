@@ -40,9 +40,10 @@ interface NewsItem {
 const News = () => {
   const { theme, toggleTheme } = useTheme();
   const { data: session } = useSession();
-  const user = session?.user;
-  const roleName = typeof user?.role === "string" ? user.role : (user?.role as any)?.name || "";
-  const secRoles = (user as any)?.secondaryRoles?.map((r: any) => r.name) || [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const user = session?.user as any;
+  const roleName = typeof user?.role === "string" ? user.role : user?.role?.name || "";
+  const secRoles = (user?.secondaryRoles as { name: string }[] | undefined)?.map(r => r.name) || [];
   const allRoles = [roleName, ...secRoles];
   const isStudent = allRoles.includes("Student");
   const isStaff = ["Faculty", "Admin", "DepartmentHead", "SuperAdmin"].some(r => allRoles.includes(r));
@@ -90,6 +91,7 @@ const News = () => {
   }, []);
 
   const [viewingEventId, setViewingEventId] = useState<number | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [participantsData, setParticipantsData] = useState<any[]>([]);
   const [loadingParticipants, setLoadingParticipants] = useState(false);
 
