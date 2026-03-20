@@ -21,6 +21,11 @@ import {
   Terminal,
   Mail,
   ArrowUpCircle,
+  Fingerprint,
+  UserCheck,
+  Target,
+  Activity,
+  ChevronRight,
 } from "lucide-react";
 import { toast } from "../../lib/toast";
 import { useSession } from "../../lib/auth-client";
@@ -33,6 +38,25 @@ interface UserWithRole {
   email: string;
   name?: string;
   role?: { name: string } | string;
+  representedUserId?: string;
+  representedTask?: string;
+  permissions?: {
+    canApproveResources: boolean;
+    canResolveFlags: boolean;
+    canEditUsers: boolean;
+    canDeleteNodes: boolean;
+  };
+}
+
+interface UserSpecimen extends User {
+  permissions?: {
+    canApproveResources: boolean;
+    canResolveFlags: boolean;
+    canEditUsers: boolean;
+    canDeleteNodes: boolean;
+  };
+  representedUserId?: string;
+  representedTask?: string;
 }
 
 const FieldError = ({ message }: { message?: string }) => {
@@ -45,26 +69,70 @@ const FieldError = ({ message }: { message?: string }) => {
 };
 
 const ManageUsers = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserSpecimen[]>([]);
   const { data: session } = useSession();
   const currentUser = session?.user as UserWithRole | undefined;
   const currentRoleName =
     typeof currentUser?.role === "string"
       ? currentUser.role
       : currentUser?.role?.name || "";
-      
-  const currentUserSecondaryRoles = (currentUser as UserWithRole & { secondaryRoles?: { name: string }[] })?.secondaryRoles?.map((r: { name: string }) => r.name) || [];
+
+  const currentUserSecondaryRoles =
+    (
+      currentUser as UserWithRole & { secondaryRoles?: { name: string }[] }
+    )?.secondaryRoles?.map((r: { name: string }) => r.name) || [];
   const currentUserAllRoles = [currentRoleName, ...currentUserSecondaryRoles];
-  const isCurrentDeptHead = currentUserAllRoles.includes("DepartmentHead") || currentUserAllRoles.includes("SuperAdmin");
-  const isCurrentAdmin = isCurrentDeptHead || currentUserAllRoles.includes("Admin");
+  const isCurrentDeptHead =
+    currentUserAllRoles.includes("DepartmentHead") ||
+    currentUserAllRoles.includes("SuperAdmin");
+  const isCurrentAdmin =
+    isCurrentDeptHead || currentUserAllRoles.includes("Admin");
   const isCurrentSuperAdmin = currentUserAllRoles.includes("SuperAdmin");
+
+  // Custom Permission Authority Overrides
+  const userPermissions = currentUser?.permissions || {
+    canApproveResources: false,
+    canResolveFlags: false,
+    canEditUsers: false,
+    canDeleteNodes: false,
+  };
+  const hasEditClearance =
+    isCurrentDeptHead || userPermissions.canEditUsers === true;
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [representedId, setRepresentedId] = useState<string | null>(
+    currentUser?.representedUserId || null,
+  );
+  const [activeTask, setActiveTask] = useState<string | null>(
+    currentUser?.representedTask || null,
+  );
+
+  // Representation Task Modal
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [taskUser, setTaskUser] = useState<UserSpecimen | null>(null);
+  const [selectedTask, setSelectedTask] = useState("Resource Approval");
+  const TASKS = [
+    "Resource Approval",
+    "User Authorization",
+    "Flag Resolution",
+    "Full Departmental Authority",
+  ];
+
+  // Sync with session if it changes
+  useEffect(() => {
+    if (currentUser?.representedUserId) {
+      setRepresentedId(currentUser.representedUserId);
+      setActiveTask(currentUser.representedTask || null);
+    } else {
+      setRepresentedId(null);
+      setActiveTask(null);
+    }
+  }, [currentUser?.representedUserId, currentUser?.representedTask]);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UserSpecimen | null>(null);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -82,6 +150,12 @@ const ManageUsers = () => {
     suspendReason: "",
     academicStartDate: "",
     academicEndDate: "",
+    permissions: {
+      canApproveResources: false,
+      canResolveFlags: false,
+      canEditUsers: false,
+      canDeleteNodes: false,
+    },
   });
   const [processing, setProcessing] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -126,6 +200,12 @@ const ManageUsers = () => {
       suspendReason: "",
       academicStartDate: "",
       academicEndDate: "",
+      permissions: {
+        canApproveResources: false,
+        canResolveFlags: false,
+        canEditUsers: false,
+        canDeleteNodes: false,
+      },
     });
     setSelectedUser(null);
     setErrors({});
@@ -137,11 +217,11 @@ const ManageUsers = () => {
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (user: User) => {
+  const handleOpenEdit = (user: UserSpecimen) => {
     setSelectedUser(user);
     const existingRole =
       typeof user.role === "string" ? user.role : user.role?.name || "Student";
-    const additionalRoles = user.secondaryRoles?.map(r => r.name) || [];
+    const additionalRoles = user.secondaryRoles?.map((r) => r.name) || [];
 
     setFormData({
       firstName: user.firstName || user.first_name || "",
@@ -158,11 +238,17 @@ const ManageUsers = () => {
       semester: user.semester?.toString() || "",
       status: user.status,
       specialization: user.specialization || "",
-      department: isCurrentDeptHead ? "Architecture" : (user.department || ""),
+      department: isCurrentDeptHead ? "Architecture" : user.department || "",
       workerId: user.workerId || user.worker_id || "",
       suspendReason: "",
       academicStartDate: user.academicStartDateEth || "",
       academicEndDate: user.academicEndDateEth || "",
+      permissions: user.permissions || {
+        canApproveResources: false,
+        canResolveFlags: false,
+        canEditUsers: false,
+        canDeleteNodes: false,
+      },
     });
     setModalMode("edit");
     setIsModalOpen(true);
@@ -179,7 +265,7 @@ const ManageUsers = () => {
     }
   };
 
-  const handleDelete = (user: User) => {
+  const handleDelete = (user: UserSpecimen) => {
     toast(`Terminate ${user.firstName || user.first_name}?`, {
       description:
         "This action is irreversible. The user identity and all associated security segments will be purged from the registry.",
@@ -246,11 +332,15 @@ const ManageUsers = () => {
           setIsAdvancing(true);
           try {
             const { data } = await api.post("/admin/users/advance-academic");
-            toast.success(`Advancement Complete: ${data.updatedCount} nodes promoted.`);
+            toast.success(
+              `Advancement Complete: ${data.updatedCount} nodes promoted.`,
+            );
             fetchUsers();
           } catch (err: unknown) {
             console.error("Advancement error:", err);
-            toast.error("Protocol Breach: Failed to synchronize academic advancement.");
+            toast.error(
+              "Protocol Breach: Failed to synchronize academic advancement.",
+            );
           } finally {
             setIsAdvancing(false);
           }
@@ -271,11 +361,15 @@ const ManageUsers = () => {
           setIsSuspending(true);
           try {
             const { data } = await api.post("/admin/users/check-suspension");
-            toast.success(`Protocol Executed: ${data.suspendedCount} nodes terminated.`);
+            toast.success(
+              `Protocol Executed: ${data.suspendedCount} nodes terminated.`,
+            );
             fetchUsers();
           } catch (err: unknown) {
             console.error("Suspension error:", err);
-            toast.error("Protocol Breach: Failed to execute automated suspension sequence.");
+            toast.error(
+              "Protocol Breach: Failed to execute automated suspension sequence.",
+            );
           } finally {
             setIsSuspending(false);
           }
@@ -283,6 +377,57 @@ const ManageUsers = () => {
       },
       cancel: { label: "Abort", onClick: () => {} },
     });
+  };
+
+  const handleToggleRepresentation = async (
+    user: UserSpecimen,
+    task?: string,
+  ) => {
+    const isActivelyRepresenting = representedId === user.id;
+
+    if (!isActivelyRepresenting && !task) {
+      setTaskUser(user);
+      setIsTaskModalOpen(true);
+      return;
+    }
+
+    const nextId = isActivelyRepresenting ? null : (user.id as string);
+    const nextTask = isActivelyRepresenting
+      ? null
+      : task || "General Representation";
+
+    // Optimistic Update
+    setRepresentedId(nextId);
+    setActiveTask(nextTask);
+    setIsTaskModalOpen(false);
+
+    try {
+      await api.patch(`/admin/users/${user.id}/represent`, {
+        action: isActivelyRepresenting ? "stop" : "start",
+        task: nextTask,
+      });
+      toast.success(
+        isActivelyRepresenting
+          ? "Representation severed."
+          : `Representing ${user.firstName || user.first_name} for ${nextTask}.`,
+      );
+      fetchUsers();
+    } catch {
+      // Revert on Failure
+      setRepresentedId(representedId);
+      setActiveTask(activeTask);
+      toast.error("Representation protocol failure.");
+    }
+  };
+
+  const handleUpdatePermissions = async (field: string, value: boolean) => {
+    setFormData((prev) => ({
+      ...prev,
+      permissions: {
+        ...prev.permissions,
+        [field]: value,
+      },
+    }));
   };
 
   const validateForm = () => {
@@ -337,11 +482,13 @@ const ManageUsers = () => {
     }
 
     if (formData.status === "suspended" && !formData.suspendReason.trim()) {
-      newErrors.suspendReason = "Suspension reason required for this operation.";
+      newErrors.suspendReason =
+        "Suspension reason required for this operation.";
     }
 
     // Comprehensive field presence check
-    if (!formData.universityId.trim()) newErrors.universityId = "University identifier required.";
+    if (!formData.universityId.trim())
+      newErrors.universityId = "University identifier required.";
     if (formData.roleNames.includes("Student")) {
       if (!formData.batch) newErrors.batch = "Admission batch required.";
       if (!formData.year) newErrors.year = "Academic year required.";
@@ -412,6 +559,7 @@ const ManageUsers = () => {
             ...formData,
             roleName: formData.roleNames[0],
             roleNames: formData.roleNames,
+            permissions: formData.permissions,
           });
           fetchUsers();
           toast.success("User configuration updated");
@@ -430,7 +578,9 @@ const ManageUsers = () => {
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -444,13 +594,18 @@ const ManageUsers = () => {
       typeof user.role === "string" ? user.role : user.role?.name || "";
 
     // Security filter: Department Heads cannot see/manage SuperAdmins
-    if (isCurrentDeptHead && !isCurrentSuperAdmin && userRoleName === "SuperAdmin") {
+    if (
+      isCurrentDeptHead &&
+      !isCurrentSuperAdmin &&
+      userRoleName === "SuperAdmin"
+    ) {
       return false;
     }
 
     // Security filter: Admins cannot see/manage DepartmentHeads or SuperAdmins
     if (
-      isCurrentAdmin && !isCurrentDeptHead &&
+      isCurrentAdmin &&
+      !isCurrentDeptHead &&
       (userRoleName === "DepartmentHead" || userRoleName === "SuperAdmin")
     ) {
       return false;
@@ -578,7 +733,8 @@ const ManageUsers = () => {
         </div>
         <div>
           <h1 className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter uppercase italic leading-none">
-            Nexus Registry <span className="not-italic text-[#DF8142]">Authority</span>
+            Nexus Registry{" "}
+            <span className="not-italic text-[#DF8142]">Authority</span>
           </h1>
           <p className="text-[7.5px] font-black text-[#92664A] dark:text-white/60 uppercase tracking-[0.25em] mt-1 leading-none">
             Central Identity Management Matrix
@@ -725,15 +881,20 @@ const ManageUsers = () => {
                             {user.email}
                           </div>
                           <div className="text-[7px] text-[#DF8142] font-black uppercase tracking-[0.1em] flex items-center gap-1 flex-wrap">
-                             <span className="h-0.5 w-0.5 rounded-full bg-[#DF8142]" /> {user.department || "Architecture"}
-                             {roleName === "Student" && (
-                               <>
-                                 <span className="h-0.5 w-0.5 rounded-full bg-[#BCAF9C] mx-0.5" />
-                                 <span className="text-[#92664A]/70 dark:text-[#EEB38C]/30">{user.batch}</span>
-                                 <span className="h-0.5 w-0.5 rounded-full bg-[#BCAF9C] mx-0.5" />
-                                 <span className="text-[#5A270F] dark:text-[#EEB38C]">Y{user.year} S{user.semester}</span>
-                               </>
-                             )}
+                            <span className="h-0.5 w-0.5 rounded-full bg-[#DF8142]" />{" "}
+                            {user.department || "Architecture"}
+                            {roleName === "Student" && (
+                              <>
+                                <span className="h-0.5 w-0.5 rounded-full bg-[#BCAF9C] mx-0.5" />
+                                <span className="text-[#92664A]/70 dark:text-[#EEB38C]/30">
+                                  {user.batch}
+                                </span>
+                                <span className="h-0.5 w-0.5 rounded-full bg-[#BCAF9C] mx-0.5" />
+                                <span className="text-[#5A270F] dark:text-[#EEB38C]">
+                                  Y{user.year} S{user.semester}
+                                </span>
+                              </>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -751,7 +912,10 @@ const ManageUsers = () => {
                           {roleName}
                         </span>
                         {user.secondaryRoles?.map((r) => (
-                          <span key={r.id} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[7px] font-black uppercase tracking-wider bg-[#DF8142] text-white shadow-sm border border-[#DF8142]/20">
+                          <span
+                            key={r.id}
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[7px] font-black uppercase tracking-wider bg-[#DF8142] text-white shadow-sm border border-[#DF8142]/20"
+                          >
                             {r.name}
                           </span>
                         ))}
@@ -763,7 +927,8 @@ const ManageUsers = () => {
                           className={`h-1 w-1 rounded-full ${
                             user.status === "active"
                               ? "bg-[#5A270F]"
-                              : (user.status === "pending_approval" || user.status === "admin_approved_node")
+                              : user.status === "pending_approval" ||
+                                  user.status === "admin_approved_node"
                                 ? "bg-[#DF8142] animate-pulse"
                                 : "bg-red-700"
                           }`}
@@ -772,7 +937,8 @@ const ManageUsers = () => {
                           className={`text-[7.5px] font-black uppercase tracking-widest ${
                             user.status === "active"
                               ? "text-[#5A270F] dark:text-white/70"
-                              : (user.status === "pending_approval" || user.status === "admin_approved_node")
+                              : user.status === "pending_approval" ||
+                                  user.status === "admin_approved_node"
                                 ? "text-[#DF8142] dark:text-[#EEB38C]"
                                 : "text-rose-600"
                           }`}
@@ -800,44 +966,69 @@ const ManageUsers = () => {
                           <Mail className="h-3.5 w-3.5" />
                         </button>
 
-                        {((user.status === "pending_approval" && isCurrentAdmin) || 
-                          (user.status === "admin_approved_node" && isCurrentDeptHead)) && (
-                             <button
-                               onClick={() => handleApprove(user.id)}
-                               className="p-2 text-[#DF8142] hover:text-[#2A1205] hover:bg-[#5A270F]/5 rounded-lg transition-all"
-                               title={isCurrentAdmin && !isCurrentDeptHead ? "Pre-Verify Node" : "Final Authorize"}
-                             >
-                               <CheckCircle2 className="h-3.5 w-3.5" />
-                             </button>
-                           )}
+                        {isCurrentDeptHead && (
+                          <button
+                            onClick={() => handleToggleRepresentation(user)}
+                            className={`p-2 rounded-lg transition-all ${
+                              user.id === representedId
+                                ? "bg-[#DF8142] text-white shadow-lg animate-pulse"
+                                : "text-[#92664A] hover:bg-[#EEB38C]/10 hover:text-[#DF8142]"
+                            }`}
+                            title={
+                              user.id === representedId
+                                ? `Representing: ${activeTask}`
+                                : "Represent Node Authority"
+                            }
+                          >
+                            <Fingerprint className="h-3.5 w-3.5" />
+                          </button>
+                        )}
+
+                        {((user.status === "pending_approval" &&
+                          isCurrentAdmin) ||
+                          (user.status === "admin_approved_node" &&
+                            hasEditClearance)) && (
+                          <button
+                            onClick={() => handleApprove(user.id)}
+                            className="p-2 text-[#DF8142] hover:text-[#2A1205] hover:bg-[#5A270F]/5 rounded-lg transition-all"
+                            title={
+                              isCurrentAdmin && !isCurrentDeptHead
+                                ? "Pre-Verify Node"
+                                : "Final Authorize"
+                            }
+                          >
+                            <CheckCircle2 className="h-3.5 w-3.5" />
+                          </button>
+                        )}
 
                         {!(
-                          roleName === "SuperAdmin" || 
-                          (roleName === "DepartmentHead" && isCurrentAdmin && !isCurrentDeptHead)
+                          roleName === "SuperAdmin" ||
+                          (roleName === "DepartmentHead" && !hasEditClearance)
                         ) && (
-                            <>
-                              <button
-                                onClick={() => handleOpenEdit(user)}
-                                className="p-2 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] hover:bg-[#DF8142]/10 rounded-lg transition-all"
-                                title="Configure"
-                              >
-                                <Edit2 className="h-3.5 w-3.5" />
-                              </button>
+                          <>
+                            <button
+                              onClick={() => handleOpenEdit(user)}
+                              className="p-2 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] hover:bg-[#DF8142]/10 rounded-lg transition-all"
+                              title="Configure"
+                            >
+                              <Edit2 className="h-3.5 w-3.5" />
+                            </button>
 
-                              {!(
-                                roleName === "DepartmentHead" &&
-                                isCurrentAdmin && !isCurrentDeptHead
-                              ) && (
-                                <button
-                                  onClick={() => handleDelete(user)}
-                                  className="p-2 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-rose-600 hover:bg-red-50 rounded-lg transition-all"
-                                  title="Terminate"
-                                >
-                                  <Trash2 className="h-3.5 w-3.5" />
-                                </button>
-                              )}
-                            </>
-                          )}
+                            {!(
+                              roleName === "DepartmentHead" &&
+                              isCurrentAdmin &&
+                              !isCurrentDeptHead
+                            ) && (
+                              <button
+                                onClick={() => handleDelete(user)}
+                                className="p-2 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-rose-600 hover:bg-red-50 rounded-lg transition-all"
+                                title="Terminate"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                            )}
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -881,9 +1072,19 @@ const ManageUsers = () => {
                   </div>
                   <h3 className="text-4xl font-black text-white tracking-tighter uppercase leading-none font-space-grotesk">
                     {modalMode === "create" ? (
-                      <>NODE <span className="text-[#DF8142] italic">INITIALIZATION</span></>
+                      <>
+                        NODE{" "}
+                        <span className="text-[#DF8142] italic">
+                          INITIALIZATION
+                        </span>
+                      </>
                     ) : (
-                      <>SPECIMEN <span className="text-[#DF8142] italic">RECONFIGURATION</span></>
+                      <>
+                        SPECIMEN{" "}
+                        <span className="text-[#DF8142] italic">
+                          RECONFIGURATION
+                        </span>
+                      </>
                     )}
                   </h3>
                 </div>
@@ -898,18 +1099,30 @@ const ManageUsers = () => {
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto custom-scrollbar p-12 space-y-12 bg-transparent">
+            <form
+              onSubmit={handleSubmit}
+              className="flex-1 overflow-y-auto custom-scrollbar p-12 space-y-12 bg-transparent"
+            >
               {/* Section 01: Identity Core */}
               <div className="space-y-8">
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] text-[#EEB38C] text-xs font-black shadow-lg shadow-[#5A270F]/20">01</div>
-                  <h4 className="text-xs font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] font-space-grotesk">Identity Core Protocol</h4>
+                  <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] text-[#EEB38C] text-xs font-black shadow-lg shadow-[#5A270F]/20">
+                    01
+                  </div>
+                  <h4 className="text-xs font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] font-space-grotesk">
+                    Identity Core Protocol
+                  </h4>
                   <div className="h-[1px] flex-1 bg-gradient-to-r from-[#D9D9C2] to-transparent dark:from-white/10" />
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
                   <div className="space-y-3 group">
-                    <label htmlFor="firstName" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Forename Signature</label>
+                    <label
+                      htmlFor="firstName"
+                      className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors"
+                    >
+                      Forename Signature
+                    </label>
                     <div className="relative">
                       <input
                         id="firstName"
@@ -917,16 +1130,23 @@ const ManageUsers = () => {
                         title="First Name"
                         value={formData.firstName}
                         onChange={handleInputChange}
-                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] group-hover:shadow-[0_8px_20px_-6px_rgba(26,11,4,0.12)] ${errors.firstName ? 'border-[#DF8142] ring-4 ring-[#DF8142]/10' : 'border-[#D9D9C2]/60 dark:border-white/10 font-inter'}`}
+                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] group-hover:shadow-[0_8px_20px_-6px_rgba(26,11,4,0.12)] ${errors.firstName ? "border-[#DF8142] ring-4 ring-[#DF8142]/10" : "border-[#D9D9C2]/60 dark:border-white/10 font-inter"}`}
                         placeholder="e.g. John"
                       />
-                      {errors.firstName && <AlertCircle className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-bounce" />}
+                      {errors.firstName && (
+                        <AlertCircle className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-bounce" />
+                      )}
                     </div>
                     <FieldError message={errors.firstName} />
                   </div>
 
                   <div className="space-y-3 group">
-                    <label htmlFor="lastName" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Surname Signature</label>
+                    <label
+                      htmlFor="lastName"
+                      className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors"
+                    >
+                      Surname Signature
+                    </label>
                     <div className="relative">
                       <input
                         id="lastName"
@@ -934,16 +1154,23 @@ const ManageUsers = () => {
                         title="Last Name"
                         value={formData.lastName}
                         onChange={handleInputChange}
-                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] group-hover:shadow-[0_8px_20px_-6px_rgba(26,11,4,0.12)] ${errors.lastName ? 'border-[#DF8142] ring-4 ring-[#DF8142]/10' : 'border-[#D9D9C2]/60 dark:border-white/10 font-inter'}`}
+                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] group-hover:shadow-[0_8px_20px_-6px_rgba(26,11,4,0.12)] ${errors.lastName ? "border-[#DF8142] ring-4 ring-[#DF8142]/10" : "border-[#D9D9C2]/60 dark:border-white/10 font-inter"}`}
                         placeholder="e.g. Doe"
                       />
-                      {errors.lastName && <AlertCircle className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-bounce" />}
+                      {errors.lastName && (
+                        <AlertCircle className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142] animate-bounce" />
+                      )}
                     </div>
                     <FieldError message={errors.lastName} />
                   </div>
 
                   <div className="space-y-3 group">
-                    <label htmlFor="universityId" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Institutional UID</label>
+                    <label
+                      htmlFor="universityId"
+                      className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors"
+                    >
+                      Institutional UID
+                    </label>
                     <div className="relative">
                       <input
                         id="universityId"
@@ -951,7 +1178,7 @@ const ManageUsers = () => {
                         title="University Identifier"
                         value={formData.universityId}
                         onChange={handleInputChange}
-                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] group-hover:shadow-[0_8px_20px_-6px_rgba(26,11,4,0.12)] ${errors.universityId ? 'border-[#DF8142] ring-4 ring-[#DF8142]/10' : 'border-[#D9D9C2]/60 dark:border-white/10 font-mono'}`}
+                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] group-hover:shadow-[0_8px_20px_-6px_rgba(26,11,4,0.12)] ${errors.universityId ? "border-[#DF8142] ring-4 ring-[#DF8142]/10" : "border-[#D9D9C2]/60 dark:border-white/10 font-mono"}`}
                         placeholder="U-ARCH-XXXX"
                       />
                     </div>
@@ -959,7 +1186,12 @@ const ManageUsers = () => {
                   </div>
 
                   <div className="space-y-3 group">
-                    <label htmlFor="email" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Network Communications</label>
+                    <label
+                      htmlFor="email"
+                      className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors"
+                    >
+                      Network Communications
+                    </label>
                     <div className="relative">
                       <input
                         id="email"
@@ -968,7 +1200,7 @@ const ManageUsers = () => {
                         title="Email Communications"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] group-hover:shadow-[0_8px_20px_-6px_rgba(26,11,4,0.12)] ${errors.email ? 'border-[#DF8142] ring-4 ring-[#DF8142]/10' : 'border-[#D9D9C2]/60 dark:border-white/10 font-inter'}`}
+                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] group-hover:shadow-[0_8px_20px_-6px_rgba(26,11,4,0.12)] ${errors.email ? "border-[#DF8142] ring-4 ring-[#DF8142]/10" : "border-[#D9D9C2]/60 dark:border-white/10 font-inter"}`}
                         placeholder="node@nexus.edu"
                       />
                     </div>
@@ -978,7 +1210,12 @@ const ManageUsers = () => {
 
                 {modalMode === "create" && (
                   <div className="space-y-3 group">
-                    <label htmlFor="password" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Primary Access Directive</label>
+                    <label
+                      htmlFor="password"
+                      className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors"
+                    >
+                      Primary Access Directive
+                    </label>
                     <div className="relative flex items-center">
                       <input
                         id="password"
@@ -988,7 +1225,7 @@ const ManageUsers = () => {
                         placeholder="Generate secure cipher..."
                         value={formData.password}
                         onChange={handleInputChange}
-                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] pl-6 pr-16 py-5 text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] group-hover:shadow-[0_8px_20px_-6px_rgba(26,11,4,0.12)] ${errors.password ? 'border-[#DF8142] ring-4 ring-[#DF8142]/10' : 'border-[#D9D9C2]/60 dark:border-white/10 font-mono'}`}
+                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] pl-6 pr-16 py-5 text-sm font-bold text-[#5A270F] dark:text-white focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] group-hover:shadow-[0_8px_20px_-6px_rgba(26,11,4,0.12)] ${errors.password ? "border-[#DF8142] ring-4 ring-[#DF8142]/10" : "border-[#D9D9C2]/60 dark:border-white/10 font-mono"}`}
                       />
                       <button
                         type="button"
@@ -1007,14 +1244,21 @@ const ManageUsers = () => {
               {/* Section 02: Clearance Level Protocols */}
               <div className="space-y-8">
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] text-[#EEB38C] text-xs font-black shadow-lg shadow-[#5A270F]/20">02</div>
-                  <h4 className="text-xs font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] font-space-grotesk">Authorization Clearance Matrix</h4>
+                  <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] text-[#EEB38C] text-xs font-black shadow-lg shadow-[#5A270F]/20">
+                    02
+                  </div>
+                  <h4 className="text-xs font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] font-space-grotesk">
+                    Authorization Clearance Matrix
+                  </h4>
                   <div className="h-[1px] flex-1 bg-gradient-to-r from-[#D9D9C2] to-transparent dark:from-white/10" />
                 </div>
-                
+
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                   {["Student", "Faculty", "Admin", "DepartmentHead"]
-                    .filter((role) => role !== "DepartmentHead" || isCurrentSuperAdmin)
+                    .filter(
+                      (role) =>
+                        role !== "DepartmentHead" || isCurrentSuperAdmin,
+                    )
                     .map((role) => {
                       const isSelected = formData.roleNames.includes(role);
                       return (
@@ -1036,10 +1280,14 @@ const ManageUsers = () => {
                           {isSelected && (
                             <div className="absolute top-0 right-0 w-12 h-12 bg-white/10 blur-xl rounded-full translate-x-1/2 -translate-y-1/2" />
                           )}
-                          <div className={`text-[10px] font-black uppercase tracking-[0.2em] relative z-10 transition-colors duration-500 ${isSelected ? "text-[#EEB38C]" : "group-hover:text-[#DF8142]"}`}>
+                          <div
+                            className={`text-[10px] font-black uppercase tracking-[0.2em] relative z-10 transition-colors duration-500 ${isSelected ? "text-[#EEB38C]" : "group-hover:text-[#DF8142]"}`}
+                          >
                             {role}
                           </div>
-                          <div className={`mt-1.5 h-1 w-6 rounded-full transition-all duration-500 ${isSelected ? "bg-[#DF8142] w-12" : "bg-transparent"}`} />
+                          <div
+                            className={`mt-1.5 h-1 w-6 rounded-full transition-all duration-500 ${isSelected ? "bg-[#DF8142] w-12" : "bg-transparent"}`}
+                          />
                         </button>
                       );
                     })}
@@ -1050,14 +1298,23 @@ const ManageUsers = () => {
               {/* Section 03: Strategic Sector Assignment */}
               <div className="space-y-8">
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] text-[#EEB38C] text-xs font-black shadow-lg shadow-[#5A270F]/20">03</div>
-                  <h4 className="text-xs font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] font-space-grotesk">Strategic Sector Assignment</h4>
+                  <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-[#5A270F] to-[#6C3B1C] text-[#EEB38C] text-xs font-black shadow-lg shadow-[#5A270F]/20">
+                    03
+                  </div>
+                  <h4 className="text-xs font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] font-space-grotesk">
+                    Strategic Sector Assignment
+                  </h4>
                   <div className="h-[1px] flex-1 bg-gradient-to-r from-[#D9D9C2] to-transparent dark:from-white/10" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
                   <div className="space-y-3 group">
-                    <label htmlFor="department" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Tactical Division</label>
+                    <label
+                      htmlFor="department"
+                      className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors"
+                    >
+                      Tactical Division
+                    </label>
                     <div className="relative">
                       <input
                         id="department"
@@ -1066,7 +1323,11 @@ const ManageUsers = () => {
                         value={formData.department}
                         onChange={handleInputChange}
                         placeholder="e.g. Architectural Systems"
-                        disabled={isCurrentDeptHead && !isCurrentSuperAdmin && modalMode === "edit"}
+                        disabled={
+                          isCurrentDeptHead &&
+                          !isCurrentSuperAdmin &&
+                          modalMode === "edit"
+                        }
                         className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none shadow-[0_4px_12px_-4px_rgba(26,11,4,0.08)] ${errors.department ? "border-[#DF8142] ring-4 ring-[#DF8142]/10" : "border-[#D9D9C2]/60 dark:border-white/10 font-inter"} ${isCurrentDeptHead && !isCurrentSuperAdmin && modalMode === "edit" ? "opacity-60 cursor-not-allowed bg-[#EFEDED]/20" : ""}`}
                         required
                       />
@@ -1076,9 +1337,16 @@ const ManageUsers = () => {
                     </div>
                   </div>
 
-                  {formData.roleNames.some((r) => ["Faculty", "Admin", "DepartmentHead"].includes(r)) && (
+                  {formData.roleNames.some((r) =>
+                    ["Faculty", "Admin", "DepartmentHead"].includes(r),
+                  ) && (
                     <div className="space-y-3 group">
-                      <label htmlFor="workerId" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Tactical ID Code</label>
+                      <label
+                        htmlFor="workerId"
+                        className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors"
+                      >
+                        Tactical ID Code
+                      </label>
                       <div className="relative">
                         <input
                           id="workerId"
@@ -1095,7 +1363,12 @@ const ManageUsers = () => {
 
                   {formData.roleNames.includes("Faculty") && (
                     <div className="space-y-3 group md:col-span-2">
-                      <label htmlFor="specialization" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Intellectual Domain</label>
+                      <label
+                        htmlFor="specialization"
+                        className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors"
+                      >
+                        Intellectual Domain
+                      </label>
                       <div className="relative">
                         <input
                           id="specialization"
@@ -1111,79 +1384,190 @@ const ManageUsers = () => {
                   )}
                 </div>
 
-                  {formData.roleNames.includes("Student") && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10 md:col-span-2 p-8 bg-[#EFEDED]/30 dark:bg-white/5 rounded-[2rem] border-2 border-dashed border-[#D9D9C2] dark:border-white/10">
-                      <div className="md:col-span-2 flex items-center gap-3 mb-2">
-                        <Terminal className="h-4 w-4 text-[#DF8142]" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C]">Academic Phase Registry (Ethiopian Calendar)</span>
-                      </div>
-                      <div className="space-y-3 group">
-                        <label htmlFor="academicStartDate" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Start Node (YYYY-MM-DD)</label>
-                        <input
-                          id="academicStartDate"
-                          name="academicStartDate"
-                          title="Academic Start Date"
-                          value={formData.academicStartDate}
-                          onChange={handleInputChange}
-                          placeholder="2016-01-01"
-                          className="w-full bg-white dark:bg-white/5 border-2 border-[#D9D9C2]/60 dark:border-white/10 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none font-mono"
-                        />
-                      </div>
-                      <div className="space-y-3 group">
-                        <label htmlFor="academicEndDate" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Finish Node (YYYY-MM-DD)</label>
-                        <input
-                          id="academicEndDate"
-                          name="academicEndDate"
-                          title="Academic End Date"
-                          value={formData.academicEndDate}
-                          onChange={handleInputChange}
-                          placeholder="2020-10-30"
-                          className="w-full bg-white dark:bg-white/5 border-2 border-[#D9D9C2]/60 dark:border-white/10 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none font-mono"
-                        />
-                      </div>
+                {formData.roleNames.includes("Student") && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10 md:col-span-2 p-8 bg-[#EFEDED]/30 dark:bg-white/5 rounded-[2rem] border-2 border-dashed border-[#D9D9C2] dark:border-white/10">
+                    <div className="md:col-span-2 flex items-center gap-3 mb-2">
+                      <Terminal className="h-4 w-4 text-[#DF8142]" />
+                      <span className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C]">
+                        Academic Phase Registry (Ethiopian Calendar)
+                      </span>
+                    </div>
+                    <div className="space-y-3 group">
+                      <label
+                        htmlFor="academicStartDate"
+                        className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors"
+                      >
+                        Start Node (YYYY-MM-DD)
+                      </label>
+                      <input
+                        id="academicStartDate"
+                        name="academicStartDate"
+                        title="Academic Start Date"
+                        value={formData.academicStartDate}
+                        onChange={handleInputChange}
+                        placeholder="2016-01-01"
+                        className="w-full bg-white dark:bg-white/5 border-2 border-[#D9D9C2]/60 dark:border-white/10 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none font-mono"
+                      />
+                    </div>
+                    <div className="space-y-3 group">
+                      <label
+                        htmlFor="academicEndDate"
+                        className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors"
+                      >
+                        Finish Node (YYYY-MM-DD)
+                      </label>
+                      <input
+                        id="academicEndDate"
+                        name="academicEndDate"
+                        title="Academic End Date"
+                        value={formData.academicEndDate}
+                        onChange={handleInputChange}
+                        placeholder="2020-10-30"
+                        className="w-full bg-white dark:bg-white/5 border-2 border-[#D9D9C2]/60 dark:border-white/10 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none font-mono"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {isCurrentDeptHead && modalMode === "edit" && (
+                <div className="mt-6 p-8 bg-gradient-to-br from-[#5A270F]/5 to-transparent rounded-[2rem] border-2 border-[#5A270F]/10 space-y-8">
+                  <div className="space-y-3 group">
+                    <label
+                      htmlFor="status"
+                      className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors"
+                    >
+                      Operational Status Directive
+                    </label>
+                    <div className="relative">
+                      <select
+                        id="status"
+                        name="status"
+                        title="Node Status"
+                        value={formData.status}
+                        onChange={handleInputChange}
+                        className="w-full bg-white dark:bg-white/10 border-2 border-[#D9D9C2]/60 dark:border-white/10 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none shadow-sm cursor-pointer appearance-none font-inter"
+                      >
+                        <option value="active">
+                          Active (Fully Authorized)
+                        </option>
+                        <option value="pending_approval">
+                          Pending Clearance
+                        </option>
+                        <option value="suspended">
+                          Suspended (Access Revoked)
+                        </option>
+                      </select>
+                      <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 h-5 w-5 text-[#92664A] pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {formData.status === "suspended" && (
+                    <div className="space-y-3 group animate-in slide-in-from-top-4">
+                      <label
+                        htmlFor="suspendReason"
+                        className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors"
+                      >
+                        Revocation Justification Protocol *
+                      </label>
+                      <textarea
+                        id="suspendReason"
+                        name="suspendReason"
+                        title="Suspension Directive"
+                        value={formData.suspendReason || ""}
+                        onChange={handleInputChange}
+                        placeholder="Provide detailed logs for node suspension..."
+                        className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none h-32 shadow-sm resize-none ${errors.suspendReason ? "border-[#DF8142] ring-4 ring-[#DF8142]/10" : "border-[#D9D9C2]/60 dark:border-white/10"}`}
+                      />
+                      <FieldError message={errors.suspendReason} />
                     </div>
                   )}
                 </div>
+              )}
 
-                {isCurrentDeptHead && modalMode === "edit" && (
-                  <div className="mt-6 p-8 bg-gradient-to-br from-[#5A270F]/5 to-transparent rounded-[2rem] border-2 border-[#5A270F]/10 space-y-8">
-                    <div className="space-y-3 group">
-                      <label htmlFor="status" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Operational Status Directive</label>
-                      <div className="relative">
-                        <select
-                          id="status"
-                          name="status"
-                          title="Node Status"
-                          value={formData.status}
-                          onChange={handleInputChange}
-                          className="w-full bg-white dark:bg-white/10 border-2 border-[#D9D9C2]/60 dark:border-white/10 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none shadow-sm cursor-pointer appearance-none font-inter"
-                        >
-                          <option value="active">Active (Fully Authorized)</option>
-                          <option value="pending_approval">Pending Clearance</option>
-                          <option value="suspended">Suspended (Access Revoked)</option>
-                        </select>
-                        <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 h-5 w-5 text-[#92664A] pointer-events-none" />
-                      </div>
+              {/* Section 04: Authority Override Matrix */}
+              {isCurrentDeptHead && (
+                <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-700">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] text-white text-xs font-black shadow-lg shadow-[#DF8142]/20">
+                      04
                     </div>
-
-                    {formData.status === "suspended" && (
-                      <div className="space-y-3 group animate-in slide-in-from-top-4">
-                        <label htmlFor="suspendReason" className="text-[10px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] ml-1 group-focus-within:text-[#DF8142] transition-colors">Revocation Justification Protocol *</label>
-                        <textarea
-                          id="suspendReason"
-                          name="suspendReason"
-                          title="Suspension Directive"
-                          value={formData.suspendReason || ""}
-                          onChange={handleInputChange}
-                          placeholder="Provide detailed logs for node suspension..."
-                          className={`w-full bg-white dark:bg-white/5 border-2 rounded-[1.25rem] px-6 py-5 text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] focus:border-[#DF8142] transition-all outline-none h-32 shadow-sm resize-none ${errors.suspendReason ? "border-[#DF8142] ring-4 ring-[#DF8142]/10" : "border-[#D9D9C2]/60 dark:border-white/10"}`}
-                        />
-                        <FieldError message={errors.suspendReason} />
-                      </div>
-                    )}
+                    <h4 className="text-xs font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] font-space-grotesk">
+                      Authority Override Matrix
+                    </h4>
+                    <div className="h-[1px] flex-1 bg-gradient-to-r from-[#DF8142]/20 to-transparent" />
                   </div>
-                )}
- 
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#FAF8F4] dark:bg-white/5 p-8 rounded-[2rem] border-2 border-[#EEB38C]/20 shadow-inner">
+                    {[
+                      {
+                        id: "canApproveResources",
+                        label: "Approve Primary Resources",
+                        icon: UserCheck,
+                      },
+                      {
+                        id: "canResolveFlags",
+                        label: "Resolve System Flags",
+                        icon: AlertCircle,
+                      },
+                      {
+                        id: "canEditUsers",
+                        label: "Configure Registry Nodes",
+                        icon: Edit2,
+                      },
+                      {
+                        id: "canDeleteNodes",
+                        label: "Decommission Specimen",
+                        icon: Trash2,
+                      },
+                    ].map((permission) => {
+                      const isEnabled =
+                        (formData.permissions as Record<string, boolean>)?.[
+                          permission.id
+                        ] || false;
+                      const P_Icon = permission.icon;
+                      return (
+                        <div
+                          key={permission.id}
+                          onClick={() =>
+                            handleUpdatePermissions(permission.id, !isEnabled)
+                          }
+                          className={`flex items-center justify-between p-5 rounded-2xl border-2 transition-all cursor-pointer group select-none ${
+                            isEnabled
+                              ? "bg-white border-[#DF8142] shadow-xl shadow-[#DF8142]/10"
+                              : "bg-white/50 border-slate-100 dark:border-white/5 hover:border-[#EEB38C]/40"
+                          }`}
+                        >
+                          <div className="flex items-center gap-4">
+                            <div
+                              className={`h-10 w-10 rounded-xl flex items-center justify-center transition-all ${isEnabled ? "bg-[#DF8142] text-white rotate-6" : "bg-slate-100 dark:bg-white/10 text-slate-400 group-hover:rotate-6"}`}
+                            >
+                              <P_Icon className="h-4.5 w-4.5 font-black" />
+                            </div>
+                            <span
+                              className={`text-[10px] font-black uppercase tracking-widest ${isEnabled ? "text-[#5A270F]" : "text-slate-400"}`}
+                            >
+                              {permission.label}
+                            </span>
+                          </div>
+                          <div
+                            className={`h-6 w-11 rounded-full relative transition-all duration-500 ${isEnabled ? "bg-[#5A270F]" : "bg-slate-200 dark:bg-white/10"}`}
+                          >
+                            <div
+                              className={`absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition-all transform duration-500 ${isEnabled ? "translate-x-5 shadow-lg shadow-[#DF8142]/40" : ""}`}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p className="text-[8px] font-bold text-[#92664A] uppercase tracking-[0.2em] ml-4 opacity-50 italic">
+                    * Overrides base role authority levels for this specific
+                    node.
+                  </p>
+                </div>
+              )}
+
               {/* Action Vector Footer */}
               <div className="flex gap-6 pt-12 border-t border-[#D9D9C2]/40 dark:border-white/5">
                 <button
@@ -1204,7 +1588,9 @@ const ManageUsers = () => {
                   ) : (
                     <>
                       <Zap className="h-4 w-4 text-[#DF8142] group-hover:animate-pulse" />
-                      {modalMode === "create" ? "COMMIT INITIALIZATION" : "AUTHORIZE MODIFICATIONS"}
+                      {modalMode === "create"
+                        ? "COMMIT INITIALIZATION"
+                        : "AUTHORIZE MODIFICATIONS"}
                     </>
                   )}
                 </button>
@@ -1232,7 +1618,10 @@ const ManageUsers = () => {
                   </p>
                 </div>
                 <h3 className="text-2xl font-black text-white leading-tight italic">
-                  Briefing Target: <span className="not-italic text-[#DF8142]">{selectedUser?.first_name || selectedUser?.firstName}</span>
+                  Briefing Target:{" "}
+                  <span className="not-italic text-[#DF8142]">
+                    {selectedUser?.first_name || selectedUser?.firstName}
+                  </span>
                 </h3>
               </div>
             </div>
@@ -1320,7 +1709,9 @@ const ManageUsers = () => {
                     </p>
                   </div>
                   <h3 className="text-3xl font-black text-white leading-tight italic">
-                    Nexus <span className="not-italic text-[#DF8142]">Syndicate</span> Relay
+                    Nexus{" "}
+                    <span className="not-italic text-[#DF8142]">Syndicate</span>{" "}
+                    Relay
                   </h3>
                 </div>
                 <button
@@ -1412,6 +1803,91 @@ const ManageUsers = () => {
         </div>
       )}
 
+      {/* Authority Representation Task Modal */}
+      {isTaskModalOpen && taskUser && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#2A1205]/40 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white dark:bg-[#1A0F0A] w-full max-w-md rounded-2xl shadow-2xl border border-[#EEB38C]/20 overflow-hidden transform animate-in zoom-in-95 duration-300">
+            <div className="p-6 border-b border-[#EEB38C]/10 bg-gradient-to-br from-[#5A270F] to-[#2A1205] text-white">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white/10 rounded-lg backdrop-blur-md">
+                    <Fingerprint className="h-5 w-5 text-[#EEB38C]" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black tracking-widest uppercase">
+                      Select Mission Directive
+                    </h3>
+                    <p className="text-[10px] text-white/60 font-medium">
+                      Representing: {taskUser.firstName || taskUser.first_name}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsTaskModalOpen(false)}
+                  className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                  title="Abort Authorization Link"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-1 gap-2">
+                {TASKS.map((task) => (
+                  <button
+                    key={task}
+                    onClick={() => setSelectedTask(task)}
+                    className={`flex items-center justify-between p-3 rounded-xl border transition-all ${
+                      selectedTask === task
+                        ? "bg-[#DF8142]/10 border-[#DF8142] text-[#5A270F] dark:text-[#EEB38C]"
+                        : "bg-[#FDF8F6] dark:bg-white/5 border-[#EEB38C]/10 text-[#92664A] hover:bg-[#EEB38C]/5"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`p-1.5 rounded-md ${selectedTask === task ? "bg-[#DF8142] text-white" : "bg-gray-200 dark:bg-white/10 text-gray-500"}`}
+                      >
+                        {task === "Resource Approval" && (
+                          <Activity className="h-3.5 w-3.5" />
+                        )}
+                        {task === "User Authorization" && (
+                          <Target className="h-3.5 w-3.5" />
+                        )}
+                        {task === "Flag Resolution" && (
+                          <Zap className="h-3.5 w-3.5" />
+                        )}
+                        {task === "Full Departmental Authority" && (
+                          <Shield className="h-3.5 w-3.5" />
+                        )}
+                      </div>
+                      <span className="text-[11px] font-bold tracking-wide">
+                        {task}
+                      </span>
+                    </div>
+                    {selectedTask === task && (
+                      <div className="h-2 w-2 rounded-full bg-[#DF8142] shadow-[0_0_8px_#DF8142]" />
+                    )}
+                  </button>
+                ))}
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={() =>
+                    handleToggleRepresentation(taskUser, selectedTask)
+                  }
+                  className="w-full py-3 bg-[#5A270F] text-white rounded-xl font-black text-[10px] tracking-[0.2em] uppercase hover:bg-[#DF8142] active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 group"
+                >
+                  <Fingerprint className="h-4 w-4" />
+                  Initiate Authority Link
+                  <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

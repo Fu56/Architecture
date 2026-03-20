@@ -88,11 +88,31 @@ export const approveResource = async (req: Request, res: Response) => {
     const reviewerData = reviewerId
       ? await prisma.user.findUnique({
           where: { id: reviewerId },
-          select: { first_name: true, last_name: true },
+          select: { first_name: true, last_name: true, permissions: true, representedUserId: true, representedTask: true },
         })
       : null;
+
+    // Custom Permission Verification
+    const customPermissions = (reviewerData?.permissions as any) || {};
+    if (customPermissions.canApproveResources === false) {
+      return res.status(403).json({ message: "Security Protocol: Your individual clearance for resource approval has been revoked by the Department Head." });
+    }
+
+    // Representation Resolution
+    let representationName = "";
+    if (reviewerData?.representedUserId) {
+      const represented = await prisma.user.findUnique({
+        where: { id: reviewerData.representedUserId },
+        select: { first_name: true, last_name: true }
+      });
+      if (represented) {
+        const taskInfo = (reviewerData as any).representedTask ? ` for ${(reviewerData as any).representedTask}` : "";
+        representationName = ` (Representing: ${represented.first_name || ""} ${represented.last_name || ""}${taskInfo})`;
+      }
+    }
+
     const reviewerName = reviewerData
-      ? `${reviewerData.first_name || ""} ${reviewerData.last_name || ""}`.trim()
+      ? `${reviewerData.first_name || ""} ${reviewerData.last_name || ""}${representationName}`.trim()
       : isDeptHead
         ? "Department Head"
         : "Administrator";
@@ -176,15 +196,35 @@ export const rejectResource = async (req: Request, res: Response) => {
     ).toLowerCase();
     const isDeptHead = ["departmenthead", "superadmin"].includes(requesterRole);
 
-    const reviewerId = requester?.id;
-    const reviewerData = reviewerId
+    const requesterId = requester?.id;
+    const reviewerData = requesterId
       ? await prisma.user.findUnique({
-          where: { id: reviewerId },
-          select: { first_name: true, last_name: true },
+          where: { id: requesterId },
+          select: { first_name: true, last_name: true, permissions: true, representedUserId: true, representedTask: true },
         })
       : null;
+
+    // Custom Permission Verification
+    const customPermissions = (reviewerData?.permissions as any) || {};
+    if (customPermissions.canApproveResources === false) {
+      return res.status(403).json({ message: "Security Protocol: Your individual clearance for resource rejection has been revoked." });
+    }
+
+    // Representation Resolution
+    let representationName = "";
+    if (reviewerData?.representedUserId) {
+      const represented = await prisma.user.findUnique({
+        where: { id: reviewerData.representedUserId },
+        select: { first_name: true, last_name: true }
+      });
+      if (represented) {
+        const taskInfo = (reviewerData as any).representedTask ? ` for ${(reviewerData as any).representedTask}` : "";
+        representationName = ` (Representing: ${represented.first_name || ""} ${represented.last_name || ""}${taskInfo})`;
+      }
+    }
+
     const reviewerName = reviewerData
-      ? `${reviewerData.first_name || ""} ${reviewerData.last_name || ""}`.trim()
+      ? `${reviewerData.first_name || ""} ${reviewerData.last_name || ""}${representationName}`.trim()
       : isDeptHead
         ? "Department Head"
         : "Administrator";
@@ -282,6 +322,17 @@ export const getAllUsers = async (req: Request, res: Response) => {
         academicStartDateEth: formatEthDate(u.academic_start_date),
         academicEndDateEth: formatEthDate(u.academic_end_date),
         createdAt: user.createdAt,
+        representedUserId: u.representedUserId,
+        representedTask: u.representedTask,
+        permissions: u.permissions || (() => {
+          const roleName = u.role?.name || "";
+          return {
+            canApproveResources: ["Admin", "DepartmentHead", "SuperAdmin"].includes(roleName),
+            canResolveFlags: ["Admin", "DepartmentHead", "SuperAdmin"].includes(roleName),
+            canEditUsers: ["DepartmentHead", "SuperAdmin"].includes(roleName),
+            canDeleteNodes: ["SuperAdmin"].includes(roleName),
+          };
+        })(),
       };
     });
 
@@ -619,10 +670,10 @@ export const getFlags = async (req: Request, res: Response) => {
 export const resolveFlag = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const userId = (req as any).user?.id;
     const { status } = req.body; // e.g. 'resolved', 'ignored'
 
     const requester = (req as any).user;
+    const requesterId = requester?.id;
     const requesterRole = (
       requester?.role?.name ||
       requester?.role ||
@@ -630,6 +681,20 @@ export const resolveFlag = async (req: Request, res: Response) => {
     ).toLowerCase();
     const isDeptHead = ["departmenthead", "superadmin"].includes(requesterRole);
 
+    const reviewerData = requesterId
+      ? await prisma.user.findUnique({
+          where: { id: requesterId },
+          select: { first_name: true, last_name: true, permissions: true, representedUserId: true, representedTask: true },
+        })
+      : null;
+
+    // Custom Permission Verification
+    const customPermissions = (reviewerData?.permissions as any) || {};
+    if (customPermissions.canResolveFlags === false) {
+      return res.status(403).json({ message: "Security Protocol: Your individual clearance for flag resolution has been revoked." });
+    }
+
+    // Representation Resolution for Logging (Optional but good for completeness)
     const newStatus = isDeptHead ? status || "resolved" : "admin_resolved";
 
     await prisma.flag.update({
@@ -637,7 +702,7 @@ export const resolveFlag = async (req: Request, res: Response) => {
       data: {
         status: newStatus,
         resolved_at: isDeptHead ? new Date() : undefined,
-        resolved_by_id: userId,
+        resolved_by_id: requesterId,
       },
     });
     res.json({
@@ -1181,6 +1246,7 @@ export const updateUser = async (req: Request, res: Response) => {
       suspendReason,
       academicStartDate,
       academicEndDate,
+      permissions,
     } = req.body;
 
     const requester = (req as any).user;
@@ -1220,6 +1286,7 @@ export const updateUser = async (req: Request, res: Response) => {
       academic_end_date: academicEndDate
         ? parseEthiopianDateString(academicEndDate)
         : undefined,
+      permissions,
     };
 
     // Status Change Authorization Protocol
@@ -1431,7 +1498,37 @@ export const approveUser = async (req: Request, res: Response) => {
       requester?.role ||
       ""
     ).toLowerCase();
-    const isDeptHead = ["departmenthead", "superadmin"].includes(requesterRole);
+
+    const requesterId = requester?.id;
+    const reviewerData = requesterId
+      ? await prisma.user.findUnique({
+          where: { id: requesterId },
+          select: { first_name: true, last_name: true, permissions: true, representedUserId: true },
+        })
+      : null;
+
+    // Custom Permission Verification (using canEditUsers as a proxy for node authorization)
+    const customPermissions = (reviewerData?.permissions as any) || {};
+    const isDeptHead = ["departmenthead", "superadmin"].includes(requesterRole) || customPermissions.canEditUsers === true;
+
+    // Representation Resolution for Attribute Logs
+    let representationName = "";
+    if (reviewerData?.representedUserId) {
+      const represented = await prisma.user.findUnique({
+        where: { id: reviewerData.representedUserId },
+        select: { first_name: true, last_name: true }
+      });
+      if (represented) {
+        const taskInfo = (reviewerData as any).representedTask ? ` for ${(reviewerData as any).representedTask}` : "";
+        representationName = ` (Representing: ${represented.first_name || ""} ${represented.last_name || ""}${taskInfo})`;
+      }
+    }
+
+    const reviewerName = reviewerData
+      ? `${reviewerData.first_name || ""} ${reviewerData.last_name || ""}${representationName}`.trim()
+      : isDeptHead
+        ? "Department Head Authority"
+        : "Administrator";
 
     const newStatus = isDeptHead ? "active" : "admin_approved_node";
 
@@ -1445,7 +1542,7 @@ export const approveUser = async (req: Request, res: Response) => {
       await notifyUsers({
         userIds: [user.id],
         title: "Account Authorized",
-        message: `Your system node has been authorized by the Department Head. You can now access the Nexus.`,
+        message: `Your system node has been authorized by ${reviewerName}. You can now access the Nexus.`,
         html: getAccountAuthorizationHtml(
           `${user.first_name} ${user.last_name}`,
         ),
@@ -1826,11 +1923,71 @@ export const checkAndSuspendExpiredStudents = async (
     });
   } catch (error) {
     console.error("Auto-suspension Error:", error);
-    res
-      .status(500)
-      .json({
-        message:
-          "Protocol Error: Failed to execute automated suspension sequence.",
+    res.status(500).json({
+      message: "Protocol Error: Failed to execute automated suspension sequence.",
+    });
+  }
+};
+
+export const toggleRepresentation = async (req: Request, res: Response) => {
+  try {
+    const { id: targetUserId } = req.params;
+    const { action, task } = req.body; // 'start' or 'stop'
+    const currentUser = (req as any).user;
+
+    // 1. Update the Actor's Representation State
+    const updatedActor = await prisma.user.update({
+      where: { id: currentUser.id },
+      data: {
+        representedUserId: action === 'start' ? targetUserId : null,
+        representedTask: action === 'start' ? (task || "General Representation") : null
+      }
+    });
+
+    // 2. Update the Target Node's Permissions (Temporary Escalation)
+    if (action === 'start') {
+      const permissionMatrix = {
+        canApproveResources: task === "Resource Approval" || task === "Full Departmental Authority",
+        canResolveFlags: task === "Flag Resolution" || task === "Full Departmental Authority",
+        canEditUsers: task === "User Authorization" || task === "Full Departmental Authority",
+        canDeleteNodes: task === "Full Departmental Authority",
+      };
+
+      await prisma.user.update({
+        where: { id: targetUserId },
+        data: { permissions: permissionMatrix }
       });
+    } else if (action === 'stop' && targetUserId) {
+      // Revert to Default/Revoke Temporary Clearances
+      await prisma.user.update({
+        where: { id: targetUserId },
+        data: { permissions: {} }
+      });
+    }
+
+    res.json({ 
+      message: action === 'start' ? "Representation & Authority Link Active." : "Representation & Authority Severed.",
+      representedUserId: updatedActor.representedUserId,
+      representedTask: updatedActor.representedTask
+    });
+  } catch (error) {
+    console.error("Toggle Representation Error:", error);
+    res.status(500).json({ message: "Failed to toggle authority link." });
+  }
+};
+
+export const updateUserPermissions = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { permissions } = req.body;
+
+    const user = await prisma.user.update({
+      where: { id },
+      data: { permissions }
+    });
+
+    res.json({ message: "Permissions matrix updated.", user });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update permissions." });
   }
 };

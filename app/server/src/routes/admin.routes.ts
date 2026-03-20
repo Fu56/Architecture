@@ -16,6 +16,8 @@ import {
   bulkRegisterStudents,
   deleteUser,
   createUser,
+  toggleRepresentation,
+  updateUserPermissions,
 } from "../controllers/admin.controller";
 import { requireAuth } from "../middleware/auth";
 import { requireRole } from "../middleware/roles";
@@ -48,5 +50,7 @@ router.put("/users/:id", updateUser);
 router.post("/users/register-faculty", registerFaculty);
 router.post("/users/bulk-register", bulkRegisterStudents);
 router.delete("/users/:id", deleteUser);
+router.patch("/users/:id/represent", toggleRepresentation);
+router.patch("/users/:id/permissions", updateUserPermissions);
 
 export default router;
