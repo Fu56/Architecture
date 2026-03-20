@@ -6,6 +6,13 @@ interface UserWithRole {
   email: string;
   name?: string;
   role?: { name: string } | string;
+  secondaryRoles?: { name: string }[];
+  permissions?: {
+    canApproveResources?: boolean;
+    canResolveFlags?: boolean;
+    canEditUsers?: boolean;
+    canDeleteNodes?: boolean;
+  };
 }
 
 export default function DeptHeadAboveRoute() {
@@ -28,7 +35,7 @@ export default function DeptHeadAboveRoute() {
     return <Navigate to="/login" replace />;
   }
 
-  const user = session.user as UserWithRole & { secondaryRoles?: { name: string }[] };
+  const user = session.user as UserWithRole;
   const role =
     typeof user.role === "object" && user.role !== null
       ? user.role.name
@@ -36,7 +43,14 @@ export default function DeptHeadAboveRoute() {
   const secondaryRoles = user.secondaryRoles?.map(r => r.name) || [];
   const allRoles = [role, ...secondaryRoles];
 
-  const isAuthorized = allRoles.some(r => r === "SuperAdmin" || r === "DepartmentHead");
+  // Standard DeptHead / SuperAdmin check
+  const isDeptHeadAbove = allRoles.some(r => r === "SuperAdmin" || r === "DepartmentHead");
 
-  return isAuthorized ? <Outlet /> : <Navigate to="/" replace />;
+  // Delegated permission check — users granted resource approval authority
+  const perms = user.permissions || {};
+  const hasDelegatedApproval =
+    perms.canApproveResources === true ||
+    perms.canDeleteNodes === true;     // full authority also grants this
+
+  return isDeptHeadAbove || hasDelegatedApproval ? <Outlet /> : <Navigate to="/" replace />;
 }

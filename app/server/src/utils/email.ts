@@ -499,6 +499,90 @@ export const getRestoreNotificationHtml = (
     `;
 };
 
+// ─── Representation Assignment Notification ────────────────────────────────────
+export const getRepresentationAssignedHtml = (
+  userName: string,
+  deptHeadName: string,
+  task: string,
+) => {
+  return `
+    <div ${emailStyle} style="border: 2px solid #7c3aed;">
+        <div ${headerStyle} style="background: linear-gradient(135deg, #3b0764 0%, #6d28d9 100%); border-bottom: 4px solid #7c3aed;">
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #c4b5fd; text-transform: uppercase;">Authority Delegation Protocol</p>
+            <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px;">REPRESENTATION ASSIGNED</h1>
+            <p style="margin-top: 8px; opacity: 0.8; font-size: 11px; font-weight: bold; letter-spacing: 2px; color: #ddd6fe;">TASK: ${task.toUpperCase()}</p>
+        </div>
+        <div style="padding: 0 20px;">
+            <p>Dear ${userName},</p>
+            <p>You have been officially designated as a <strong>Departmental Representative</strong> by the Department Head. You are now authorized to act on their behalf for the specified operational scope.</p>
+
+            <div style="background: #f5f3ff; padding: 25px; border-radius: 12px; margin: 30px 0; border: 1px solid #ede9fe;">
+                <p style="margin: 0 0 8px 0; font-size: 10px; font-weight: 900; color: #7c3aed; text-transform: uppercase; letter-spacing: 1px;">Delegated By</p>
+                <p style="margin: 0 0 20px 0; font-size: 16px; font-weight: 800; color: #4c1d95;">${deptHeadName}</p>
+                <p style="margin: 0 0 8px 0; font-size: 10px; font-weight: 900; color: #7c3aed; text-transform: uppercase; letter-spacing: 1px;">Assigned Task Scope</p>
+                <p style="margin: 0; font-size: 16px; font-weight: 800; color: #5b21b6;">${task}</p>
+            </div>
+
+            <div style="padding: 20px; background: #ede9fe; border-radius: 12px; border: 1px solid #ddd6fe; margin-bottom: 30px;">
+                <p style="margin: 0; font-size: 13px; color: #4c1d95; font-weight: 600;">
+                    <strong>Protocol Notice:</strong> Your actions within the assigned scope are being logged and attributed under the Department Head's authority. Exercise this access with care.
+                </p>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="${env.baseUrl}/dashboard" style="display: inline-block; padding: 16px 32px; background-color: #7c3aed; color: white; text-decoration: none; border-radius: 12px; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);">Access Your Dashboard</a>
+            </div>
+
+            <p style="margin-top: 40px; font-size: 11px; color: #7c3aed; text-align: center; font-weight: bold; font-style: italic;">
+                This is a system-generated alert. Representation is active until revoked by the Department Head.
+            </p>
+            <div ${footerStyle}>Authority Delegation Protocol | Temporary Clearance Active</div>
+        </div>
+    </div>
+    `;
+};
+
+// ─── Representation Period Ended Notification ────────────────────────────────────
+export const getRepresentationRemovedHtml = (
+  userName: string,
+  deptHeadName: string,
+) => {
+  return `
+    <div ${emailStyle} style="border: 2px solid #0ea5e9;">
+        <div ${headerStyle} style="background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 100%); border-bottom: 4px solid #0ea5e9;">
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #7dd3fc; text-transform: uppercase;">Authority Delegation Protocol</p>
+            <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px;">REPRESENTATION CONCLUDED</h1>
+        </div>
+        <div style="padding: 0 20px;">
+            <p>Dear ${userName},</p>
+            <p>The <strong>Departmental Representation Period</strong> assigned by the Department Head has officially concluded. The delegation link has been severed, but your task-specific access permissions remain fully active.</p>
+
+            <div style="background: #f0f9ff; padding: 25px; border-radius: 12px; margin: 30px 0; border: 1px solid #bae6fd; text-align: center;">
+                <p style="margin: 0 0 8px 0; font-size: 10px; font-weight: 900; color: #0369a1; text-transform: uppercase; letter-spacing: 1px;">Representation Period Closed By</p>
+                <p style="margin: 0; font-size: 18px; font-weight: 800; color: #0c4a6e;">${deptHeadName}</p>
+            </div>
+
+            <div style="padding: 20px; background: #ecfdf5; border-radius: 12px; border: 1px solid #a7f3d0; margin-bottom: 30px; border-left: 4px solid #10b981;">
+                <p style="margin: 0 0 6px 0; font-size: 10px; font-weight: 900; color: #065f46; text-transform: uppercase; letter-spacing: 1px;">✅ Your Access Status</p>
+                <p style="margin: 0; font-size: 13px; color: #047857; font-weight: 600;">
+                    Your assigned task permissions are <strong>still active</strong>. You may continue performing your designated functions independently. Contact the Department Head if you have any questions about your current access level.
+                </p>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="${env.baseUrl}/dashboard" style="display: inline-block; padding: 16px 32px; background-color: #0369a1; color: white; text-decoration: none; border-radius: 12px; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 14px rgba(3, 105, 161, 0.3);">Access Your Dashboard</a>
+            </div>
+
+            <p style="margin-top: 40px; font-size: 11px; color: #0369a1; text-align: center; font-weight: bold; font-style: italic;">
+                This is a system-generated alert. Your assigned permissions remain in effect until explicitly updated.
+            </p>
+            <div ${footerStyle}>Authority Delegation Protocol | Representation Concluded</div>
+        </div>
+    </div>
+    `;
+};
+
+
 // ─── Suspension Notification ──────────────────────────────────────────────────
 export const getSuspendedHtml = (
   userName: string,

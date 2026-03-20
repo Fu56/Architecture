@@ -21,9 +21,11 @@ import {
   LayoutDashboard,
   ShieldCheck,
   ArrowLeft,
+  Zap,
 } from "lucide-react";
 
 import { getUser } from "../../lib/auth";
+import { useSession } from "../../lib/auth-client";
 import ThemeToggle from "../../components/ui/ThemeToggle";
 import DeptHeadDashboard from "./DeptHeadDashboard";
 
@@ -53,6 +55,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const user = getUser();
+  const { data: session } = useSession();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [prevPath, setPrevPath] = useState(location.pathname);
@@ -71,6 +74,19 @@ const AdminDashboard = () => {
 
   const role = typeof user?.role === "object" ? user.role.name : user?.role;
   const isSuperAdmin = role === "SuperAdmin";
+
+  // Live delegated permissions from session
+  const sessionPerms = ((session?.user as any)?.permissions || {}) as {
+    canApproveResources?: boolean;
+    canResolveFlags?: boolean;
+    canEditUsers?: boolean;
+    canDeleteNodes?: boolean;
+  };
+  const hasDelegatedPerms =
+    sessionPerms.canApproveResources ||
+    sessionPerms.canResolveFlags ||
+    sessionPerms.canEditUsers ||
+    sessionPerms.canDeleteNodes;
 
   if (role === "DepartmentHead") {
     return <DeptHeadDashboard />;
@@ -154,12 +170,73 @@ const AdminDashboard = () => {
                     </button>
                   </div>
 
+                  {/* ── Delegated Authority Section ─────────────────── */}
+                  {hasDelegatedPerms && (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-1.5 px-4 mb-3">
+                        <Zap className="h-2.5 w-2.5 text-violet-400 animate-pulse" />
+                        <p className="text-[8px] font-black text-violet-400/80 uppercase tracking-[0.3em]">
+                          Authority Mandate
+                        </p>
+                      </div>
+                      {sessionPerms.canApproveResources && (
+                        <NavLink
+                          to="/admin/approvals"
+                          className={`group flex items-center justify-between px-5 py-3 rounded-xl text-[9px] font-black uppercase tracking-[0.15em] transition-all duration-500 ${
+                            location.pathname.startsWith("/admin/approvals")
+                              ? "bg-emerald-500 text-white shadow-xl scale-[1.02]"
+                              : "text-emerald-400/70 hover:text-white hover:bg-white/5"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <CheckSquare className="h-3.5 w-3.5" />
+                            <span>Resource Approvals</span>
+                          </div>
+                          {location.pathname.startsWith("/admin/approvals") && <div className="h-1 w-1 rounded-full bg-white animate-pulse" />}
+                        </NavLink>
+                      )}
+                      {sessionPerms.canResolveFlags && (
+                        <NavLink
+                          to="/admin/flags"
+                          className={`group flex items-center justify-between px-5 py-3 rounded-xl text-[9px] font-black uppercase tracking-[0.15em] transition-all duration-500 ${
+                            location.pathname.startsWith("/admin/flags")
+                              ? "bg-red-500 text-white shadow-xl scale-[1.02]"
+                              : "text-red-400/70 hover:text-white hover:bg-white/5"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <Flag className="h-3.5 w-3.5" />
+                            <span>Flagged Content</span>
+                          </div>
+                          {location.pathname.startsWith("/admin/flags") && <div className="h-1 w-1 rounded-full bg-white animate-pulse" />}
+                        </NavLink>
+                      )}
+                      {sessionPerms.canEditUsers && (
+                        <NavLink
+                          to="/admin/users"
+                          className={`group flex items-center justify-between px-5 py-3 rounded-xl text-[9px] font-black uppercase tracking-[0.15em] transition-all duration-500 ${
+                            location.pathname.startsWith("/admin/users")
+                              ? "bg-violet-600 text-white shadow-xl scale-[1.02]"
+                              : "text-violet-400/70 hover:text-white hover:bg-white/5"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <Users className="h-3.5 w-3.5" />
+                            <span>User Authorization</span>
+                          </div>
+                          {location.pathname.startsWith("/admin/users") && <div className="h-1 w-1 rounded-full bg-white animate-pulse" />}
+                        </NavLink>
+                      )}
+                    </div>
+                  )}
+
                   <div className="space-y-2">
                     <p className="px-4 text-[8px] font-black text-white/30 uppercase tracking-[0.3em] mb-3">
                       Control Modules
                     </p>
                     {adminNavLinks
                       .filter((link) => {
+                        // Always hide these from the standard list — shown in Authority Mandate section above
                         if (link.name === "Resource Approvals" || link.name === "Flagged Content") return false;
                         if (link.name === "News & Events") return isSuperAdmin;
                         return true;

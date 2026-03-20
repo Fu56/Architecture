@@ -12,10 +12,7 @@ export const auth = betterAuth({
   }),
   plugins: [
     customSession(async ({ user, session }) => {
-      const roleId = (user as any).roleId;
-
-      // Fetch full user details including secondary roles
-      // Note: 'user' here might be the session user object, so safe to query by ID
+      // Fetch full user details including secondary roles and delegated permissions
       const dbUser = await prisma.user.findUnique({
         where: { id: user.id },
         include: { role: true, secondaryRoles: true },
@@ -25,11 +22,14 @@ export const auth = betterAuth({
         user: {
           ...user,
           role: dbUser?.role ? { name: dbUser.role.name } : undefined,
-          secondaryRoles: dbUser?.secondaryRoles || [], // Expose secondary roles
+          secondaryRoles: dbUser?.secondaryRoles || [],
+          // ─── Delegation fields ────────────────────────────────────
+          permissions: (dbUser?.permissions as object) || {},
+          representedTask: (dbUser as any)?.representedTask || null,
+          representedUserId: (dbUser as any)?.representedUserId || null,
         },
         session,
       };
-      return { user, session };
     }),
   ],
 

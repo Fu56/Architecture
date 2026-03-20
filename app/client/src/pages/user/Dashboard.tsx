@@ -16,9 +16,11 @@ import {
   PanelLeftOpen,
   ArrowLeft,
   ShieldCheck,
+  Zap,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { getUser } from "../../lib/auth";
+import { useSession } from "../../lib/auth-client";
 import ThemeToggle from "../../components/ui/ThemeToggle";
 
 const dashboardNavLinks = [
@@ -48,6 +50,7 @@ const UserDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const user = getUser();
+  const { data: session } = useSession();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [prevPath, setPrevPath] = useState(location.pathname);
@@ -78,6 +81,16 @@ const UserDashboard = () => {
   const isDeptHead = userRole === "DepartmentHead";
   const isAdmin =
     userRole === "Admin" || userRole === "admin" || isSuperAdmin || isDeptHead;
+
+  // Delegated permissions from live session
+  interface SessionWithPerms { permissions?: { canApproveResources?: boolean; canResolveFlags?: boolean; canEditUsers?: boolean; canDeleteNodes?: boolean; }; }
+  const sessionPerms = ((session?.user as SessionWithPerms)?.permissions || {});
+  const hasDelegatedAuthority =
+    sessionPerms.canApproveResources === true ||
+    sessionPerms.canResolveFlags === true ||
+    sessionPerms.canEditUsers === true ||
+    sessionPerms.canDeleteNodes === true;
+
 
   return (
     <div className="min-h-screen bg-[#FAF8F4] dark:bg-[#0C0603] transition-colors duration-500 relative">
@@ -153,7 +166,7 @@ const UserDashboard = () => {
                   </div>
  
                   {isAdmin && (
-                    <div className="px-2 mb-6">
+                    <div className="px-2 mb-4">
                        <Link
                         to="/admin"
                         className="flex items-center gap-3 px-4 py-3 bg-white/10 hover:bg-white text-white hover:text-[#5A270F] rounded-xl border border-white/10 transition-all duration-500 group shadow-lg"
@@ -162,6 +175,22 @@ const UserDashboard = () => {
                         <div className="flex flex-col">
                           <span className="text-[9px] font-black uppercase tracking-[0.15em]">Admin Authority</span>
                           <span className="text-[6.5px] font-bold text-white/40 group-hover:text-[#5A270F]/40 uppercase tracking-widest leading-none">Command Center</span>
+                        </div>
+                      </Link>
+                    </div>
+                  )}
+
+                  {/* Authority Mandate shortcut for represented users */}
+                  {!isAdmin && hasDelegatedAuthority && (
+                    <div className="px-2 mb-4">
+                      <Link
+                        to="/dashboard/authority"
+                        className="flex items-center gap-3 px-4 py-3 bg-violet-600/20 hover:bg-violet-600 text-violet-300 hover:text-white rounded-xl border border-violet-500/30 transition-all duration-500 group shadow-lg"
+                      >
+                        <Zap className="h-4 w-4 text-violet-400 group-hover:text-white animate-pulse" />
+                        <div className="flex flex-col">
+                          <span className="text-[9px] font-black uppercase tracking-[0.15em]">Authority Mandate</span>
+                          <span className="text-[6.5px] font-bold text-violet-400/60 group-hover:text-white/60 uppercase tracking-widest leading-none">Delegated Tasks Active</span>
                         </div>
                       </Link>
                     </div>

@@ -13,6 +13,8 @@ import {
   getArchiveNotificationHtml,
   getRestoreNotificationHtml,
   getSuspendedHtml,
+  getRepresentationAssignedHtml,
+  getRepresentationRemovedHtml,
 } from "../utils/email";
 import {
   getMonthGap,
@@ -1935,6 +1937,24 @@ export const toggleRepresentation = async (req: Request, res: Response) => {
     const { action, task } = req.body; // 'start' or 'stop'
     const currentUser = (req as any).user;
 
+    // ── Fetch the acting dept head's full info ───────────────────────
+    const deptHeadData = await prisma.user.findUnique({
+      where: { id: currentUser.id },
+      select: { first_name: true, last_name: true },
+    });
+    const deptHeadName = deptHeadData
+      ? `${deptHeadData.first_name || ""} ${deptHeadData.last_name || ""}`.trim()
+      : "Department Head";
+
+    // ── Fetch the target user's full info ────────────────────────────
+    const targetUserData = await prisma.user.findUnique({
+      where: { id: targetUserId },
+      select: { first_name: true, last_name: true, email: true },
+    });
+    const targetUserName = targetUserData
+      ? `${targetUserData.first_name || ""} ${targetUserData.last_name || ""}`.trim()
+      : "User";
+
     // 1. Update the Actor's Representation State
     const updatedActor = await prisma.user.update({
       where: { id: currentUser.id },
@@ -1946,6 +1966,7 @@ export const toggleRepresentation = async (req: Request, res: Response) => {
 
     // 2. Update the Target Node's Permissions (Temporary Escalation)
     if (action === 'start') {
+      const assignedTask = task || "General Representation";
       const permissionMatrix = {
         canApproveResources: task === "Resource Approval" || task === "Full Departmental Authority",
         canResolveFlags: task === "Flag Resolution" || task === "Full Departmental Authority",
@@ -1957,11 +1978,34 @@ export const toggleRepresentation = async (req: Request, res: Response) => {
         where: { id: targetUserId },
         data: { permissions: permissionMatrix }
       });
+
+      // ── Notify the target user (in-app + email) — Assignment ────────
+      await notifyUsers({
+        userIds: [targetUserId],
+        title: "🔑 Representation Authority Assigned",
+        message: `You have been appointed as a Departmental Representative by ${deptHeadName}. Task scope: ${assignedTask}.`,
+        html: getRepresentationAssignedHtml(
+          targetUserName,
+          deptHeadName,
+          assignedTask,
+        ),
+      });
+
     } else if (action === 'stop' && targetUserId) {
-      // Revert to Default/Revoke Temporary Clearances
-      await prisma.user.update({
-        where: { id: targetUserId },
-        data: { permissions: {} }
+      // The dept head's link is severed (handled in step 1 above).
+      // The assigned user's task-based PERMISSIONS are intentionally retained
+      // so they can continue performing their assigned function independently.
+      // Permissions can be explicitly revoked separately via the permissions panel.
+
+      // ── Notify the target user (in-app + email) — Representation Ended ──
+      await notifyUsers({
+        userIds: [targetUserId],
+        title: "🔗 Representation Period Ended",
+        message: `Your Departmental Representation period with ${deptHeadName} has concluded. Your assigned task permissions remain active — you may continue performing your designated functions independently.`,
+        html: getRepresentationRemovedHtml(
+          targetUserName,
+          deptHeadName,
+        ),
       });
     }
 

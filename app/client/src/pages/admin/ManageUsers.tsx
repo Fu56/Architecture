@@ -118,6 +118,18 @@ const ManageUsers = () => {
     "Full Departmental Authority",
   ];
 
+  // Edit Mandate Modal (edit individual permissions for an already-represented user)
+  const [isEditMandateOpen, setIsEditMandateOpen] = useState(false);
+  const [editMandateUser, setEditMandateUser] = useState<UserSpecimen | null>(null);
+  const [editPerms, setEditPerms] = useState({
+    canApproveResources: false,
+    canResolveFlags: false,
+    canEditUsers: false,
+    canDeleteNodes: false,
+  });
+  const [isSavingMandate, setIsSavingMandate] = useState(false);
+
+
   // Sync with session if it changes
   useEffect(() => {
     if (currentUser?.representedUserId) {
@@ -429,6 +441,37 @@ const ManageUsers = () => {
       },
     }));
   };
+
+  const handleOpenEditMandate = (user: UserSpecimen) => {
+    setEditMandateUser(user);
+    setEditPerms({
+      canApproveResources: user.permissions?.canApproveResources ?? false,
+      canResolveFlags:     user.permissions?.canResolveFlags     ?? false,
+      canEditUsers:        user.permissions?.canEditUsers        ?? false,
+      canDeleteNodes:      user.permissions?.canDeleteNodes      ?? false,
+    });
+    setIsEditMandateOpen(true);
+  };
+
+  const handleSaveMandate = async () => {
+    if (!editMandateUser) return;
+    setIsSavingMandate(true);
+    try {
+      await api.patch(`/admin/users/${editMandateUser.id}/permissions`, {
+        permissions: editPerms,
+      });
+      toast.success(`Authority mandate updated for ${
+        editMandateUser.firstName || editMandateUser.first_name
+      }.`);
+      setIsEditMandateOpen(false);
+      fetchUsers();
+    } catch {
+      toast.error("Failed to update mandate. Please try again.");
+    } finally {
+      setIsSavingMandate(false);
+    }
+  };
+
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -967,21 +1010,32 @@ const ManageUsers = () => {
                         </button>
 
                         {isCurrentDeptHead && (
-                          <button
-                            onClick={() => handleToggleRepresentation(user)}
-                            className={`p-2 rounded-lg transition-all ${
-                              user.id === representedId
-                                ? "bg-[#DF8142] text-white shadow-lg animate-pulse"
-                                : "text-[#92664A] hover:bg-[#EEB38C]/10 hover:text-[#DF8142]"
-                            }`}
-                            title={
-                              user.id === representedId
-                                ? `Representing: ${activeTask}`
-                                : "Represent Node Authority"
-                            }
-                          >
-                            <Fingerprint className="h-3.5 w-3.5" />
-                          </button>
+                          <>
+                            <button
+                              onClick={() => handleToggleRepresentation(user)}
+                              className={`p-2 rounded-lg transition-all ${
+                                user.id === representedId
+                                  ? "bg-[#DF8142] text-white shadow-lg animate-pulse"
+                                  : "text-[#92664A] hover:bg-[#EEB38C]/10 hover:text-[#DF8142]"
+                              }`}
+                              title={
+                                user.id === representedId
+                                  ? `Representing: ${activeTask}`
+                                  : "Represent Node Authority"
+                              }
+                            >
+                              <Fingerprint className="h-3.5 w-3.5" />
+                            </button>
+
+                            {/* Edit Mandate */}
+                            <button
+                              onClick={() => handleOpenEditMandate(user)}
+                              className="p-2 rounded-lg transition-all text-[#92664A] dark:text-[#EEB38C]/40 hover:bg-[#DF8142]/10 hover:text-[#DF8142]"
+                              title="Edit Authority Mandate"
+                            >
+                              <Edit2 className="h-3.5 w-3.5" />
+                            </button>
+                          </>
                         )}
 
                         {((user.status === "pending_approval" &&
@@ -1888,6 +1942,171 @@ const ManageUsers = () => {
           </div>
         </div>
       )}
+
+      {/* ── Edit Mandate Modal ───────────────────────────────────────── */}
+      {isEditMandateOpen && editMandateUser && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-[#2A1205]/75 backdrop-blur-2xl"
+            onClick={() => setIsEditMandateOpen(false)}
+          />
+          <div className="relative w-full max-w-md bg-[#FAF8F4] dark:bg-[#1A0B04] rounded-3xl shadow-[0_40px_80px_-10px_rgba(90,39,15,0.5)] border border-[#DF8142]/20 overflow-hidden animate-in zoom-in-95 duration-300">
+
+            {/* ── Header ── */}
+            <div className="bg-gradient-to-br from-[#5A270F] via-[#6C3B1C] to-[#2A1205] px-8 py-7 relative overflow-hidden">
+              <div className="absolute inset-0 opacity-[0.04] architectural-grid pointer-events-none" />
+              <div className="absolute top-0 right-0 w-40 h-40 bg-[#DF8142]/20 blur-[60px] pointer-events-none" />
+              <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-[#EEB38C]/10 blur-3xl pointer-events-none" />
+
+              <div className="relative z-10 flex items-center justify-between">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="h-[1.5px] w-5 bg-[#DF8142] shadow-[0_0_8px_#DF8142]" />
+                    <p className="text-[8px] font-black text-[#EEB38C] uppercase tracking-[0.5em]">
+                      Authority Mandate
+                    </p>
+                  </div>
+                  <h3 className="text-xl font-black text-white uppercase tracking-tight leading-none italic">
+                    {editMandateUser.firstName || editMandateUser.first_name}{" "}
+                    <span className="text-[#DF8142] not-italic">
+                      {editMandateUser.lastName || editMandateUser.last_name}
+                    </span>
+                  </h3>
+                  <p className="text-[8px] font-bold text-[#EEB38C]/40 uppercase tracking-widest">
+                    Edit delegated task permissions
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsEditMandateOpen(false)}
+                  title="Close Edit Mandate"
+                  className="p-2.5 bg-white/10 hover:bg-[#DF8142] rounded-xl text-white transition-all duration-300 hover:rotate-90 border border-white/10"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* ── Permission Toggles ── */}
+            <div className="p-6 space-y-2.5">
+              <p className="text-[8.5px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.4em] mb-4 flex items-center gap-2">
+                <span className="h-[1px] w-4 bg-[#DF8142]/40" />
+                Toggle permissions
+              </p>
+
+              {[
+                {
+                  key: "canApproveResources",
+                  label: "Resource Approval",
+                  desc: "Review & approve pending resource submissions",
+                  activeBorder: "border-[#DF8142]",
+                  activeBg: "bg-[#DF8142]/8 dark:bg-[#DF8142]/10",
+                  checkBg: "bg-[#DF8142]",
+                  dotClass: "bg-[#DF8142]",
+                  badge: "text-[#5A270F] dark:text-[#EEB38C] border-[#DF8142]/40",
+                },
+                {
+                  key: "canResolveFlags",
+                  label: "Flag Resolution",
+                  desc: "Investigate & resolve reported content",
+                  activeBorder: "border-[#6C3B1C]",
+                  activeBg: "bg-[#6C3B1C]/8 dark:bg-[#6C3B1C]/20",
+                  checkBg: "bg-[#6C3B1C]",
+                  dotClass: "bg-[#92664A]",
+                  badge: "text-[#6C3B1C] dark:text-[#EEB38C]/80 border-[#92664A]/40",
+                },
+                {
+                  key: "canEditUsers",
+                  label: "User Authorization",
+                  desc: "Manage users, roles & access rights",
+                  activeBorder: "border-[#92664A]",
+                  activeBg: "bg-[#92664A]/8 dark:bg-[#92664A]/15",
+                  checkBg: "bg-[#92664A]",
+                  dotClass: "bg-[#EEB38C]",
+                  badge: "text-[#5A270F] dark:text-[#EEB38C]/70 border-[#92664A]/30",
+                },
+                {
+                  key: "canDeleteNodes",
+                  label: "Full Dept. Authority",
+                  desc: "All tasks + archive & delete resources",
+                  activeBorder: "border-[#5A270F]",
+                  activeBg: "bg-[#5A270F]/6 dark:bg-[#5A270F]/30",
+                  checkBg: "bg-[#5A270F]",
+                  dotClass: "bg-[#5A270F]",
+                  badge: "text-[#5A270F] dark:text-[#EEB38C]/60 border-[#5A270F]/30",
+                },
+              ].map(({ key, label, desc, activeBorder, activeBg, checkBg, dotClass, badge }) => {
+                const isOn = editPerms[key as keyof typeof editPerms];
+                return (
+                  <button
+                    key={key}
+                    onClick={() => setEditPerms(prev => ({ ...prev, [key]: !prev[key as keyof typeof prev] }))}
+                    className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-300 text-left group hover:scale-[1.01] active:scale-[0.99] ${
+                      isOn
+                        ? `${activeBorder} ${activeBg} shadow-sm`
+                        : "border-[#D9D9C2] dark:border-white/8 hover:border-[#EEB38C]/40 dark:hover:border-[#EEB38C]/20"
+                    }`}
+                  >
+                    {/* Checkbox */}
+                    <div className={`h-5 w-5 rounded-lg border-2 flex items-center justify-center shrink-0 transition-all duration-300 ${
+                      isOn
+                        ? `${checkBg} border-transparent shadow-md`
+                        : "border-[#BCAF9C] dark:border-white/20 group-hover:border-[#DF8142]/40"
+                    }`}>
+                      {isOn && (
+                        <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none">
+                          <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      )}
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        {isOn && <span className={`h-1.5 w-1.5 rounded-full animate-pulse ${dotClass}`} />}
+                        <span className="text-[10px] font-black uppercase tracking-[0.12em] text-[#5A270F] dark:text-[#EEB38C]">
+                          {label}
+                        </span>
+                      </div>
+                      <span className="text-[8px] font-bold text-[#92664A] dark:text-[#EEB38C]/40 leading-tight">
+                        {desc}
+                      </span>
+                    </div>
+
+                    {/* Status badge */}
+                    <span className={`text-[7.5px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border shrink-0 transition-all ${
+                      isOn
+                        ? `${badge} bg-white/60 dark:bg-white/5`
+                        : "border-[#D9D9C2] dark:border-white/10 text-[#BCAF9C] dark:text-white/20"
+                    }`}>
+                      {isOn ? "Active" : "Off"}
+                    </span>
+                  </button>
+                );
+              })}
+
+              {/* Save Button */}
+              <div className="pt-3">
+                <button
+                  onClick={handleSaveMandate}
+                  disabled={isSavingMandate}
+                  className="w-full py-4 bg-[#5A270F] hover:bg-[#DF8142] disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-2xl font-black text-[10px] tracking-[0.25em] uppercase transition-all duration-500 shadow-xl shadow-[#5A270F]/30 hover:shadow-[#DF8142]/30 flex items-center justify-center gap-2.5 active:scale-[0.98] group relative overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#DF8142]/0 via-[#EEB38C]/10 to-[#DF8142]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                  {isSavingMandate ? (
+                    <Loader2 className="h-4 w-4 animate-spin relative z-10" />
+                  ) : (
+                    <Fingerprint className="h-4 w-4 relative z-10 group-hover:scale-110 transition-transform" />
+                  )}
+                  <span className="relative z-10">
+                    {isSavingMandate ? "Saving..." : "Save Mandate Changes"}
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
