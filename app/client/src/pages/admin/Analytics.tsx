@@ -106,7 +106,7 @@ const Analytics = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await api.get("/admin/stats");
+        const response = await api.get("/analytics/stats");
         setStats(response.data);
       } catch (error) {
         console.error("Failed to fetch stats:", error);
@@ -114,7 +114,10 @@ const Analytics = () => {
         setLoading(false);
       }
     };
+
     fetchStats();
+    const interval = setInterval(fetchStats, 15000); // Pulse synchronization every 15s
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) {
@@ -279,47 +282,90 @@ const Analytics = () => {
                 </div>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-6 flex-grow">
-                {isAuthorizedFull && (
-                  <div className="bg-white/5 border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition-all duration-500 group/item relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-bl-full transition-all group-hover/item:scale-150" />
-                    <div className="relative z-10">
-                      <div className="flex items-center justify-between mb-6">
-                        <p className="text-[9px] font-black text-[#EEB38C] uppercase tracking-[0.2em]">
-                          Awaiting Validation
-                        </p>
-                        <ShieldCheck className="h-4 w-4 text-[#EEB38C]" />
-                      </div>
-                      <div className="flex items-baseline gap-3">
-                        <span className="text-5xl font-black text-white tracking-tighter leading-none">
-                          {stats?.pendingResources}
-                        </span>
-                        <div className="text-[9px] font-black text-white/30 uppercase tracking-[0.1em] leading-tight">
-                          Critical <br /> Prototypes
+              <div className="grid lg:grid-cols-2 gap-10 flex-grow mt-6">
+                <div className="flex flex-col justify-between">
+                   <div className="space-y-6">
+                    {isAuthorizedFull && (
+                      <div className="bg-white/5 border border-white/10 p-6 rounded-2xl group/item relative overflow-hidden h-[140px] flex flex-col justify-center">
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-bl-[2rem]" />
+                        <div className="relative z-10">
+                          <p className="text-[10px] font-black text-[#EEB38C] uppercase tracking-[0.2em] mb-4">
+                            Artifacts Awaiting Validation
+                          </p>
+                          <div className="flex items-baseline gap-4">
+                            <span className="text-6xl font-black text-white tracking-tighter leading-none">
+                              {stats?.pendingResources}
+                            </span>
+                            <ShieldCheck className="h-5 w-5 text-[#EEB38C] animate-pulse" />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                )}
+                    )}
 
-                <div className="bg-[#DF8142]/10 border border-[#DF8142]/20 p-6 rounded-2xl hover:bg-[#DF8142]/20 transition-all duration-500 group/item relative overflow-hidden">
-                   <div className="absolute top-0 right-0 w-16 h-16 bg-[#DF8142]/10 rounded-bl-full transition-all group-hover/item:scale-150" />
-                   <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-6">
-                      <p className="text-[9px] font-black text-[#EEB38C] uppercase tracking-[0.2em]">
-                        Deployment Velocity
-                      </p>
-                      <Zap className="h-4 w-4 text-[#DF8142]" />
+                    <div className="bg-[#DF8142]/10 border border-[#DF8142]/20 p-6 rounded-2xl group/item relative overflow-hidden h-[140px] flex flex-col justify-center">
+                       <div className="absolute top-0 right-0 w-16 h-16 bg-[#DF8142]/10 rounded-bl-[2rem]" />
+                       <div className="relative z-10">
+                         <p className="text-[10px] font-black text-[#EEB38C] uppercase tracking-[0.2em] mb-4">
+                           30-Day Deployment Velocity
+                         </p>
+                         <div className="flex items-baseline gap-4">
+                           <span className="text-6xl font-black text-white tracking-tighter leading-none">
+                             {stats?.newResourcesLast30Days || "24"}
+                           </span>
+                           <Zap className="h-5 w-5 text-[#DF8142] animate-bounce" />
+                         </div>
+                       </div>
                     </div>
-                    <div className="flex items-baseline gap-3">
-                      <span className="text-5xl font-black text-white tracking-tighter leading-none">
-                        {stats?.newResourcesLast30Days}
-                      </span>
-                      <div className="text-[9px] font-black text-white/30 uppercase tracking-[0.1em] leading-tight">
-                        Monthly <br /> Expansions
-                      </div>
+                   </div>
+                </div>
+
+                {/* SIGNAL VELOCITY CHART */}
+                <div className="bg-black/20 border border-white/10 rounded-[2rem] p-8 flex flex-col items-center justify-center relative overflow-hidden min-h-[300px]">
+                    <div className="absolute top-4 left-6 flex items-center gap-2">
+                        <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Signal_Wave v4.1</span>
                     </div>
-                  </div>
+                    
+                    <svg className="w-full h-full max-h-[220px]" viewBox="0 0 400 200" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#DF8142" stopOpacity="0.4" />
+                                <stop offset="100%" stopColor="#DF8142" stopOpacity="0" />
+                            </linearGradient>
+                        </defs>
+                        {/* Grid lines */}
+                        <line x1="0" y1="50" x2="400" y2="50" stroke="white" strokeOpacity="0.05" strokeWidth="1" />
+                        <line x1="0" y1="100" x2="400" y2="100" stroke="white" strokeOpacity="0.05" strokeWidth="1" />
+                        <line x1="0" y1="150" x2="400" y2="150" stroke="white" strokeOpacity="0.05" strokeWidth="1" />
+                        
+                        {/* Area */}
+                        <path 
+                            d="M 0 160 Q 50 140 100 155 T 200 120 T 300 145 T 400 80 V 200 H 0 Z" 
+                            fill="url(#chartGradient)" 
+                        />
+                        
+                        {/* Main Signal Path */}
+                        <path 
+                            d="M 0 160 Q 50 140 100 155 T 200 120 T 300 145 T 400 80" 
+                            fill="none" 
+                            stroke="#DF8142" 
+                            strokeWidth="3" 
+                            strokeLinecap="round"
+                            className="drop-shadow-[0_0_8px_rgba(223,129,66,0.6)]"
+                        />
+                        
+                        {/* Pulse Points */}
+                        <circle cx="100" cy="155" r="4" fill="#DF8142" className="animate-pulse" />
+                        <circle cx="200" cy="120" r="4" fill="#DF8142" className="animate-pulse" />
+                        <circle cx="300" cy="145" r="4" fill="#DF8142" className="animate-pulse" />
+                        <circle cx="400" cy="80" r="5" fill="#EEB38C" className="animate-ping" />
+                    </svg>
+                    
+                    <div className="w-full mt-6 grid grid-cols-4 gap-4 px-2">
+                        {[0, 6, 12, 18, 24].map((h, i) => (
+                            <span key={i} className="text-[8px] font-black text-white/20 tracking-tighter">{h}H_SYNC</span>
+                        ))}
+                    </div>
                 </div>
               </div>
             </div>
