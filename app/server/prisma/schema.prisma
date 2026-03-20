@@ -48,6 +48,7 @@ model User {
     news          News[]         @relation("NewsAuthor")
     systemLogs    SystemLog[]
     favorites     Favorite[]
+    eventParticipations EventParticipant[]
 
     @@map("user")
 }
@@ -264,6 +265,18 @@ model News {
     author_id   String?
     created_at  DateTime @default(now())
     updated_at  DateTime @updatedAt
+    participants EventParticipant[]
+}
+
+model EventParticipant {
+    id        Int      @id @default(autoincrement())
+    eventId   Int
+    event     News     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt DateTime @default(now())
+
+    @@unique([eventId, userId])
 }
 
 

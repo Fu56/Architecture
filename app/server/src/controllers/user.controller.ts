@@ -149,3 +149,87 @@ export const getFavorites = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error fetching favorites" });
   }
 };
+
+export const registerEvent = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id;
+    const eventId = Number(req.params.id);
+
+    const event = await prisma.news.findUnique({ where: { id: eventId } });
+    if (!event || !event.is_event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    const existing = await prisma.eventParticipant.findUnique({
+      where: { eventId_userId: { eventId, userId } }
+    });
+
+    if (existing) {
+      return res.status(400).json({ message: "Already registered for this event" });
+    }
+
+    await prisma.eventParticipant.create({
+      data: { eventId, userId }
+    });
+
+    res.json({ message: "Successfully registered for event" });
+  } catch (error) {
+    console.error("Register Event Error:", error);
+    res.status(500).json({ message: "Error registering for event" });
+  }
+};
+
+export const deregisterEvent = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id;
+    const eventId = Number(req.params.id);
+
+    await prisma.eventParticipant.delete({
+      where: { eventId_userId: { eventId, userId } }
+    });
+
+    res.json({ message: "Successfully unregistered from event" });
+  } catch (error) {
+    console.error("Deregister Event Error:", error);
+    res.status(500).json({ message: "Error unregistering from event" });
+  }
+};
+
+export const getEventParticipants = async (req: Request, res: Response) => {
+  try {
+    const eventId = Number(req.params.id);
+
+    // Verify requester has access (Faculty, Admin, DeptHead, SuperAdmin)
+    const userRole = (req as any).user.role?.toLowerCase() || "";
+    const secondaryRoles = (req as any).user.secondaryRoles?.map((r: any) => r.name.toLowerCase()) || [];
+    const allRoles = [userRole, ...secondaryRoles];
+    
+    if (!allRoles.some(r => ["faculty", "admin", "departmenthead", "superadmin"].includes(r))) {
+         return res.status(403).json({ message: "Access Denied: Only faculty or admins can view participants" });
+    }
+
+    const participants = await prisma.eventParticipant.findMany({
+      where: { eventId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+            role: true,
+            batch: true,
+            year: true,
+          }
+        }
+      },
+      orderBy: { createdAt: "asc" }
+    });
+
+    res.json({ participants });
+  } catch (error) {
+    console.error("Get Participants Error:", error);
+    res.status(500).json({ message: "Error fetching event participants" });
+  }
+};
+

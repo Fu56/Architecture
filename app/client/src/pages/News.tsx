@@ -20,6 +20,7 @@ import {
 import { api } from "../lib/api";
 import { toast } from "../lib/toast";
 import { useTheme } from "../context/useTheme";
+import { useSession } from "../lib/auth-client";
 
 /* ─── Google Fonts: Inter + Space Grotesk ─── */
 const FONT_LINK_ID = "news-page-fonts";
@@ -32,11 +33,19 @@ interface NewsItem {
   isEvent: boolean;
   eventDate?: string;
   createdAt: string;
+  participants: string[];
   time: string;
 }
 
 const News = () => {
   const { theme, toggleTheme } = useTheme();
+  const { data: session } = useSession();
+  const user = session?.user;
+  const roleName = typeof user?.role === "string" ? user.role : (user?.role as any)?.name || "";
+  const secRoles = (user as any)?.secondaryRoles?.map((r: any) => r.name) || [];
+  const allRoles = [roleName, ...secRoles];
+  const isStudent = allRoles.includes("Student");
+  const isStaff = ["Faculty", "Admin", "DepartmentHead", "SuperAdmin"].some(r => allRoles.includes(r));
 
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,23 +70,61 @@ const News = () => {
       document.head.appendChild(link);
     }
     return () => {
-      /* leave font loaded for navigation */
+      /* cleanup */
     };
   }, []);
 
+  const fetchNews = async () => {
+    try {
+      const { data } = await api.get("/common/news");
+      setNews(data);
+    } catch (err) {
+      console.error("Failed to fetch news:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const { data } = await api.get("/common/news");
-        setNews(data);
-      } catch (err) {
-        console.error("Failed to fetch news:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchNews();
   }, []);
+
+  const [viewingEventId, setViewingEventId] = useState<number | null>(null);
+  const [participantsData, setParticipantsData] = useState<any[]>([]);
+  const [loadingParticipants, setLoadingParticipants] = useState(false);
+
+  const fetchParticipants = async (eventId: number) => {
+    if (viewingEventId === eventId) {
+      setViewingEventId(null);
+      return;
+    }
+    setViewingEventId(eventId);
+    setLoadingParticipants(true);
+    try {
+      const { data } = await api.get(`/user/events/${eventId}/participants`);
+      setParticipantsData(data.participants || []);
+    } catch {
+      toast.error("Failed to fetch participant registry");
+      setViewingEventId(null);
+    } finally {
+      setLoadingParticipants(false);
+    }
+  };
+
+  const handleRegisterToggle = async (eventId: number, isRegistered: boolean) => {
+    try {
+      if (isRegistered) {
+        await api.delete(`/user/events/${eventId}/register`);
+        toast.success("Successfully unassigned from event.");
+      } else {
+        await api.post(`/user/events/${eventId}/register`);
+        toast.success("Successfully joined event roster!");
+      }
+      fetchNews(); // Refresh news feed for updated participant list
+    } catch {
+      toast.error("Protocol Error: Registration modification failed.");
+    }
+  };
 
   /* Combined filter + search */
   const filteredNews = news.filter((item) => {
@@ -266,7 +313,10 @@ const News = () => {
                 />
               ))
             ) : filteredNews.length > 0 ? (
-              filteredNews.map((item) => (
+              filteredNews.map((item) => {
+                const isRegistered = user?.id ? item.participants?.includes(user.id) : false;
+                
+                return (
                 <article
                   key={item.id}
                   className={`group rounded-2xl overflow-hidden transition-all duration-500 flex flex-col sm:flex-row border shadow-lg ${
@@ -396,9 +446,84 @@ const News = () => {
                         <Share2 className="h-3.5 w-3.5" />
                       </button>
                     </div>
+
+                    {/* Participation Controls */}
+                    {item.isEvent && user && (
+                      <div className={`mt-4 pt-4 border-t flex flex-wrap items-center justify-between gap-4 ${isLight ? "border-[#D9D9C2]/40" : "border-white/5"}`}>
+                        {isStudent && (
+                          <div className="flex items-center gap-3">
+                            <label className="flex items-center gap-2 cursor-pointer group/cb">
+                              <div className="relative flex items-center justify-center">
+                                <input
+                                  type="checkbox"
+                                  className="peer sr-only"
+                                  checked={isRegistered}
+                                  onChange={() => handleRegisterToggle(item.id, isRegistered)}
+                                />
+                                <div className={`h-5 w-5 rounded border-2 transition-all ${isRegistered ? "bg-[#DF8142] border-[#DF8142]" : isLight ? "border-[#5A270F]/20 group-hover/cb:border-[#DF8142]" : "border-white/20 group-hover/cb:border-[#DF8142]"}`}>
+                                  {isRegistered && <CheckCircle className="h-3.5 w-3.5 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />}
+                                </div>
+                              </div>
+                              <span className={`text-[10px] font-black uppercase tracking-widest ${isRegistered ? "text-[#DF8142]" : isLight ? "text-[#92664A]" : "text-white/40"}`}>
+                                {isRegistered ? "Registered" : "Participate"}
+                              </span>
+                            </label>
+                          </div>
+                        )}
+                        
+                        {isStaff && (
+                          <div className="flex flex-col gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+                            <button
+                              onClick={() => fetchParticipants(item.id)}
+                              className={`flex items-center justify-between sm:justify-center gap-2 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${isLight ? "bg-[#EEB38C]/10 hover:bg-[#EEB38C]/20 text-[#5A270F]" : "bg-white/5 hover:bg-white/10 text-white"}`}
+                            >
+                              <span>View Roster</span>
+                              <span className="bg-[#DF8142] text-white px-1.5 py-0.5 rounded-md">
+                                {item.participants?.length || 0}
+                              </span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {viewingEventId === item.id && isStaff && (
+                       <div className={`mt-4 p-4 rounded-xl border animate-in slide-in-from-top-2 ${isLight ? "bg-[#FAF8F4] border-[#D9D9C2]/40" : "bg-[#100704] border-white/5"}`}>
+                         <h4 className={`text-[10px] font-black uppercase tracking-widest mb-3 ${isLight ? "text-[#5A270F]" : "text-[#EEB38C]"}`}>Registered Participants</h4>
+                         {loadingParticipants ? (
+                           <div className="flex items-center gap-2 text-[10px] text-[#DF8142] font-black uppercase">
+                             <Loader2 className="h-3 w-3 animate-spin"/> Loading Directory...
+                           </div>
+                         ) : participantsData.length === 0 ? (
+                           <p className={`text-[10px] font-medium ${isLight ? "text-[#92664A]" : "text-white/40"}`}>No participants registered yet.</p>
+                         ) : (
+                           <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-2">
+                             {participantsData.map(p => (
+                               <div key={p.user.id} className={`flex justify-between items-center p-2 rounded-lg ${isLight ? "bg-white border border-[#D9D9C2]/30" : "bg-white/[0.02] border border-white/5"}`}>
+                                 <span className={`text-[10px] font-bold ${isLight ? "text-[#5A270F]" : "text-white"}`}>
+                                   {p.user.first_name || "Unknown"} {p.user.last_name || ""}
+                                 </span>
+                                 <div className="flex items-center gap-2">
+                                   <span className={`text-[8px] uppercase tracking-widest font-black px-1.5 py-0.5 rounded bg-[#DF8142] text-white`}>
+                                     {p.user.role?.name || "Student"}
+                                   </span>
+                                   {p.user.batch && (
+                                     <span className={`text-[8px] uppercase tracking-widest font-black px-1.5 py-0.5 rounded ${isLight ? "bg-[#5A270F]/5 text-[#5A270F]" : "bg-white/5 text-white/50"}`}>
+                                       B-{p.user.batch}
+                                     </span>
+                                   )}
+                                 </div>
+                               </div>
+                             ))}
+                           </div>
+                         )}
+                       </div>
+                    )}
+
                   </div>
                 </article>
-              ))
+              );
+              })
             ) : (
               <div
                 className={`py-32 rounded-[2.5rem] border text-center ${

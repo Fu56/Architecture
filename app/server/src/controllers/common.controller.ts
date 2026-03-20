@@ -114,6 +114,9 @@ export const getAllNews = async (req: Request, res: Response) => {
             last_name: true,
           },
         },
+        participants: {
+          select: { userId: true },
+        },
       },
     });
 
@@ -133,6 +136,7 @@ export const getAllNews = async (req: Request, res: Response) => {
         isEvent: item.is_event,
         eventDate: item.event_date,
         createdAt: item.created_at,
+        participants: item.participants?.map((p: any) => p.userId) || [],
         time: new Date(item.created_at).toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",

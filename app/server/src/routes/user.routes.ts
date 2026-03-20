@@ -5,6 +5,9 @@ import {
   updateProfile,
   changePassword,
   getFavorites,
+  registerEvent,
+  deregisterEvent,
+  getEventParticipants,
 } from "../controllers/user.controller";
 
 const router = Router();
@@ -54,5 +57,10 @@ router.get("/resources", requireAuth, async (req, res) => {
 router.patch("/profile", requireAuth, updateProfile);
 router.patch("/change-password", requireAuth, changePassword);
 router.get("/favorites", requireAuth, getFavorites);
+
+// Event Participation Routes
+router.post("/events/:id/register", requireAuth, registerEvent);
+router.delete("/events/:id/register", requireAuth, deregisterEvent);
+router.get("/events/:id/participants", requireAuth, getEventParticipants);
 
 export default router;

@@ -31,6 +31,7 @@ interface NewsItem {
   isEvent: boolean;
   eventDate: string | null;
   createdAt: string;
+  participants?: string[];
   time: string;
 }
 
