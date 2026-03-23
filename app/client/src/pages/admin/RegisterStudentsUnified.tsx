@@ -165,7 +165,7 @@ const RegisterStudentsUnified = () => {
 
     setLoading(true);
     try {
-      await api.post("/admin/users/create", {
+      await api.post("/admin/users", {
         firstName: formData.first_name,
         lastName: formData.last_name,
         email: formData.email,

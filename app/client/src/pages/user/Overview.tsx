@@ -45,7 +45,7 @@ const Overview = () => {
       description: "Review and approve or reject pending architectural resource submissions.",
       href: "/dashboard/authority",
       icon: CheckSquare,
-      color: "#059669",
+      textColor: "text-emerald-600 dark:text-emerald-400",
       bg: "bg-emerald-500",
       border: "border-emerald-200 dark:border-emerald-900/60",
       cardBg: "bg-emerald-50 dark:bg-emerald-950/30",
@@ -56,7 +56,7 @@ const Overview = () => {
       description: "Investigate and resolve flagged resources reported by users.",
       href: "/dashboard/authority",
       icon: Flag,
-      color: "#dc2626",
+      textColor: "text-red-600 dark:text-red-400",
       bg: "bg-red-500",
       border: "border-red-200 dark:border-red-900/60",
       cardBg: "bg-red-50 dark:bg-red-950/30",
@@ -67,7 +67,7 @@ const Overview = () => {
       description: "Manage user accounts, roles, and access rights in the registry.",
       href: "/dashboard/authority",
       icon: Users,
-      color: "#7c3aed",
+      textColor: "text-violet-600 dark:text-violet-400",
       bg: "bg-violet-600",
       border: "border-violet-200 dark:border-violet-900/60",
       cardBg: "bg-violet-50 dark:bg-violet-950/30",
@@ -78,7 +78,7 @@ const Overview = () => {
     description: string;
     href: string;
     icon: React.ElementType;
-    color: string;
+    textColor: string;
     bg: string;
     border: string;
     cardBg: string;
@@ -167,8 +167,8 @@ const Overview = () => {
                   className={`group relative flex flex-col gap-4 p-5 rounded-2xl border-2 ${action.border} ${action.cardBg} hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 overflow-hidden`}
                 >
                   {/* BG icon watermark */}
-                  <div className="absolute bottom-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                    <action.icon className="h-16 w-16" style={{ color: action.color }} />
+                  <div className={`absolute bottom-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity ${action.textColor}`}>
+                    <action.icon className="h-16 w-16" />
                   </div>
 
                   <div className="relative z-10 flex items-start gap-3">
@@ -178,7 +178,7 @@ const Overview = () => {
                       <action.icon className="h-4 w-4 text-white" />
                     </div>
                     <div>
-                      <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-50 mb-1" style={{ color: action.color }}>
+                      <p className={`text-[9px] font-black uppercase tracking-[0.2em] opacity-50 mb-1 ${action.textColor}`}>
                         Granted Access
                       </p>
                       <h4 className="text-sm font-black text-slate-800 dark:text-slate-100 uppercase tracking-tight leading-tight">
@@ -191,7 +191,7 @@ const Overview = () => {
                     {action.description}
                   </p>
 
-                  <div className="relative z-10 flex items-center gap-1.5 mt-auto" style={{ color: action.color }}>
+                  <div className={`relative z-10 flex items-center gap-1.5 mt-auto ${action.textColor}`}>
                     <span className="text-[8px] font-black uppercase tracking-widest">Execute Task</span>
                     <ArrowRight className="h-3 w-3 group-hover:translate-x-1.5 transition-transform duration-300" />
                   </div>

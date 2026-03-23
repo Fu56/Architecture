@@ -586,7 +586,7 @@ const ManageUsers = () => {
     setProcessing(true);
     try {
       if (modalMode === "create") {
-        await api.post("/admin/users/create", {
+        await api.post("/admin/users", {
           ...formData,
           roleName: formData.roleNames[0],
         });

@@ -1,381 +1,370 @@
-// cSpell:ignore Participations
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
+  provider = "postgresql"
 }
 
 model User {
-    id            String   @id @default(cuid())
-    name          String
-    email         String   @unique
-    emailVerified Boolean  @default(false)
-    image         String?
-    createdAt     DateTime @default(now())
-    updatedAt     DateTime @updatedAt
+  id                  String             @id @default(cuid())
+  name                String
+  email               String             @unique
+  emailVerified       Boolean            @default(false)
+  image               String?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  first_name          String?
+  last_name           String?
+  password            String?
+  roleId              Int?
+  batch               Int?
+  year                Int?
+  semester            Int?
+  status              String?
+  university_id       String?            @unique
+  department          String?
+  specialization      String?
+  worker_id           String?            @unique
+  academic_end_date   DateTime?
+  academic_start_date DateTime?
+  permissions         Json?
+  representedUserId   String?
+  representedTask     String?
+  assignments         Assignment[]
+  blogs               Blog[]
+  chatMessages        ChatMessage[]
+  comments            Comment[]
+  eventParticipations EventParticipant[]
+  favorites           Favorite[]
+  reportedFlags       Flag[]             @relation("FlagReportedBy")
+  flags               Flag[]             @relation("FlagResolvedBy")
+  news                News[]             @relation("NewsAuthor")
+  notifications       Notification[]
+  ratings             Rating[]
+  resources           Resource[]
+  submissions         Submission[]
+  accounts            Account[]
+  sessions            Session[]
+  systemLogs          SystemLog[]
+  role                Role?              @relation(fields: [roleId], references: [id])
+  subscribedChannels  ChatChannel[]      @relation("ChannelSubscribers")
+  secondaryRoles      Role[]             @relation("UserSecondaryRoles")
 
-    // Custom fields
-    first_name    String?
-    last_name     String?
-    password      String?
-    role          Role?    @relation(fields: [roleId], references: [id])
-    roleId        Int?
-    secondaryRoles Role[]  @relation("UserSecondaryRoles") // New: Support for multiple roles
-    batch         Int?
-    year          Int?
-    semester      Int?
-    status        String?
-    university_id String?  @unique
-    specialization String?
-    department     String?
-    worker_id      String? @unique
-    academic_start_date DateTime?
-    academic_end_date   DateTime?
-
-    // Relations
-    sessions      Session[]
-    accounts      Account[]
-    resources     Resource[]
-    comments      Comment[]
-    ratings       Rating[]
-    flags         Flag[]         @relation("FlagResolvedBy")
-    reportedFlags Flag[]         @relation("FlagReportedBy")
-    notifications Notification[]
-    assignments   Assignment[]
-    submissions   Submission[]
-    blogs         Blog[]
-    news          News[]         @relation("NewsAuthor")
-    systemLogs    SystemLog[]
-    favorites     Favorite[]
-    eventParticipations EventParticipant[]
-    chatMessages  ChatMessage[]
-    subscribedChannels ChatChannel[] @relation("ChannelSubscribers")
-
-    // Representation & Custom Permissions
-    representedUserId String?     // ID of the user being represented by this DeptHead
-    representedTask   String?     // Name of the specific task context (e.g., "Final Project Review")
-    permissions       Json?        // Granular action overrides (e.g., { "canApprove": true, "canEdit": false })
-
-    @@map("user")
+  @@map("user")
 }
 
 model Session {
-    id        String   @id
-    expiresAt DateTime
-    token     String
-    createdAt DateTime
-    updatedAt DateTime
-    ipAddress String?
-    userAgent String?
-    userId    String
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([token])
-    @@map("session")
+  @@map("session")
 }
 
 model Account {
-    id                    String    @id
-    accountId             String
-    providerId            String
-    userId                String
-    user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-    accessToken           String?
-    refreshToken          String?
-    idToken               String?
-    accessTokenExpiresAt  DateTime?
-    refreshTokenExpiresAt DateTime?
-    scope                 String?
-    password              String?
-    createdAt             DateTime
-    updatedAt             DateTime
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@map("account")
+  @@map("account")
 }
 
 model Verification {
-    id         String    @id
-    identifier String
-    value      String
-    expiresAt  DateTime
-    createdAt  DateTime?
-    updatedAt  DateTime?
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
 
-    @@map("verification")
+  @@map("verification")
 }
 
 model Blog {
-    id          Int      @id @default(autoincrement())
-    title       String
-    content     String
-    image_path  String?
-    published   Boolean  @default(false)
-    tags        String[]
-    author      User     @relation(fields: [author_id], references: [id], onDelete: Cascade)
-    author_id   String
-    created_at  DateTime @default(now())
-    updated_at  DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  title      String
+  content    String
+  image_path String?
+  published  Boolean  @default(false)
+  tags       String[]
+  author_id  String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  author     User     @relation(fields: [author_id], references: [id], onDelete: Cascade)
 }
 
 model Role {
-    id         Int      @id @default(autoincrement())
-    name       String   @unique
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt
-
-    users User[] // Primary relation
-    secondaryRoleUsers User[] @relation("UserSecondaryRoles") // Secondary relation
+  id                 Int      @id @default(autoincrement())
+  name               String   @unique
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+  users              User[]
+  secondaryRoleUsers User[]   @relation("UserSecondaryRoles")
 }
 
 model Design_stage {
-    id         Int      @id @default(autoincrement())
-    name       String
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt
-
-    resources Resource[]
-    assignments Assignment[]
-    channels ChatChannel[]
+  id          Int           @id @default(autoincrement())
+  name        String
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  assignments Assignment[]
+  channels    ChatChannel[]
+  resources   Resource[]
 }
 
 model Resource {
-    id              Int           @id @default(autoincrement())
-    title           String
-    author          String?
-    // keyword         String?
-    keywords        String[]
-    forYearStudents           Int
-    semester        Int?
-    batch Int?
-    file_path       String
-    file_type       String?
-    file_size       Float?
-    uploader        User?         @relation(fields: [uploader_id], references: [id], onDelete: SetNull)
-    uploader_id     String?
-    design_stage    Design_stage? @relation(fields: [design_stage_id], references: [id])
-    design_stage_id Int?
-    status          String?
-    download_count  Int?          @default(0)
-    flag            Boolean?      @default(false)
-    uploaded_at     DateTime?     @default(now())
-    approved_at     DateTime?
-    rejected_at     DateTime?
-    updated_at      DateTime?     @updatedAt
-    archived_at     DateTime?
-    priority_tag    String?
-    admin_comment   String?
-    is_public       Boolean?      @default(false)
-
-    comments      Comment[]
-    ratings       Rating[]
-    flags         Flag[]
-    notifications Notification[]
-    favorites     Favorite[]
+  id              Int            @id @default(autoincrement())
+  title           String
+  author          String?
+  keywords        String[]
+  forYearStudents Int
+  semester        Int?
+  batch           Int?
+  file_path       String
+  file_type       String?
+  file_size       Float?
+  uploader_id     String?
+  design_stage_id Int?
+  status          String?
+  download_count  Int?           @default(0)
+  flag            Boolean?       @default(false)
+  uploaded_at     DateTime?      @default(now())
+  approved_at     DateTime?
+  rejected_at     DateTime?
+  updated_at      DateTime?      @updatedAt
+  archived_at     DateTime?
+  priority_tag    String?
+  admin_comment   String?
+  is_public       Boolean?       @default(false)
+  comments        Comment[]
+  favorites       Favorite[]
+  flags           Flag[]
+  notifications   Notification[]
+  ratings         Rating[]
+  design_stage    Design_stage?  @relation(fields: [design_stage_id], references: [id])
+  uploader        User?          @relation(fields: [uploader_id], references: [id])
 }
 
 model Comment {
-    id          Int      @id @default(autoincrement())
-    text        String
-    created_at  DateTime @default(now())
-    updated_at  DateTime @updatedAt
-    resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
-    resource_id Int
-    user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-    user_id     String
+  id          Int      @id @default(autoincrement())
+  text        String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  resource_id Int
+  user_id     String
+  resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Rating {
-    id          Int      @id @default(autoincrement())
-    rate        Int
-    user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-    user_id     String
-    resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
-    resource_id Int
-    created_at  DateTime @default(now())
-    updated_at  DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  rate        Int
+  user_id     String
+  resource_id Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  resource    Resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Flag {
-    id             Int       @id @default(autoincrement())
-    resource       Resource  @relation(fields: [resource_id], references: [id], onDelete: Cascade)
-    resource_id    Int
-    reason         String?
-    status         String?
-    created_at     DateTime  @default(now())
-    reporter       User?     @relation("FlagReportedBy", fields: [reporter_id], references: [id], onDelete: SetNull)
-    reporter_id    String?
-    resolved_at    DateTime?
-    resolved_by    User?     @relation("FlagResolvedBy", fields: [resolved_by_id], references: [id], onDelete: SetNull)
-    resolved_by_id String?
+  id             Int       @id @default(autoincrement())
+  resource_id    Int
+  reason         String?
+  status         String?
+  created_at     DateTime  @default(now())
+  reporter_id    String?
+  resolved_at    DateTime?
+  resolved_by_id String?
+  reporter       User?     @relation("FlagReportedBy", fields: [reporter_id], references: [id])
+  resolved_by    User?     @relation("FlagResolvedBy", fields: [resolved_by_id], references: [id])
+  resource       Resource  @relation(fields: [resource_id], references: [id], onDelete: Cascade)
 }
 
 model Notification {
-    id      Int      @id @default(autoincrement())
-    title   String
-    message String
-    is_read Boolean? @default(false)
-
-    created_at  DateTime  @default(now())
-    resource    Resource? @relation(fields: [resource_id], references: [id], onDelete: Cascade)
-    resource_id Int?
-    assignment  Assignment? @relation(fields: [assignment_id], references: [id], onDelete: Cascade)
-    assignment_id Int?
-    user        User?     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-    user_id     String?
-    commentId   Int?
+  id            Int         @id @default(autoincrement())
+  title         String
+  message       String
+  is_read       Boolean?    @default(false)
+  created_at    DateTime    @default(now())
+  resource_id   Int?
+  user_id       String?
+  commentId     Int?
+  assignment_id Int?
+  assignment    Assignment? @relation(fields: [assignment_id], references: [id], onDelete: Cascade)
+  resource      Resource?   @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+  user          User?       @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Assignment {
-    id              Int           @id @default(autoincrement())
-    title           String
-    description     String?
-    due_date        DateTime?
-    academic_year   Int?
-    semester        Int?
-    file_path       String?
-    file_type       String?
-    file_size       Float?
-    creator         User          @relation(fields: [creator_id], references: [id], onDelete: Cascade)
-    creator_id      String
-    design_stage    Design_stage? @relation(fields: [design_stage_id], references: [id])
-    design_stage_id Int?
-    created_at      DateTime      @default(now())
-    updated_at      DateTime      @updatedAt
-
-    submissions     Submission[]
-    notifications   Notification[]
+  id                     Int            @id @default(autoincrement())
+  title                  String
+  description            String?
+  due_date               DateTime?
+  academic_year          Int?
+  semester               Int?
+  file_path              String?
+  file_type              String?
+  file_size              Float?
+  creator_id             String
+  design_stage_id        Int?
+  created_at             DateTime       @default(now())
+  updated_at             DateTime       @updatedAt
+  allow_progress_updates Boolean?       @default(false)
+  custom_design_stage    String?
+  creator                User           @relation(fields: [creator_id], references: [id], onDelete: Cascade)
+  design_stage           Design_stage?  @relation(fields: [design_stage_id], references: [id])
+  notifications          Notification[]
+  submissions            Submission[]
 }
 
 model Submission {
-    id            Int        @id @default(autoincrement())
-    student       User       @relation(fields: [student_id], references: [id], onDelete: Cascade)
-    student_id     String
-    assignment    Assignment @relation(fields: [assignment_id], references: [id], onDelete: Cascade)
-    assignment_id  Int
-    file_path      String
-    file_type      String?
-    file_size      Float?
-    submitted_at   DateTime   @default(now())
-    updated_at     DateTime   @updatedAt
-    status         String?    @default("submitted") // e.g. submitted, graded
+  id                     Int        @id @default(autoincrement())
+  student_id             String
+  assignment_id          Int
+  file_path              String
+  file_type              String?
+  file_size              Float?
+  submitted_at           DateTime   @default(now())
+  updated_at             DateTime   @updatedAt
+  status                 String?    @default("submitted")
+  submission_type        String?    @default("final")
+  feedback               String?
+  resource_upload_status String?    @default("none")
+  assignment             Assignment @relation(fields: [assignment_id], references: [id], onDelete: Cascade)
+  student                User       @relation(fields: [student_id], references: [id], onDelete: Cascade)
 }
 
 model News {
-    id          Int      @id @default(autoincrement())
-    title       String
-    content     String
-    source      String?  @default("ArchVault Admin")
-    is_event    Boolean  @default(false)
-    event_date  DateTime?
-    published   Boolean  @default(true)
-    author      User?    @relation("NewsAuthor", fields: [author_id], references: [id], onDelete: SetNull)
-    author_id   String?
-    created_at  DateTime @default(now())
-    updated_at  DateTime @updatedAt
-    participants EventParticipant[]
+  id           Int                @id @default(autoincrement())
+  title        String
+  content      String
+  source       String?            @default("ArchVault Admin")
+  is_event     Boolean            @default(false)
+  event_date   DateTime?
+  published    Boolean            @default(true)
+  created_at   DateTime           @default(now())
+  updated_at   DateTime           @updatedAt
+  author_id    String?
+  participants EventParticipant[]
+  author       User?              @relation("NewsAuthor", fields: [author_id], references: [id])
 }
 
 model EventParticipant {
-    id        Int      @id @default(autoincrement())
-    eventId   Int
-    event     News     @relation(fields: [eventId], references: [id], onDelete: Cascade)
-    userId    String
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    createdAt DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  userId    String
+  createdAt DateTime @default(now())
+  event     News     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([eventId, userId])
+  @@unique([eventId, userId])
 }
 
 model ChatChannel {
-    id             Int           @id @default(autoincrement())
-    name           String?
-    batch          Int?          // Specific to a batch (Year 1, Year 2...)
-    designStageId  Int?          // Optional: Target course stage context
-    designStage    Design_stage? @relation(fields: [designStageId], references: [id])
-    isPublic       Boolean       @default(false)
-    subscribers    User[]        @relation("ChannelSubscribers")
-    messages       ChatMessage[]
-    createdAt      DateTime      @default(now())
-    updatedAt      DateTime      @updatedAt
+  id            Int           @id @default(autoincrement())
+  name          String?
+  batch         Int?
+  designStageId Int?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  isPublic      Boolean       @default(false)
+  designStage   Design_stage? @relation(fields: [designStageId], references: [id])
+  messages      ChatMessage[]
+  subscribers   User[]        @relation("ChannelSubscribers")
 }
 
 model ChatMessage {
-    id             Int          @id @default(autoincrement())
-    content        String
-    createdAt      DateTime     @default(now())
-    userId         String
-    user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-    channelId      Int
-    channel        ChatChannel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  id        Int         @id @default(autoincrement())
+  content   String
+  createdAt DateTime    @default(now())
+  userId    String
+  channelId Int
+  channel   ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-
-
 model SystemLog {
-    id          Int      @id @default(autoincrement())
-    action      String
-    entity      String?
-    entityId    String?
-    details     String?
-    actor       User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
-    actorId     String?
-    ipAddress   String?
-    createdAt   DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  action    String
+  entity    String?
+  entityId  String?
+  details   String?
+  actorId   String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+  actor     User?    @relation(fields: [actorId], references: [id])
 
-    @@map("system_log")
+  @@map("system_log")
 }
 
 model NewsletterSubscription {
-    id        Int      @id @default(autoincrement())
-    email     String   @unique
-    batch     Int?     // Architectural Batch association
-    category  String?  @default("GENERAL") // e.g., STUDENT, FACULTY, GUEST
-    channelId String?  // Telegram-style channel identifier
-    createdAt DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  batch     Int?
+  category  String?  @default("GENERAL")
+  channelId String?
 }
 
 model SubscriberChannel {
-    id          Int      @id @default(autoincrement())
-    name        String   @unique
-    description String?
-    batch       Int?     // Link to a specific student batch
-    type        String   @default("BATCH") // BATCH, GENERAL, DEPARTMENT
-    isActive    Boolean  @default(true)
-    units       Int      @default(0) // Subscriber count
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  batch       Int?
+  type        String   @default("BATCH")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  units       Int      @default(0)
 }
 
 model ExternalNode {
-    id          Int      @id @default(autoincrement())
-    name        String   @unique
-    url         String
-    type        String   // STORAGE, COMMUNICATION, INTEGRITY, INDEXING
-    status      String   @default("CONNECTED")
-    latency     String?
-    lastChecked DateTime?
-    createdAt   DateTime @default(now())
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  url         String
+  type        String
+  status      String    @default("CONNECTED")
+  latency     String?
+  lastChecked DateTime?
+  createdAt   DateTime  @default(now())
 }
 
 model BackupRegistry {
-    id        Int      @id @default(autoincrement())
-    name      String   @unique
-    filePath  String
-    size      String?
-    type      String?
-    status    String?  @default("VERIFIED")
-    createdAt DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  filePath  String
+  size      String?
+  type      String?
+  status    String?  @default("VERIFIED")
+  createdAt DateTime @default(now())
 }
 
 model Favorite {
-    id          Int      @id @default(autoincrement())
-    user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId      String
-    resource    Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
-    resourceId  Int
-    createdAt   DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  userId     String
+  resourceId Int
+  createdAt  DateTime @default(now())
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([userId, resourceId])
+  @@unique([userId, resourceId])
 }

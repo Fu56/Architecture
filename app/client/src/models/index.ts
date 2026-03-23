@@ -106,6 +106,7 @@ export interface Assignment {
     email?: string;
   };
   design_stage?: DesignStage;
+  custom_design_stage?: string;
   created_at: string;
   updated_at: string;
 }

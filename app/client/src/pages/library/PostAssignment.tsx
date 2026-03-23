@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import type { DesignStage } from "../../models";
 import Select from "../../components/ui/Select";
-import { Database, ShieldCheck } from "lucide-react";
+import { Database, ShieldCheck, BookOpenCheck } from "lucide-react";
 
 const FieldError = ({ message }: { message?: string }) => {
   if (!message) return null;
@@ -49,7 +49,10 @@ const PostAssignment = () => {
     academic_year: "",
     semester: "",
     design_stage_id: "",
+    custom_design_stage: "",
   });
+  const [showCustomStage, setShowCustomStage] = useState(false);
+  const [allowProgressUpdates, setAllowProgressUpdates] = useState(false);
   const [designStages, setDesignStages] = useState<DesignStage[]>([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -97,6 +100,9 @@ const PostAssignment = () => {
     if (!metadata.academic_year) newErrors.academic_year = "Academic year is required.";
     if (!metadata.semester) newErrors.semester = "Semester is required.";
     if (!metadata.design_stage_id) newErrors.design_stage_id = "Design stage is required.";
+    if (metadata.design_stage_id === "other" && !metadata.custom_design_stage.trim()) {
+      newErrors.custom_design_stage = "Course name is required for custom stages.";
+    }
     if (!metadata.due_date) newErrors.due_date = "Due date is required.";
     if (!file) newErrors.file = "Assignment brief file is required.";
 
@@ -114,7 +120,12 @@ const PostAssignment = () => {
     if (metadata.due_date) formData.append("due_date", metadata.due_date);
     if (metadata.academic_year) formData.append("academic_year", metadata.academic_year);
     if (metadata.semester) formData.append("semester", metadata.semester);
-    if (metadata.design_stage_id) formData.append("design_stage_id", metadata.design_stage_id);
+    if (metadata.design_stage_id !== "other") {
+      formData.append("design_stage_id", metadata.design_stage_id);
+    } else {
+      formData.append("custom_design_stage", metadata.custom_design_stage);
+    }
+    formData.append("allow_progress_updates", allowProgressUpdates.toString());
 
     try {
       const { data } = await api.post("/assignments", formData, {
@@ -265,16 +276,41 @@ const PostAssignment = () => {
             {/* Design Stage */}
             <Select
               label="Design Stage / Course"
-              options={designStages.map((s) => ({ id: s.id, name: s.name }))}
+              options={[
+                ...designStages
+                  .filter((s) => s.name.toLowerCase() !== "other" && s.name.toLowerCase() !== "others")
+                  .map((s) => ({ id: String(s.id), name: s.name })),
+                { id: "other", name: "Other" }
+              ]}
               value={metadata.design_stage_id}
-              onChange={(val) => {
+              onChange={(val: string) => {
                 setMetadata({ ...metadata, design_stage_id: val });
-                if (errors.design_stage_id) setErrors((prev) => ({ ...prev, design_stage_id: "" }));
+                setShowCustomStage(val === "other");
+                if (errors.design_stage_id)
+                  setErrors((prev) => ({ ...prev, design_stage_id: "" }));
               }}
               placeholder="Select Stage"
               icon={<Database className="h-4 w-4 text-[#DF8142]" />}
               error={errors.design_stage_id}
             />
+
+            {/* Custom Design Stage Name */}
+            {showCustomStage && (
+              <div className="animate-in slide-in-from-top-2 duration-300">
+                <label className={labelCls}>
+                  <BookOpenCheck className="h-4 w-4 text-[#DF8142]" />
+                  Course Name
+                </label>
+                <input
+                  name="custom_design_stage"
+                  placeholder="Enter the course title..."
+                  value={metadata.custom_design_stage}
+                  onChange={handleMetaChange}
+                  className={inputCls(!!errors.custom_design_stage)}
+                />
+                <FieldError message={errors.custom_design_stage} />
+              </div>
+            )}
 
             {/* Due Date */}
             <div>
@@ -289,9 +325,36 @@ const PostAssignment = () => {
                 title="Due Date & Time"
                 value={metadata.due_date}
                 onChange={handleMetaChange}
-                className={`${inputCls(!!errors.due_date)}`}
+                className={`${inputCls(!!errors.due_date)} mb-6`}
               />
               <FieldError message={errors.due_date} />
+            </div>
+
+            {/* Weekly Progress Updates Toggle */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-white/50 dark:bg-black/20 border border-[#92664A]/20 dark:border-white/5">
+              <div>
+                <label className="flex items-center gap-2 text-sm font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-widest cursor-pointer">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#DF8142] opacity-40"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-[#DF8142]"></span>
+                  </span>
+                  Require Progress Updates
+                </label>
+                <p className="text-[10px] text-[#92664A] dark:text-[#EEB38C]/60 mt-1 uppercase tracking-wider font-bold">
+                  Students can submit weekly progress before deadline
+                </p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  id="allow-progress-updates"
+                  type="checkbox"
+                  title="Require Progress Updates"
+                  className="sr-only peer"
+                  checked={allowProgressUpdates}
+                  onChange={(e) => setAllowProgressUpdates(e.target.checked)}
+                />
+                <div className="w-14 h-7 bg-[#92664A]/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#DF8142] shadow-inner"></div>
+              </label>
             </div>
           </div>
         </div>

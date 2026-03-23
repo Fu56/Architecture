@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response } from "express"; // Trigger reload
 import { prisma } from "../config/db";
 import path from "path";
 
@@ -14,8 +14,10 @@ export const createAssignment = async (req: Request, res: Response) => {
       description,
       due_date,
       design_stage_id,
+      custom_design_stage,
       academic_year,
       semester,
+      allow_progress_updates,
     } = req.body;
     const userId = getUserId(req);
 
@@ -28,11 +30,13 @@ export const createAssignment = async (req: Request, res: Response) => {
         due_date: due_date ? new Date(due_date) : null,
         academic_year: academic_year ? Number(academic_year) : null,
         semester: semester ? Number(semester) : null,
+        allow_progress_updates: allow_progress_updates === "true" || allow_progress_updates === true,
         file_path: file?.path,
         file_type: file?.mimetype,
         file_size: file?.size,
         creator_id: userId,
-        design_stage_id: design_stage_id ? Number(design_stage_id) : null,
+        design_stage_id: design_stage_id && design_stage_id !== "other" ? Number(design_stage_id) : null,
+        custom_design_stage: custom_design_stage || (design_stage_id === "other" ? "Custom Course" : null),
       },
     });
 
@@ -218,6 +222,7 @@ export const submitAssignment = async (req: Request, res: Response) => {
     const { id } = req.params;
     const file = (req as any).file;
     const userId = getUserId(req);
+    const { submission_type } = req.body;
 
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
     if (!file) return res.status(400).json({ message: "File is required" });
@@ -245,6 +250,7 @@ export const submitAssignment = async (req: Request, res: Response) => {
         file_path: file.path,
         file_type: file.mimetype,
         file_size: file.size,
+        submission_type: submission_type || "final",
       },
     });
 
@@ -273,7 +279,45 @@ export const downloadSubmission = async (req: Request, res: Response) => {
   }
 };
 
-export const approveSubmission = async (req: Request, res: Response) => {
+export const viewSubmission = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const submission = await (prisma as any).submission.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!submission || !submission.file_path) {
+      return res.status(404).json({ message: "Submission not found" });
+    }
+
+    const absPath = path.resolve(submission.file_path);
+    // Setting content type helps browser view inline
+    res.sendFile(absPath);
+  } catch (error) {
+    res.status(500).json({ message: "Error viewing submission" });
+  }
+};
+
+export const viewAssignmentBrief = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const assignment = await (prisma as any).assignment.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!assignment || !assignment.file_path) {
+      return res.status(404).json({ message: "Assignment file not found" });
+    }
+
+    const absPath = path.resolve(assignment.file_path);
+    res.sendFile(absPath);
+  } catch (error) {
+    res.status(500).json({ message: "Error viewing assignment brief" });
+  }
+};
+
+
+export const requestResourceUpload = async (req: Request, res: Response) => {
   try {
     const { id } = req.params; // Submission ID
     const userId = getUserId(req);
@@ -292,6 +336,33 @@ export const approveSubmission = async (req: Request, res: Response) => {
       return res.status(403).json({ message: "Unauthorized" });
     }
 
+    const updated = await (prisma as any).submission.update({
+      where: { id: Number(id) },
+      data: { resource_upload_status: "requested" },
+      include: { assignment: true, student: true },
+    });
+
+    // Notify student targeting the specific type and name
+    const studentName = `${updated.student?.first_name || "Student"}`;
+    await notifyUsers({
+      userIds: [updated.student_id],
+      title: "Resource Upload Request",
+      message: `Dear ${studentName}, your instructor requested to publish your work for "${updated.assignment.title}" as a public resource. Please provide your permission to proceed.`,
+      assignmentId: updated.assignment_id,
+    });
+
+    res.status(200).json({ message: "Upload request sent to student", submission: updated });
+  } catch (error) {
+    console.error("Request Upload Error:", error);
+    res.status(500).json({ message: "Failed to request upload" });
+  }
+};
+
+export const permitResourceUpload = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // Submission ID
+    const userId = getUserId(req);
+
     const submission = await (prisma as any).submission.findUnique({
       where: { id: Number(id) },
       include: {
@@ -300,8 +371,9 @@ export const approveSubmission = async (req: Request, res: Response) => {
       },
     });
 
-    if (!submission) {
-      return res.status(404).json({ message: "Submission not found" });
+    if (!submission) return res.status(404).json({ message: "Submission not found" });
+    if (submission.student_id !== userId) {
+      return res.status(403).json({ message: "Only the student worker can permit the upload of their work." });
     }
 
     // Create Resource
@@ -309,8 +381,7 @@ export const approveSubmission = async (req: Request, res: Response) => {
       data: {
         title: submission.assignment.title,
         author: `${submission.student.first_name} ${submission.student.last_name}`,
-        keywords: [],
-        // Use user's year/batch or assignment's? User usually.
+        keywords: ["Assignment Output", "Approved Output"],
         forYearStudents: submission.student.year || 0,
         batch: submission.student.batch,
         file_path: submission.file_path,
@@ -320,35 +391,138 @@ export const approveSubmission = async (req: Request, res: Response) => {
         design_stage_id: submission.assignment.design_stage_id,
         status: "approved",
         approved_at: new Date(),
-        priority_tag: "Assignment Output",
+        priority_tag: "Student Showcase",
+        is_public: true,
       },
     });
 
     // Update submission status
     await (prisma as any).submission.update({
       where: { id: Number(id) },
-      data: { status: "approved" },
+      data: { resource_upload_status: "permitted", status: "featured" },
     });
 
     // Notify student
-    const student = submission.student as any;
-    const title = "Submission Approved";
-    const message = `Your submission for "${submission.assignment.title}" has been approved and moved to the Resource Library.`;
-
-    // Internal & Email Notification
     await notifyUsers({
       userIds: [submission.student_id],
-      title,
-      message,
+      title: "Resource Published",
+      message: `Your work for "${submission.assignment.title}" has been successfully published to the Resource Library.`,
       resourceId: resource.id,
     });
 
     res.status(200).json({
-      message: "Submission approved and added to resources",
+      message: "Permission granted and work published",
       resource,
     });
   } catch (error) {
-    console.error("Approve Submission Error:", error);
-    res.status(500).json({ message: "Failed to approve submission" });
+    console.error("Permit Upload Error:", error);
+    res.status(500).json({ message: "Failed to process permission" });
   }
 };
+
+export const denyResourceUpload = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const userId = getUserId(req);
+    const submission = await (prisma as any).submission.findUnique({ where: { id: Number(id) } });
+
+    if (!submission || submission.student_id !== userId) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    await (prisma as any).submission.update({
+      where: { id: Number(id) },
+      data: { resource_upload_status: "denied" },
+    });
+
+    res.status(200).json({ message: "Upload request denied" });
+  } catch (error) {
+    res.status(500).json({ message: "Error denying request" });
+  }
+};
+
+
+export const addFeedback = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // Submission ID
+    const { feedback } = req.body;
+    const userId = getUserId(req);
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { role: true },
+    });
+
+    if (
+      user?.role?.name !== "Admin" &&
+      user?.role?.name !== "Faculty" &&
+      user?.role?.name !== "SuperAdmin"
+    ) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    const submission = await (prisma as any).submission.update({
+      where: { id: Number(id) },
+      data: { feedback },
+      include: { assignment: true, student: true },
+    });
+
+    const studentName = `${submission.student?.first_name || "Student"}`;
+    const subType = submission.submission_type === "progress" ? "progress update" : "final submission";
+
+    // Notify student targeting the specific type and name
+    await notifyUsers({
+      userIds: [submission.student_id],
+      title: "New Feedback Received",
+      message: `Dear ${studentName}, your instructor left a comment on your ${subType} for "${submission.assignment.title}".`,
+      assignmentId: submission.assignment_id,
+    });
+
+    res.status(200).json({ message: "Feedback added", submission });
+  } catch (error) {
+    console.error("Add Feedback Error:", error);
+    res.status(500).json({ message: "Failed to add feedback" });
+  }
+};
+
+export const updateAssignmentDeadline = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { due_date } = req.body;
+    const userId = getUserId(req);
+
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+    const assignment = await (prisma as any).assignment.findUnique({
+      where: { id: Number(id) },
+    });
+    if (!assignment) return res.status(404).json({ message: "Assignment not found" });
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { role: true },
+    });
+
+    const roleName = user?.role?.name;
+    if (
+      assignment.creator_id !== userId &&
+      roleName !== "Admin" &&
+      roleName !== "SuperAdmin" &&
+      roleName !== "Faculty" &&
+      roleName !== "DepartmentHead"
+    ) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    const updated = await (prisma as any).assignment.update({
+      where: { id: Number(id) },
+      data: { due_date: due_date ? new Date(due_date) : null },
+    });
+
+    res.status(200).json(updated);
+  } catch (error) {
+    console.error("Update Assignment Deadline Error:", error);
+    res.status(500).json({ message: "Failed to update deadline" });
+  }
+};
+

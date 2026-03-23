@@ -12,10 +12,13 @@ import {
   Clock,
   FileText,
   Upload,
+  Eye,
   CheckCircle,
   AlertCircle,
+  Edit3,
 } from "lucide-react";
 import { currentRole, getUser } from "../../lib/auth";
+import Select from "../../components/ui/Select";
 
 interface AssignmentWithSubmissions {
   id: number;
@@ -51,7 +54,12 @@ interface AssignmentWithSubmissions {
       batch?: number;
     };
     status?: string;
+    submission_type?: string;
+    feedback?: string;
+    resource_upload_status?: string;
   }>;
+  allow_progress_updates?: boolean;
+  custom_design_stage?: string;
 }
 
 const AssignmentDetails = () => {
@@ -62,8 +70,17 @@ const AssignmentDetails = () => {
     useState<AssignmentWithSubmissions | null>(null);
   const [loading, setLoading] = useState(true);
   const [submissionFile, setSubmissionFile] = useState<File | null>(null);
+  const [submissionType, setSubmissionType] = useState<string>("final");
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [editingDeadline, setEditingDeadline] = useState(false);
+  const [newDeadline, setNewDeadline] = useState("");
+  const [updatingDeadline, setUpdatingDeadline] = useState(false);
+  
+  const [activeFeedbackId, setActiveFeedbackId] = useState<number | null>(null);
+  const [feedbackText, setFeedbackText] = useState("");
+  const [submittingFeedback, setSubmittingFeedback] = useState(false);
+
   const role = currentRole();
   const currentUser = getUser();
 
@@ -117,6 +134,7 @@ const AssignmentDetails = () => {
     setSubmitting(true);
     const formData = new FormData();
     formData.append("file", submissionFile);
+    formData.append("submission_type", submissionType);
 
     try {
       await api.post(`/assignments/${id}/submit`, formData, {
@@ -141,18 +159,42 @@ const AssignmentDetails = () => {
     }
   };
 
-  const handleApprove = async (submissionId: number) => {
+  const handleRequestUpload = async (submissionId: number) => {
     try {
-      await api.post(`/assignments/submissions/${submissionId}/approve`);
-      toast.success("Submission approved and added to resources!");
+      await api.post(`/assignments/submissions/${submissionId}/request-upload`);
+      toast.success("Upload request sent to student!");
       const { data } = await api.get(`/assignments/${id}`);
       setAssignment(data);
     } catch (error) {
-      console.error("Failed to approve:", error);
-      toast.error("Failed to approve submission.");
+      console.error("Failed to request upload:", error);
+      toast.error("Failed to send request.");
     }
   };
 
+  const handlePermitUpload = async (submissionId: number) => {
+    try {
+      await api.post(`/assignments/submissions/${submissionId}/permit-upload`);
+      toast.success("Work published to Library!");
+      const { data } = await api.get(`/assignments/${id}`);
+      setAssignment(data);
+    } catch (error) {
+      console.error("Failed to permit:", error);
+      toast.error("Failed to publish work.");
+    }
+  };
+
+  const handleDenyUpload = async (submissionId: number) => {
+    try {
+      await api.post(`/assignments/submissions/${submissionId}/deny-upload`);
+      toast.warn("Upload request declined.");
+      const { data } = await api.get(`/assignments/${id}`);
+      setAssignment(data);
+    } catch (error) {
+      console.error("Failed to deny:", error);
+      toast.error("Failed to decline request.");
+    }
+  };
+  
   const handleReject = async (submissionId: number) => {
     if (!window.confirm("Are you sure you want to reject this submission?"))
       return;
@@ -164,6 +206,41 @@ const AssignmentDetails = () => {
     } catch (error) {
       console.error("Failed to reject:", error);
       toast.error("Failed to reject submission.");
+    }
+  };
+
+  const handleSubmitFeedback = async (submissionId: number) => {
+    if (!feedbackText.trim()) return;
+    setSubmittingFeedback(true);
+    try {
+      await api.post(`/assignments/submissions/${submissionId}/feedback`, { feedback: feedbackText });
+      toast.success("Feedback saved successfully.");
+      setActiveFeedbackId(null);
+      setFeedbackText("");
+      const { data } = await api.get(`/assignments/${id}`);
+      setAssignment(data);
+    } catch (error) {
+      console.error("Failed to add feedback:", error);
+      toast.error("Failed to add feedback.");
+    } finally {
+      setSubmittingFeedback(false);
+    }
+  };
+
+  const handleUpdateDeadline = async () => {
+    if (!newDeadline) return;
+    setUpdatingDeadline(true);
+    try {
+      await api.patch(`/assignments/${id}/deadline`, { due_date: new Date(newDeadline).toISOString() });
+      toast.success("Assignment deadline updated successfully.");
+      setEditingDeadline(false);
+      const { data } = await api.get(`/assignments/${id}`);
+      setAssignment(data);
+    } catch (error) {
+      console.error("Failed to update deadline:", error);
+      toast.error("Failed to update deadline.");
+    } finally {
+      setUpdatingDeadline(false);
     }
   };
 
@@ -208,9 +285,11 @@ const AssignmentDetails = () => {
               <span className="px-4 py-1.5 bg-[#DF8142]/10 text-[#DF8142] rounded-full text-xs font-black uppercase tracking-widest border border-[#DF8142]/20">
                 Brief
               </span>
-              {assignment.design_stage && (
+              {(assignment.design_stage || assignment.custom_design_stage) && (
                 <span className="px-4 py-1.5 bg-[#EFEDED] dark:bg-white/5 text-[#92664A] dark:text-[#EEB38C] rounded-full text-xs font-black uppercase tracking-widest border border-[#EEB38C]/40 dark:border-white/10">
-                  {assignment.design_stage.name}
+                  {assignment.design_stage 
+                    ? assignment.design_stage.name 
+                    : assignment.custom_design_stage}
                 </span>
               )}
               {isPastDeadline && (
@@ -235,17 +314,63 @@ const AssignmentDetails = () => {
                     <Calendar className="h-6 w-6 text-[#DF8142]" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-widest transition-colors">
-                      Due Date
+                    <p className="text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-widest transition-colors flex items-center justify-between w-full">
+                      <span>Due Date</span>
+                      {isCreatorOrAdmin && (
+                        <button
+                          onClick={() => {
+                            setEditingDeadline(!editingDeadline);
+                            if (assignment.due_date) {
+                              const d = new Date(assignment.due_date);
+                              // Format as YYYY-MM-DDThh:mm for datetime-local
+                              const offset = d.getTimezoneOffset() * 60000;
+                              const localISOTime = (new Date(d.getTime() - offset)).toISOString().slice(0, 16);
+                              setNewDeadline(localISOTime);
+                            }
+                          }}
+                          className="hover:text-[#DF8142] transition-colors ml-2 p-1 bg-white/50 dark:bg-black/20 rounded-md"
+                          title="Edit Deadline"
+                        >
+                          <Edit3 className="h-3 w-3" />
+                        </button>
+                      )}
                     </p>
-                    <p className="font-bold text-[#5A270F] dark:text-[#EEB38C] transition-colors">
-                      {assignment.due_date
-                        ? new Date(assignment.due_date).toLocaleString([], {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })
-                        : "No deadline"}
-                    </p>
+                    {editingDeadline ? (
+                      <div className="mt-2 flex flex-col gap-2">
+                        <input
+                          type="datetime-local"
+                          title="Edit Deadline"
+                          aria-label="Edit Deadline"
+                          value={newDeadline}
+                          onChange={(e) => setNewDeadline(e.target.value)}
+                          className="w-full text-xs p-2 rounded-lg border border-[#EEB38C]/30 bg-white dark:bg-black/50 text-[#5A270F] dark:text-[#EEB38C] focus:outline-none focus:border-[#DF8142]"
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={handleUpdateDeadline}
+                            disabled={updatingDeadline || !newDeadline}
+                            className="bg-[#5A270F] text-white text-[10px] uppercase font-bold py-1 px-3 rounded-lg hover:bg-[#6C3B1C] transition-colors disabled:opacity-50"
+                          >
+                            {updatingDeadline ? "Saving..." : "Save"}
+                          </button>
+                          <button
+                            onClick={() => setEditingDeadline(false)}
+                            className="bg-gray-200 text-gray-700 dark:bg-white/10 dark:text-gray-300 text-[10px] uppercase font-bold py-1 px-3 rounded-lg hover:bg-gray-300 dark:hover:bg-white/20 transition-colors"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="font-bold text-[#5A270F] dark:text-[#EEB38C] transition-colors">
+                        {assignment.due_date
+                          ? new Date(assignment.due_date).toLocaleString([], {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })
+                          : "No deadline"}
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -279,17 +404,32 @@ const AssignmentDetails = () => {
             </div>
 
             {assignment.file_path && (
-              <a
-                href={`${
-                  import.meta.env.VITE_API_URL
-                }/assignments/${id}/download?token=${encodeURIComponent(
-                  localStorage.getItem("token") || ""
-                )}`}
-                className="w-full flex items-center justify-center gap-2 bg-[#5A270F] text-white p-5 rounded-3xl font-black text-lg shadow-xl shadow-[#5A270F]/20 hover:bg-[#6C3B1C] transition-all hover:scale-[1.02] active:scale-[0.98]"
-              >
-                <Download className="h-6 w-6" />
-                Download Brief
-              </a>
+              <div className="flex flex-col gap-3">
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`${
+                    import.meta.env.VITE_API_URL
+                  }/assignments/${id}/view?token=${encodeURIComponent(
+                    localStorage.getItem("token") || ""
+                  )}`}
+                  className="w-full flex items-center justify-center gap-2 bg-[#FAF8F4] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] p-4 rounded-3xl font-black text-xs uppercase tracking-widest border-2 border-[#6C3B1C]/20 hover:border-[#DF8142] transition-all"
+                >
+                  <Eye className="h-4 w-4" />
+                  View Brief
+                </a>
+                <a
+                  href={`${
+                    import.meta.env.VITE_API_URL
+                  }/assignments/${id}/download?token=${encodeURIComponent(
+                    localStorage.getItem("token") || ""
+                  )}`}
+                  className="w-full flex items-center justify-center gap-2 bg-[#5A270F] text-white p-5 rounded-[2rem] font-black text-lg shadow-xl shadow-[#5A270F]/20 hover:bg-[#6C3B1C] transition-all hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <Download className="h-6 w-6" />
+                  Download
+                </a>
+              </div>
             )}
 
             {isCreatorOrAdmin && (
@@ -316,20 +456,90 @@ const AssignmentDetails = () => {
           </h2>
 
           {hasSubmitted && (
-            <div className="bg-green-50 border border-green-100 rounded-2xl p-6 mb-6 flex items-start gap-4 relative z-10">
-              <CheckCircle className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="font-bold text-green-900 mb-1">
-                  Submission Received
-                </h3>
-                <p className="text-green-700 text-sm">
-                  You submitted this assignment on{" "}
-                  {assignment.submissions?.[0] &&
-                    new Date(
-                      assignment.submissions[0].submitted_at
-                    ).toLocaleString()}
-                </p>
-              </div>
+            <div className="space-y-4 mb-8 relative z-10 w-full">
+              <h3 className="text-xl font-bold text-[#5A270F] dark:text-[#EEB38C] mb-4">
+                Your Submission History
+              </h3>
+              {assignment.submissions?.map((sub) => (
+                <div
+                  key={sub.id}
+                  className="bg-[#EFEDED] dark:bg-black/20 border border-[#EEB38C]/30 dark:border-white/10 rounded-2xl p-6 relative overflow-hidden flex flex-col gap-4"
+                >
+                  <div className="flex flex-col sm:flex-row gap-4 justify-between sm:items-center">
+                    <div className="flex gap-4 items-center">
+                      <div className="bg-white dark:bg-white/5 h-12 w-12 rounded-full flex items-center justify-center shadow-sm">
+                        <CheckCircle className="h-6 w-6 text-green-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-[#5A270F] dark:text-foreground text-sm uppercase tracking-wider">
+                          {sub.submission_type === "progress"
+                            ? "Progress Update"
+                            : "Final Submission"}
+                        </h4>
+                        <p className="text-xs text-[#92664A] dark:text-foreground/60 font-medium">
+                          {new Date(sub.submitted_at).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                    {sub.status && (
+                      <span
+                        className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest self-start sm:self-auto shadow-sm ${
+                          sub.status === "approved"
+                            ? "bg-green-100 text-green-700 border border-green-200"
+                            : sub.status === "rejected"
+                            ? "bg-red-100 text-red-600 border border-red-200"
+                            : "bg-white text-[#92664A] border border-[#EEB38C]/50"
+                        }`}
+                      >
+                        {sub.status}
+                      </span>
+                    )}
+                  </div>
+                  {sub.feedback && (
+                    <div className="mt-2 bg-[#DF8142]/10 rounded-xl p-4 border border-[#DF8142]/20">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-[#DF8142] mb-1">
+                        Faculty Feedback
+                      </p>
+                      <p className="text-sm font-medium text-[#5A270F] dark:text-[#EEB38C]">
+                        {sub.feedback}
+                      </p>
+                    </div>
+                  )}
+
+                  {sub.resource_upload_status === "requested" && (
+                    <div className="mt-4 p-5 bg-[#5A270F] bg-opacity-5 border-2 border-dashed border-[#DF8142] rounded-2xl">
+                      <p className="text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] mb-3">
+                        The faculty would like to publish your work as a public resource. Do you permit this?
+                      </p>
+                      <div className="flex gap-3">
+                        <button 
+                          onClick={() => handlePermitUpload(sub.id)}
+                          className="px-4 py-2 bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#6C3B1C] transition-all"
+                        >
+                          Permit Upload
+                        </button>
+                        <button 
+                          onClick={() => handleDenyUpload(sub.id)}
+                          className="px-4 py-2 bg-white dark:bg-white/5 text-[#92664A] text-[10px] font-black uppercase tracking-widest border border-[#EEB38C]/30 rounded-xl hover:bg-gray-50 transition-all"
+                        >
+                          No Thanks
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {sub.resource_upload_status === "permitted" && (
+                    <div className="mt-2 flex items-center gap-2 text-green-600 font-bold text-xs">
+                      <CheckCircle className="h-4 w-4" />
+                      Work published as a Resource
+                    </div>
+                  )}
+                  {sub.resource_upload_status === "denied" && (
+                    <div className="mt-2 text-[#92664A] italic text-[10px] uppercase font-bold">
+                      Submission private (Upload denied)
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           )}
 
@@ -371,6 +581,21 @@ const AssignmentDetails = () => {
                   </p>
                 </div>
               </div>
+
+              {assignment.allow_progress_updates && (
+                <div className="flex flex-col gap-2">
+                  <Select
+                    label="Submission Type"
+                    value={submissionType}
+                    options={[
+                      { id: "progress", name: "Weekly Progress Update" },
+                      { id: "final", name: "Final Submission" },
+                    ]}
+                    onChange={(val) => setSubmissionType(val)}
+                    className="w-full"
+                  />
+                </div>
+              )}
 
               {submitSuccess && (
                 <div className="bg-green-50 text-green-600 p-6 rounded-3xl font-bold flex items-center gap-3 border border-green-100">
@@ -425,6 +650,7 @@ const AssignmentDetails = () => {
                     <p className="text-sm text-[#92664A] dark:text-foreground/60 transition-colors">
                       Year {sub.student?.year} | Submitted:{" "}
                       {new Date(sub.submitted_at).toLocaleDateString()}
+                      {sub.submission_type === "progress" ? " (Progress Update)" : ""}
                     </p>
                     {sub.status === "approved" && (
                       <span className="inline-block mt-2 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-bold rounded-full">
@@ -436,36 +662,129 @@ const AssignmentDetails = () => {
                         Rejected
                       </span>
                     )}
+                    {sub.feedback && (
+                      <div className="mt-4 bg-[#DF8142]/10 p-4 rounded-xl border border-[#DF8142]/20">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-[#DF8142] mb-1">
+                          Given Feedback
+                        </p>
+                        <p className="text-sm font-medium text-[#5A270F] dark:text-[#EEB38C]">
+                          {sub.feedback}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                  <div className="flex gap-2">
-                    <a
-                      href={`${
-                        import.meta.env.VITE_API_URL
-                      }/assignments/submissions/${
-                        sub.id
-                      }/download?token=${encodeURIComponent(
-                        localStorage.getItem("token") || ""
-                      )}`}
-                      className="p-3 bg-white dark:bg-card dark:bg-white/5 text-[#DF8142] dark:text-[#EEB38C] rounded-xl font-bold shadow-sm hover:bg-[#DF8142]/10 border border-[#EEB38C]/20 dark:border-white/10 transition-colors"
-                      title="Download to Review"
-                    >
-                      <Download className="h-5 w-5" />
-                    </a>
-                    {sub.status !== "approved" && sub.status !== "rejected" && (
-                      <>
-                        <button
-                          onClick={() => handleApprove(sub.id)}
-                          className="px-4 py-2 bg-[#5A270F] text-white rounded-xl font-bold hover:bg-[#6C3B1C] transition-colors text-sm shadow-sm"
+                  <div className="flex flex-col gap-2 items-end">
+                    {activeFeedbackId === sub.id ? (
+                      <div className="flex flex-col gap-2 items-end w-full sm:w-80 mt-2">
+                        <textarea
+                          value={feedbackText}
+                          onChange={(e) => setFeedbackText(e.target.value)}
+                          className="w-full text-xs p-3 rounded-[1rem] border-2 border-[#DF8142]/30 bg-white dark:bg-black/50 text-[#5A270F] dark:text-[#EEB38C] focus:outline-none focus:border-[#DF8142] focus:ring-4 focus:ring-[#DF8142]/10"
+                          placeholder="Type your detailed constructive feedback here..."
+                          rows={3}
+                          disabled={submittingFeedback}
+                        />
+                        <div className="flex gap-2 w-full justify-end">
+                          <button
+                            onClick={() => {
+                              setActiveFeedbackId(null);
+                              setFeedbackText("");
+                            }}
+                            disabled={submittingFeedback}
+                            className="px-4 py-2 bg-gray-200 text-gray-700 dark:bg-white/10 dark:text-gray-300 text-[10px] uppercase font-bold rounded-xl hover:bg-gray-300 dark:hover:bg-white/20 transition-colors"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={() => handleSubmitFeedback(sub.id)}
+                            disabled={!feedbackText.trim() || submittingFeedback}
+                            className="px-4 py-2 bg-[#DF8142] text-white text-[10px] uppercase font-black rounded-xl hover:bg-[#c9743a] transition-all disabled:opacity-50"
+                          >
+                            {submittingFeedback ? "Saving..." : "Save Feedback"}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        <a
+                          href={`${
+                            import.meta.env.VITE_API_URL
+                          }/assignments/submissions/${
+                            sub.id
+                          }/download?token=${encodeURIComponent(
+                            localStorage.getItem("token") || ""
+                          )}`}
+                          className="p-3 bg-white dark:bg-card dark:bg-white/5 text-[#DF8142] dark:text-[#EEB38C] rounded-xl font-bold shadow-sm hover:bg-[#DF8142]/10 border border-[#EEB38C]/20 dark:border-white/10 transition-colors flex items-center justify-center"
+                          title="Download to Review"
                         >
-                          Approve
-                        </button>
-                        <button
-                          onClick={() => handleReject(sub.id)}
-                          className="px-4 py-2 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition-colors text-sm shadow-sm"
+                          <Download className="h-5 w-5" />
+                        </a>
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={`${
+                            import.meta.env.VITE_API_URL
+                          }/assignments/submissions/${
+                            sub.id
+                          }/view?token=${encodeURIComponent(
+                            localStorage.getItem("token") || ""
+                          )}`}
+                          className="p-3 bg-[#FAF8F4] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] rounded-xl font-bold border-2 border-[#6C3B1C]/10 hover:border-[#DF8142] transition-colors flex items-center justify-center"
+                          title="View Online"
                         >
-                          Reject
+                          <Eye className="h-5 w-5" />
+                        </a>
+                        <button
+                          onClick={() => {
+                            setActiveFeedbackId(sub.id);
+                            setFeedbackText(sub.feedback || "");
+                          }}
+                          className="px-4 py-2 bg-white dark:bg-black/20 text-[#DF8142] border border-[#DF8142] rounded-xl font-bold hover:bg-[#DF8142]/10 transition-colors text-sm shadow-sm"
+                        >
+                          {sub.feedback ? "Edit Feedback" : "Add Feedback"}
                         </button>
-                      </>
+                      </div>
+                    )}
+                    
+                    {activeFeedbackId !== sub.id && (
+                      <div className="flex gap-2 mt-1">
+                        {sub.status !== "approved" && sub.status !== "rejected" && sub.status !== "featured" && (
+                          <>
+                            {sub.resource_upload_status === "none" ? (
+                              <button
+                                onClick={() => handleRequestUpload(sub.id)}
+                                className="px-4 py-2 bg-[#5A270F] text-white rounded-xl font-bold hover:bg-[#6C3B1C] transition-colors text-sm shadow-sm"
+                              >
+                                Request to Upload
+                              </button>
+                            ) : sub.resource_upload_status === "requested" ? (
+                              <span className="px-4 py-2 bg-orange-50 text-orange-600 text-xs font-bold border border-orange-100 rounded-xl italic">
+                                Awaiting Student Permission...
+                              </span>
+                            ) : sub.resource_upload_status === "permitted" ? (
+                              <span className="px-4 py-2 bg-green-50 text-green-700 text-xs font-bold border border-green-100 rounded-xl">
+                                Work Published
+                              </span>
+                            ) : (
+                              <span className="px-4 py-2 bg-gray-50 text-gray-500 text-xs font-bold border border-gray-100 rounded-xl">
+                                Request Denied
+                              </span>
+                            )}
+                            
+                            <button
+                              onClick={() => handleReject(sub.id)}
+                              className="px-4 py-2 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition-colors text-sm shadow-sm"
+                            >
+                              Reject
+                            </button>
+                          </>
+                        )}
+                        {sub.status === "featured" && (
+                          <span className="px-4 py-2 bg-green-50 text-green-700 text-xs font-bold border border-green-100 rounded-xl">
+                            Featured as Resource
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
