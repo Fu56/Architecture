@@ -206,12 +206,12 @@ const Upload = () => {
       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
         {/* ── LEFT: File + Metadata ────────────────── */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-2 space-y-5">
 
           {/* File Drop Zone */}
-          <div className="bg-white dark:bg-[#1A0B04] rounded-3xl border-2 border-[#92664A]/20 dark:border-white/10 shadow-xl p-6 sm:p-10 relative overflow-hidden">
+          <div className="bg-white dark:bg-[#1A0B04] rounded-3xl border-2 border-[#92664A]/20 dark:border-white/10 shadow-xl p-5 sm:p-6 relative overflow-hidden">
             <div className="absolute inset-0 architectural-dot-grid dark:architectural-dot-grid-dark opacity-5 pointer-events-none" />
-            <div className="relative z-10 space-y-8">
+            <div className="relative z-10 space-y-5">
 
               {/* Section label */}
               <div className="flex items-center justify-between">
@@ -238,13 +238,13 @@ const Upload = () => {
                   title="Upload File"
                 />
                 <div
-                  className={`relative z-10 p-8 sm:p-14 border-2 border-dashed rounded-2xl text-center transition-all duration-500 ${
+                  className={`relative z-10 p-5 sm:p-8 border-2 border-dashed rounded-2xl text-center transition-all duration-500 ${
                     errors.file
                       ? "bg-rose-50/20 border-rose-400"
                       : "bg-[#EEB38C]/5 border-[#92664A]/25 group-hover:border-[#DF8142] group-hover:bg-[#EEB38C]/10"
                   }`}
                 >
-                  <div className="h-16 w-16 sm:h-20 sm:w-20 bg-[#5A270F] rounded-2xl flex items-center justify-center text-[#EEB38C] mx-auto mb-6 shadow-xl transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                  <div className="h-12 w-12 sm:h-14 sm:w-14 bg-[#5A270F] rounded-xl flex items-center justify-center text-[#EEB38C] mx-auto mb-4 shadow-xl transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
                     {file ? (
                       <CheckCircle2 className="h-8 w-8 sm:h-10 sm:w-10" />
                     ) : (
@@ -262,7 +262,7 @@ const Upload = () => {
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      <p className="text-xl sm:text-3xl font-black text-[#5A270F] dark:text-white tracking-tighter italic">
+                      <p className="text-lg sm:text-xl font-black text-[#5A270F] dark:text-white tracking-tighter italic">
                         Click to Upload File
                       </p>
                       <div className="text-[10px] font-bold text-[#6C3B1C] dark:text-[#EEB38C] uppercase tracking-[0.4em] flex items-center justify-center gap-3">
@@ -287,7 +287,7 @@ const Upload = () => {
                     placeholder="e.g. Urban Design Phase IV"
                     value={metadata.title}
                     onChange={handleMetaChange}
-                    className={`${inputCls(!!errors.title)} pl-12 h-14 text-base sm:text-lg font-bold italic`}
+                    className={`${inputCls(!!errors.title)} pl-12 h-11 text-sm font-bold italic`}
                   />
                 </div>
                 <FieldError message={errors.title} />
@@ -296,7 +296,7 @@ const Upload = () => {
           </div>
 
           {/* Metadata Card */}
-          <div className="bg-white dark:bg-[#1A0B04] rounded-3xl border-2 border-[#92664A]/20 dark:border-white/10 shadow-xl p-6 sm:p-10 space-y-8">
+          <div className="bg-white dark:bg-[#1A0B04] rounded-3xl border-2 border-[#92664A]/20 dark:border-white/10 shadow-xl p-5 sm:p-6 space-y-5">
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="text-xs font-black uppercase tracking-[0.35em] text-[#5A270F] dark:text-[#EEB38C]">
@@ -324,7 +324,7 @@ const Upload = () => {
                     placeholder="Principal Architect"
                     value={metadata.author}
                     onChange={handleMetaChange}
-                    className={`${inputCls(!!errors.author)} pl-12 h-14 uppercase tracking-wider`}
+                    className={`${inputCls(!!errors.author)} pl-12 h-11 uppercase tracking-wider`}
                   />
                 </div>
                 <FieldError message={errors.author} />
@@ -340,7 +340,7 @@ const Upload = () => {
                     placeholder="Brutalism, Concrete, Urban"
                     value={metadata.keywords}
                     onChange={handleMetaChange}
-                    className={`${inputCls(!!errors.keywords)} pl-12 h-14 uppercase tracking-wide text-sm`}
+                    className={`${inputCls(!!errors.keywords)} pl-12 h-11 uppercase tracking-wide text-sm`}
                   />
                 </div>
                 <FieldError message={errors.keywords} />
@@ -357,7 +357,7 @@ const Upload = () => {
                   placeholder="e.g. 3"
                   value={metadata.forYearStudents}
                   onChange={handleMetaChange}
-                  className={`${inputCls(!!errors.forYearStudents)} h-14 text-center text-lg font-black`}
+                  className={`${inputCls(!!errors.forYearStudents)} h-11 text-center text-sm font-black`}
                 />
                 <FieldError message={errors.forYearStudents} />
               </div>
@@ -369,7 +369,7 @@ const Upload = () => {
                   placeholder="1 or 2"
                   value={metadata.semester}
                   onChange={handleMetaChange}
-                  className={`${inputCls(!!errors.semester)} h-14 text-center text-lg font-black`}
+                  className={`${inputCls(!!errors.semester)} h-11 text-center text-sm font-black`}
                 />
                 <FieldError message={errors.semester} />
               </div>
@@ -381,7 +381,7 @@ const Upload = () => {
                   placeholder="202X"
                   value={metadata.batch}
                   onChange={handleMetaChange}
-                  className={`${inputCls(!!errors.batch)} h-14 text-center text-lg font-black`}
+                  className={`${inputCls(!!errors.batch)} h-11 text-center text-sm font-black`}
                 />
                 <FieldError message={errors.batch} />
               </div>
@@ -415,7 +415,7 @@ const Upload = () => {
                   placeholder="Enter stage name..."
                   value={metadata.customStageName}
                   onChange={handleMetaChange}
-                  className={`${inputCls(!!errors.customStageName)} h-14 uppercase tracking-wide`}
+                  className={`${inputCls(!!errors.customStageName)} h-11 uppercase tracking-wide`}
                 />
                 <FieldError message={errors.customStageName} />
               </div>
@@ -427,10 +427,10 @@ const Upload = () => {
         <div className="space-y-6 lg:sticky lg:top-8">
 
           {/* Security & Submit */}
-          <div className="bg-[#1A0B03] dark:bg-[#1A0B04] rounded-3xl p-7 sm:p-9 text-white relative overflow-hidden shadow-2xl shadow-[#1A0B03]/40 border border-white/5">
+          <div className="bg-[#1A0B03] dark:bg-[#1A0B04] rounded-2xl p-5 sm:p-6 text-white relative overflow-hidden shadow-2xl shadow-[#1A0B03]/40 border border-white/5">
             <div className="absolute top-0 right-0 w-60 h-60 bg-[#DF8142]/15 blur-[80px] rounded-full pointer-events-none" />
 
-            <div className="relative z-10 space-y-8">
+            <div className="relative z-10 space-y-5">
               {/* Header */}
               <div className="flex items-center gap-4">
                 <div className="h-10 w-10 rounded-xl bg-[#DF8142] flex items-center justify-center shadow-lg flex-shrink-0">
@@ -513,7 +513,7 @@ const Upload = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-16 sm:h-20 flex items-center justify-center gap-4 bg-white text-[#5A270F] rounded-2xl text-[13px] font-black uppercase tracking-[0.4em] hover:bg-[#EEB38C] transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-40 group shadow-2xl"
+                  className="w-full h-12 flex items-center justify-center gap-3 bg-white text-[#5A270F] rounded-xl text-[11px] font-black uppercase tracking-[0.4em] hover:bg-[#EEB38C] transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-40 group shadow-2xl"
                 >
                   {loading ? (
                     <Loader2 className="h-7 w-7 animate-spin" />
