@@ -16,6 +16,7 @@ import {
 import { api } from "../lib/api";
 import type { Resource, DesignStage } from "../models";
 import ResourceCard from "../components/ui/ResourceCard";
+import { useTheme } from "../context/useTheme";
 
 interface Stats {
   totalResources: number;
@@ -28,6 +29,8 @@ const Explore = () => {
   const [stats, setStats] = useState<Stats | null>(null);
   const [stages, setStages] = useState<DesignStage[]>([]);
   const [recentResources, setRecentResources] = useState<Resource[]>([]);
+  const { theme } = useTheme();
+  const isLight = theme === "light";
 
   useEffect(() => {
     const FONT_LINK_ID = "explore-page-fonts";
@@ -98,7 +101,7 @@ const Explore = () => {
                   to="/blog"
                   className="px-8 py-5 bg-white/5 dark:bg-card/5 border border-white/10 hover:bg-white/10 dark:bg-card/10 text-white font-black uppercase tracking-widest text-[10px] rounded-2xl transition-all duration-500 flex items-center gap-3"
                 >
-                  Insights Feed
+                  Get Notified
                 </Link>
               </div>
             </div>
@@ -173,10 +176,10 @@ const Explore = () => {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="flex flex-col md:flex-row items-end justify-between gap-8 mb-16">
             <div className="max-w-xl">
-              <h2 className="text-4xl sm:text-5xl font-black text-[#5A270F] dark:text-[#EEB38C] tracking-tighter mb-4 leading-none transition-colors font-space-grotesk">
-                THEMATIC CLUSTERS.
+              <h2 className={`text-4xl sm:text-5xl font-black tracking-tighter mb-4 leading-none transition-colors font-space-grotesk ${isLight ? "text-[#5A270F]" : "text-[#EEB38C]"}`}>
+                DESIGN STAGES.
               </h2>
-              <p className="text-[#5A270F] dark:text-foreground/60 font-medium transition-colors">
+              <p className={`font-medium transition-colors ${isLight ? "text-[#92664A]" : "text-white/60"}`}>
                 Navigate the library through specific design stage nodes. Each
                 cluster contains curated assets tailored for project benchmarks.
               </p>
@@ -194,21 +197,21 @@ const Explore = () => {
               <Link
                 key={stage.id}
                 to={`/browse?stage=${stage.id}`}
-                className="group relative bg-white dark:bg-card p-10 rounded-[3rem] border border-[#D9D9C2] dark:border-white/10 shadow-lg shadow-slate-200/40 dark:shadow-none overflow-hidden hover:shadow-2xl hover:shadow-[#DF8142]/30 dark:hover:border-[#DF8142]/20 transition-all duration-500"
+                className={`group relative p-10 rounded-[3rem] border shadow-lg overflow-hidden transition-all duration-500 hover:-translate-y-2 ${isLight ? "bg-white border-[#92664A]/20 shadow-[#DF8142]/10 hover:shadow-[#DF8142]/30 hover:border-[#DF8142]/30" : "bg-card border-white/10 shadow-none hover:border-[#DF8142]/20"}`}
               >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#FDFCFB] dark:bg-white/5 rounded-bl-[5rem] group-hover:bg-[#DF8142] transition-all duration-500 flex items-center justify-end pr-8 pt-8 border-l border-b border-[#EEB38C]/20 dark:border-transparent">
-                  <Sparkles className="h-6 w-6 text-[#DF8142] dark:text-[#EEB38C]/40 group-hover:text-white transition-all" />
+                <div className={`absolute top-0 right-0 w-32 h-32 rounded-bl-[5rem] group-hover:bg-[#DF8142] transition-all duration-500 flex items-center justify-end pr-8 pt-8 border-l border-b ${isLight ? "bg-[#EEB38C]/10 border-[#92664A]/10 group-hover:border-[#DF8142]" : "bg-white/5 border-transparent"}`}>
+                  <Sparkles className={`h-6 w-6 group-hover:text-white transition-all ${isLight ? "text-[#DF8142]" : "text-[#EEB38C]/40"}`} />
                 </div>
 
                 <div className="relative z-10">
                   <span className="text-[10px] font-black uppercase tracking-widest text-[#DF8142] mb-4 block">
-                    Segment Node
+                    Design Stage
                   </span>
-                  <h3 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] group-hover:text-[#DF8142] transition-colors mb-4 leading-tight font-space-grotesk">
+                  <h3 className={`text-2xl font-black group-hover:text-[#DF8142] transition-colors mb-4 leading-tight font-space-grotesk ${isLight ? "text-[#5A270F]" : "text-[#EEB38C]"}`}>
                     {stage.name}
                   </h3>
-                  <div className="flex items-center gap-2 text-[#92664A] dark:text-foreground/40 font-bold text-xs uppercase tracking-widest group-hover:text-[#DF8142] transition-colors">
-                    Verify Access{" "}
+                  <div className={`flex items-center gap-2 font-bold text-xs uppercase tracking-widest group-hover:text-[#DF8142] transition-colors ${isLight ? "text-[#92664A]" : "text-white/40"}`}>
+                    Get Resources{" "}
                     <ArrowRight className="h-3 w-3 group-hover:translate-x-2 transition-transform" />
                   </div>
                 </div>

@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { currentRole, getUser } from "../../lib/auth";
 import Select from "../../components/ui/Select";
+import { useTheme } from "../../context/useTheme";
 
 interface AssignmentWithSubmissions {
   id: number;
@@ -83,6 +84,8 @@ const AssignmentDetails = () => {
 
   const role = currentRole();
   const currentUser = getUser();
+  const { theme } = useTheme();
+  const isLight = theme === "light";
 
   const isBaseAdmin = location.pathname.startsWith("/admin");
   const basePath = isBaseAdmin ? "/admin" : "/dashboard";
@@ -253,7 +256,7 @@ const AssignmentDetails = () => {
   }
 
   if (!assignment)
-    return <div className="text-center py-20 text-[#5A270F] dark:text-[#EEB38C] font-bold">Assignment not found</div>;
+    return <div className={`text-center py-20 font-bold ${isLight ? "text-[#5A270F]" : "text-[#EEB38C]"}`}>Assignment not found</div>;
 
   const isCreatorOrAdmin =
     currentUser?.id === assignment.creator.id ||
@@ -270,14 +273,14 @@ const AssignmentDetails = () => {
     <div className="container mx-auto px-4 py-12 max-w-5xl">
       <Link
         to={`${basePath}/assignments`}
-        className="flex items-center gap-2 text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#5A270F] dark:text-[#EEB38C] font-bold text-sm uppercase tracking-widest mb-10 transition-colors"
+        className={`flex items-center gap-2 font-bold text-sm uppercase tracking-widest mb-10 transition-colors ${isLight ? "text-[#92664A] hover:text-[#5A270F]" : "text-[#EEB38C]/60 hover:text-[#EEB38C]"}`}
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Assignments
       </Link>
 
-      <div className="bg-white dark:bg-card rounded-[3rem] p-10 shadow-xl border border-[#EEB38C]/30 dark:border-white/10 mb-10 relative overflow-hidden transition-all duration-500">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
+      <div className={`rounded-[3rem] p-10 shadow-xl border mb-10 relative overflow-hidden transition-all duration-500 ${isLight ? "bg-white border-[#92664A]/20" : "bg-[#6C3B1C] border-[#EEB38C]/20"}`}>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
         
         <div className="flex flex-col md:flex-row justify-between items-start gap-8 relative z-10">
           <div className="flex-grow">
@@ -286,7 +289,7 @@ const AssignmentDetails = () => {
                 Brief
               </span>
               {(assignment.design_stage || assignment.custom_design_stage) && (
-                <span className="px-4 py-1.5 bg-[#EFEDED] dark:bg-white/5 text-[#92664A] dark:text-[#EEB38C] rounded-full text-xs font-black uppercase tracking-widest border border-[#EEB38C]/40 dark:border-white/10">
+                <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border border-[#EEB38C]/40 ${isLight ? "bg-[#EEB38C]/20 text-[#92664A] border-[#92664A]/20" : "bg-white/5 text-[#EEB38C]"}`}>
                   {assignment.design_stage 
                     ? assignment.design_stage.name 
                     : assignment.custom_design_stage}
@@ -298,23 +301,23 @@ const AssignmentDetails = () => {
                 </span>
               )}
             </div>
-            <h1 className="text-4xl font-black text-[#5A270F] dark:text-foreground mb-6 leading-tight transition-colors">
+            <h1 className={`text-4xl font-black mb-6 leading-tight transition-colors ${isLight ? "text-[#5A270F]" : "text-white"}`}>
               {assignment.title}
             </h1>
-            <div className="prose prose-lg max-w-none text-[#92664A] dark:text-foreground/60 font-medium leading-relaxed whitespace-pre-wrap transition-colors">
+            <div className={`prose prose-lg max-w-none font-medium leading-relaxed whitespace-pre-wrap transition-colors ${isLight ? "text-[#5A270F]/80" : "text-[#EEB38C]/80"}`}>
               {assignment.description || "No description provided."}
             </div>
           </div>
 
           <div className="w-full md:w-80 flex-shrink-0 space-y-4">
-            <div className="bg-[#EFEDED] dark:bg-background/50 dark:bg-white/5 rounded-3xl p-6 border border-[#EEB38C]/30 dark:border-white/10 transition-colors">
+            <div className={`rounded-3xl p-6 border transition-colors ${isLight ? "bg-[#EEB38C]/10 border-[#92664A]/20" : "bg-[#5A270F] border-[#EEB38C]/20"}`}>
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 bg-white dark:bg-card rounded-2xl flex items-center justify-center shadow-sm border border-[#EEB38C]/20 dark:border-white/10 transition-colors">
+                  <div className={`h-12 w-12 rounded-2xl flex items-center justify-center shadow-sm border transition-colors ${isLight ? "bg-white border-[#DF8142]/20" : "bg-[#6C3B1C] border-[#EEB38C]/20"}`}>
                     <Calendar className="h-6 w-6 text-[#DF8142]" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-widest transition-colors flex items-center justify-between w-full">
+                    <p className={`text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-between w-full ${isLight ? "text-[#5A270F]/50" : "text-[#EEB38C]/50"}`}>
                       <span>Due Date</span>
                       {isCreatorOrAdmin && (
                         <button
@@ -328,7 +331,7 @@ const AssignmentDetails = () => {
                               setNewDeadline(localISOTime);
                             }
                           }}
-                          className="hover:text-[#DF8142] transition-colors ml-2 p-1 bg-white/50 dark:bg-black/20 rounded-md"
+                          className={`hover:text-[#DF8142] transition-colors ml-2 p-1 rounded-md ${isLight ? "bg-[#EEB38C]/30 hover:bg-[#EEB38C]/50" : "bg-black/20 hover:bg-black/40"}`}
                           title="Edit Deadline"
                         >
                           <Edit3 className="h-3 w-3" />
@@ -343,7 +346,7 @@ const AssignmentDetails = () => {
                           aria-label="Edit Deadline"
                           value={newDeadline}
                           onChange={(e) => setNewDeadline(e.target.value)}
-                          className="w-full text-xs p-2 rounded-lg border border-[#EEB38C]/30 bg-white dark:bg-black/50 text-[#5A270F] dark:text-[#EEB38C] focus:outline-none focus:border-[#DF8142]"
+                          className={`w-full text-xs p-2 rounded-lg border focus:outline-none transition-colors ${isLight ? "bg-white border-[#92664A]/30 text-[#5A270F] focus:border-[#DF8142]" : "bg-[#6C3B1C]/50 border-[#EEB38C]/20 text-[#EEB38C] focus:border-[#DF8142]"}`}
                         />
                         <div className="flex gap-2">
                           <button
@@ -355,14 +358,14 @@ const AssignmentDetails = () => {
                           </button>
                           <button
                             onClick={() => setEditingDeadline(false)}
-                            className="bg-gray-200 text-gray-700 dark:bg-white/10 dark:text-gray-300 text-[10px] uppercase font-bold py-1 px-3 rounded-lg hover:bg-gray-300 dark:hover:bg-white/20 transition-colors"
+                            className={`text-[10px] uppercase font-bold py-1 px-3 rounded-lg transition-colors ${isLight ? "bg-[#EEB38C]/20 text-[#5A270F] hover:bg-[#EEB38C]/30" : "bg-white/10 text-gray-300 hover:bg-white/20"}`}
                           >
                             Cancel
                           </button>
                         </div>
                       </div>
                     ) : (
-                      <p className="font-bold text-[#5A270F] dark:text-[#EEB38C] transition-colors">
+                      <p className={`font-bold transition-colors ${isLight ? "text-[#5A270F]" : "text-[#EEB38C]"}`}>
                         {assignment.due_date
                           ? new Date(assignment.due_date).toLocaleString([], {
                               dateStyle: "medium",
@@ -374,28 +377,28 @@ const AssignmentDetails = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 bg-white dark:bg-card rounded-2xl flex items-center justify-center shadow-sm border border-[#EEB38C]/20 dark:border-white/10 transition-colors">
+                  <div className={`h-12 w-12 rounded-2xl flex items-center justify-center shadow-sm border transition-colors ${isLight ? "bg-white border-[#DF8142]/20" : "bg-[#6C3B1C] border-[#EEB38C]/20"}`}>
                     <User className="h-6 w-6 text-[#DF8142]" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-widest transition-colors">
+                    <p className={`text-[10px] font-black uppercase tracking-widest transition-colors ${isLight ? "text-[#5A270F]/50" : "text-[#EEB38C]/50"}`}>
                       Instructor
                     </p>
-                    <p className="font-bold text-[#5A270F] dark:text-[#EEB38C] transition-colors">
+                    <p className={`font-bold transition-colors ${isLight ? "text-[#5A270F]" : "text-[#EEB38C]"}`}>
                       {assignment.creator.first_name}{" "}
                       {assignment.creator.last_name}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 bg-white dark:bg-card rounded-2xl flex items-center justify-center shadow-sm border border-[#EEB38C]/20 dark:border-white/10 transition-colors">
+                  <div className={`h-12 w-12 rounded-2xl flex items-center justify-center shadow-sm border transition-colors ${isLight ? "bg-white border-[#DF8142]/20" : "bg-[#6C3B1C] border-[#EEB38C]/20"}`}>
                     <Clock className="h-6 w-6 text-[#DF8142]" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-[#92664A] dark:text-foreground/40 uppercase tracking-widest transition-colors">
+                    <p className={`text-[10px] font-black uppercase tracking-widest transition-colors ${isLight ? "text-[#5A270F]/50" : "text-[#EEB38C]/50"}`}>
                       Posted On
                     </p>
-                    <p className="font-bold text-[#5A270F] dark:text-[#EEB38C] transition-colors">
+                    <p className={`font-bold transition-colors ${isLight ? "text-[#5A270F]" : "text-[#EEB38C]"}`}>
                       {new Date(assignment.created_at).toLocaleDateString()}
                     </p>
                   </div>
@@ -413,7 +416,7 @@ const AssignmentDetails = () => {
                   }/assignments/${id}/view?token=${encodeURIComponent(
                     localStorage.getItem("token") || ""
                   )}`}
-                  className="w-full flex items-center justify-center gap-2 bg-[#FAF8F4] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] p-4 rounded-3xl font-black text-xs uppercase tracking-widest border-2 border-[#6C3B1C]/20 hover:border-[#DF8142] transition-all"
+                  className={`w-full flex items-center justify-center gap-2 p-4 rounded-3xl font-black text-xs uppercase tracking-widest border-2 transition-all ${isLight ? "bg-[#EEB38C]/10 text-[#5A270F] border-[#92664A]/30 hover:border-[#DF8142]" : "bg-white/5 text-[#EEB38C] border-[#6C3B1C]/20 hover:border-[#DF8142]"}`}
                 >
                   <Eye className="h-4 w-4" />
                   View Brief
@@ -424,7 +427,7 @@ const AssignmentDetails = () => {
                   }/assignments/${id}/download?token=${encodeURIComponent(
                     localStorage.getItem("token") || ""
                   )}`}
-                  className="w-full flex items-center justify-center gap-2 bg-[#5A270F] text-white p-5 rounded-[2rem] font-black text-lg shadow-xl shadow-[#5A270F]/20 hover:bg-[#6C3B1C] transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-br from-[#DF8142] to-[#5A270F] text-white p-5 rounded-[2rem] font-black text-lg shadow-xl shadow-[#DF8142]/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
                 >
                   <Download className="h-6 w-6" />
                   Download
@@ -447,36 +450,36 @@ const AssignmentDetails = () => {
 
       {/* Submission Section for Students */}
       {isStudent && (
-        <div className="bg-white dark:bg-card rounded-[2.5rem] p-8 border border-[#EEB38C]/30 dark:border-white/10 mb-10 relative overflow-hidden transition-all duration-500">
+        <div className={`rounded-[2.5rem] p-8 border mb-10 relative overflow-hidden transition-all duration-500 ${isLight ? "bg-white border-[#92664A]/30" : "bg-[#6C3B1C]/40 border-[#EEB38C]/20"}`}>
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#5A270F]/5 blur-3xl rounded-full -translate-x-1/2 translate-y-1/2" />
           
-          <h2 className="text-2xl font-black text-[#5A270F] dark:text-foreground mb-6 flex items-center gap-3 relative z-10 transition-colors">
+          <h2 className={`text-2xl font-black mb-6 flex items-center gap-3 relative z-10 transition-colors ${isLight ? "text-[#5A270F]" : "text-white"}`}>
             <Upload className="h-6 w-6 text-[#DF8142]" />
             Submit Your Work
           </h2>
 
           {hasSubmitted && (
             <div className="space-y-4 mb-8 relative z-10 w-full">
-              <h3 className="text-xl font-bold text-[#5A270F] dark:text-[#EEB38C] mb-4">
+              <h3 className={`text-xl font-bold mb-4 ${isLight ? "text-[#5A270F]" : "text-[#EEB38C]"}`}>
                 Your Submission History
               </h3>
               {assignment.submissions?.map((sub) => (
                 <div
                   key={sub.id}
-                  className="bg-[#EFEDED] dark:bg-black/20 border border-[#EEB38C]/30 dark:border-white/10 rounded-2xl p-6 relative overflow-hidden flex flex-col gap-4"
+                  className={`rounded-2xl p-6 relative overflow-hidden flex flex-col gap-4 border ${isLight ? "bg-[#EEB38C]/10 border-[#92664A]/30" : "bg-black/20 border-[#EEB38C]/20"}`}
                 >
                   <div className="flex flex-col sm:flex-row gap-4 justify-between sm:items-center">
                     <div className="flex gap-4 items-center">
-                      <div className="bg-white dark:bg-white/5 h-12 w-12 rounded-full flex items-center justify-center shadow-sm">
+                      <div className={`h-12 w-12 rounded-full flex items-center justify-center shadow-sm ${isLight ? "bg-white" : "bg-white/5"}`}>
                         <CheckCircle className="h-6 w-6 text-green-600" />
                       </div>
                       <div>
-                        <h4 className="font-bold text-[#5A270F] dark:text-foreground text-sm uppercase tracking-wider">
+                        <h4 className={`font-bold text-sm uppercase tracking-wider ${isLight ? "text-[#5A270F]" : "text-white"}`}>
                           {sub.submission_type === "progress"
                             ? "Progress Update"
                             : "Final Submission"}
                         </h4>
-                        <p className="text-xs text-[#92664A] dark:text-foreground/60 font-medium">
+                        <p className={`text-xs font-medium ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/60"}`}>
                           {new Date(sub.submitted_at).toLocaleString()}
                         </p>
                       </div>
@@ -496,19 +499,19 @@ const AssignmentDetails = () => {
                     )}
                   </div>
                   {sub.feedback && (
-                    <div className="mt-2 bg-[#DF8142]/10 rounded-xl p-4 border border-[#DF8142]/20">
+                    <div className={`mt-2 rounded-xl p-4 border ${isLight ? "bg-[#DF8142]/10 border-[#DF8142]/20 text-[#5A270F]" : "bg-[#DF8142]/20 border-[#DF8142]/30 text-[#EEB38C]"}`}>
                       <p className="text-[10px] font-black uppercase tracking-widest text-[#DF8142] mb-1">
                         Faculty Feedback
                       </p>
-                      <p className="text-sm font-medium text-[#5A270F] dark:text-[#EEB38C]">
+                      <p className="text-sm font-medium">
                         {sub.feedback}
                       </p>
                     </div>
                   )}
 
                   {sub.resource_upload_status === "requested" && (
-                    <div className="mt-4 p-5 bg-[#5A270F] bg-opacity-5 border-2 border-dashed border-[#DF8142] rounded-2xl">
-                      <p className="text-sm font-bold text-[#5A270F] dark:text-[#EEB38C] mb-3">
+                    <div className={`mt-4 p-5 border-2 border-dashed border-[#DF8142] rounded-2xl ${isLight ? "bg-[#5A270F]/5" : "bg-[#5A270F]/20"}`}>
+                      <p className={`text-sm font-bold mb-3 ${isLight ? "text-[#5A270F]" : "text-[#EEB38C]"}`}>
                         The faculty would like to publish your work as a public resource. Do you permit this?
                       </p>
                       <div className="flex gap-3">
@@ -520,7 +523,7 @@ const AssignmentDetails = () => {
                         </button>
                         <button 
                           onClick={() => handleDenyUpload(sub.id)}
-                          className="px-4 py-2 bg-white dark:bg-white/5 text-[#92664A] text-[10px] font-black uppercase tracking-widest border border-[#EEB38C]/30 rounded-xl hover:bg-gray-50 transition-all"
+                          className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest border rounded-xl transition-all ${isLight ? "bg-white text-[#92664A] border-[#EEB38C]/30 hover:bg-gray-50" : "bg-white/5 text-[#EEB38C] border-[#EEB38C]/30 hover:bg-white/10"}`}
                         >
                           No Thanks
                         </button>
@@ -567,16 +570,16 @@ const AssignmentDetails = () => {
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                   disabled={submitting}
                 />
-                <div className="border-2 border-dashed border-[#EEB38C] dark:border-white/10 rounded-[2rem] py-12 text-center group-hover:border-[#DF8142] group-hover:bg-[#DF8142]/5 dark:group-hover:bg-white/5 dark:bg-card/5 transition-all">
-                  <div className="h-16 w-16 bg-[#EFEDED] dark:bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-[#DF8142]/10 group-hover:text-[#DF8142] transition-all">
-                    <Upload className="h-8 w-8 text-[#92664A] dark:text-foreground/40" />
+                <div className={`border-2 border-dashed rounded-[2rem] py-12 text-center transition-all ${isLight ? "border-[#92664A]/30 hover:border-[#DF8142] hover:bg-[#DF8142]/5" : "border-[#EEB38C]/20 hover:border-[#DF8142] hover:bg-white/5"}`}>
+                  <div className={`h-16 w-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-[#DF8142]/10 group-hover:text-[#DF8142] transition-all ${isLight ? "bg-[#EEB38C]/20" : "bg-white/5 text-white/50"}`}>
+                    <Upload className={`h-8 w-8 transition-colors ${isLight ? "text-[#5A270F]" : "text-[#EEB38C]/60"}`} />
                   </div>
-                  <p className="text-lg font-black text-[#5A270F] dark:text-foreground mb-1 transition-colors">
+                  <p className={`text-lg font-black mb-1 transition-colors ${isLight ? "text-[#5A270F]" : "text-white"}`}>
                     {submissionFile
                       ? submissionFile.name
                       : "Choose your submission file"}
                   </p>
-                  <p className="text-[#92664A] dark:text-foreground/40 font-medium text-sm transition-colors">
+                  <p className={`font-medium text-sm transition-colors ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/60"}`}>
                     All supported file types accepted
                   </p>
                 </div>
@@ -630,8 +633,8 @@ const AssignmentDetails = () => {
       {isCreatorOrAdmin &&
         assignment.submissions &&
         assignment.submissions.length > 0 && (
-          <div className="bg-white dark:bg-card rounded-[2.5rem] p-8 border border-[#EEB38C]/30 dark:border-white/10 mb-10 relative overflow-hidden transition-all duration-500">
-            <h2 className="text-2xl font-black text-[#5A270F] dark:text-foreground mb-6 flex items-center gap-3 relative z-10 transition-colors">
+          <div className={`rounded-[2.5rem] p-8 border mb-10 relative overflow-hidden transition-all duration-500 ${isLight ? "bg-white border-[#92664A]/30" : "bg-[#6C3B1C]/40 border-[#EEB38C]/20"}`}>
+            <h2 className={`text-2xl font-black mb-6 flex items-center gap-3 relative z-10 transition-colors ${isLight ? "text-[#5A270F]" : "text-white"}`}>
               <User className="h-6 w-6 text-[#DF8142]" />
               Student Submissions
             </h2>
@@ -639,15 +642,15 @@ const AssignmentDetails = () => {
               {assignment.submissions.map((sub) => (
                 <div
                   key={sub.id}
-                  className="bg-[#EFEDED] dark:bg-background/50 dark:bg-white/5 rounded-2xl p-6 flex justify-between items-center border border-[#EEB38C]/20 dark:border-white/10 transition-colors"
+                  className={`rounded-2xl p-6 flex justify-between items-center border transition-colors ${isLight ? "bg-[#EEB38C]/10 border-[#92664A]/20" : "bg-white/5 border-[#EEB38C]/20"}`}
                 >
                   <div>
-                    <h4 className="font-bold text-[#5A270F] dark:text-foreground transition-colors">
+                    <h4 className={`font-bold transition-colors ${isLight ? "text-[#5A270F]" : "text-white"}`}>
                       {sub.student
                         ? `${sub.student.first_name} ${sub.student.last_name}`
                         : "Unknown Student"}
                     </h4>
-                    <p className="text-sm text-[#92664A] dark:text-foreground/60 transition-colors">
+                    <p className={`text-sm transition-colors ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/60"}`}>
                       Year {sub.student?.year} | Submitted:{" "}
                       {new Date(sub.submitted_at).toLocaleDateString()}
                       {sub.submission_type === "progress" ? " (Progress Update)" : ""}
@@ -663,11 +666,11 @@ const AssignmentDetails = () => {
                       </span>
                     )}
                     {sub.feedback && (
-                      <div className="mt-4 bg-[#DF8142]/10 p-4 rounded-xl border border-[#DF8142]/20">
+                      <div className={`mt-4 p-4 rounded-xl border ${isLight ? "bg-[#DF8142]/10 border-[#DF8142]/20 text-[#5A270F]" : "bg-[#DF8142]/20 border-[#DF8142]/30 text-[#EEB38C]"}`}>
                         <p className="text-[10px] font-black uppercase tracking-widest text-[#DF8142] mb-1">
                           Given Feedback
                         </p>
-                        <p className="text-sm font-medium text-[#5A270F] dark:text-[#EEB38C]">
+                        <p className="text-sm font-medium">
                           {sub.feedback}
                         </p>
                       </div>
@@ -679,7 +682,7 @@ const AssignmentDetails = () => {
                         <textarea
                           value={feedbackText}
                           onChange={(e) => setFeedbackText(e.target.value)}
-                          className="w-full text-xs p-3 rounded-[1rem] border-2 border-[#DF8142]/30 bg-white dark:bg-black/50 text-[#5A270F] dark:text-[#EEB38C] focus:outline-none focus:border-[#DF8142] focus:ring-4 focus:ring-[#DF8142]/10"
+                          className={`w-full text-xs p-3 rounded-[1rem] border-2 focus:outline-none focus:ring-4 focus:ring-[#DF8142]/10 transition-colors ${isLight ? "bg-white border-[#DF8142]/30 text-[#5A270F] focus:border-[#DF8142]" : "bg-black/50 border-[#DF8142]/40 text-[#EEB38C] focus:border-[#DF8142]"}`}
                           placeholder="Type your detailed constructive feedback here..."
                           rows={3}
                           disabled={submittingFeedback}
@@ -691,7 +694,7 @@ const AssignmentDetails = () => {
                               setFeedbackText("");
                             }}
                             disabled={submittingFeedback}
-                            className="px-4 py-2 bg-gray-200 text-gray-700 dark:bg-white/10 dark:text-gray-300 text-[10px] uppercase font-bold rounded-xl hover:bg-gray-300 dark:hover:bg-white/20 transition-colors"
+                            className={`px-4 py-2 text-[10px] uppercase font-bold rounded-xl transition-colors ${isLight ? "bg-[#EEB38C]/20 text-[#5A270F] hover:bg-[#EEB38C]/30" : "bg-white/10 text-gray-300 hover:bg-white/20"}`}
                           >
                             Cancel
                           </button>
@@ -714,7 +717,7 @@ const AssignmentDetails = () => {
                           }/download?token=${encodeURIComponent(
                             localStorage.getItem("token") || ""
                           )}`}
-                          className="p-3 bg-white dark:bg-card dark:bg-white/5 text-[#DF8142] dark:text-[#EEB38C] rounded-xl font-bold shadow-sm hover:bg-[#DF8142]/10 border border-[#EEB38C]/20 dark:border-white/10 transition-colors flex items-center justify-center"
+                          className={`p-3 rounded-xl font-bold shadow-sm hover:bg-[#DF8142]/10 border transition-colors flex items-center justify-center ${isLight ? "bg-white text-[#DF8142] border-[#EEB38C]/50" : "bg-white/5 text-[#EEB38C] border-white/10"}`}
                           title="Download to Review"
                         >
                           <Download className="h-5 w-5" />
@@ -729,7 +732,7 @@ const AssignmentDetails = () => {
                           }/view?token=${encodeURIComponent(
                             localStorage.getItem("token") || ""
                           )}`}
-                          className="p-3 bg-[#FAF8F4] dark:bg-white/5 text-[#5A270F] dark:text-[#EEB38C] rounded-xl font-bold border-2 border-[#6C3B1C]/10 hover:border-[#DF8142] transition-colors flex items-center justify-center"
+                          className={`p-3 rounded-xl font-bold border-2 hover:border-[#DF8142] transition-colors flex items-center justify-center ${isLight ? "bg-[#EEB38C]/10 text-[#5A270F] border-[#92664A]/20" : "bg-white/5 text-[#EEB38C] border-white/10"}`}
                           title="View Online"
                         >
                           <Eye className="h-5 w-5" />
@@ -739,7 +742,7 @@ const AssignmentDetails = () => {
                             setActiveFeedbackId(sub.id);
                             setFeedbackText(sub.feedback || "");
                           }}
-                          className="px-4 py-2 bg-white dark:bg-black/20 text-[#DF8142] border border-[#DF8142] rounded-xl font-bold hover:bg-[#DF8142]/10 transition-colors text-sm shadow-sm"
+                          className={`px-4 py-2 text-[#DF8142] border border-[#DF8142] rounded-xl font-bold hover:bg-[#DF8142]/10 transition-colors text-sm shadow-sm ${isLight ? "bg-white" : "bg-black/20"}`}
                         >
                           {sub.feedback ? "Edit Feedback" : "Add Feedback"}
                         </button>
@@ -793,16 +796,16 @@ const AssignmentDetails = () => {
           </div>
         )}
 
-      <div className="bg-[#EFEDED] dark:bg-background/80 dark:bg-white/5 rounded-[2.5rem] p-8 border border-[#EEB38C]/40 dark:border-white/10 flex items-center gap-6 relative overflow-hidden transition-all duration-500">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
-        <div className="h-16 w-16 bg-white dark:bg-card dark:bg-white/5 rounded-3xl flex items-center justify-center shadow-sm text-[#DF8142] dark:text-[#EEB38C] relative z-10 border border-[#EEB38C]/20 dark:border-white/10 transition-colors">
+      <div className={`rounded-[2.5rem] p-8 border flex items-center gap-6 relative overflow-hidden transition-all duration-500 ${isLight ? "bg-[#EEB38C]/10 border-[#92664A]/30" : "bg-white/5 border-white/10"}`}>
+        <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+        <div className={`h-16 w-16 rounded-3xl flex items-center justify-center shadow-sm relative z-10 border transition-colors ${isLight ? "bg-white text-[#DF8142] border-[#92664A]/20" : "bg-white/5 text-[#EEB38C] border-white/10"}`}>
           <FileText className="h-8 w-8" />
         </div>
         <div className="relative z-10">
-          <h3 className="text-xl font-bold text-[#5A270F] dark:text-foreground transition-colors">
+          <h3 className={`text-xl font-bold transition-colors ${isLight ? "text-[#5A270F]" : "text-white"}`}>
             Submission Guidelines
           </h3>
-          <p className="text-[#92664A] dark:text-foreground/40 font-medium transition-colors">
+          <p className={`font-medium transition-colors ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/60"}`}>
             Please follow the instructions above carefully. Submit your work
             before the deadline using the form above.
           </p>

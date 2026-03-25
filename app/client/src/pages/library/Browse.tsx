@@ -87,7 +87,7 @@ const Browse = () => {
       <div className="relative pt-12 pb-10 overflow-hidden bg-[#5A270F] border-b-2 border-[#DF8142]">
         <div className="absolute inset-0 blueprint-grid opacity-10 pointer-events-none" />
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5 pointer-events-none" />
-        
+
         <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
           <div className="flex justify-between items-center mb-8">
             <button
@@ -97,22 +97,19 @@ const Browse = () => {
               <ArrowLeft className="h-2.5 w-2.5 group-hover:-translate-x-1 transition-transform" />
               BACK_TO_ORIGIN
             </button>
-            <div className="flex gap-2">
-              <div className="px-3 py-1 bg-[#EEB38C]/5 border border-[#EEB38C]/10 rounded-md text-[7px] font-black uppercase tracking-[0.4em] text-[#EEB38C]">
-                INDEX_NODE: 0xRE77
-              </div>
-            </div>
           </div>
- 
+
           <div className="inline-flex items-center gap-2 px-2 py-0.5 bg-white/5 border border-white/10 rounded-md text-[7px] font-black uppercase tracking-[0.4em] text-[#EEB38C] mb-4 backdrop-blur-md">
-            <Library className="h-3 w-3 text-[#DF8142]" /> MASTER_REPOSITORY_REGISTRY
+            <Library className="h-3 w-3 text-[#DF8142]" />{" "}
+            MASTER_REPOSITORY_REGISTRY
           </div>
           <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tighter mb-4 uppercase italic leading-none font-space-grotesk">
-            REPOSITORY <span className="text-[#DF8142] not-italic uppercase">INDEX_v2.</span>
+            REPOSITORY{" "}
+            <span className="text-[#DF8142] not-italic uppercase">INDEX.</span>
           </h1>
           <div className="max-w-md mx-auto h-px bg-gradient-to-r from-transparent via-[#DF8142]/40 to-transparent mb-4" />
           <p className="max-w-md mx-auto text-[#EEB38C]/40 text-[7px] font-black uppercase tracking-[0.6em] leading-relaxed">
-            VERIFIED_ASSET_CLUSTER // BIM_PROTOCOLS // SCHED_v5
+            Verified resources for students and professionals
           </p>
         </div>
       </div>
@@ -138,11 +135,11 @@ const Browse = () => {
                 : `${totalCount} Nodes Isolated`}
             </p>
           </div>
- 
+
           {!loading && resources.length > 0 && (
             <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40">
               <Sparkles className="h-3 w-3 text-[#DF8142]" />
-               Sync complete
+              Sync complete
             </div>
           )}
         </div>
@@ -194,7 +191,8 @@ const Browse = () => {
                 NULL DETECTED
               </h3>
               <p className="text-[#92664A] dark:text-[#EEB38C]/40 font-black uppercase tracking-widest max-w-xs mx-auto text-[10px] leading-relaxed">
-                The Designer Matrix returned no protocols. Widening search nexus is recommended.
+                The Designer Matrix returned no protocols. Widening search nexus
+                is recommended.
               </p>
               <button
                 onClick={() => fetchResources({})}
