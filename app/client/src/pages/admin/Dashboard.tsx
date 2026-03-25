@@ -76,7 +76,7 @@ const AdminDashboard = () => {
   const isSuperAdmin = role === "SuperAdmin";
 
   // Live delegated permissions from session
-  const sessionPerms = ((session?.user as any)?.permissions || {}) as {
+  const sessionPerms = ((session?.user as { permissions?: Record<string, boolean> })?.permissions || {}) as {
     canApproveResources?: boolean;
     canResolveFlags?: boolean;
     canEditUsers?: boolean;
