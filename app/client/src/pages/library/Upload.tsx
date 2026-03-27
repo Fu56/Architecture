@@ -355,6 +355,8 @@ const Upload = () => {
                   type="number"
                   name="forYearStudents"
                   placeholder="e.g. 3"
+                  min="2"
+                  max="5"
                   value={metadata.forYearStudents}
                   onChange={handleMetaChange}
                   className={`${inputCls(!!errors.forYearStudents)} h-11 text-center text-sm font-black`}
