@@ -385,7 +385,7 @@ export const getStats = async (req: Request, res: Response) => {
 export const archiveResource = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { reason } = req.body; // Optional archive reason
+    const { reason } = req.body || {}; 
     const resourceId = Number(id);
 
     // ── Identify reviewer ───────────────────────────────────────────
@@ -1595,10 +1595,13 @@ export const createNews = async (req: Request, res: Response) => {
       },
     });
 
-    // Notify all entities (Users + Subscribers)
+    const { getAnnouncementHtml } = require("../utils/email");
+    const emailSubject = isEvent ? "Protocol Event: New Schedule" : "System Announcement";
+    const emailBody = `A new update "${title}" has been published to the matrix.\n\n${content}`;
     await notifyAll(
-      isEvent ? "Protocol Event: New Schedule" : "System Announcement",
-      `A new update "${title}" has been published to the matrix.\n\n${content}`,
+      emailSubject,
+      emailBody,
+      getAnnouncementHtml(emailSubject, `${emailBody}\n\n${isEvent && eventDate ? `Event Date: ${new Date(eventDate).toLocaleDateString()}` : ""}`),
     );
 
     res.status(201).json({
@@ -1653,7 +1656,8 @@ export const broadcastNotification = async (req: Request, res: Response) => {
         .json({ message: "Title and message are required" });
     }
 
-    await notifyAll(title, message);
+    const { getAnnouncementHtml } = require("../utils/email");
+    await notifyAll(title, message, getAnnouncementHtml(title, message));
 
     res.json({ message: "Global broadcast transmitted successfully" });
   } catch (error) {

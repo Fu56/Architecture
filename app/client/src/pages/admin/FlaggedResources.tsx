@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { api } from "../../lib/api";
 import type { Flag } from "../../models";
 import { useSession } from "../../lib/auth-client";
+import { useNavigate } from "react-router-dom";
+import { toast } from "../../lib/toast";
 
 const FlaggedResources = () => {
   const { data: session } = useSession();
@@ -13,6 +15,7 @@ const FlaggedResources = () => {
   const [flags, setFlags] = useState<Flag[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchFlags = async () => {
@@ -38,8 +41,11 @@ const FlaggedResources = () => {
     try {
       await api.patch(`/admin/flags/${id}/resolve`);
       setFlags(flags.filter((f) => f.id !== id));
+      toast.success("Security violation cleared. Synchronizing registry.");
+      navigate("/admin/browse");
     } catch (err) {
       console.error("Failed to resolve flag:", err);
+      toast.error("Protocol Error: Resolution transmission failed.");
     }
   };
 

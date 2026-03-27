@@ -14,13 +14,14 @@ import {
   Clock,
   ArrowRight,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "../../lib/toast";
 import { useSession } from "../../lib/auth-client";
 
 const Flags = () => {
   const [flags, setFlags] = useState<FlagModel[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const { data: session } = useSession();
   /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -53,7 +54,8 @@ const Flags = () => {
     setFlags((prev) => prev.filter((f) => f.id !== flagId));
     try {
       await api.patch(`/admin/flags/${flagId}/resolve`, { status: "resolved" });
-      toast.success(isDeptHead ? "Security Alert dismissed" : "Resolution proposed");
+      toast.success(isDeptHead ? "Security Alert dismissed. Returning to Registry." : "Resolution proposed");
+      if (isDeptHead) navigate("/admin/browse");
     } catch (err) {
       console.error("Failed to resolve flag:", err);
       toast.error("Protocol Error: Failed to dismiss alert");
@@ -66,7 +68,8 @@ const Flags = () => {
     try {
       await api.patch(`/admin/resources/${resourceId}/archive`);
       await api.patch(`/admin/flags/${flagId}/resolve`, { status: "resolved" });
-      toast.success(isDeptHead ? "Asset quarantined" : "Quarantine proposed");
+      toast.success(isDeptHead ? "Asset quarantined. Synchronizing Archive view." : "Quarantine proposed");
+      if (isDeptHead) navigate("/admin/browse?tab=archived");
     } catch (err) {
       console.error("Failed to archive resource:", err);
       toast.error("Security Breach: Failed to quarantine asset");

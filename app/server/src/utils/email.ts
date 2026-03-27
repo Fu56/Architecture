@@ -582,6 +582,31 @@ export const getRepresentationRemovedHtml = (
     `;
 };
 
+// ─── Announcement / Broadcast Notification ─────────────────────────────────
+export const getAnnouncementHtml = (
+  title: string,
+  body: string,
+) => {
+  return `
+    <div ${emailStyle} style="border: 2px solid #d97706;">
+        <div ${headerStyle} style="background: #451a03; border-bottom: 4px solid #d97706;">
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #fbbf24; text-transform: uppercase;">System Broadcast</p>
+            <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px;">${title.toUpperCase()}</h1>
+        </div>
+        <div style="padding: 30px 40px; background: white;">
+            <div style="background: #fffbeb; padding: 24px; border-radius: 12px; border: 1px solid #fef3c7; margin-bottom: 30px;">
+                <div style="font-size: 14px; color: #78350f; line-height: 1.8; white-space: pre-wrap;">
+                    ${body.replace(/\n/g, "<br>")}
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="${env.baseUrl}/dashboard" style="display: inline-block; padding: 14px 28px; background-color: #d97706; color: white; text-decoration: none; border-radius: 10px; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3);">Access Portal</a>
+            </div>
+            <div ${footerStyle}>Nexus Broadcast Protocol | System Intelligence Layer</div>
+        </div>
+    </div>
+    `;
+};
 
 // ─── Suspension Notification ──────────────────────────────────────────────────
 export const getSuspendedHtml = (

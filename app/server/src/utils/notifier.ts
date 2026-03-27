@@ -43,8 +43,9 @@ export const notifyUsers = async ({
           message,
           html ||
             getGenericHtml(
+              user.first_name || "User",
               title,
-              `Dear ${user.first_name || "User"},\n\n${message}`,
+              message,
             ),
         );
       }
@@ -70,7 +71,7 @@ export const notifyNewsletterSubscribers = async (
           sub.email,
           title,
           message,
-          html || getGenericHtml(title, message),
+          html || getGenericHtml("Subscriber", title, message),
         );
       }
     }
