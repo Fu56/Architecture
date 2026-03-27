@@ -134,11 +134,13 @@ const Home = () => {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent | React.MouseEvent) => {
     e.preventDefault();
+    setShowDropdown(false);
     if (searchQuery.trim()) {
-      setShowDropdown(false);
       navigate(`/browse?search=${encodeURIComponent(searchQuery)}`);
+    } else {
+      navigate("/browse");
     }
   };
 
@@ -169,7 +171,7 @@ const Home = () => {
           <div className="absolute inset-0 opacity-[0.08] z-10 blueprint-grid-dark pointer-events-none" />
         </div>
 
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-20 w-full mt-6">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-40 w-full mt-6">
           <div className="max-w-5xl">
             {/* Hero space refined */}
 
@@ -251,7 +253,7 @@ const Home = () => {
                     >
                       <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                       <span className="relative z-10 tracking-[0.4em]">
-                        Initialize
+                        Search
                       </span>
                       <ArrowRight className="h-3.5 w-3.5 relative z-10 group-hover/btn:translate-x-1 transition-transform duration-500" />
                     </button>
@@ -264,7 +266,7 @@ const Home = () => {
                     <div className="p-5 bg-gradient-to-r from-[#5A270F] to-[#6C3B1C] border-b border-[#DF8142]/20">
                       <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#EEB38C] flex items-center gap-3">
                         <Sparkles className="h-3 w-3 animate-pulse" />{" "}
-                        Intelligence Matrix Matches
+                        Intelligence Repository Matches
                       </p>
                     </div>
                     <div className="max-h-[400px] overflow-y-auto py-4 scrollbar-none">
@@ -355,27 +357,27 @@ const Home = () => {
       {/* Stats Section - Strategic Precision */}
       <section className="relative z-30 py-8 -mt-24 sm:-mt-28">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="bg-[#FAF8F4] dark:bg-[#150A05] backdrop-blur-3xl rounded-[2.5rem] p-2 shadow-[0_50px_100px_-20px_rgba(90,39,15,0.15)] border border-[#EEB38C]/30 dark:border-white/5 overflow-hidden group transition-all duration-700">
-            <div className="bg-white dark:bg-[#1A0B04] rounded-[2rem] p-6 lg:p-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 divide-y sm:divide-y-0 lg:divide-x divide-[#D9D9C2]/40 dark:divide-white/5 transition-colors duration-500">
+          <div className="bg-gradient-to-br from-[#DF8142] via-[#6C3B1C] to-[#5A270F] rounded-[2.5rem] p-1.5 shadow-[0_50px_100px_-20px_rgba(90,39,15,0.4)] overflow-hidden group transition-all duration-700">
+            <div className="bg-[#110703] rounded-[2rem] p-6 lg:p-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 divide-y sm:divide-y-0 lg:divide-x divide-[#DF8142]/20 transition-colors duration-500 relative">
               {/* Stat 1 */}
-              <div className="flex flex-col items-center text-center space-y-3 py-6 lg:py-4 lg:px-4 group/stat">
+              <div className="flex flex-col items-center text-center space-y-3 py-6 lg:py-4 lg:px-4 group/stat relative z-10">
                 <div className="relative">
-                  <div className="absolute -inset-4 bg-[#DF8142]/5 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0 blur-lg" />
-                  <div className="relative p-4 bg-[#5A270F] rounded-xl shadow-lg group-hover/stat:bg-[#DF8142] transition-all duration-500">
-                    <Layers className="h-5 w-5 text-white" />
+                  <div className="absolute -inset-4 bg-[#DF8142]/20 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0 blur-lg" />
+                  <div className="relative p-4 bg-[#5A270F] border border-[#DF8142]/20 rounded-xl shadow-lg group-hover/stat:bg-[#DF8142] group-hover/stat:border-[#EEB38C] transition-all duration-500">
+                    <Layers className="h-5 w-5 text-[#EEB38C] group-hover/stat:text-[#110703]" />
                   </div>
                 </div>
                 <div className="space-y-0.5">
-                  <p className="text-3xl font-black tracking-tighter text-[#5A270F] dark:text-white transition-colors duration-500 font-space-grotesk">
+                  <p className="text-3xl font-black tracking-tighter text-white transition-colors duration-500 font-space-grotesk">
                     {stats.totalResources > 999
                       ? `${(stats.totalResources / 1000).toFixed(1)}k+`
                       : stats.totalResources}
                   </p>
                   <div className="flex flex-col items-center">
-                    <p className="text-[8px] font-black uppercase tracking-[0.3em] text-[#5A270F]/40 dark:text-[#EEB38C]/30 transition-colors">
+                    <p className="text-[8px] font-black uppercase tracking-[0.3em] text-[#EEB38C]/60 transition-colors">
                       MASTER_RESOURCES
                     </p>
-                    <span className="text-[7.5px] font-bold text-[#DF8142] dark:text-[#DF8142]/80 uppercase tracking-widest mt-0.5 italic transition-colors">
+                    <span className="text-[7.5px] font-bold text-[#DF8142] uppercase tracking-widest mt-0.5 italic transition-colors">
                       VERIFIED_DEPOSITS
                     </span>
                   </div>
@@ -383,24 +385,24 @@ const Home = () => {
               </div>
 
               {/* Stat 2 */}
-              <div className="flex flex-col items-center text-center space-y-3 py-6 lg:py-4 lg:px-4 group/stat">
+              <div className="flex flex-col items-center text-center space-y-3 py-6 lg:py-4 lg:px-4 group/stat relative z-10">
                 <div className="relative">
-                  <div className="absolute -inset-4 bg-[#6C3B1C]/5 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0 blur-lg" />
-                  <div className="relative p-4 bg-[#5A270F] rounded-xl shadow-lg group-hover/stat:bg-[#6C3B1C] transition-all duration-500">
-                    <Users className="h-5 w-5 text-white" />
+                  <div className="absolute -inset-4 bg-[#6C3B1C]/20 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0 blur-lg" />
+                  <div className="relative p-4 bg-[#5A270F] border border-[#DF8142]/20 rounded-xl shadow-lg group-hover/stat:bg-[#6C3B1C] transition-all duration-500">
+                    <Users className="h-5 w-5 text-[#EEB38C] group-hover/stat:text-white" />
                   </div>
                 </div>
                 <div className="space-y-0.5">
-                  <p className="text-3xl font-black tracking-tighter text-[#5A270F] dark:text-white transition-colors duration-500 font-space-grotesk">
+                  <p className="text-3xl font-black tracking-tighter text-white transition-colors duration-500 font-space-grotesk">
                     {stats.totalUsers > 999
                       ? `${(stats.totalUsers / 1000).toFixed(1)}k+`
                       : stats.totalUsers}
                   </p>
                   <div className="flex flex-col items-center">
-                    <p className="text-[8px] font-black uppercase tracking-[0.3em] text-[#5A270F]/40 dark:text-[#EEB38C]/30 transition-colors">
+                    <p className="text-[8px] font-black uppercase tracking-[0.3em] text-[#EEB38C]/60 transition-colors">
                       GLOBAL_NODES
                     </p>
-                    <span className="text-[7.5px] font-bold text-[#6C3B1C] dark:text-[#6C3B1C]/80 uppercase tracking-widest mt-0.5 italic transition-colors">
+                    <span className="text-[7.5px] font-bold text-[#DF8142] uppercase tracking-widest mt-0.5 italic transition-colors">
                       ACTIVE_ENTITIES
                     </span>
                   </div>
@@ -408,24 +410,24 @@ const Home = () => {
               </div>
 
               {/* Stat 3 */}
-              <div className="flex flex-col items-center text-center space-y-3 py-6 lg:py-4 lg:px-4 group/stat">
+              <div className="flex flex-col items-center text-center space-y-3 py-6 lg:py-4 lg:px-4 group/stat relative z-10">
                 <div className="relative">
-                  <div className="absolute -inset-4 bg-[#DF8142]/5 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0 blur-lg" />
-                  <div className="relative p-4 bg-[#5A270F] rounded-xl shadow-lg group-hover/stat:bg-[#DF8142] transition-all duration-500">
-                    <Download className="h-5 w-5 text-white" />
+                  <div className="absolute -inset-4 bg-[#DF8142]/20 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0 blur-lg" />
+                  <div className="relative p-4 bg-[#5A270F] border border-[#DF8142]/20 rounded-xl shadow-lg group-hover/stat:bg-[#DF8142] transition-all duration-500">
+                    <Download className="h-5 w-5 text-[#EEB38C] group-hover/stat:text-[#110703]" />
                   </div>
                 </div>
                 <div className="space-y-0.5">
-                  <p className="text-3xl font-black tracking-tighter text-[#5A270F] dark:text-white font-space-grotesk">
+                  <p className="text-3xl font-black tracking-tighter text-white font-space-grotesk">
                     {stats.totalDownloads > 999
                       ? `${(stats.totalDownloads / 1000).toFixed(1)}k+`
                       : stats.totalDownloads}
                   </p>
                   <div className="flex flex-col items-center">
-                    <p className="text-[8px] font-black uppercase tracking-[0.3em] text-[#5A270F]/40 dark:text-[#EEB38C]/30 transition-colors">
+                    <p className="text-[8px] font-black uppercase tracking-[0.3em] text-[#EEB38C]/60 transition-colors">
                       PULL_SEQUENCES
                     </p>
-                    <span className="text-[7.5px] font-bold text-[#DF8142] dark:text-[#DF8142]/80 uppercase tracking-widest mt-0.5 italic transition-colors">
+                    <span className="text-[7.5px] font-bold text-[#DF8142] uppercase tracking-widest mt-0.5 italic transition-colors">
                       ASSET_DESTRUCTION
                     </span>
                   </div>
@@ -433,22 +435,22 @@ const Home = () => {
               </div>
 
               {/* Stat 4 */}
-              <div className="flex flex-col items-center text-center space-y-3 py-6 lg:py-4 lg:px-4 group/stat">
+              <div className="flex flex-col items-center text-center space-y-3 py-6 lg:py-4 lg:px-4 group/stat relative z-10">
                 <div className="relative">
-                  <div className="absolute -inset-4 bg-[#92664A]/5 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0 blur-lg" />
-                  <div className="relative p-4 bg-[#5A270F] rounded-xl shadow-lg group-hover/stat:bg-[#92664A] transition-all duration-500">
-                    <Cpu className="h-5 w-5 text-white" />
+                  <div className="absolute -inset-4 bg-[#92664A]/20 rounded-full scale-0 group-hover/stat:scale-100 opacity-0 group-hover/stat:opacity-100 transition-all duration-700 -z-0 blur-lg" />
+                  <div className="relative p-4 bg-[#5A270F] border border-[#DF8142]/20 rounded-xl shadow-lg group-hover/stat:bg-[#92664A] transition-all duration-500">
+                    <Cpu className="h-5 w-5 text-[#EEB38C] group-hover/stat:text-white" />
                   </div>
                 </div>
                 <div className="space-y-0.5">
-                  <p className="text-3xl font-black tracking-tighter text-[#5A270F] dark:text-white transition-colors duration-500 font-space-grotesk">
+                  <p className="text-3xl font-black tracking-tighter text-white transition-colors duration-500 font-space-grotesk">
                     {stats.facultyCount}+
                   </p>
                   <div className="flex flex-col items-center">
-                    <p className="text-[8px] font-black uppercase tracking-[0.3em] text-[#5A270F]/40 dark:text-[#EEB38C]/30 transition-colors">
+                    <p className="text-[8px] font-black uppercase tracking-[0.3em] text-[#EEB38C]/60 transition-colors">
                       VERIFIED_FACULTY
                     </p>
-                    <span className="text-[7.5px] font-bold text-[#92664A] dark:text-[#92664A]/80 uppercase tracking-widest mt-0.5 italic transition-colors">
+                    <span className="text-[7.5px] font-bold text-[#DF8142] uppercase tracking-widest mt-0.5 italic transition-colors">
                       AUTHORITY_LAYERS
                     </span>
                   </div>
@@ -460,18 +462,18 @@ const Home = () => {
       </section>
 
       {/* Explore Platform Sections - Architectural Ecosystem */}
-      <section className="py-32 bg-white dark:bg-[#0C0603] relative overflow-hidden transition-colors duration-500 border-b border-[#D9D9C2]/50 dark:border-white/5">
-        <div className="absolute inset-0 blueprint-grid opacity-5 pointer-events-none" />
+      <section className="py-32 bg-[#FAF8F4] dark:bg-[#5A270F] relative overflow-hidden transition-colors duration-500 border-b border-[#EEB38C]/30 dark:border-[#DF8142]/20">
+        <div className="absolute inset-0 blueprint-grid-dark opacity-10 dark:opacity-[0.03] pointer-events-none" />
 
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
           <div className="mb-16">
-            <div className="inline-flex items-center gap-2.5 px-3 py-1 bg-[#5A270F] rounded text-[7.5px] font-black uppercase tracking-[0.5em] text-[#EEB38C] mb-6 shadow-xl">
+            <div className="inline-flex items-center gap-2.5 px-3 py-1 bg-white/80 dark:bg-[#2C1105] rounded text-[7.5px] font-black uppercase tracking-[0.5em] text-[#DF8142] dark:text-[#EEB38C] mb-6 shadow-sm border border-[#EEB38C]/50 dark:border-[#DF8142]/20">
               <Box className="h-2.5 w-2.5 text-[#DF8142]" />{" "}
               MASTER_REPOSITORY_BRANCHES
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-[#5A270F] dark:text-white uppercase leading-[0.85] font-space-grotesk">
               THE REPOSITORY <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] to-[#DF8142] italic">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] dark:via-[#EEB38C] to-[#DF8142] italic">
                 STRUCTURE.
               </span>
             </h2>
@@ -479,27 +481,27 @@ const Home = () => {
 
           <div className="grid lg:grid-cols-3 gap-8 items-stretch">
             {/* Elite Projects */}
-            <div className="group relative bg-[#FAF8F4] dark:bg-[#1A0B04] p-10 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/5 hover:border-[#DF8142]/40 transition-all duration-700 hover:-translate-y-2 overflow-hidden flex flex-col">
+            <div className="group relative bg-[#FDFCFB] dark:bg-[#6C3B1C] p-10 rounded-[2.5rem] border border-[#EEB38C]/40 dark:border-[#DF8142]/20 hover:border-[#DF8142] transition-all duration-700 hover:-translate-y-2 overflow-hidden flex flex-col shadow-xl">
               <div className="relative z-10 flex flex-col h-full">
-                <div className="w-12 h-12 bg-[#5A270F] text-[#EEB38C] rounded-lg flex items-center justify-center mb-8 shadow-xl group-hover:bg-[#DF8142] group-hover:text-white transition-all duration-500">
+                <div className="w-12 h-12 bg-[#FAF8F4] dark:bg-[#5A270F] text-[#DF8142] dark:text-[#EEB38C] border border-[#EEB38C]/50 dark:border-[#DF8142]/20 rounded-lg flex items-center justify-center mb-8 shadow-sm dark:shadow-xl group-hover:bg-[#DF8142] group-hover:text-white dark:group-hover:text-[#110703] transition-all duration-500">
                   <Trophy className="h-6 w-6" />
                 </div>
                 <div className="mb-8">
-                  <p className="text-[7.5px] font-black text-[#DF8142] uppercase tracking-[0.6em] mb-4 opacity-70">
+                  <p className="text-[7.5px] font-black text-[#92664A] dark:text-[#DF8142] uppercase tracking-[0.6em] mb-4 opacity-90">
                     01 // EXCELLENCE_REGISTRY
                   </p>
                   <h3 className="text-3xl font-black text-[#5A270F] dark:text-white uppercase tracking-tighter font-space-grotesk leading-[0.9]">
                     ELITE <br /> PROJECTS.
                   </h3>
                 </div>
-                <p className="text-[#6C3B1C] dark:text-white/50 leading-relaxed font-bold mb-10 text-[13px] pl-6 border-l-2 border-[#DF8142]">
+                <p className="text-[#92664A] dark:text-[#EEB38C]/80 leading-relaxed font-bold mb-10 text-[13px] pl-6 border-l-2 border-[#DF8142]">
                   Curated selection of award-winning thesis papers and global
                   architectural standards.
                 </p>
-                <div className="mt-auto pt-8 border-t border-[#D9D9C2] dark:border-white/5">
+                <div className="mt-auto pt-8 border-t border-[#EEB38C]/30 dark:border-[#DF8142]/20">
                   <Link
                     to="/browse?sort=top"
-                    className="inline-flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.4em] text-[#DF8142] hover:text-[#5A270F] dark:hover:text-white transition-colors"
+                    className="inline-flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.4em] text-[#DF8142] dark:text-[#EEB38C] hover:text-[#5A270F] dark:hover:text-white transition-colors"
                   >
                     ACCESS_RESOURCES <ArrowRight className="h-3 w-3" />
                   </Link>
@@ -508,27 +510,27 @@ const Home = () => {
             </div>
 
             {/* Course Assignments */}
-            <div className="group relative bg-[#FAF8F4] dark:bg-[#1A0B04] p-8 rounded-[2rem] border border-[#D9D9C2] dark:border-white/5 hover:border-[#6C3B1C]/40 transition-all duration-700 hover:-translate-y-1 overflow-hidden flex flex-col">
+            <div className="group relative bg-[#FDFCFB] dark:bg-[#6C3B1C] p-8 rounded-[2rem] border border-[#EEB38C]/40 dark:border-[#DF8142]/20 hover:border-[#DF8142] dark:hover:border-[#EEB38C] transition-all duration-700 hover:-translate-y-1 overflow-hidden flex flex-col shadow-lg">
               <div className="relative z-10 flex flex-col h-full">
-                <div className="w-10 h-10 bg-[#1A0B04] text-[#EEB38C] rounded-md flex items-center justify-center mb-6 shadow-lg group-hover:bg-[#6C3B1C] transition-all duration-500">
+                <div className="w-10 h-10 bg-[#FAF8F4] dark:bg-[#5A270F] border border-[#EEB38C]/50 dark:border-[#DF8142]/20 text-[#DF8142] dark:text-[#EEB38C] rounded-md flex items-center justify-center mb-6 shadow-sm dark:shadow-lg group-hover:bg-[#DF8142] dark:group-hover:bg-[#EEB38C] group-hover:text-white dark:group-hover:text-[#5A270F] transition-all duration-500">
                   <Briefcase className="h-5 w-5" />
                 </div>
                 <div className="mb-6">
-                  <p className="text-[7px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.5em] mb-3 opacity-70">
+                  <p className="text-[7px] font-black text-[#92664A] dark:text-[#DF8142] uppercase tracking-[0.5em] mb-3 opacity-90">
                     02 // KNOWLEDGE_BASE
                   </p>
                   <h3 className="text-2xl font-black text-[#5A270F] dark:text-white uppercase tracking-tighter font-space-grotesk leading-[0.9]">
                     FACULTY <br /> BENCHMARKS.
                   </h3>
                 </div>
-                <p className="text-[#6C3B1C] dark:text-white/50 leading-relaxed font-bold mb-8 text-[11px] pl-4 border-l-2 border-[#92664A]">
+                <p className="text-[#92664A] dark:text-[#EEB38C]/80 leading-relaxed font-bold mb-8 text-[11px] pl-4 border-l-2 border-[#DF8142]">
                   Verified course protocols and academic reference materials
                   from senior faculty.
                 </p>
-                <div className="mt-auto pt-6 border-t border-[#D9D9C2] dark:border-white/5">
+                <div className="mt-auto pt-6 border-t border-[#EEB38C]/30 dark:border-[#DF8142]/20">
                   <Link
                     to="/dashboard/assignments"
-                    className="inline-flex items-center gap-2.5 text-[8px] font-black uppercase tracking-[0.4em] text-[#6C3B1C] dark:text-[#EEB38C] hover:text-[#5A270F] dark:hover:text-white transition-colors"
+                    className="inline-flex items-center gap-2.5 text-[8px] font-black uppercase tracking-[0.4em] text-[#DF8142] dark:text-[#EEB38C] hover:text-[#5A270F] dark:hover:text-white transition-colors"
                   >
                     DEPLOY_ACCESS <ArrowRight className="h-2.5 w-2.5" />
                   </Link>
@@ -537,28 +539,28 @@ const Home = () => {
             </div>
 
             {/* Verified Trust */}
-            <div className="group relative bg-[#5A270F] p-8 rounded-[2rem] shadow-xl transition-all duration-700 hover:-translate-y-1 overflow-hidden flex flex-col border border-[#DF8142]/20">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-[#DF8142]/10 blur-[80px]" />
+            <div className="group relative bg-gradient-to-br from-[#DF8142] to-[#92664A] dark:from-[#92664A] dark:to-[#5A270F] p-8 rounded-[2rem] shadow-xl dark:shadow-2xl transition-all duration-700 hover:-translate-y-1 overflow-hidden flex flex-col border border-[#EEB38C]/40 dark:border-[#DF8142]/40">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-white/20 dark:bg-[#DF8142]/20 blur-[80px]" />
               <div className="relative z-10 flex flex-col h-full">
-                <div className="w-10 h-10 bg-[#DF8142] text-white rounded-md flex items-center justify-center mb-6 shadow-lg">
+                <div className="w-10 h-10 bg-white/20 dark:bg-[#5A270F] text-white dark:text-[#EEB38C] rounded-md flex items-center justify-center mb-6 shadow-sm dark:shadow-lg border border-white/30 dark:border-[#DF8142]/30">
                   <ShieldCheck className="h-5 w-5" />
                 </div>
                 <div className="mb-6">
-                  <p className="text-[7px] font-black text-[#EEB38C] uppercase tracking-[0.5em] mb-3 opacity-70">
+                  <p className="text-[7px] font-black text-white/80 dark:text-[#5A270F] uppercase tracking-[0.5em] mb-3 opacity-90">
                     03 // SECURITY_TRUST
                   </p>
                   <h3 className="text-2xl font-black text-white uppercase tracking-tighter font-space-grotesk leading-[0.9]">
                     VERIFIED <br /> REPOSITORY.
                   </h3>
                 </div>
-                <p className="text-white/70 leading-relaxed font-bold mb-8 text-[11px] pl-4 border-l-2 border-[#EEB38C]">
+                <p className="text-white/90 leading-relaxed font-bold mb-8 text-[11px] pl-4 border-l-2 border-[#FAF8F4] dark:border-[#5A270F]">
                   High-security ecosystem for intellectual property protection
                   and content authenticity.
                 </p>
-                <div className="mt-auto pt-6 border-t border-white/5">
+                <div className="mt-auto pt-6 border-t border-white/20 dark:border-[#5A270F]/40">
                   <Link
                     to="/about"
-                    className="inline-flex items-center gap-2.5 text-[8px] font-black uppercase tracking-[0.4em] text-white hover:text-[#EEB38C] transition-colors"
+                    className="inline-flex items-center gap-2.5 text-[8px] font-black uppercase tracking-[0.4em] text-white hover:text-[#5A270F] dark:hover:text-white transition-colors"
                   >
                     EXAMINE_TRUST <ArrowRight className="h-2.5 w-2.5" />
                   </Link>
@@ -570,13 +572,13 @@ const Home = () => {
       </section>
 
       {/* Spotlight Resources - Curated Gallery */}
-      <section className="py-24 bg-[#FAF8F4] dark:bg-[#0C0603] relative transition-colors duration-500">
+      <section className="py-24 bg-[#EEB38C]/10 dark:bg-[#6C3B1C] relative transition-colors duration-500 border-b border-[#EEB38C]/40 dark:border-[#DF8142]/20">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8">
             <div className="max-w-3xl">
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-[#5A270F] dark:text-white leading-[0.85] uppercase font-space-grotesk">
                 SPOTLIGHT <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] to-[#DF8142] italic">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] dark:via-[#EEB38C] to-[#DF8142] italic">
                   RESOURCES.
                 </span>
               </h2>
@@ -584,7 +586,7 @@ const Home = () => {
 
             <Link
               to="/browse"
-              className="group px-6 py-3 bg-[#5A270F] hover:bg-[#DF8142] text-white rounded-md transition-all duration-500 shadow-lg flex items-center gap-3 active:scale-95"
+              className="group px-6 py-3 bg-[#5A270F] border border-[#DF8142]/30 hover:bg-[#DF8142] text-white dark:text-[#EEB38C] hover:text-white dark:hover:text-[#5A270F] rounded-md transition-all duration-500 shadow-xl flex items-center gap-3 active:scale-95"
             >
               <span className="text-[9px] font-black uppercase tracking-[0.3em]">
                 BROWSE_RESOURCES
@@ -607,22 +609,16 @@ const Home = () => {
       </section>
 
       {/* Faculty Insights & Professional Journal */}
-      <section className="py-32 bg-white dark:bg-[#0C0603] transition-colors duration-500">
+      <section className="py-32 bg-[#FDFCFB] dark:bg-[#92664A] transition-colors duration-500 border-b border-[#EEB38C]/40 dark:border-[#5A270F]/50">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="flex flex-col lg:flex-row gap-16">
             {/* Blogs - Research Wing */}
             <div className="lg:w-2/3">
               <div className="mb-12">
-                {/* <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-[1px] bg-[#DF8142]" />
-                  <span className="text-[8px] font-black uppercase tracking-[0.5em] text-[#92664A]">
-                    INTEL_LOG // RESEARCH
-                  </span>
-                </div> */}
-                <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-[#5A270F] dark:text-white leading-[0.85] uppercase italic font-space-grotesk">
-                  FACULTY <br />
-                  <span className="text-[#DF8142] not-italic">INSIGHTS_</span>
-                </h2>
+                  <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-[#5A270F] dark:text-white leading-[0.85] uppercase italic font-space-grotesk">
+                    FACULTY <br />
+                    <span className="text-[#DF8142] dark:text-[#5A270F] not-italic drop-shadow-sm">INSIGHTS_</span>
+                  </h2>
               </div>
 
               <div className="grid gap-12 sm:grid-cols-2">
@@ -630,7 +626,7 @@ const Home = () => {
                   <article key={blog.id} className="group cursor-default">
                     <Link
                       to={`/blog/${blog.id}`}
-                      className="block relative aspect-[4/5] rounded-[1.5rem] overflow-hidden mb-6 shadow-xl border border-[#D9D9C2] dark:border-white/5"
+                      className="block relative aspect-[4/5] rounded-[1.5rem] overflow-hidden mb-6 shadow-[0_20px_40px_-10px_rgba(90,39,15,0.6)] border border-[#DF8142]/40"
                     >
                       <img
                         src={
@@ -641,12 +637,12 @@ const Home = () => {
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s] grayscale group-hover:grayscale-0"
                         alt={blog.title}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#5A270F] via-transparent to-transparent opacity-60" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#6C3B1C] dark:from-[#5A270F] via-transparent to-transparent opacity-80" />
                       <div className="absolute bottom-6 left-6 right-6 text-white">
                         <span className="text-[6px] font-black uppercase tracking-[0.5em] mb-2 block text-[#EEB38C]">
                           RESEARCH_NODE
                         </span>
-                        <h3 className="text-lg font-black uppercase tracking-tight leading-tight group-hover:text-[#EEB38C] transition-colors">
+                        <h3 className="text-lg font-black uppercase tracking-tight leading-tight group-hover:text-[#EEB38C] dark:group-hover:text-[#DF8142] transition-colors">
                           {blog.title}
                         </h3>
                       </div>
@@ -658,16 +654,16 @@ const Home = () => {
 
             {/* News Sidebar - High End Professional Journal */}
             <div className="lg:w-1/3 pt-10">
-              <div className="bg-[#FAF8F4] dark:bg-[#1A0B04] p-10 rounded-[2.5rem] border border-[#D9D9C2] dark:border-white/5 relative overflow-hidden transition-all duration-500">
+              <div className="bg-[#FAF8F4] dark:bg-[#5A270F] box-border p-10 rounded-[2.5rem] border border-[#EEB38C]/40 dark:border-[#DF8142]/20 shadow-lg dark:shadow-[0_30px_60px_-15px_rgba(90,39,15,0.5)] relative overflow-hidden transition-all duration-500">
                 <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-[#DF8142] via-[#EEB38C] to-[#5A270F]" />
 
-                <div className="flex items-center justify-between pb-8 border-b border-[#D9D9C2] dark:border-white/5 mb-8">
+                <div className="flex items-center justify-between pb-8 border-b border-[#EEB38C]/40 dark:border-[#DF8142]/20 mb-8">
                   <div>
                     <h3 className="text-lg font-black uppercase tracking-[-0.05em] text-[#5A270F] dark:text-white italic">
                       REPOSITORY_NEWS & EVENTS.
                     </h3>
                   </div>
-                  <div className="h-10 w-10 bg-[#5A270F] text-[#EEB38C] rounded-lg flex items-center justify-center">
+                  <div className="h-10 w-10 bg-white/50 dark:bg-[#6C3B1C] border border-[#EEB38C]/40 dark:border-[#DF8142]/20 text-[#DF8142] dark:text-[#EEB38C] rounded-lg flex items-center justify-center shadow-sm dark:shadow-none">
                     <Calendar className="h-5 w-5" />
                   </div>
                 </div>
@@ -681,11 +677,11 @@ const Home = () => {
                       >
                         <div className="flex items-center gap-4 text-[7px] font-black uppercase tracking-[0.4em]">
                           <span
-                            className={`px-3 py-0.5 rounded-full ${item.isEvent ? "bg-[#DF8142] text-white" : "bg-[#5A270F]/5 text-[#5A270F] dark:text-[#EEB38C]"}`}
+                            className={`px-3 py-0.5 rounded-full ${item.isEvent ? "bg-[#DF8142] text-white dark:text-[#110703]" : "bg-[#EEB38C]/20 dark:bg-[#6C3B1C] text-[#92664A] dark:text-[#EEB38C]"}`}
                           >
                             {item.isEvent ? "EVENT" : "LIVE_REQ"}
                           </span>
-                          <span className="text-[#92664A]/50">{item.time}</span>
+                          <span className="text-[#92664A]/70 dark:text-[#EEB38C]/50">{item.time}</span>
                         </div>
                         <h4 className="text-lg font-black text-[#5A270F] dark:text-white group-hover/news:text-[#DF8142] transition-colors uppercase leading-tight">
                           {item.title}
@@ -694,10 +690,10 @@ const Home = () => {
                     ))
                   ) : (
                     <div className="py-20 text-center space-y-6">
-                      <div className="w-12 h-12 bg-[#EFEDED] dark:bg-white/5 rounded-2xl mx-auto flex items-center justify-center border border-[#D9D9C2] dark:border-white/10">
-                        <Cpu className="h-6 w-6 text-[#5A270F]/20 dark:text-[#EEB38C]/20" />
+                      <div className="w-12 h-12 bg-white dark:bg-[#6C3B1C] rounded-2xl mx-auto flex items-center justify-center border border-[#EEB38C]/40 dark:border-[#DF8142]/20 shadow-sm dark:shadow-none">
+                        <Cpu className="h-6 w-6 text-[#92664A]/40 dark:text-[#EEB38C]/40" />
                       </div>
-                      <p className="text-[#5A270F]/40 dark:text-white/20 font-black uppercase tracking-[0.4em] text-[10px]">
+                      <p className="text-[#92664A]/60 dark:text-[#EEB38C]/40 font-black uppercase tracking-[0.4em] text-[10px]">
                         Awaiting News or Events
                       </p>
                     </div>
@@ -709,25 +705,24 @@ const Home = () => {
         </div>
       </section>
       {/* Main Content Area - Overhauled Background */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-transparent via-[#FAF8F4]/50 dark:via-[#1A0B04]/30 to-transparent">
-        <div className="absolute inset-0 opacity-[0.03] blueprint-grid-dark pointer-events-none" />
+      <div className="relative overflow-hidden bg-[#FAF8F4] dark:bg-[#5A270F] transition-colors duration-500">
+        <div className="absolute inset-0 opacity-10 dark:opacity-[0.03] blueprint-grid-dark pointer-events-none" />
 
         {/* Dynamic Nodes Background */}
-        <div className="absolute top-[20%] left-[-10%] w-[40%] h-[40%] bg-[#EEB38C]/10 blur-[120px] rounded-full pointer-events-none animate-pulse" />
-        <div className="absolute top-[60%] right-[-10%] w-[40%] h-[40%] bg-[#DF8142]/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute top-[20%] left-[-10%] w-[40%] h-[40%] bg-[#DF8142]/20 dark:bg-[#DF8142]/10 blur-[120px] rounded-full pointer-events-none animate-pulse" />
+        <div className="absolute top-[60%] right-[-10%] w-[40%] h-[40%] bg-[#EEB38C]/20 dark:bg-[#EEB38C]/5 blur-[120px] rounded-full pointer-events-none" />
 
-        {/* Top Intelligence Nexus Section */}
         {/* Top Intelligence Nexus Section */}
         <section className="py-24 sm:py-32 relative z-10 transition-colors duration-500 overflow-hidden">
           {/* Soft Atmosphere Glows */}
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-[#FAF8F4] dark:bg-white/5 -skew-x-12 translate-x-1/4 z-0 transition-colors duration-500" />
-          <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#DF8142]/5 blur-[120px] rounded-full pointer-events-none" />
+          <div className="absolute top-0 right-0 w-1/2 h-full bg-[#FDFCFB]/50 dark:bg-[#6C3B1C] -skew-x-12 translate-x-1/4 z-0 transition-colors duration-500" />
+          <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#DF8142]/20 dark:bg-[#DF8142]/10 blur-[120px] rounded-full pointer-events-none" />
 
           <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
             <div className="flex flex-col lg:flex-row gap-20 items-center">
               {/* Visual Narrative */}
               <div className="lg:w-1/2 relative group">
-                <div className="relative rounded-[2.5rem] overflow-hidden border border-[#D9D9C2] dark:border-white/5 shadow-2xl transition-all duration-700">
+                <div className="relative rounded-[2.5rem] overflow-hidden border border-[#EEB38C]/40 dark:border-[#DF8142]/20 shadow-2xl transition-all duration-700">
                   <img
                     src="/assets/collaborators.png"
                     className="w-full aspect-[4/5] object-cover grayscale group-hover:grayscale-0 transition-all duration-[2.5s]"
@@ -768,18 +763,18 @@ const Home = () => {
               {/* Strategic Information */}
               <div className="lg:w-1/2 flex flex-col items-start">
                 <div className="mb-12">
-                  <div className="inline-flex items-center gap-3 px-3 py-1 bg-[#5A270F] rounded-md text-[8px] font-black uppercase tracking-[0.5em] text-[#EEB38C] mb-8 shadow-xl">
+                  <div className="inline-flex items-center gap-3 px-3 py-1 bg-white/50 dark:bg-[#6C3B1C] border border-[#EEB38C]/40 dark:border-[#DF8142]/30 rounded-md text-[8px] font-black uppercase tracking-[0.5em] text-[#DF8142] dark:text-[#EEB38C] mb-8 shadow-sm dark:shadow-xl">
                     <Sparkles className="h-3 w-3 text-[#DF8142]" />{" "}
                     THE_COLLABORATION
                   </div>
                   <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-[#5A270F] dark:text-white uppercase leading-[0.85] mb-8 font-space-grotesk">
                     FUSION OF <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] to-[#DF8142] italic">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] dark:via-[#EEB38C] to-[#DF8142] italic">
                       DISCIPLINES.
                     </span>
                   </h2>
                   <div className="pl-6 border-l-2 border-[#DF8142]">
-                    <p className="text-lg text-[#5A270F] dark:text-white font-bold leading-relaxed max-w-xl">
+                    <p className="text-lg text-[#92664A] dark:text-white/90 font-bold leading-relaxed max-w-xl">
                       ARCHVAULT is the product of high-performance synergy
                       between the
                       <span className="text-[#DF8142]"> Architecture</span> and
@@ -793,27 +788,27 @@ const Home = () => {
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-6 w-full">
-                  <div className="group relative p-8 bg-[#FAF8F4] dark:bg-[#1A0B04] rounded-[2rem] border border-[#D9D9C2] dark:border-white/5 transition-all duration-500 flex flex-col">
-                    <div className="h-10 w-10 bg-[#5A270F] text-white rounded-lg flex items-center justify-center mb-6 shadow-xl">
+                  <div className="group relative p-8 bg-[#FDFCFB] dark:bg-[#6C3B1C] rounded-[2rem] border border-[#EEB38C]/40 dark:border-[#DF8142]/20 transition-all duration-500 flex flex-col hover:border-[#DF8142] shadow-lg xl:shadow-[0_20px_40px_-10px_rgba(90,39,15,0.4)]">
+                    <div className="h-10 w-10 bg-[#FAF8F4] dark:bg-[#5A270F] text-[#DF8142] dark:text-[#EEB38C] rounded-lg flex items-center justify-center mb-6 shadow-sm dark:shadow-xl border border-[#EEB38C]/40 dark:border-[#DF8142]/20">
                       <Users className="h-5 w-5" />
                     </div>
-                    <h4 className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tight mb-2">
+                    <h4 className="text-sm font-black text-[#5A270F] dark:text-white uppercase tracking-tight mb-2">
                       ARCH_CORE
                     </h4>
-                    <p className="text-[#92664A] dark:text-white/40 text-[11px] font-bold leading-tight">
+                    <p className="text-[#92664A] dark:text-[#EEB38C]/70 text-[11px] font-bold leading-tight">
                       Defining taxonomy, BIM standards, and creative vision for
                       our global index.
                     </p>
                   </div>
 
-                  <div className="group relative p-8 bg-[#FAF8F4] dark:bg-[#1A0B04] rounded-[2rem] border border-[#D9D9C2] dark:border-white/5 transition-all duration-500 flex flex-col">
-                    <div className="h-10 w-10 bg-[#1A0B04] text-[#EEB38C] rounded-lg flex items-center justify-center mb-6 shadow-xl">
+                  <div className="group relative p-8 bg-[#FDFCFB] dark:bg-[#6C3B1C] rounded-[2rem] border border-[#EEB38C]/40 dark:border-[#DF8142]/20 transition-all duration-500 flex flex-col hover:border-[#DF8142] shadow-lg xl:shadow-[0_20px_40px_-10px_rgba(90,39,15,0.4)]">
+                    <div className="h-10 w-10 bg-[#FAF8F4] dark:bg-[#5A270F] text-[#DF8142] dark:text-[#EEB38C] rounded-lg flex items-center justify-center mb-6 shadow-sm dark:shadow-xl border border-[#EEB38C]/40 dark:border-[#DF8142]/20">
                       <Cpu className="h-5 w-5" />
                     </div>
-                    <h4 className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tight mb-2">
+                    <h4 className="text-sm font-black text-[#5A270F] dark:text-white uppercase tracking-tight mb-2">
                       SOFT_ENGINE
                     </h4>
-                    <p className="text-[#92664A] dark:text-white/40 text-[11px] font-bold leading-tight">
+                    <p className="text-[#92664A] dark:text-[#EEB38C]/70 text-[11px] font-bold leading-tight">
                       Engineering CDN clusters, zero-trust layers, and the fluid
                       UX matrix.
                     </p>
