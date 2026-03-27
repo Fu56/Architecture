@@ -50,6 +50,7 @@ model User {
   role                Role?              @relation(fields: [roleId], references: [id])
   subscribedChannels  ChatChannel[]      @relation("ChannelSubscribers")
   secondaryRoles      Role[]             @relation("UserSecondaryRoles")
+  chatMessageReads    ChatMessageRead[]
 
   @@map("user")
 }
@@ -299,8 +300,20 @@ model ChatMessage {
   userId      String
   channelId   Int
   attachments ChatAttachment[]
+  readBy      ChatMessageRead[]
   channel     ChatChannel      @relation(fields: [channelId], references: [id], onDelete: Cascade)
   user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ChatMessageRead {
+  id        Int         @id @default(autoincrement())
+  messageId Int
+  userId    String
+  createdAt DateTime    @default(now())
+  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId])
 }
 
 model ChatAttachment {

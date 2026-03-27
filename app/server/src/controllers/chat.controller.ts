@@ -40,37 +40,102 @@ export const getChannels = async (req: Request, res: Response) => {
         },
         _count: {
           select: { messages: true }
+        },
+        messages: {
+          select: {
+            id: true,
+            readBy: {
+              where: { userId }
+            }
+          }
         }
       },
       orderBy: { updatedAt: "desc" }
     });
 
-    // Auto-create Batch General channel if not present for a student
-    if (role === "student" && userBatch && !channels.some(c => c.batch === userBatch)) {
-        const newChannel = await prisma.chatChannel.create({
-            data: {
-                name: `Batch ${userBatch} General`,
-                batch: userBatch
-            },
-            include: {
-                designStage: true,
-                subscribers: { select: { id: true } },
-                _count: { select: { messages: true } }
-            }
-        });
-        channels.push(newChannel);
-    }
+    const formatted = channels.map(c => {
+      const totalMessages = c._count.messages;
+      const readMessages = c.messages.filter(m => m.readBy.length > 0).length;
+      const unreadCount = totalMessages - readMessages;
 
-    // Format to include isSubscribed helper
-    const formatted = channels.map(c => ({
+      return {
         ...c,
+        messages: undefined, // Clear messages to keep payload compact
+        unreadCount,
         isSubscribed: c.subscribers.some(s => s.id === userId)
-    }));
+      };
+    });
 
     res.json(formatted);
   } catch (error) {
     console.error("Fetch Channels Error:", error);
     res.status(500).json({ message: "Failed to retrieve Nexus nodes." });
+  }
+};
+
+export const markMessagesRead = async (req: Request, res: Response) => {
+  try {
+    const { channelId } = req.params;
+    const userId = (req as any).user.id;
+
+    // Find all messages in this channel not yet read by this user
+    const unreadMessages = await prisma.chatMessage.findMany({
+      where: {
+        channelId: Number(channelId),
+        NOT: {
+          readBy: {
+            some: { userId }
+          }
+        }
+      },
+      select: { id: true }
+    });
+
+    if (unreadMessages.length > 0) {
+      await prisma.chatMessageRead.createMany({
+        data: unreadMessages.map(m => ({
+          messageId: m.id,
+          userId
+        })),
+        skipDuplicates: true
+      });
+    }
+
+    res.json({ message: "Nexus signal synchronization complete." });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to synchronize signal reads." });
+  }
+};
+
+export const markAllRead = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id;
+
+    // Find all messages in any channel not yet read by this user
+    const unreadMessages = await prisma.chatMessage.findMany({
+      where: {
+        NOT: {
+          readBy: {
+            some: { userId }
+          }
+        }
+      },
+      select: { id: true }
+    });
+
+    if (unreadMessages.length > 0) {
+      await prisma.chatMessageRead.createMany({
+        data: unreadMessages.map(m => ({
+          messageId: m.id,
+          userId
+        })),
+        skipDuplicates: true
+      });
+    }
+
+    res.json({ message: "Global Nexus synchronization complete." });
+  } catch (error) {
+    res.status(500).json({ message: "Global synchronization sequence failed." });
   }
 };
 
@@ -192,7 +257,10 @@ export const sendMessage = async (req: Request, res: Response) => {
               fileName: file.originalname
             }
           }
-        } : {})
+        } : {}),
+        readBy: {
+          create: { userId }
+        }
       },
       include: {
         user: {

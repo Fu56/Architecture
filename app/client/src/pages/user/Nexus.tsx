@@ -21,6 +21,7 @@ import {
   FileText,
   PlayCircle,
   Download,
+  CheckCheck,
 } from "lucide-react";
 import React from "react";
 import { useSession } from "../../lib/auth-client";
@@ -32,7 +33,8 @@ interface Channel {
   name: string;
   batch?: number;
   isPublic: boolean;
-  isSubscribed: boolean;
+  isSubscribed?: boolean;
+  unreadCount?: number;
   updatedAt: string;
   _count?: {
     messages: number;
@@ -97,11 +99,18 @@ const Nexus = () => {
   );
 
   const getMediaUrl = (fileUrl: string) => {
-    const baseUrl = (import.meta.env.VITE_API_URL as string).replace("/api", "");
+    const baseUrl = (import.meta.env.VITE_API_URL as string).replace(
+      "/api",
+      "",
+    );
     return `${baseUrl}${fileUrl}`;
   };
 
-  const handleDownload = async (e: React.MouseEvent, url: string, filename: string) => {
+  const handleDownload = async (
+    e: React.MouseEvent,
+    url: string,
+    filename: string,
+  ) => {
     e.preventDefault();
     e.stopPropagation();
     try {
@@ -150,14 +159,37 @@ const Nexus = () => {
 
   const fetchChannels = useCallback(async () => {
     try {
-      const { data } = await api.get("/chat/channels");
-      setChannels(data);
+      const response = await api.get("/chat/channels");
+      setChannels(response.data);
     } catch {
-      console.error("Spectrum Sync Failure");
+      toast.error("Failed to sync Nexus frequency list.");
     } finally {
       setLoading(false);
     }
   }, []);
+
+  const markAsRead = useCallback(async (channelId: number) => {
+    try {
+      await api.post(`/chat/channels/${channelId}/mark-read`);
+      setChannels((prev) =>
+        prev.map((ch) =>
+          ch.id === channelId ? { ...ch, unreadCount: 0 } : ch,
+        ),
+      );
+    } catch (err) {
+      console.error("Read Synchronization Failure:", err);
+    }
+  }, []);
+
+  const handleMarkAllRead = async () => {
+    try {
+      await api.post("/chat/channels/mark-all-read");
+      setChannels(prev => prev.map(ch => ({ ...ch, unreadCount: 0 })));
+      toast.success("Global Nexus synchronization successful.");
+    } catch {
+      toast.error("Global synchronization failure.");
+    }
+  };
 
   const fetchMessages = useCallback(async (channelId: number) => {
     try {
@@ -196,6 +228,12 @@ const Nexus = () => {
       clearInterval(c);
     };
   }, [activeChannel, fetchChannels, fetchMessages]);
+
+  useEffect(() => {
+    if (activeChannel) {
+      markAsRead(activeChannel.id);
+    }
+  }, [activeChannel, markAsRead]);
 
   useEffect(() => {
     if (messages.length > 0)
@@ -365,7 +403,7 @@ const Nexus = () => {
               </div>
               <div>
                 <h2 className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-white">
-                  NETWORK
+                  CHANNELS
                 </h2>
                 <div className="flex items-center gap-1">
                   <span className="h-1 w-1 rounded-full bg-[#DF8142] animate-pulse" />
@@ -375,13 +413,22 @@ const Nexus = () => {
                 </div>
               </div>
             </div>
-            <button
-              onClick={() => setShowCreateModal(true)}
-              title="Initialize New Channel"
-              className="h-7 w-7 rounded-lg flex items-center justify-center transition-all bg-[#DF8142] text-white hover:scale-105 active:scale-95"
-            >
-              <Plus className="h-4 w-4" />
-            </button>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={handleMarkAllRead}
+                title="Synchronize All Nodes"
+                className="h-7 w-7 rounded-lg flex items-center justify-center transition-all bg-white border border-[#92664A]/20 text-[#92664A] hover:bg-[#EEB38C]/20 hover:text-[#5A270F] dark:bg-[#6C3B1C]/40 dark:border-[#EEB38C]/10 dark:text-[#EEB38C]/60 dark:hover:text-white"
+              >
+                <CheckCheck className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setShowCreateModal(true)}
+                title="Initialize New Channel"
+                className="h-7 w-7 rounded-lg flex items-center justify-center transition-all bg-[#DF8142] text-white hover:scale-105 active:scale-95 shadow-sm"
+              >
+                <Plus className="h-4 w-4" />
+              </button>
+            </div>
           </div>
 
           <div className="flex-1 overflow-y-auto custom-scrollbar-thin space-y-4 pr-2">
@@ -409,9 +456,14 @@ const Nexus = () => {
                           <Lock className="h-3 w-3" />
                         )}
                       </div>
-                      <span className="text-[10px] font-bold tracking-tight truncate uppercase">
+                      <span className="text-[10px] font-bold tracking-tight truncate uppercase flex-1 text-left">
                         {ch.name || `Batch ${ch.batch}`}
                       </span>
+                      {ch.unreadCount !== undefined && ch.unreadCount > 0 && (
+                        <span className="h-4 min-w-[16px] px-1 flex items-center justify-center rounded-full bg-[#DF8142] text-white text-[8px] font-black animate-pulse shadow-sm">
+                          {ch.unreadCount}
+                        </span>
+                      )}
                     </button>
                     {isDeptHead && (
                       <button
@@ -595,7 +647,10 @@ const Nexus = () => {
                         {m.attachments?.map((att) => {
                           const fileUrl = getMediaUrl(att.fileUrl);
                           return (
-                            <div key={att.id} className="mb-2 last:mb-0 group/media relative">
+                            <div
+                              key={att.id}
+                              className="mb-2 last:mb-0 group/media relative"
+                            >
                               {att.fileType.startsWith("image/") ? (
                                 <div className="relative overflow-hidden rounded-xl border border-white/20 shadow-lg bg-black/5 max-w-[280px]">
                                   <img
@@ -605,7 +660,9 @@ const Nexus = () => {
                                   />
                                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/media:opacity-100 transition-opacity flex items-center justify-center gap-3">
                                     <button
-                                      onClick={(e) => handleDownload(e, fileUrl, att.fileName)}
+                                      onClick={(e) =>
+                                        handleDownload(e, fileUrl, att.fileName)
+                                      }
                                       title="Extract Image Shard"
                                       className="p-2.5 rounded-full bg-white/20 hover:bg-[#DF8142] text-white transition-all transform hover:scale-110 shadow-lg backdrop-blur-sm"
                                     >
@@ -620,10 +677,16 @@ const Nexus = () => {
                                 </div>
                               ) : att.fileType.startsWith("video/") ? (
                                 <div className="relative overflow-hidden rounded-xl border border-white/20 shadow-lg bg-black/5 max-w-[280px]">
-                                  <video src={fileUrl} className="w-full h-auto max-h-[300px] object-contain" controls />
+                                  <video
+                                    src={fileUrl}
+                                    className="w-full h-auto max-h-[300px] object-contain"
+                                    controls
+                                  />
                                   <div className="absolute top-2 right-2 opacity-0 group-hover/media:opacity-100 transition-opacity">
                                     <button
-                                      onClick={(e) => handleDownload(e, fileUrl, att.fileName)}
+                                      onClick={(e) =>
+                                        handleDownload(e, fileUrl, att.fileName)
+                                      }
                                       title="Extract Video Shard"
                                       className="p-2 rounded-lg bg-black/50 hover:bg-[#DF8142] text-white transition-all shadow-lg backdrop-blur-sm"
                                     >
@@ -652,10 +715,14 @@ const Nexus = () => {
                                       </p>
                                     </div>
                                     <button
-                                      onClick={(e) => handleDownload(e, fileUrl, att.fileName)}
+                                      onClick={(e) =>
+                                        handleDownload(e, fileUrl, att.fileName)
+                                      }
                                       title="Recover Data Shard"
                                       className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all shadow-sm ${
-                                        isSelf ? "hover:bg-white/20 text-white" : "hover:bg-[#DF8142] hover:text-white text-[#92664A]"
+                                        isSelf
+                                          ? "hover:bg-white/20 text-white"
+                                          : "hover:bg-[#DF8142] hover:text-white text-[#92664A]"
                                       }`}
                                     >
                                       <Download className="h-4 w-4" />
@@ -666,7 +733,11 @@ const Nexus = () => {
                             </div>
                           );
                         })}
-                        {m.content && <p className="whitespace-pre-wrap mt-1">{m.content}</p>}
+                        {m.content && (
+                          <p className="whitespace-pre-wrap mt-1">
+                            {m.content}
+                          </p>
+                        )}
                         <div
                           className={`text-[8px] mt-1.5 opacity-40 font-black tracking-widest ${isSelf ? "text-white" : "text-[#5A270F] dark:text-white"} flex items-center gap-1.5`}
                         >
