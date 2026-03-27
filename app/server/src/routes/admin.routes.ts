@@ -21,6 +21,7 @@ import {
   updateUserPermissions,
   archiveResource,
   restoreResource,
+  getArchivedResources,
 } from "../controllers/admin.controller";
 import { requireAuth } from "../middleware/auth";
 import { requireRole } from "../middleware/roles";
@@ -37,6 +38,7 @@ router.patch("/resources/:id/reject", rejectResource);
 router.patch("/resources/:id/status", updateResourceStatus);
 router.patch("/resources/:id/archive", archiveResource);
 router.patch("/resources/:id/restore", restoreResource);
+router.get("/resources/archived", getArchivedResources);
 router.post("/resources/advance", advanceAcademicStatus);
 router.post("/resources/check-expired", checkAndSuspendExpiredStudents);
 

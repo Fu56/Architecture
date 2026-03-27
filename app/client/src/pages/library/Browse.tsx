@@ -85,7 +85,7 @@ const Browse = () => {
   return (
     <div className="min-h-screen bg-[#FAF8F4] dark:bg-[#0C0603] font-inter selection:bg-[#DF8142]/20 selection:text-white transition-colors duration-700 overflow-x-hidden">
       {/* ── Immersive Architectural Header ── */}
-      <div className="relative pt-16 pb-20 overflow-hidden bg-gradient-to-b from-[#5A270F] via-[#3D1A0A] to-[#2A1205] border-b-[3px] border-[#DF8142] shadow-2xl">
+      <div className="relative pt-8 pb-10 overflow-hidden bg-gradient-to-b from-[#5A270F] via-[#3D1A0A] to-[#2A1205] border-b-[3px] border-[#DF8142] shadow-2xl">
         <div className="absolute inset-0 blueprint-grid opacity-15 pointer-events-none mix-blend-overlay" />
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tr from-[#DF8142]/5 to-transparent pointer-events-none" />
         
@@ -94,7 +94,7 @@ const Browse = () => {
         <div className="absolute top-1/2 -right-24 w-64 h-64 bg-[#EEB38C]/5 rounded-full blur-[100px]" />
 
         <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="flex justify-between items-center mb-12">
+          <div className="flex justify-between items-center mb-5">
             <button
               onClick={() => window.history.back()}
               className="flex items-center gap-2.5 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[8px] font-black uppercase tracking-[0.4em] text-[#EEB38C] hover:bg-white/10 hover:border-[#DF8142]/40 transition-all group backdrop-blur-md"
@@ -109,11 +109,11 @@ const Browse = () => {
           </div>
 
           <div className="flex flex-col items-center text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/15 rounded-lg text-[8px] font-black uppercase tracking-[0.5em] text-[#EEB38C] mb-8 backdrop-blur-xl shadow-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/15 rounded-lg text-[8px] font-black uppercase tracking-[0.5em] text-[#EEB38C] mb-4 backdrop-blur-xl shadow-2xl">
               <Library className="h-3.5 w-3.5 text-[#DF8142]" />{" "}
               Universal_Repository_Interface
             </div>
-            <h1 className="text-5xl sm:text-7xl font-black text-white tracking-tighter mb-6 uppercase italic leading-none font-space-grotesk drop-shadow-2xl">
+            <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tighter mb-3 uppercase italic leading-none font-space-grotesk drop-shadow-2xl">
               ARCHIVE{" "}
               <span className="text-[#DF8142] not-italic uppercase underline decoration-[#DF8142]/30 decoration-[8px] underline-offset-[12px]">INDEX.</span>
             </h1>

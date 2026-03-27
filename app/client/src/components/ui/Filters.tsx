@@ -73,19 +73,15 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
         {/* Superior Search Interface */}
         <div className="relative flex-grow group w-full">
           <div className="absolute -inset-1 bg-gradient-to-r from-[#DF8142] to-[#5A270F] rounded-2xl blur-lg opacity-0 group-focus-within:opacity-10 transition-opacity duration-700" />
-          <div
-            className="relative flex items-center h-16 rounded-2xl border border-[#92664A]/30 dark:border-white/10 bg-white dark:bg-[#1A0B05] focus-within:border-[#DF8142] transition-all duration-500 overflow-hidden shadow-md shadow-[#5A270F]/5 dark:shadow-none"
-          >
-            <Search
-              className="ml-6 h-5 w-5 text-[#5A270F]/60 dark:text-[#EEB38C]/40"
-            />
+          <div className="relative flex items-center h-11 rounded-xl border border-[#92664A]/30 dark:border-white/10 bg-white dark:bg-[#1A0B05] focus-within:border-[#DF8142] transition-all duration-500 overflow-hidden shadow-md shadow-[#5A270F]/5 dark:shadow-none">
+            <Search className="ml-6 h-5 w-5 text-[#5A270F]/60 dark:text-[#EEB38C]/40" />
             <input
               type="text"
               name="search"
               placeholder="Explore the architectural archive..."
               value={filters.search || ""}
               onChange={handleInputChange}
-              className="w-full pl-4 pr-12 py-3 bg-transparent text-[11px] font-black uppercase tracking-[0.15em] outline-none transition-all placeholder:transition-all focus:placeholder:translate-x-4 text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/60 dark:placeholder:text-white/20"
+              className="w-full pl-4 pr-12 py-2 bg-transparent text-[10px] font-black uppercase tracking-[0.15em] outline-none transition-all placeholder:transition-all focus:placeholder:translate-x-4 text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/60 dark:placeholder:text-white/20"
             />
             {filters.search && (
               <button
@@ -104,7 +100,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
         {/* Advanced Filter Trigger */}
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className={`h-16 flex items-center justify-center gap-4 px-10 rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] transition-all duration-500 border whitespace-nowrap active:scale-95 group/filter ${
+          className={`h-11 flex items-center justify-center gap-3 px-7 rounded-xl font-black uppercase tracking-[0.2em] text-[9px] transition-all duration-500 border whitespace-nowrap active:scale-95 group/filter ${
             showFilters || activeFilterCount > 0
               ? "bg-[#5A270F] text-white border-[#5A270F] shadow-xl shadow-[#5A270F]/30"
               : "bg-white dark:bg-[#1A0B05] text-[#5A270F] dark:text-[#EEB38C] border-[#92664A]/30 dark:border-white/10 hover:border-[#DF8142] dark:hover:border-[#DF8142] hover:shadow-2xl hover:shadow-[#5A270F]/10 dark:hover:shadow-none"
@@ -129,10 +125,8 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
         className={`grid transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${showFilters ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0 pointer-events-none"}`}
       >
         <div>
-          <div
-            className="p-10 rounded-[2.5rem] space-y-10 transition-colors duration-500 border border-[#92664A]/15 dark:border-white/10 bg-white dark:bg-[#1A0B05] shadow-2xl shadow-[#5A270F]/10 dark:shadow-none min-h-0"
-          >
-            <div className="flex items-center justify-between border-b pb-6 border-[#92664A]/10 dark:border-white/5">
+          <div className="p-5 rounded-2xl space-y-5 transition-colors duration-500 border border-[#92664A]/15 dark:border-white/10 bg-white dark:bg-[#1A0B05] shadow-xl shadow-[#5A270F]/10 dark:shadow-none min-h-0">
+            <div className="flex items-center justify-between border-b pb-3 border-[#92664A]/10 dark:border-white/5">
               <div className="space-y-1">
                 <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C]">
                   Filter Configuration
@@ -149,7 +143,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
               <div className="relative z-[100]">
                 <Select
                   label="File Format"
@@ -211,7 +205,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                       placeholder="Year"
                       value={filters.year || ""}
                       onChange={handleInputChange}
-                      className="w-full h-12 px-5 rounded-xl font-black text-xs outline-none focus:border-[#DF8142] border border-[#92664A]/30 dark:border-white/10 bg-[#FAF8F4] dark:bg-white/5 text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/60 dark:placeholder:text-white/20 transition-all"
+                      className="w-full h-9 px-4 rounded-lg font-black text-xs outline-none focus:border-[#DF8142] border border-[#92664A]/30 dark:border-white/10 bg-[#FAF8F4] dark:bg-white/5 text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/60 dark:placeholder:text-white/20 transition-all"
                     />
                   </div>
                   <div className="relative group/input">
@@ -221,7 +215,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                       placeholder="Sem"
                       value={filters.semester || ""}
                       onChange={handleInputChange}
-                      className="w-full h-12 px-5 rounded-xl font-black text-xs outline-none focus:border-[#DF8142] border border-[#92664A]/30 dark:border-white/10 bg-[#FAF8F4] dark:bg-white/5 text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/60 dark:placeholder:text-white/20 transition-all"
+                      className="w-full h-9 px-4 rounded-lg font-black text-xs outline-none focus:border-[#DF8142] border border-[#92664A]/30 dark:border-white/10 bg-[#FAF8F4] dark:bg-white/5 text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/60 dark:placeholder:text-white/20 transition-all"
                     />
                   </div>
                 </div>
