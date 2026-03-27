@@ -10,7 +10,6 @@ import {
   Calendar,
 } from "lucide-react";
 import Select from "./Select";
-import { useTheme } from "../../context/useTheme";
 
 export type FilterState = {
   search?: string;
@@ -42,8 +41,6 @@ const fileTypes = ["pdf", "docx", "jpeg", "png", "mp4", "rfa", "skp"];
 const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
   const [filters, setFilters] = useState<FilterState>(initialFilters || {});
   const [showFilters, setShowFilters] = useState(false);
-  const { theme } = useTheme();
-  const isLight = theme === "light";
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -77,10 +74,10 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
         <div className="relative flex-grow group w-full">
           <div className="absolute -inset-1 bg-gradient-to-r from-[#DF8142] to-[#5A270F] rounded-2xl blur-lg opacity-0 group-focus-within:opacity-10 transition-opacity duration-700" />
           <div
-            className={`relative flex items-center h-16 rounded-2xl border transition-all duration-500 overflow-hidden ${isLight ? "bg-white border-[#92664A]/10 focus-within:border-[#DF8142]/40 shadow-sm" : "bg-[#1A0B05] border-white/5 focus-within:border-[#DF8142]/40"}`}
+            className="relative flex items-center h-16 rounded-2xl border border-[#92664A]/30 dark:border-white/10 bg-white dark:bg-[#1A0B05] focus-within:border-[#DF8142] transition-all duration-500 overflow-hidden shadow-md shadow-[#5A270F]/5 dark:shadow-none"
           >
             <Search
-              className={`ml-6 h-5 w-5 ${isLight ? "text-[#5A270F]/30" : "text-[#EEB38C]/30"}`}
+              className="ml-6 h-5 w-5 text-[#5A270F]/60 dark:text-[#EEB38C]/40"
             />
             <input
               type="text"
@@ -88,7 +85,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
               placeholder="Explore the architectural archive..."
               value={filters.search || ""}
               onChange={handleInputChange}
-              className={`w-full pl-4 pr-12 py-3 bg-transparent text-sm font-black uppercase tracking-[0.2em] outline-none transition-all placeholder:transition-all focus:placeholder:translate-x-4 ${isLight ? "text-[#5A270F] placeholder:text-[#5A270F]/20" : "text-white placeholder:text-white/10"}`}
+              className="w-full pl-4 pr-12 py-3 bg-transparent text-[11px] font-black uppercase tracking-[0.15em] outline-none transition-all placeholder:transition-all focus:placeholder:translate-x-4 text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/60 dark:placeholder:text-white/20"
             />
             {filters.search && (
               <button
@@ -96,11 +93,9 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                 onClick={() =>
                   setFilters((prev: FilterState) => ({ ...prev, search: "" }))
                 }
-                className={`absolute right-4 p-2 rounded-full transition-colors ${isLight ? "hover:bg-[#FAF8F4]" : "hover:bg-white/5"}`}
+                className="absolute right-4 p-2 rounded-full transition-colors hover:bg-black/5 dark:hover:bg-white/5"
               >
-                <X
-                  className={`h-4 w-4 ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/40"}`}
-                />
+                <X className="h-4 w-4 text-[#92664A] dark:text-[#EEB38C]/60" />
               </button>
             )}
           </div>
@@ -112,9 +107,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
           className={`h-16 flex items-center justify-center gap-4 px-10 rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] transition-all duration-500 border whitespace-nowrap active:scale-95 group/filter ${
             showFilters || activeFilterCount > 0
               ? "bg-[#5A270F] text-white border-[#5A270F] shadow-xl shadow-[#5A270F]/30"
-              : isLight
-                ? "bg-white text-[#5A270F] border-[#92664A]/10 hover:border-[#DF8142] hover:shadow-xl"
-                : "bg-[#1A0B05] text-[#EEB38C] border-white/5 hover:border-[#DF8142]"
+              : "bg-white dark:bg-[#1A0B05] text-[#5A270F] dark:text-[#EEB38C] border-[#92664A]/30 dark:border-white/10 hover:border-[#DF8142] dark:hover:border-[#DF8142] hover:shadow-2xl hover:shadow-[#5A270F]/10 dark:hover:shadow-none"
           }`}
         >
           <SlidersHorizontal
@@ -137,15 +130,15 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
       >
         <div className="overflow-hidden">
           <div
-            className={`p-10 rounded-[2.5rem] space-y-10 transition-colors duration-500 border shadow-2xl ${isLight ? "bg-white border-[#92664A]/5 shadow-[#5A270F]/5" : "bg-[#1A0B05] border-white/5 shadow-none"}`}
+            className="p-10 rounded-[2.5rem] space-y-10 transition-colors duration-500 border border-[#92664A]/15 dark:border-white/10 bg-white dark:bg-[#1A0B05] shadow-2xl shadow-[#5A270F]/10 dark:shadow-none"
           >
-            <div className="flex items-center justify-between border-b pb-6 border-neutral-100 dark:border-white/5">
+            <div className="flex items-center justify-between border-b pb-6 border-[#92664A]/10 dark:border-white/5">
               <div className="space-y-1">
-                <h3 className="text-sm font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C]">
+                <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C]">
                   Filter Configuration
                 </h3>
-                <p className="text-[10px] font-bold text-[#92664A] uppercase tracking-[0.2em] opacity-40">
-                  Optimize your Resources results
+                <p className="text-[9px] font-bold text-[#5A270F] dark:text-[#EEB38C]/40 uppercase tracking-[0.15em]">
+                  Optimize your architectural repository
                 </p>
               </div>
               <button
@@ -201,8 +194,8 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
               />
 
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C] flex items-center gap-2 opacity-40">
-                  <Calendar className="h-4 w-4" /> Academic Period
+                <label className="text-[9px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] flex items-center gap-2 opacity-70 dark:opacity-50">
+                  <Calendar className="h-3.5 w-3.5" /> Academic Period
                 </label>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="relative group/input">
@@ -212,7 +205,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                       placeholder="Year"
                       value={filters.year || ""}
                       onChange={handleInputChange}
-                      className={`w-full h-12 px-5 rounded-xl font-black text-xs outline-none focus:border-[#DF8142] border transition-all ${isLight ? "bg-[#FAF8F4] border-[#92664A]/10 text-[#5A270F]" : "bg-white/5 border-white/10 text-white"}`}
+                      className="w-full h-12 px-5 rounded-xl font-black text-xs outline-none focus:border-[#DF8142] border border-[#92664A]/30 dark:border-white/10 bg-[#FAF8F4] dark:bg-white/5 text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/60 dark:placeholder:text-white/20 transition-all"
                     />
                   </div>
                   <div className="relative group/input">
@@ -222,7 +215,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
                       placeholder="Sem"
                       value={filters.semester || ""}
                       onChange={handleInputChange}
-                      className={`w-full h-12 px-5 rounded-xl font-black text-xs outline-none focus:border-[#DF8142] border transition-all ${isLight ? "bg-[#FAF8F4] border-[#92664A]/10 text-[#5A270F]" : "bg-white/5 border-white/10 text-white"}`}
+                      className="w-full h-12 px-5 rounded-xl font-black text-xs outline-none focus:border-[#DF8142] border border-[#92664A]/30 dark:border-white/10 bg-[#FAF8F4] dark:bg-white/5 text-[#5A270F] dark:text-white placeholder:text-[#5A270F]/60 dark:placeholder:text-white/20 transition-all"
                     />
                   </div>
                 </div>

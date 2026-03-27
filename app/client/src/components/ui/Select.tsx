@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown, Check } from "lucide-react";
-import { useTheme } from "../../context/useTheme";
 
 interface Option {
   id: string | number;
@@ -28,8 +27,6 @@ const Select: React.FC<SelectProps> = ({
   icon,
   className = "",
 }) => {
-  const { theme } = useTheme();
-  const isLight = theme === "light";
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -53,7 +50,7 @@ const Select: React.FC<SelectProps> = ({
   return (
     <div className={`w-full space-y-1.5 ${className}`} ref={containerRef}>
       {label && (
-        <label className="block text-[8.5px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-[#EEB38C]/40 mb-1 ml-1">
+        <label className="block text-[8.5px] font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-[#EEB38C]/40 mb-1 ml-1">
           {label}
         </label>
       )}
@@ -62,15 +59,14 @@ const Select: React.FC<SelectProps> = ({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full bg-white dark:bg-[#1A0B02] border rounded-lg px-2.5 py-2
+          className="w-full bg-white dark:bg-[#1A0B02] border border-[#92664A]/30 dark:border-white/10 rounded-lg px-2.5 py-2
                      text-[9px] font-black text-[#5A270F] dark:text-[#EEB38C]
                      flex items-center justify-between transition-all duration-300
-                     ${isOpen ? "border-[#DF8142]" : "border-[#D9D9C2] dark:border-white/5"}
-                     ${error ? "border-rose-400 bg-rose-50/10" : ""}`}
+                     hover:border-[#DF8142] focus:border-[#DF8142] focus:outline-none"
         >
           <div className="flex items-center gap-2">
-            {icon && <div className={`${error ? "text-rose-500" : "text-[#DF8142]"} scale-75`}>{icon}</div>}
-            <span className={`uppercase tracking-tight ${!selectedOption ? "text-[#92664A]/40 dark:text-white/20" : ""}`}>
+            {icon && <div className="text-[#DF8142] scale-75">{icon}</div>}
+            <span className="uppercase tracking-tight text-[#5A270F]/60 dark:text-white/40">
               {selectedOption ? selectedOption.name : placeholder}
             </span>
           </div>
@@ -80,12 +76,12 @@ const Select: React.FC<SelectProps> = ({
         {/* Dropdown Menu - Architectural Glassmorphism */}
         {isOpen && (
           <div 
-            className={`absolute z-[999] min-w-full w-max max-w-[calc(100vw-2rem)] right-0 bottom-full mb-2 border-2 border-[#DF8142]/60 rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-300 backdrop-blur-3xl overflow-hidden ${isLight ? "bg-white/95 shadow-[#5A270F]/20" : "bg-[#1A0B04]/95 shadow-black"}`}
+            className="absolute z-[999] min-w-full w-max max-w-[calc(100vw-2rem)] right-0 bottom-full mb-2 border-2 border-[#DF8142]/60 rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-300 bg-white/95 dark:bg-[#1A0B04]/95 backdrop-blur-3xl overflow-hidden shadow-[#5A270F]/20 dark:shadow-black"
           >
             <div className="max-h-[70vh] overflow-y-auto 
                             scrollbar-thin scrollbar-thumb-[#DF8142] scrollbar-track-transparent">
               {options.length === 0 ? (
-                <div className={`px-5 py-4 text-[9px] font-bold uppercase tracking-[0.2em] text-center ${isLight ? "text-[#5A270F]/40" : "text-[#EEB38C]/40"}`}>
+                <div className="px-5 py-4 text-[9px] font-bold uppercase tracking-[0.2em] text-center text-[#5A270F]/40 dark:text-[#EEB38C]/40">
                   Void: No protocols found
                 </div>
               ) : (
@@ -98,10 +94,10 @@ const Select: React.FC<SelectProps> = ({
                         type="button"
                         onClick={() => handleSelect(option.id)}
                         className={`w-full flex items-center justify-between gap-4 px-4 py-3 text-left transition-all duration-200 group
-                                   ${index !== options.length - 1 ? (isLight ? "border-b border-[#92664A]/10" : "border-b border-white/5") : ""}
+                                   ${index !== options.length - 1 ? "border-b border-[#92664A]/10 dark:border-white/5" : ""}
                                    ${isSelected 
                                      ? "bg-[#DF8142] text-white" 
-                                     : isLight ? "text-[#5A270F] hover:bg-[#DF8142]/5" : "text-[#EEB38C]/80 hover:bg-[#DF8142]/10"}`}
+                                     : "text-[#5A270F] dark:text-[#EEB38C]/80 hover:bg-[#DF8142]/5 dark:hover:bg-[#DF8142]/10"}`}
                       >
                         <span className="text-[10px] font-black uppercase tracking-[0.15em] leading-tight">
                           {option.name}
