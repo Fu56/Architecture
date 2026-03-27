@@ -136,12 +136,14 @@ const Nexus = () => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [newChannelName, setNewChannelName] = useState("");
   const [newChannelBatch, setNewChannelBatch] = useState("");
   const [isPublicChannel, setIsPublicChannel] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [userSearchQuery, setUserSearchQuery] = useState("");
   const [foundUsers, setFoundUsers] = useState<FoundUser[]>([]);
   const [searching, setSearching] = useState(false);
   const [invitingId, setInvitingId] = useState<string | null>(null);
@@ -184,7 +186,7 @@ const Nexus = () => {
   const handleMarkAllRead = async () => {
     try {
       await api.post("/chat/channels/mark-all-read");
-      setChannels(prev => prev.map(ch => ({ ...ch, unreadCount: 0 })));
+      setChannels((prev) => prev.map((ch) => ({ ...ch, unreadCount: 0 })));
       toast.success("Global Nexus synchronization successful.");
     } catch {
       toast.error("Global synchronization failure.");
@@ -199,6 +201,26 @@ const Nexus = () => {
       console.error("Signal Retrieval Error");
     }
   }, []);
+
+  const handleSearchUsers = useCallback(async () => {
+    if (userSearchQuery.trim().length < 2) return;
+    setSearching(true);
+    try {
+      const { data } = await api.get(`/user/search?q=${userSearchQuery}`);
+      setFoundUsers(data);
+    } catch {
+      toast.error("User database synchronization failed.");
+    } finally {
+      setSearching(false);
+    }
+  }, [userSearchQuery]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (userSearchQuery) handleSearchUsers();
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [userSearchQuery, handleSearchUsers]);
 
   const fetchMembers = useCallback(async (channelId: number) => {
     setLoadingMembers(true);
@@ -384,7 +406,7 @@ const Nexus = () => {
     );
 
   return (
-    <div className="h-[calc(100vh-140px)] rounded-2xl overflow-hidden border flex relative animate-in fade-in duration-700 bg-white border-[#92664A]/20 shadow-xl dark:bg-[#5A270F] dark:border-[#92664A]/20 dark:shadow-2xl dark:shadow-black/80">
+    <div className="h-[calc(100vh-160px)] lg:h-[calc(100vh-140px)] rounded-2xl overflow-hidden border flex relative animate-in fade-in duration-700 bg-white border-[#92664A]/20 shadow-xl dark:bg-[#5A270F] dark:border-[#92664A]/20 dark:shadow-2xl dark:shadow-black/80">
       {/* Dynamic Atmospheric Backdrop */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-[#EEB38C]/10 dark:bg-[#6C3B1C]/70 -skew-x-12 translate-x-1/4" />
@@ -393,13 +415,13 @@ const Nexus = () => {
 
       {/* SIDEBAR - Spectrum Selection */}
       <div
-        className={`w-[200px] border-r shrink-0 flex flex-col relative z-20 transition-all duration-500 bg-[#EEB38C]/5 border-[#92664A]/20 backdrop-blur-3xl dark:bg-[#6C3B1C]/40 dark:border-[#92664A]/20 ${!activeChannel ? "translate-x-0" : "-translate-x-full lg:translate-x-0 lg:w-[200px] w-0 opacity-0 lg:opacity-100 hidden lg:flex"}`}
+        className={`fixed inset-0 z-[100] lg:relative lg:inset-auto lg:z-20 w-72 lg:w-64 border-r shrink-0 flex flex-col transition-all duration-500 bg-white/95 border-[#92664A]/20 backdrop-blur-3xl dark:bg-[#5A270F]/95 dark:border-[#92664A]/20 ${!activeChannel ? "translate-x-0" : "-translate-x-full lg:translate-x-0 opacity-0 lg:opacity-100 hidden lg:flex"}`}
       >
         <div className="p-4 flex flex-col h-full shrink-0 min-w-[200px]">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2.5">
-              <div className="h-7 w-7 rounded-lg flex items-center justify-center border transition-all bg-white border-[#DF8142]/20 text-[#5A270F] dark:bg-[#6C3B1C]/70 dark:border-[#EEB38C]/20 dark:text-[#DF8142]">
-                <Network className="h-4 w-4" />
+              <div className="h-8 w-8 rounded-xl flex items-center justify-center border transition-all bg-white border-[#DF8142]/20 text-[#5A270F] dark:bg-[#6C3B1C]/70 dark:border-[#EEB38C]/20 dark:text-[#DF8142]">
+                <Network className="h-5 w-5" />
               </div>
               <div>
                 <h2 className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-white">
@@ -413,7 +435,17 @@ const Nexus = () => {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => {
+                  setShowSearch(!showSearch);
+                  if (showSearch) setSearchQuery("");
+                }}
+                title="Search Channels"
+                className={`h-7 w-7 rounded-lg flex items-center justify-center transition-all ${showSearch ? "bg-[#DF8142] text-white shadow-md shadow-[#DF8142]/20" : "bg-white border border-[#92664A]/20 text-[#92664A] hover:bg-[#EEB38C]/20"}`}
+              >
+                <Search className="h-4 w-4" />
+              </button>
               <button
                 onClick={handleMarkAllRead}
                 title="Synchronize All Nodes"
@@ -431,59 +463,81 @@ const Nexus = () => {
             </div>
           </div>
 
+          {showSearch && (
+            <div className="px-4 mb-4 animate-in slide-in-from-top-2 duration-300">
+              <div className="relative group">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-[#92664A]/40" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Filter channels..."
+                  autoFocus
+                  className="w-full bg-white dark:bg-[#5A270F]/30 border border-[#92664A]/15 rounded-lg py-1.5 pl-8 pr-3 text-[10px] font-bold outline-none focus:border-[#DF8142] placeholder:text-[#92664A]/30 transition-all dark:text-white"
+                />
+              </div>
+            </div>
+          )}
+
           <div className="flex-1 overflow-y-auto custom-scrollbar-thin space-y-4 pr-2">
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest px-4 mb-5 text-[#92664A]/80 dark:text-[#EEB38C]/40">
                 CHANNELS
               </p>
               <div className="space-y-2">
-                {channels.map((ch) => (
-                  <div key={ch.id} className="group relative">
-                    <button
-                      onClick={() => setActiveChannel(ch)}
-                      className={`w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg transition-all ${
-                        activeChannel?.id === ch.id
-                          ? "bg-[#5A270F] dark:bg-[#DF8142] text-white shadow-lg shadow-[#5A270F]/20"
-                          : "hover:bg-white text-[#5A270F]/50 hover:text-[#5A270F] dark:hover:bg-[#6C3B1C]/70 dark:text-[#EEB38C]/50 dark:hover:text-white"
-                      }`}
-                    >
-                      <div
-                        className={`h-5 w-5 rounded flex items-center justify-center transition-all ${activeChannel?.id === ch.id ? "bg-white/20" : "bg-white/50 border border-[#92664A]/10 shadow-sm text-[#5A270F] dark:bg-[#6C3B1C]/70 dark:text-[#EEB38C]/40"}`}
-                      >
-                        {ch.isPublic ? (
-                          <Globe className="h-3 w-3" />
-                        ) : (
-                          <Lock className="h-3 w-3" />
-                        )}
-                      </div>
-                      <span className="text-[10px] font-bold tracking-tight truncate uppercase flex-1 text-left">
-                        {ch.name || `Batch ${ch.batch}`}
-                      </span>
-                      {ch.unreadCount !== undefined && ch.unreadCount > 0 && (
-                        <span className="h-4 min-w-[16px] px-1 flex items-center justify-center rounded-full bg-[#DF8142] text-white text-[8px] font-black animate-pulse shadow-sm">
-                          {ch.unreadCount}
-                        </span>
-                      )}
-                    </button>
-                    {isDeptHead && (
+                {channels
+                  .filter((c) =>
+                    (c.name || `Batch ${c.batch}`)
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase()),
+                  )
+                  .map((ch) => (
+                    <div key={ch.id} className="group relative">
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteChannel(ch.id);
-                        }}
-                        title="Dismantle Frequency"
-                        aria-label="Delete channel"
-                        className={`absolute right-3 top-1/2 -translate-y-1/2 h-6 w-6 rounded-md flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 ${
+                        onClick={() => setActiveChannel(ch)}
+                        className={`w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg transition-all ${
                           activeChannel?.id === ch.id
-                            ? "text-white hover:bg-[#6C3B1C]/60"
-                            : "text-[#92664A] hover:text-red-500 hover:bg-red-50"
+                            ? "bg-[#5A270F] dark:bg-[#DF8142] text-white shadow-lg shadow-[#5A270F]/20"
+                            : "hover:bg-white text-[#5A270F]/50 hover:text-[#5A270F] dark:hover:bg-[#6C3B1C]/70 dark:text-[#EEB38C]/50 dark:hover:text-white"
                         }`}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <div
+                          className={`h-5 w-5 rounded flex items-center justify-center transition-all ${activeChannel?.id === ch.id ? "bg-white/20" : "bg-white/50 border border-[#92664A]/10 shadow-sm text-[#5A270F] dark:bg-[#6C3B1C]/70 dark:text-[#EEB38C]/40"}`}
+                        >
+                          {ch.isPublic ? (
+                            <Globe className="h-3 w-3" />
+                          ) : (
+                            <Lock className="h-3 w-3" />
+                          )}
+                        </div>
+                        <span className="text-[10px] font-bold tracking-tight truncate uppercase flex-1 text-left">
+                          {ch.name || `Batch ${ch.batch}`}
+                        </span>
+                        {ch.unreadCount !== undefined && ch.unreadCount > 0 && (
+                          <span className="h-4 min-w-[16px] px-1 flex items-center justify-center rounded-full bg-[#DF8142] text-white text-[8px] font-black animate-pulse shadow-sm">
+                            {ch.unreadCount}
+                          </span>
+                        )}
                       </button>
-                    )}
-                  </div>
-                ))}
+                      {isDeptHead && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteChannel(ch.id);
+                          }}
+                          title="Dismantle Frequency"
+                          aria-label="Delete channel"
+                          className={`absolute right-3 top-1/2 -translate-y-1/2 h-6 w-6 rounded-md flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 ${
+                            activeChannel?.id === ch.id
+                              ? "text-white hover:bg-[#6C3B1C]/60"
+                              : "text-[#92664A] hover:text-red-500 hover:bg-red-50"
+                          }`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
               </div>
             </div>
           </div>
@@ -560,27 +614,33 @@ const Nexus = () => {
           </div>
         ) : (
           <>
-            <header className="h-12 px-4 flex items-center justify-between border-b relative z-30 bg-white/80 border-[#92664A]/15 backdrop-blur-xl dark:bg-[#5A270F]/40 dark:border-[#92664A]/20">
-              <div className="flex items-center gap-4">
+            <header className="h-14 lg:h-16 px-4 lg:px-6 flex items-center justify-between border-b relative z-30 bg-white/80 border-[#92664A]/15 backdrop-blur-xl dark:bg-[#5A270F]/40 dark:border-[#92664A]/20">
+              <div className="flex items-center gap-3 lg:gap-5">
                 <button
                   onClick={() => setActiveChannel(null)}
                   title="Return to Directory"
-                  className="h-7 w-7 rounded-lg flex items-center justify-center transition-all bg-[#EEB38C]/10 text-[#5A270F] hover:bg-[#DF8142] hover:text-white shadow-sm dark:bg-[#6C3B1C]/70 dark:text-[#EEB38C]/80 dark:hover:bg-[#6C3B1C]/80 dark:hover:text-white"
+                  className="h-8 w-8 lg:h-9 lg:w-9 rounded-xl flex items-center justify-center transition-all bg-[#EEB38C]/10 text-[#5A270F] hover:bg-[#DF8142] hover:text-white shadow-sm dark:bg-[#6C3B1C]/70 dark:text-[#EEB38C]/80 dark:hover:bg-[#6C3B1C]/80 dark:hover:text-white lg:hidden"
                 >
-                  <ArrowLeft className="h-4 w-4" />
+                  <ArrowLeft className="h-5 w-5" />
                 </button>
                 <div className="flex items-center gap-3">
-                  <div className="h-7 w-7 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] text-white">
+                  <div className="h-8 w-8 lg:h-10 lg:w-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] text-white shadow-lg">
                     {activeChannel?.isPublic ? (
-                      <Globe className="h-4 w-4" />
+                      <Globe className="h-5 w-5" />
                     ) : (
-                      <Lock className="h-4 w-4" />
+                      <Lock className="h-5 w-5" />
                     )}
                   </div>
                   <div>
-                    <h3 className="text-[11px] font-black uppercase tracking-widest text-[#5A270F] dark:text-white">
-                      {activeChannel?.name || "LOCKED"}
+                    <h3 className="text-[12px] lg:text-sm font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-white">
+                      {activeChannel?.name || "LOCKED_NODE"}
                     </h3>
+                    <div className="flex items-center gap-1.5 opacity-40">
+                      <span className="h-1 w-1 rounded-full bg-green-500 animate-pulse" />
+                      <span className="text-[8px] font-black tracking-widest uppercase">
+                        Node_Connected
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -959,8 +1019,8 @@ const Nexus = () => {
               <div className="relative group">
                 <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-[#DF8142]" />
                 <input
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  value={userSearchQuery}
+                  onChange={(e) => setUserSearchQuery(e.target.value)}
                   placeholder="SEARCH_USER..."
                   className="w-full pl-14 pr-7 py-5 rounded-2xl text-xs font-black outline-none border transition-all uppercase tracking-widest bg-[#EEB38C]/10 border-[#92664A]/30 focus:border-[#DF8142] text-[#5A270F] dark:bg-[#6C3B1C]/70 dark:border-[#92664A]/20 dark:focus:border-[#DF8142] dark:text-white"
                 />
