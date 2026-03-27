@@ -24,71 +24,15 @@ interface ResourceCardProps {
   resource: Resource;
 }
 
-const fileTypeStyles: {
-  [key: string]: {
-    accent: string;
-    lightBg: string;
-    darkBg: string;
-    text: string;
-    icon: LucideIcon;
-  };
-} = {
-  pdf: {
-    accent: "#DF8142",
-    lightBg: "bg-[#DF8142]/5",
-    darkBg: "bg-[#DF8142]/20",
-    text: "text-[#DF8142]",
-    icon: FileText,
-  },
-  docx: {
-    accent: "#EEB38C",
-    lightBg: "bg-[#EEB38C]/10",
-    darkBg: "bg-[#EEB38C]/10",
-    text: "text-[#EEB38C]",
-    icon: FileText,
-  },
-  jpeg: {
-    accent: "#5A270F",
-    lightBg: "bg-[#5A270F]/5",
-    darkBg: "bg-[#5A270F]/50",
-    text: "text-[#EEB38C]",
-    icon: Package,
-  },
-  png: {
-    accent: "#5A270F",
-    lightBg: "bg-[#5A270F]/5",
-    darkBg: "bg-[#5A270F]/50",
-    text: "text-[#EEB38C]",
-    icon: Package,
-  },
-  mp4: {
-    accent: "#6C3B1C",
-    lightBg: "bg-[#6C3B1C]/5",
-    darkBg: "bg-[#6C3B1C]/20",
-    text: "text-[#EEB38C]",
-    icon: Layout,
-  },
-  rfa: {
-    accent: "#92664A",
-    lightBg: "bg-[#92664A]/5",
-    darkBg: "bg-[#92664A]/20",
-    text: "text-white",
-    icon: Package,
-  },
-  skp: {
-    accent: "#DF8142",
-    lightBg: "bg-[#DF8142]/5",
-    darkBg: "bg-[#DF8142]/30",
-    text: "text-white",
-    icon: Package,
-  },
-  default: {
-    accent: "#92664A",
-    lightBg: "bg-[#92664A]/5",
-    darkBg: "bg-[#92664A]/20",
-    text: "text-white",
-    icon: Layers,
-  },
+const fileIconMap: Record<string, LucideIcon> = {
+  pdf: FileText,
+  docx: FileText,
+  mp4: Layout,
+  jpeg: Layers,
+  png: Layers,
+  jpg: Layers,
+  rfa: Package,
+  skp: Package,
 };
 
 const ResourceCard = ({ resource }: ResourceCardProps) => {
@@ -134,9 +78,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
     }
   };
 
-  const style =
-    (fileType && fileTypeStyles[fileType.toLowerCase()]) ||
-    fileTypeStyles.default;
+  const Icon = fileIconMap[fileType?.toLowerCase() || ''] || Layers;
 
   const uploaderName = uploader
     ? uploader.firstName && uploader.lastName
@@ -148,44 +90,58 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
 
   return (
     <div
-      className={`group relative rounded-[2.5rem] p-4 transition-all duration-700 flex flex-col h-full hover:shadow-[0_40px_80px_-20px_rgba(90,39,15,0.2)] dark:hover:shadow-[0_40px_80px_-20px_rgba(223,129,66,0.1)] hover:-translate-y-2 ${isLight ? "bg-white border border-[#92664A]/10 shadow-lg shadow-[#5A270F]/5" : "bg-[#0F0705] border border-white/5 shadow-none"}`}
+      className={`group relative rounded-[2rem] p-3 transition-all duration-700 flex flex-col h-full hover:-translate-y-2 border ${
+        isLight
+          ? "bg-[#FDFCFB] border-[#EEB38C] shadow-[0_20px_40px_-15px_rgba(90,39,15,0.15)] hover:shadow-[0_40px_80px_-20px_rgba(90,39,15,0.25)]"
+          : "bg-[#5A270F] border-[#6C3B1C] shadow-2xl hover:border-[#DF8142]/50 hover:shadow-[0_40px_80px_-20px_rgba(223,129,66,0.15)]"
+      }`}
     >
       {/* ── Top Visual Interactive Zone ── */}
       <div
-        className={`relative h-64 rounded-[2rem] overflow-hidden ${isLight ? "bg-[#FAF8F4]" : "bg-black"}`}
+        className={`relative h-56 rounded-[1.5rem] overflow-hidden ${
+          isLight ? "bg-[#EEB38C]/20" : "bg-[#6C3B1C]"
+        }`}
       >
-        {/* Soft Atmosphere Background */}
-        <div
-          className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 bg-[radial-gradient(circle_at_50%_120%,rgba(223,129,66,0.15),transparent_70%)]`}
-        />
-        <div className="absolute inset-0 blueprint-grid opacity-[0.04] pointer-events-none" />
+        <div className={`absolute inset-0 blueprint-grid opacity-10 pointer-events-none mix-blend-overlay ${isLight ? "" : "blueprint-grid-dark"}`} />
 
         {/* Primary Icon Representation */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="relative group/icon">
             <div
-              className={`absolute -inset-8 rounded-full blur-[80px] opacity-0 group-hover/icon:opacity-20 transition-all duration-1000 bg-[#DF8142]`}
+              className={`absolute -inset-8 rounded-full blur-[60px] opacity-0 group-hover/icon:opacity-30 transition-all duration-1000 ${
+                isLight ? "bg-[#DF8142]" : "bg-[#DF8142]"
+              }`}
             />
             <div
-              className={`relative w-32 h-32 rounded-[2.25rem] flex items-center justify-center transition-all duration-700 shadow-2xl group-hover:scale-105 group-hover:rotate-3 ${isLight ? "bg-white border border-[#BCAF9C]/20 shadow-neutral-200/50" : "bg-[#1A0B05] border border-[#DF8142]/20"}`}
+              className={`relative w-28 h-28 rounded-3xl flex items-center justify-center transition-all duration-700 shadow-xl group-hover:scale-105 group-hover:-rotate-3 border ${
+                isLight
+                  ? "bg-white border-[#DF8142]/40 shadow-[#5A270F]/10"
+                  : "bg-[#5A270F] border-[#DF8142]/30 shadow-none"
+              }`}
             >
-              <style.icon
-                className={`w-14 h-14 stroke-[0.75px] transition-all duration-700 ${isLight ? "text-[#5A270F]" : "text-[#DF8142]"}`}
+              <Icon
+                className={`w-12 h-12 stroke-[1px] transition-all duration-700 ${
+                  isLight ? "text-[#DF8142]" : "text-[#EEB38C]"
+                }`}
               />
             </div>
           </div>
         </div>
 
         {/* Floating Context Labels */}
-        <div className="absolute top-5 left-5 right-5 flex justify-between items-start">
+        <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
           <div className="flex flex-col gap-2">
             <div
-              className={`px-4 py-1.5 rounded-full backdrop-blur-3xl border text-[9px] font-black uppercase tracking-[0.25em] ${isLight ? "bg-white/90 border-[#DF8142]/20 text-[#DF8142]" : "bg-black/80 border-[#DF8142]/30 text-[#DF8142]"}`}
+              className={`px-3 py-1.5 rounded-xl border text-[9px] font-black uppercase tracking-[0.2em] shadow-lg backdrop-blur-md ${
+                isLight
+                  ? "bg-[#DF8142] border-[#DF8142] text-white"
+                  : "bg-[#6C3B1C]/90 border-[#DF8142]/40 text-[#EEB38C]"
+              }`}
             >
               {fileType?.split("/").pop()?.toUpperCase() || "ASSET"}
             </div>
             {resource.status === "rejected" && (
-              <div className="px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-[8px] font-black text-red-500 uppercase tracking-widest">
+              <div className="px-3 py-1 bg-[#5A270F]/90 border border-[#DF8142]/40 rounded-xl text-[8px] font-black text-[#EEB38C] shadow-lg uppercase tracking-widest">
                 REJECTED
               </div>
             )}
@@ -193,22 +149,36 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
           <button
             onClick={toggleFavorite}
             title={isFavorite ? "Archived" : "Archive Resource"}
-            className={`h-11 w-11 rounded-full flex items-center justify-center backdrop-blur-3xl border transition-all duration-500 active:scale-90 ${isFavorite ? "bg-[#DF8142] border-[#DF8142] text-white shadow-lg shadow-[#DF8142]/40" : "bg-white/10 dark:bg-white/5 border-white/20 text-white hover:bg-[#DF8142] hover:border-[#DF8142]"}`}
+            className={`h-10 w-10 rounded-xl flex items-center justify-center backdrop-blur-md border transition-all duration-500 active:scale-90 shadow-lg ${
+              !isFavorite ? "opacity-0 group-hover:opacity-100 -translate-y-2 group-hover:translate-y-0 pointer-events-none group-hover:pointer-events-auto" : "opacity-100"
+            } ${
+              isFavorite
+                ? isLight
+                  ? "bg-[#DF8142] border-[#DF8142] text-white"
+                  : "bg-[#DF8142] border-[#DF8142] text-[#5A270F]"
+                : isLight
+                  ? "bg-white border-[#EEB38C] text-[#DF8142] hover:bg-[#EEB38C]/20"
+                  : "bg-[#5A270F]/80 border-[#92664A]/50 text-[#EEB38C] hover:bg-[#6C3B1C]"
+            }`}
           >
             <Heart
-              className={`h-4.5 w-4.5 ${isFavorite ? "fill-white" : ""}`}
+              className={`h-4.5 w-4.5 ${
+                isFavorite
+                  ? isLight ? "fill-white" : "fill-[#5A270F]"
+                   : ""
+              }`}
             />
           </button>
         </div>
 
         {/* Dynamic Rating Matrix */}
         {resource.averageRating !== undefined && resource.averageRating > 0 && (
-          <div className="absolute bottom-5 left-5 right-5 flex justify-between items-center pointer-events-none">
-            <div className="flex items-center gap-2 bg-white/90 dark:bg-black/90 p-2 rounded-xl border border-white/10 shadow-2xl backdrop-blur-2xl">
+          <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center pointer-events-none">
+            <div className={`flex items-center gap-1.5 p-2 rounded-xl border shadow-lg backdrop-blur-md ${isLight ? "bg-white/80 border-[#EEB38C]/50" : "bg-[#5A270F]/90 border-[#92664A]/50"}`}>
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={`h-2.5 w-2.5 ${i < Math.round(resource.averageRating || 0) ? "text-[#DF8142] fill-[#DF8142]" : "text-neutral-300 dark:text-neutral-700"}`}
+                  className={`h-2.5 w-2.5 ${i < Math.round(resource.averageRating || 0) ? isLight ? "text-[#DF8142] fill-[#DF8142]" : "text-[#EEB38C] fill-[#EEB38C]" : isLight ? "text-[#EEB38C]/50" : "text-[#92664A]/50"}`}
                 />
               ))}
               <span
@@ -222,52 +192,69 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
       </div>
 
       {/* ── Content Narrative Layer ── */}
-      <div className="px-3 pt-8 pb-4 flex-grow flex flex-col">
-        <div className="flex items-center gap-6 mb-6">
-          <div
-            className={`text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2.5 ${isLight ? "text-[#92664A]/60" : "text-[#EEB38C]/30"}`}
+      <div className="px-2 pt-6 pb-2 border-none flex-grow flex flex-col gap-2">
+        <Link to={detailPath} className="block group/title mb-2">
+          <h3
+            className={`text-xl sm:text-2xl font-black leading-tight tracking-tighter uppercase font-space-grotesk transition-all duration-700 relative ${
+              isLight ? "text-[#5A270F] group-hover/title:text-[#DF8142]" : "text-white group-hover/title:text-[#DF8142]"
+            }`}
           >
-            <Clock className="w-4 h-4 text-[#DF8142]/60" />
+            <span className="relative z-10">{title}</span>
+          </h3>
+        </Link>
+        
+        <div className="flex flex-wrap items-center gap-4 mb-6">
+          <div
+            className={`text-[9px] font-black uppercase tracking-[0.25em] flex items-center gap-2 ${
+              isLight ? "text-[#92664A]" : "text-[#EEB38C]/70"
+            }`}
+          >
+            <Clock className="w-3.5 h-3.5 text-[#DF8142]" />
             {new Date(uploadedAt).toLocaleDateString(undefined, {
               month: "short",
+              day: "numeric",
               year: "numeric",
             })}
           </div>
           <div
-            className={`text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2.5 ${isLight ? "text-[#92664A]/60" : "text-[#EEB38C]/30"}`}
+            className={`text-[9px] font-black uppercase tracking-[0.25em] flex items-center gap-2 ${
+              isLight ? "text-[#92664A]" : "text-[#EEB38C]/70"
+            }`}
           >
-            <Hash className="w-4 h-4 text-[#DF8142]/60" />
-            {keywords?.length || 0} SELECTIONS
+            <Hash className="w-3.5 h-3.5 text-[#DF8142]" />
+            {keywords?.slice(0, 1).join(", ") || "RESOURCE"}
+            {keywords && keywords.length > 1 && ` +${keywords.length - 1}`}
           </div>
         </div>
 
-        <Link to={detailPath} className="block group/title mb-10">
-          <h3
-            className={`text-2xl font-black leading-tight tracking-tighter uppercase font-space-grotesk transition-all duration-700 relative ${isLight ? "text-[#5A270F]" : "text-white"}`}
-          >
-            <span className="relative z-10">{title}</span>
-            <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-1 h-0 bg-[#DF8142] group-hover/title:h-full transition-all duration-500" />
-          </h3>
-        </Link>
-
         {/* Professional Metrics Cluster */}
         <div
-          className={`flex items-center justify-between mt-auto border-t pt-8 pb-6 ${isLight ? "border-neutral-100" : "border-white/5"}`}
+          className={`flex items-center justify-between mt-auto border-t pt-5 pb-4 ${
+            isLight ? "border-[#EEB38C]/40" : "border-[#6C3B1C]"
+          }`}
         >
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <div
-              className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-700 group-hover:bg-[#DF8142] group-hover:text-white ${isLight ? "bg-[#FAF8F4] text-[#5A270F] shadow-sm" : "bg-white/5 text-[#EEB38C]/80"}`}
+              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-700 ${
+                isLight
+                  ? "bg-[#EEB38C]/20 text-[#5A270F]"
+                  : "bg-[#6C3B1C] text-[#EEB38C]"
+              }`}
             >
-              <User className="h-6 w-6 stroke-[1.5px]" />
+              <User className="h-4 w-4 stroke-[2px]" />
             </div>
             <div className="flex flex-col">
               <span
-                className={`text-[8px] font-black uppercase tracking-[0.3em] mb-0.5 ${isLight ? "text-[#5A270F]/40" : "text-white/20"}`}
+                className={`text-[7px] font-black uppercase tracking-[0.3em] mb-0.5 ${
+                  isLight ? "text-[#92664A]" : "text-[#EEB38C]/50"
+                }`}
               >
                 Author
               </span>
               <span
-                className={`text-[14px] font-black uppercase italic tracking-tight whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px] ${isLight ? "text-[#5A270F]" : "text-[#EEB38C]"}`}
+                className={`text-[12px] font-black uppercase italic tracking-tight whitespace-nowrap overflow-hidden text-ellipsis max-w-[100px] sm:max-w-[120px] ${
+                  isLight ? "text-[#5A270F]" : "text-white"
+                }`}
               >
                 {author || uploaderName}
               </span>
@@ -276,37 +263,49 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
 
           <div className="flex flex-col items-end">
             <span
-              className={`text-[8px] font-black uppercase tracking-[0.3em] mb-0.5 ${isLight ? "text-[#5A270F]/40" : "text-white/20"}`}
+              className={`text-[7px] font-black uppercase tracking-[0.3em] mb-0.5 ${
+                isLight ? "text-[#92664A]" : "text-[#EEB38C]/50"
+              }`}
             >
               Downloads
             </span>
-            <div className="flex items-center gap-3">
+            <div className={`flex items-center gap-2 px-2.5 py-1 rounded-lg border ${isLight ? "bg-[#DF8142]/10 border-[#DF8142]/20" : "bg-[#DF8142]/20 border-[#DF8142]/30"}`}>
+              <Download className={`h-3 w-3 ${isLight ? "text-[#DF8142]" : "text-[#EEB38C]"}`} />
               <span
-                className={`text-xl font-black tabular-nums ${isLight ? "text-[#5A270F]" : "text-white"}`}
+                className={`text-sm font-black tabular-nums ${
+                  isLight ? "text-[#5A270F]" : "text-white"
+                }`}
               >
                 {(downloadCount || 0).toLocaleString()}
               </span>
-              <div className="w-8 h-8 rounded-full bg-[#DF8142]/10 flex items-center justify-center">
-                <Download className="h-4 w-4 text-[#DF8142]" />
-              </div>
             </div>
           </div>
         </div>
 
         {/* Sophisticated Action Terminal */}
-        <div className="flex gap-3 mt-4">
+        <div className="flex gap-2.5 mt-2">
           <Link
             to={detailPath}
-            className={`flex-1 flex items-center justify-center gap-3 h-14 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all duration-500 border ${isLight ? "bg-white border-neutral-200 text-[#5A270F] hover:bg-[#FAF8F4] hover:shadow-xl" : "bg-white/5 border-white/10 text-white hover:bg-white hover:text-[#5A270F]"}`}
+            className={`flex-1 flex items-center justify-center gap-2 h-12 rounded-xl text-[9px] font-black uppercase tracking-[0.3em] transition-all duration-500 border ${
+              isLight
+                ? "bg-white border-[#EEB38C] text-[#5A270F] hover:bg-[#EEB38C]/30 shadow-sm"
+                : "bg-[#6C3B1C] border-[#92664A] text-[#EEB38C] hover:bg-[#92664A] shadow-lg"
+            }`}
           >
-            <Eye className="h-5 w-5" /> View Resources
+            <Eye className="h-4 w-4" /> View
           </Link>
           <a
-            href={`${import.meta.env.VITE_API_URL}/resources/${id}/download?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
+            href={`${import.meta.env.VITE_API_URL}/resources/${id}/download?token=${encodeURIComponent(
+              localStorage.getItem("token") || ""
+            )}`}
             download
-            className={`flex-1 flex items-center justify-center gap-3 h-14 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all duration-700 shadow-xl shadow-[#DF8142]/10 ${isLight ? "bg-[#5A270F] text-white hover:bg-[#DF8142]" : "bg-[#DF8142] text-white hover:bg-[#5A270F]"}`}
+            className={`flex-1 flex items-center justify-center gap-2 h-12 rounded-xl text-[9px] font-black uppercase tracking-[0.3em] transition-all duration-700 shadow-lg ${
+              isLight
+                ? "bg-[#5A270F] border border-[#5A270F] text-white hover:bg-[#6C3B1C]"
+                : "bg-[#DF8142] border border-[#DF8142] text-[#5A270F] hover:bg-[#EEB38C]"
+            }`}
           >
-            <Package className="h-5 w-5" /> Download
+            <Download className="h-4 w-4" /> Download
           </a>
         </div>
       </div>
