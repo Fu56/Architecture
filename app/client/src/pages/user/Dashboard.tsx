@@ -276,7 +276,9 @@ const UserDashboard = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <ThemeToggle isScrolled={true} isHomePage={false} />
+                  {!location.pathname.includes("/blog/new") && (
+                    <ThemeToggle isScrolled={true} isHomePage={false} />
+                  )}
                 </div>
               </header>
 

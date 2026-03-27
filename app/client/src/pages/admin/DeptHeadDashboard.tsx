@@ -228,7 +228,7 @@ const DeptHeadDashboard = () => {
         className={`flex-1 min-w-0 transition-all duration-500 ${isSettingsPage ? "max-w-6xl w-full" : isSidebarVisible ? "lg:max-w-[calc(100%-280px)]" : "lg:max-w-full"}`}
       >
         <div className="bg-white dark:bg-card p-5 sm:p-8 rounded-2xl shadow-sm border border-[#92664A]/20 dark:border-white/10 min-h-[calc(100vh-140px)] relative overflow-hidden flex flex-col transition-colors duration-500">
-          <header className={`flex items-center justify-between mb-8 pb-6 border-b border-slate-50 dark:border-white/5 ${!isSidebarVisible && !isSettingsPage ? "pl-2" : ""}`}>
+                <header className={`flex items-center justify-between mb-8 pb-6 border-b border-[#D9D9C2]/40 dark:border-white/5 ${!isSidebarVisible && !isSettingsPage ? "pl-2" : ""}`}>
             <div className="flex items-center gap-6">
               {/* Toggle Grip for Hidden State */}
               {!isSidebarVisible && !isSettingsPage && (
@@ -241,13 +241,15 @@ const DeptHeadDashboard = () => {
                 </button>
               )}
               <div className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142]" />
-                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C]/60">
+                <div className="h-2 w-2 rounded-full bg-[#DF8142] animate-pulse" />
+                <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] drop-shadow-sm transition-colors">
                   Department Node
                 </p>
               </div>
             </div>
-            <ThemeToggle isScrolled={true} isHomePage={false} />
+            {!location.pathname.includes("/blog/new") && (
+              <ThemeToggle isScrolled={true} isHomePage={false} />
+            )}
           </header>
           <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
             <Outlet />

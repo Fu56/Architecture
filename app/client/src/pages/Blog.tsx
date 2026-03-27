@@ -80,24 +80,24 @@ const Blog = () => {
           </p>
 
           {/* Search Bar Nexus */}
-          <div className="max-w-xl mx-auto relative group animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-600">
-            <div className="absolute -inset-1 bg-gradient-to-r from-[#DF8142] to-[#92664A] rounded-2xl blur opacity-20 group-focus-within:opacity-40 transition duration-500" />
-            <div className="relative flex items-center bg-white dark:bg-card border border-[#92664A]/20 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm group-focus-within:border-[#DF8142] transition-all">
-              <Search className="ml-5 h-5 w-5 text-gray-500 dark:text-white/40" />
+          <div className="max-w-md mx-auto relative group animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-600">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#DF8142]/40 to-[#92664A]/40 rounded-xl blur opacity-20 group-focus-within:opacity-60 transition duration-500" />
+            <div className="relative flex items-center bg-[#FAF8F4] dark:bg-[#100704] border border-[#EEB38C]/50 dark:border-[#DF8142]/40 rounded-xl overflow-hidden shadow-lg group-focus-within:border-[#DF8142] transition-all focus-within:ring-4 focus-within:ring-[#DF8142]/10">
+              <Search className="ml-4 h-4 w-4 text-[#92664A] dark:text-[#EEB38C]/50 transition-colors group-focus-within:text-[#DF8142]" />
               <input
                 type="text"
-                placeholder="Search narratives, tags, or metadata..."
+                placeholder="Scan architectural narratives..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-4 pr-12 h-16 text-[#5A270F] dark:text-[#EEB38C] placeholder:text-gray-500 dark:text-white/40 font-bold outline-none"
+                className="w-full pl-3 pr-12 h-12 bg-transparent text-sm text-[#5A270F] dark:text-white placeholder:text-[#92664A]/60 dark:placeholder:text-[#EEB38C]/40 font-bold outline-none"
               />
-              <div className="absolute right-4">
+              <div className="absolute right-2">
                 <button
                   onClick={() => setFilterOpen(!filterOpen)}
-                  className={`p-2 rounded-xl transition-all duration-300 relative group ${
+                  className={`p-1.5 rounded-lg transition-all duration-300 relative group ${
                     filterOpen || sortOrder !== "newest"
-                      ? "bg-[#DF8142] text-white shadow-lg shadow-[#DF8142]/30"
-                      : "bg-[#EEB38C]/10 dark:bg-background text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EEB38C]/20 hover:text-[#5A270F]"
+                      ? "bg-[#DF8142] text-white shadow-md shadow-[#DF8142]/30"
+                      : "bg-[#EEB38C]/20 dark:bg-[#5A270F]/50 text-[#92664A] dark:text-[#EEB38C] hover:bg-[#EEB38C]/40 hover:text-[#5A270F] dark:hover:bg-[#DF8142] dark:hover:text-white"
                   }`}
                   aria-label="Filter blogs"
                 >
@@ -106,9 +106,9 @@ const Blog = () => {
 
                 {/* Filter Dropdown */}
                 {filterOpen && (
-                  <div className="absolute right-0 top-full mt-4 w-48 bg-white dark:bg-card rounded-2xl shadow-xl border border-[#92664A]/20 dark:border-white/10 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
-                    <div className="p-2 space-y-1">
-                      <p className="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40">
+                  <div className="absolute right-0 top-full mt-3 w-40 bg-white dark:bg-[#1A0B02] rounded-xl shadow-xl border border-[#EEB38C]/50 dark:border-[#5A270F]/50 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="p-1.5 space-y-0.5">
+                      <p className="px-3 py-1.5 text-[8px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/50">
                         Sort Order
                       </p>
                       <button
@@ -116,10 +116,10 @@ const Blog = () => {
                           setSortOrder("newest");
                           setFilterOpen(false);
                         }}
-                        className={`w-full text-left px-3 py-2 text-sm font-bold rounded-xl transition-colors ${
+                        className={`w-full text-left px-3 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-colors ${
                           sortOrder === "newest"
                             ? "bg-[#DF8142]/10 text-[#DF8142]"
-                            : "text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EEB38C]/5 dark:bg-background"
+                            : "text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EEB38C]/20 dark:hover:bg-[#5A270F]/50"
                         }`}
                       >
                         Newest First
@@ -129,10 +129,10 @@ const Blog = () => {
                           setSortOrder("oldest");
                           setFilterOpen(false);
                         }}
-                        className={`w-full text-left px-3 py-2 text-sm font-bold rounded-xl transition-colors ${
+                        className={`w-full text-left px-3 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-colors ${
                           sortOrder === "oldest"
                             ? "bg-[#DF8142]/10 text-[#DF8142]"
-                            : "text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EEB38C]/5 dark:bg-background"
+                            : "text-[#5A270F] dark:text-[#EEB38C] hover:bg-[#EEB38C]/20 dark:hover:bg-[#5A270F]/50"
                         }`}
                       >
                         Oldest First
@@ -172,83 +172,89 @@ const Blog = () => {
             </button>
           </div>
         ) : filteredBlogs.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredBlogs.map((blog) => (
               <article
                 key={blog.id}
-                className="group bg-white dark:bg-card rounded-[3rem] overflow-hidden border border-[#92664A]/20 dark:border-white/10 shadow-xl shadow-[#5A270F]/5 hover:shadow-2xl hover:shadow-[#DF8142]/10 hover:-translate-y-2 transition-all duration-500 flex flex-col h-full animate-in fade-in slide-in-from-bottom-8 duration-700"
+                className="group bg-white dark:bg-[#1A0B02] rounded-2xl overflow-hidden border border-[#EEB38C]/30 dark:border-[#5A270F]/50 shadow-lg shadow-[#5A270F]/5 dark:shadow-black/20 hover:shadow-xl hover:shadow-[#DF8142]/10 hover:-translate-y-1 transition-all duration-500 flex flex-col h-full relative"
               >
                 {/* Visual Header */}
-                <div className="relative aspect-[16/9] overflow-hidden bg-[#F5F5DC] shrink-0">
+                <div className="relative aspect-video overflow-hidden bg-[#FAF8F4] dark:bg-[#0F0602] shrink-0">
                   {blog.image_path ? (
                     <img
                       src={`${
-                        import.meta.env.VITE_API_URL
+                        import.meta.env.VITE_API_URL.replace("/api", "")
                       }/${blog.image_path.replace(/\\/g, "/")}`}
                       alt={blog.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#DF8142] to-[#92664A]">
-                      <Tag className="h-16 w-16 text-white/20" />
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#DF8142]/20 to-[#92664A]/20 dark:from-[#5A270F] dark:to-[#1A0B02]">
+                      <Tag className="h-10 w-10 text-[#5A270F]/20 dark:text-[#EEB38C]/20" />
                     </div>
                   )}
-                  <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#5A270F]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
 
-                  <div className="absolute top-6 right-6 z-10 flex flex-col gap-2 scale-90 group-hover:scale-100 transition-transform duration-500">
-                    {blog.tags.slice(0, 1).map((tag) => (
+                  <div className="absolute bottom-3 left-3 right-3 flex flex-wrap gap-1.5 z-10">
+                    {blog.tags.map((tag) => (
                       <div
                         key={tag}
-                        className="px-4 py-2 bg-white/90 dark:bg-card/90 backdrop-blur-md rounded-xl text-[9px] font-black uppercase tracking-widest text-[#DF8142] shadow-xl"
+                        className="px-2 py-1 bg-[#FAF8F4]/90 dark:bg-[#1A0B02]/90 backdrop-blur-md rounded-md text-[8px] font-black uppercase tracking-widest text-[#DF8142] dark:text-[#EEB38C] shadow-sm border border-white/20 dark:border-[#DF8142]/20"
                       >
                         {tag}
                       </div>
                     ))}
                   </div>
+                  
+                  {blog.published && (
+                     <div className="absolute top-3 right-3 px-2 py-1 bg-emerald-500/90 backdrop-blur-md rounded-md text-[8px] font-black uppercase tracking-widest text-white shadow-sm border border-emerald-400">
+                        Published
+                     </div>
+                  )}
                 </div>
 
                 {/* Content Matrix */}
-                <div className="p-10 flex-grow flex flex-col">
-                  <div className="flex items-center gap-2 mb-6 text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-white/30">
-                    <Sparkles className="h-3.5 w-3.5 text-[#DF8142]" />{" "}
-                    Community Log
+                <div className="p-5 flex-grow flex flex-col">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/60">
+                      <Sparkles className="h-3 w-3 text-[#DF8142]" />{" "}
+                      Narrative
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[8px] text-[#DF8142] font-black uppercase tracking-widest bg-[#DF8142]/10 dark:bg-[#DF8142]/5 px-2 py-1 rounded">
+                      <Clock className="h-2.5 w-2.5" />
+                      {Math.max(1, Math.ceil(blog.content.length / 1000))} min
+                    </div>
                   </div>
 
-                  <h2 className="text-2xl font-black text-[#5A270F] dark:text-[#EEB38C] mb-6 group-hover:text-[#DF8142] transition-colors leading-[1.2] tracking-tight">
+                  <h2 className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C] mb-2 group-hover:text-[#DF8142] transition-colors leading-[1.3] tracking-tight">
                     <Link to={`/blog/${blog.id}`} className="line-clamp-2">
                       {blog.title}
                     </Link>
                   </h2>
 
-                  <p className="text-[#5A270F] dark:text-[#EEB38C] font-medium leading-relaxed mb-8 line-clamp-3">
-                    {blog.content.replace(/<[^>]*>?/gm, "").substring(0, 180)}
-                    ...
+                  <p className="text-[11px] text-[#6C3B1C] dark:text-white/60 font-medium leading-relaxed mb-6 line-clamp-3">
+                    {blog.content.replace(/<[^>]*>?/gm, "")}
                   </p>
 
-                  <div className="pt-8 border-t border-slate-50 flex items-center justify-between mt-auto">
-                    <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 rounded-2xl bg-[#EEB38C]/10 dark:bg-background flex items-center justify-center border border-[#92664A]/20 dark:border-white/10 text-[#5A270F]/40 dark:text-white/40 group-hover:bg-[#DF8142] group-hover:text-white transition-all duration-300 shadow-sm">
-                        <User className="h-5 w-5" />
+                  {/* Footer Meta */}
+                  <div className="pt-4 mt-auto border-t border-[#EEB38C]/30 dark:border-[#5A270F]/50 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-full bg-[#DF8142]/10 dark:bg-[#6C3B1C]/30 flex items-center justify-center border border-[#DF8142]/20 dark:border-[#DF8142]/10 text-[#DF8142] shadow-sm">
+                        <User className="h-3.5 w-3.5" />
                       </div>
                       <div className="overflow-hidden">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-white/40 leading-none mb-1">
-                          Architect
+                        <p className="text-[8px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40 leading-none mb-1">
+                          Author
                         </p>
-                        <p className="text-sm font-black text-[#6C3B1C] dark:text-[#EEB38C]/80 truncate leading-none">
+                        <p className="text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] truncate leading-none">
                           {blog.author.firstName} {blog.author.lastName}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex flex-col items-end gap-1">
-                      <div className="flex items-center gap-1.5 text-[9px] text-gray-400 dark:text-white/30 font-black uppercase tracking-[0.15em]">
-                        <Calendar className="h-3 w-3" />
-                        {new Date(blog.created_at).toLocaleDateString()}
-                      </div>
-                      <div className="flex items-center gap-1.5 text-[9px] text-[#DF8142] font-black uppercase tracking-widest">
-                        <Clock className="h-3 w-3" />
-                        {Math.ceil(blog.content.length / 1000)} min read
-                      </div>
+                    <div className="flex items-center gap-1.5 text-[9px] text-[#92664A] dark:text-[#EEB38C]/60 font-black uppercase tracking-[0.1em]">
+                      <Calendar className="h-3 w-3" />
+                      {new Date(blog.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                     </div>
                   </div>
                 </div>

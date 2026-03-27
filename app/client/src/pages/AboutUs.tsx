@@ -309,7 +309,7 @@ const AboutUs = () => {
 
           <p className="text-[13px] text-[#92664A] dark:text-[#EEB38C]/80 font-bold leading-relaxed uppercase tracking-tight max-w-3xl mx-auto border-y border-[#EEB38C]/40 dark:border-[#DF8142]/20 py-8">
             WE ARE BUILDING A CONTENT DELIVERY NETWORK OPTIMIZED FOR HEAVY
-            ARCHITECTURAL FORMATS—RFA, SKP, DWG, AND HI-RES PDFS. AUTOMATED BIM
+            ARCHITECTURAL FORMATS—RFA, SKP, DWG, AND HI-RES PDFs. AUTOMATED BIM
             VALIDATION AND AI-TAGGING NODES ARE ACTIVE IN ROADMAP STAGE.
           </p>
 

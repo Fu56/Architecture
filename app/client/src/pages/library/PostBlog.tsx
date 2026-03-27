@@ -50,7 +50,7 @@ const PostBlog = () => {
   const FieldError = ({ message }: { message?: string }) => {
     if (!message) return null;
     return (
-      <p className="text-[11px] font-bold text-rose-600 uppercase tracking-wide mt-2 ml-1 animate-in fade-in slide-in-from-top-1">
+      <p className="text-[10px] font-black text-rose-500 uppercase tracking-widest mt-1.5 ml-1 animate-in fade-in slide-in-from-top-1">
         {message}
       </p>
     );
@@ -134,262 +134,194 @@ const PostBlog = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] dark:bg-[#1A0B02] transition-colors duration-500 relative pb-10">
-      <div className="absolute inset-0 opacity-[0.02] pointer-events-none blueprint-grid-dark" />
-
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 max-w-4xl relative z-10">
-        {/* ── Page Header ─────────────────────────────────── */}
-        <div className="mb-6 text-center space-y-2">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#DF8142]/10 dark:bg-[#5A270F]/50 border border-[#DF8142]/20 rounded-full text-[8p] font-black uppercase tracking-[0.25em] text-[#DF8142] animate-in fade-in slide-in-from-top-2 duration-700 shadow-sm">
-            <Sparkles className="h-3 w-3" />
-            Narrative Nexus
+    <div className="min-h-screen bg-[#FAF8F4] dark:bg-[#0F0602] transition-colors duration-500 pb-24">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {/* ── Page Header ── */}
+        <div className="mb-6">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#EEB38C]/20 dark:bg-[#1A0B02] border border-[#DF8142]/30 dark:border-[#5A270F] rounded-lg text-[8px] font-black uppercase tracking-widest text-[#DF8142] mb-3">
+            <Sparkles className="h-2.5 w-2.5" />
+            Control Nexus
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tighter text-[#5A270F] dark:text-[#EEB38C] italic uppercase leading-none drop-shadow-sm">
-            Create New <span className="not-italic text-[#DF8142] dark:text-[#DF8142]">Story</span>
+          <h1 className="text-3xl font-black text-[#5A270F] dark:text-white uppercase tracking-tight leading-none mb-1">
+            Initiate <span className="text-[#DF8142]">Blog</span>
           </h1>
+          <p className="text-[9px] font-bold text-[#92664A] dark:text-[#EEB38C]/50 uppercase tracking-[0.2em]">
+            Transmit Narrative to the Architectural Network
+          </p>
         </div>
-        <p className="text-[10px] text-[#92664A] dark:text-[#EEB38C]/50 max-w-sm mx-auto font-bold uppercase tracking-[0.3em] text-center mb-8">
-          Share your architectural insights with the community
-        </p>
 
-        {/* ── Form ────────────────────────────────────────── */}
-        <form onSubmit={handleSubmit} className="mt-8 md:mt-10">
-          <div className="grid lg:grid-cols-4 gap-6 items-start">
-            {/* ── LEFT: Main Content ── */}
-            <div className="lg:col-span-3">
-              <div className="bg-white dark:bg-[#2C1105] p-5 space-y-5 border border-[#EEB38C]/40 dark:border-[#DF8142]/20 shadow-[#5A270F]/5 dark:shadow-black/20 rounded-2xl relative overflow-hidden transition-colors">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+        {/* ── Form Assembly ── */}
+        <form onSubmit={handleSubmit} className="grid md:grid-cols-12 gap-5">
+          {/* Main Information Panel */}
+          <div className="col-span-12 md:col-span-8 space-y-5">
+            <div className="bg-white dark:bg-[#1A0B02] p-5 border border-[#EEB38C]/40 dark:border-[#5A270F]/50 shadow-md rounded-2xl relative">
+              <div className="space-y-4">
+                {/* Title Input */}
+                <div className="space-y-1.5">
+                  <label className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.15em] text-[#6C3B1C] dark:text-[#EEB38C]/80">
+                    <span className="w-1 h-1 bg-[#DF8142] rounded-full" />
+                    Transmission Title
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    placeholder="Enter Title..."
+                    className={`w-full px-3 py-2 bg-[#FAF8F4] dark:bg-[#0F0602] border border-[#EEB38C]/50 dark:border-[#5A270F] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DF8142]/20 focus:border-[#DF8142] transition-colors text-xs font-bold text-[#5A270F] dark:text-white placeholder:text-[#92664A]/50 dark:placeholder:text-[#EEB38C]/30 ${errors.title && "!border-rose-500 bg-rose-50/50 dark:bg-rose-500/10"}`}
+                  />
+                  <FieldError message={errors.title} />
+                </div>
 
-                <div className="relative z-10 space-y-5">
-                  {/* Story Title */}
-                  <div className="space-y-1.5">
-                    <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-[#EEB38C]">
-                      <span className="w-1.5 h-1.5 bg-[#DF8142] rounded-full block flex-shrink-0" />
-                      Story Title
-                    </label>
-                    <input
-                      type="text"
-                      name="title"
-                      value={formData.title}
-                      onChange={handleInputChange}
-                      placeholder="Enter a compelling title..."
-                      className={`w-full px-4 py-2.5 bg-[#FAF8F4] dark:bg-[#100704] border border-[#EEB38C]/50 dark:border-white/10 rounded-xl
-                        focus:outline-none focus:ring-2 focus:ring-[#DF8142]/20 focus:border-[#DF8142]
-                        transition-all duration-300
-                        text-sm font-black uppercase tracking-tight
-                        text-[#5A270F] dark:text-white
-                        placeholder:text-[#92664A]/40 dark:placeholder-white/20
-                        ${
-                          errors.title
-                            ? "border-rose-500 bg-rose-50/10 dark:bg-rose-900/10"
-                            : "hover:border-[#DF8142]/50"
-                        }`}
-                    />
-                    <FieldError message={errors.title} />
-                  </div>
-
-                  {/* Narrative Content */}
-                  <div className="space-y-1.5">
-                    <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#5A270F] dark:text-[#EEB38C]">
-                      <span className="w-1.5 h-1.5 bg-[#DF8142] rounded-full block flex-shrink-0" />
-                      Narrative Content
-                    </label>
-                    <textarea
-                      name="content"
-                      value={formData.content}
-                      onChange={handleInputChange}
-                      placeholder="Share your architectural wisdom here (Markdown supported)..."
-                      className={`w-full px-4 py-3.5 bg-[#FAF8F4] dark:bg-[#100704] border border-[#EEB38C]/50 dark:border-white/10 rounded-xl
-                        focus:outline-none focus:ring-2 focus:ring-[#DF8142]/20 focus:border-[#DF8142]
-                        transition-all duration-300
-                        text-[13px] leading-relaxed font-medium
-                        text-[#5A270F] dark:text-white/90
-                        placeholder:text-[#92664A]/40 dark:placeholder-white/20
-                        resize-y min-h-[300px] md:min-h-[400px] custom-scrollbar
-                        ${
-                          errors.content
-                            ? "border-rose-500 bg-rose-50/10 dark:bg-rose-900/10"
-                            : "hover:border-[#DF8142]/50"
-                        }`}
-                    />
-                    <FieldError message={errors.content} />
-                  </div>
+                {/* Content Input */}
+                <div className="space-y-1.5">
+                  <label className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.15em] text-[#6C3B1C] dark:text-[#EEB38C]/80">
+                    <span className="w-1 h-1 bg-[#DF8142] rounded-full" />
+                    Narrative Content
+                  </label>
+                  <textarea
+                    name="content"
+                    value={formData.content}
+                    onChange={handleInputChange}
+                    placeholder="Markdown supported..."
+                    className={`w-full px-3 py-2 bg-[#FAF8F4] dark:bg-[#0F0602] border border-[#EEB38C]/50 dark:border-[#5A270F] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DF8142]/20 focus:border-[#DF8142] transition-colors text-xs font-medium leading-relaxed text-[#5A270F] dark:text-[#EEB38C]/90 placeholder:text-[#92664A]/50 dark:placeholder:text-[#EEB38C]/30 min-h-[220px] custom-scrollbar ${errors.content && "!border-rose-500 bg-rose-50/50 dark:bg-rose-500/10"}`}
+                  />
+                  <FieldError message={errors.content} />
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* ── RIGHT: Sidebar ── */}
-            <div className="space-y-4 lg:sticky lg:top-8">
-              {/* Cover Image */}
-              <div className="bg-white dark:bg-[#2C1105] p-4 space-y-3 border border-[#EEB38C]/40 dark:border-[#DF8142]/20 rounded-2xl shadow-[#5A270F]/5 dark:shadow-black/20 transition-colors">
-                <label className="block text-[9px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] italic">
-                  Featured Cover
-                </label>
-                <div
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`group relative aspect-video rounded-xl border-2 border-dashed cursor-pointer overflow-hidden flex flex-col items-center justify-center transition-all duration-300
-                    ${
-                      imagePreview
-                        ? "border-[#DF8142]"
-                        : errors.image
-                          ? "border-rose-400 bg-rose-50/10 dark:bg-rose-900/10"
-                          : "border-[#EEB38C]/50 dark:border-[#DF8142]/30 hover:border-[#DF8142] bg-[#FAF8F4] dark:bg-[#100704]"
-                    }`}
-                >
-                  {imagePreview ? (
-                    <>
-                      <img
-                        src={imagePreview}
-                        alt="Story cover preview"
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-[#5A270F]/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <p className="text-white font-black text-[9px] uppercase tracking-widest bg-[#DF8142] px-3 py-1.5 rounded-full shadow-lg">
-                          Change Image
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        title="Remove Image"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setImage(null);
-                          setImagePreview(null);
-                        }}
-                        className="absolute top-2 right-2 p-1.5 bg-white/90 dark:bg-black/80 text-rose-600 rounded-full hover:scale-110 transition-all shadow-md"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </>
-                  ) : (
-                    <div className="text-center p-4 space-y-2">
-                      <div className="w-10 h-10 rounded-full bg-[#DF8142]/10 dark:bg-[#6C3B1C]/50 flex items-center justify-center mx-auto text-[#DF8142] group-hover:scale-110 transition-transform duration-300">
-                        <UploadCloud className="h-5 w-5" />
-                      </div>
-                      <div className="space-y-1 mt-2">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-white">
-                          Click to Upload
-                        </p>
-                        <p className="text-[8px] font-semibold uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/50">
-                          SVG · PNG · JPG · GIF
-                        </p>
-                      </div>
+          {/* Configuration Sidebar */}
+          <div className="col-span-12 md:col-span-4 space-y-5 flex flex-col">
+            {/* Image Upload Compact */}
+            <div className="bg-white dark:bg-[#1A0B02] p-4 border border-[#EEB38C]/40 dark:border-[#5A270F]/50 shadow-md rounded-2xl">
+              <label className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.15em] text-[#6C3B1C] dark:text-[#EEB38C]/80 mb-2">
+                <span className="w-1 h-1 bg-[#DF8142] rounded-full" />
+                Featured Hero
+              </label>
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className={`relative group aspect-video rounded-xl border border-dashed flex items-center justify-center cursor-pointer overflow-hidden transition-all bg-[#FAF8F4] dark:bg-[#0F0602] ${imagePreview ? "border-[#DF8142]" : errors.image ? "border-rose-500 bg-rose-50/50" : "border-[#DF8142]/40 dark:border-[#5A270F] hover:border-[#DF8142]"}`}
+              >
+                {imagePreview ? (
+                  <>
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-full h-full object-cover group-hover:blur-sm transition-all"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                      <span className="text-[8px] font-black uppercase text-white tracking-widest bg-[#DF8142] px-2 py-1 rounded">
+                        Swap
+                      </span>
                     </div>
-                  )}
+                    <button
+                      type="button"
+                      title="Remove Image"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setImage(null);
+                        setImagePreview(null);
+                      }}
+                      className="absolute top-1 right-1 bg-rose-500 text-white rounded p-1 hover:bg-rose-600 shadow"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center">
+                    <UploadCloud className="h-5 w-5 text-[#DF8142] mb-1 group-hover:-translate-y-1 transition-transform" />
+                    <span className="text-[8px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/60">
+                      Upload Source
+                    </span>
+                  </div>
+                )}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  title="Upload Featured Image"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </div>
+              <FieldError message={errors.image} />
+            </div>
+
+            {/* Core Settings Compact */}
+            <div className="bg-white dark:bg-[#1A0B02] p-4 border border-[#EEB38C]/40 dark:border-[#5A270F]/50 shadow-md rounded-2xl flex flex-col flex-grow">
+              {/* Tags Input */}
+              <div className="space-y-1.5 mb-5">
+                <label className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.15em] text-[#6C3B1C] dark:text-[#EEB38C]/80">
+                  <span className="w-1 h-1 bg-[#DF8142] rounded-full" />
+                  Classification Tags
+                </label>
+                <div className="relative">
+                  <div className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#DF8142]">
+                    <PlusCircle className="h-3 w-3" />
+                  </div>
                   <input
-                    id="featured-image"
-                    type="file"
-                    title="Featured Image"
-                    ref={fileInputRef}
-                    onChange={handleImageChange}
-                    accept="image/*"
-                    className="hidden"
+                    type="text"
+                    name="tags"
+                    value={formData.tags}
+                    onChange={handleInputChange}
+                    placeholder="architecture, guide..."
+                    className={`w-full pl-7 pr-2 py-2 bg-[#FAF8F4] dark:bg-[#0F0602] border border-[#EEB38C]/50 dark:border-[#5A270F] rounded-lg focus:outline-none focus:border-[#DF8142] text-[10px] font-bold text-[#5A270F] dark:text-white uppercase tracking-wider placeholder:text-[#92664A]/50 dark:placeholder:text-[#EEB38C]/30 ${errors.tags && "!border-rose-500"}`}
                   />
                 </div>
-                <FieldError message={errors.image} />
+                <FieldError message={errors.tags} />
               </div>
 
-              {/* Tags & Settings */}
-              <div className="bg-white dark:bg-[#2C1105] p-4 space-y-4 border border-[#EEB38C]/40 dark:border-[#DF8142]/20 rounded-2xl shadow-[#5A270F]/5 dark:shadow-black/20 transition-colors">
-                {/* Tags Input */}
-                <div className="space-y-1.5">
-                  <label className="block text-[9px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] italic">
-                    Tags
-                  </label>
-                  <div className="relative">
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-md bg-[#DF8142]/10 dark:bg-[#100704] flex items-center justify-center text-[#DF8142]">
-                      <PlusCircle className="h-3 w-3" />
-                    </div>
-                    <input
-                      type="text"
-                      name="tags"
-                      value={formData.tags}
-                      onChange={handleInputChange}
-                      placeholder="architecture, design..."
-                      className={`w-full pl-10 pr-3 py-2 bg-[#FAF8F4] dark:bg-[#100704] border border-[#EEB38C]/50 dark:border-white/10 rounded-xl
-                        focus:outline-none focus:ring-2 focus:ring-[#DF8142]/20 focus:border-[#DF8142]
-                        transition-all duration-300
-                        font-black uppercase tracking-widest text-[9px]
-                        text-[#5A270F] dark:text-white
-                        placeholder:text-[#92664A]/40 dark:placeholder-white/20
-                        ${
-                          errors.tags
-                            ? "border-rose-500 bg-rose-50/10 dark:bg-rose-900/10"
-                            : "hover:border-[#DF8142]/50"
-                        }`}
-                    />
-                  </div>
-                  <FieldError message={errors.tags} />
-                </div>
-
-                {/* Publish Toggle */}
-                <div className="flex items-center gap-2 p-3 bg-[#EEB38C]/10 dark:bg-[#100704] rounded-xl border border-[#EEB38C]/40 dark:border-[#DF8142]/20 hover:border-[#DF8142]/40 transition-all duration-300">
-                  <div className="relative flex-shrink-0">
-                    <input
-                      type="checkbox"
-                      name="published"
-                      checked={formData.published}
-                      onChange={handleInputChange}
-                      id="published"
-                      className="peer h-4 w-4 cursor-pointer appearance-none rounded border border-[#EEB38C]/60 dark:border-white/20 bg-white dark:bg-black/60 transition-all checked:border-[#DF8142] checked:bg-[#DF8142] hover:border-[#DF8142] focus:outline-none focus:ring-2 focus:ring-[#DF8142]/20"
-                    />
-                    <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="h-2.5 w-2.5"
-                      >
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    </div>
-                  </div>
-                  <label
-                    htmlFor="published"
-                    className="font-black text-[9px] uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C] cursor-pointer select-none italic"
-                  >
-                    Publish Immediately
-                  </label>
-                </div>
-
-                {/* Desktop Submit */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="hidden lg:flex w-full py-3 items-center justify-center gap-2 bg-[#5A270F] dark:bg-[#DF8142] text-white rounded-xl text-[9px] font-black uppercase tracking-[0.25em] shadow-lg shadow-[#5A270F]/20 dark:shadow-[#DF8142]/10 hover:bg-[#2A1205] dark:hover:bg-[#c4703a] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-50"
-                >
-                  {loading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <>
-                      <Save className="h-3 w-3" />
-                      Publish Story
-                    </>
-                  )}
-                </button>
+              {/* Publish Toggle */}
+              <div className="flex items-center gap-2 p-2.5 bg-[#EEB38C]/20 dark:bg-[#0F0602] rounded-lg border border-[#EEB38C]/40 dark:border-[#5A270F] mb-auto">
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="published"
+                    title="Publish log immediately on save"
+                    checked={formData.published}
+                    onChange={handleInputChange}
+                    className="sr-only peer"
+                  />
+                  <div className="w-7 h-4 bg-[#92664A]/30 dark:bg-[#2C1105] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-[#DF8142]" />
+                  <span className="ml-2 text-[9px] font-black uppercase tracking-[0.1em] text-[#5A270F] dark:text-[#EEB38C]">
+                    Live Transmission
+                  </span>
+                </label>
               </div>
+
+              {/* Desktop Submit */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="hidden md:flex w-full mt-5 py-2.5 items-center justify-center gap-2 bg-[#5A270F] dark:bg-[#DF8142] text-white rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-[#2A1205] dark:hover:bg-[#c4703a] transition-all shadow-md disabled:opacity-50"
+              >
+                {loading ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                ) : (
+                  <>
+                    <Save className="h-3 w-3" /> Commit Log
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </form>
       </div>
 
-      {/* Mobile Sticky Submit */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 p-3 bg-white/95 dark:bg-[#0F0602]/95 backdrop-blur-2xl border-t border-[#EEB38C]/40 dark:border-[#DF8142]/20 z-50 shadow-[0_-10px_20px_rgba(90,39,15,0.05)]">
+      {/* Mobile Sticky Action */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 p-3 bg-white/95 dark:bg-[#0F0602]/95 backdrop-blur-xl border-t border-[#EEB38C]/30 dark:border-[#5A270F]/50 z-50">
         <button
-          onClick={(e) => handleSubmit(e as any)}
+          onClick={handleSubmit}
           disabled={loading}
-          className="w-full py-3 flex items-center justify-center gap-2 bg-[#5A270F] dark:bg-[#DF8142] text-white rounded-xl text-[11px] font-black uppercase tracking-[0.2em] shadow-lg active:scale-95 disabled:opacity-50 transition-all duration-300"
+          className="w-full py-3 flex items-center justify-center gap-2 bg-[#5A270F] dark:bg-[#DF8142] text-white rounded-lg text-[10px] font-black uppercase tracking-widest shadow-lg disabled:opacity-50"
         >
           {loading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-3 w-3 animate-spin" />
           ) : (
             <>
-              <Save className="h-4 w-4" />
-              Save Story
+              <Save className="h-3 w-3" /> Commit Log
             </>
           )}
         </button>

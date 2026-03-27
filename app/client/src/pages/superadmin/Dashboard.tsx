@@ -184,7 +184,9 @@ const SuperAdminDashboard = () => {
                 </p>
               </div>
             </div>
-            <ThemeToggle isScrolled={true} isHomePage={false} />
+            {!location.pathname.includes("/blog/new") && (
+              <ThemeToggle isScrolled={true} isHomePage={false} />
+            )}
           </header>
           <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
             <Outlet />
