@@ -17,7 +17,8 @@ export const getChannels = async (req: Request, res: Response) => {
     let where: any = {
       OR: [
         { isPublic: true },
-        { subscribers: { some: { id: userId } } }
+        { subscribers: { some: { id: userId } } },
+        { members: { some: { id: userId } } }
       ]
     };
 
@@ -26,8 +27,19 @@ export const getChannels = async (req: Request, res: Response) => {
        (where.OR as any[]).push({ batch: userBatch });
     }
 
-    // Staff/Admins see all channels
-    if (["admin", "departmenthead", "superadmin", "faculty"].includes(role)) {
+    // Staff/Admins see all public and batch channels, but private channels only if they are members
+    if (["admin", "departmenthead", "faculty"].includes(role)) {
+       where = {
+         OR: [
+           { isPublic: true },
+           { batch: { not: null } },
+           { members: { some: { id: userId } } }
+         ]
+       };
+    }
+
+    // Superadmins see everything
+    if (role === "superadmin") {
        where = {};
     }
 
@@ -37,6 +49,9 @@ export const getChannels = async (req: Request, res: Response) => {
         designStage: true,
         subscribers: {
           select: { id: true }
+        },
+        members: {
+          select: { id: true, first_name: true, last_name: true, image: true }
         },
         _count: {
           select: { messages: true }
@@ -58,9 +73,19 @@ export const getChannels = async (req: Request, res: Response) => {
       const readMessages = c.messages.filter(m => m.readBy.length > 0).length;
       const unreadCount = totalMessages - readMessages;
 
+      // For private channels, use the other participant's name
+      let displayName = c.name || `Batch ${c.batch}`;
+      if (c.isPrivate) {
+        const otherMember = c.members.find(m => m.id !== userId);
+        if (otherMember) {
+          displayName = `${otherMember.first_name} ${otherMember.last_name}`;
+        }
+      }
+
       return {
         ...c,
-        messages: undefined, // Clear messages to keep payload compact
+        name: displayName,
+        messages: undefined,
         unreadCount,
         isSubscribed: c.subscribers.some(s => s.id === userId)
       };
@@ -136,6 +161,63 @@ export const markAllRead = async (req: Request, res: Response) => {
     res.json({ message: "Global Nexus synchronization complete." });
   } catch (error) {
     res.status(500).json({ message: "Global synchronization sequence failed." });
+  }
+};
+
+export const getOrCreatePrivateChannel = async (req: Request, res: Response) => {
+  try {
+    const { targetUserId } = req.body;
+    const userId = (req as any).user.id;
+
+    if (userId === targetUserId) {
+        return res.status(400).json({ message: "Internal feedback loop restricted." });
+    }
+
+    // Check if private channel already exists
+    let channel = await prisma.chatChannel.findFirst({
+      where: {
+        isPrivate: true,
+        AND: [
+          { members: { some: { id: userId } } },
+          { members: { some: { id: targetUserId } } }
+        ]
+      },
+      include: {
+        members: {
+            select: { id: true, first_name: true, last_name: true, image: true }
+        }
+      }
+    });
+
+    if (!channel) {
+      channel = await prisma.chatChannel.create({
+        data: {
+          isPrivate: true,
+          isPublic: false,
+          members: {
+            connect: [{ id: userId }, { id: targetUserId }]
+          }
+        },
+        include: {
+          members: {
+            select: { id: true, first_name: true, last_name: true, image: true }
+          }
+        }
+      });
+    }
+
+    // Format for client
+    const otherMember = channel.members.find(m => m.id !== userId);
+    const formatted = {
+        ...channel,
+        name: otherMember ? `${otherMember.first_name} ${otherMember.last_name}` : "Private Shard",
+        unreadCount: 0
+    };
+
+    res.json(formatted);
+  } catch (error) {
+    console.error("Private Uplink Failure:", error);
+    res.status(500).json({ message: "Failed to establish private frequency." });
   }
 };
 

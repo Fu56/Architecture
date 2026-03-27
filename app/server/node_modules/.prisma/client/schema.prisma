@@ -49,6 +49,7 @@ model User {
   systemLogs          SystemLog[]
   role                Role?              @relation(fields: [roleId], references: [id])
   subscribedChannels  ChatChannel[]      @relation("ChannelSubscribers")
+  memberChannels      ChatChannel[]      @relation("ChannelMembers")
   secondaryRoles      Role[]             @relation("UserSecondaryRoles")
   chatMessageReads    ChatMessageRead[]
 
@@ -288,9 +289,11 @@ model ChatChannel {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   isPublic      Boolean       @default(false)
+  isPrivate     Boolean       @default(false)
   designStage   Design_stage? @relation(fields: [designStageId], references: [id])
   messages      ChatMessage[]
   subscribers   User[]        @relation("ChannelSubscribers")
+  members       User[]        @relation("ChannelMembers")
 }
 
 model ChatMessage {

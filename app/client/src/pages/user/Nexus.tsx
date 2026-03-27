@@ -22,6 +22,7 @@ import {
   PlayCircle,
   Download,
   CheckCheck,
+  MessageSquare,
 } from "lucide-react";
 import React from "react";
 import { useSession } from "../../lib/auth-client";
@@ -33,6 +34,7 @@ interface Channel {
   name: string;
   batch?: number;
   isPublic: boolean;
+  isPrivate: boolean;
   isSubscribed?: boolean;
   unreadCount?: number;
   updatedAt: string;
@@ -190,6 +192,21 @@ const Nexus = () => {
       toast.success("Global Nexus synchronization successful.");
     } catch {
       toast.error("Global synchronization failure.");
+    }
+  };
+
+  const startPrivateChat = async (targetUserId: string) => {
+    try {
+      const { data } = await api.post("/chat/channels/private", { targetUserId });
+      setChannels(prev => {
+        if (prev.find(c => c.id === data.id)) return prev;
+        return [data, ...prev];
+      });
+      setActiveChannel(data);
+      setShowInviteModal(false);
+      toast.success("Private uplink established.");
+    } catch {
+      toast.error("Failed to establish secure frequency.");
     }
   };
 
@@ -577,7 +594,7 @@ const Nexus = () => {
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-5xl">
-              {channels.slice(0, 8).map((c) => (
+              {channels.map((c) => (
                 <button
                   key={c.id}
                   onClick={() => setActiveChannel(c)}
@@ -586,7 +603,9 @@ const Nexus = () => {
                   className="group p-4 rounded-2xl gap-3 transition-all duration-500 hover:scale-[1.03] active:scale-95 bg-white border-[#92664A]/30 shadow-sm hover:shadow-2xl hover:border-[#DF8142]/30 dark:bg-[#6C3B1C]/70 dark:border-[#92664A]/20 dark:hover:bg-[#6C3B1C]/80 dark:hover:border-[#DF8142]/20"
                 >
                   <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] text-white flex items-center justify-center shadow-lg group-hover:rotate-[15deg] transition-transform">
-                    {c.isPublic ? (
+                    {c.isPrivate ? (
+                        <Users className="h-5 w-5" />
+                    ) : c.isPublic ? (
                       <Globe className="h-5 w-5" />
                     ) : (
                       <Lock className="h-5 w-5" />
@@ -684,7 +703,7 @@ const Nexus = () => {
                   return (
                     <div
                       key={m.id}
-                      className={`flex flex-col ${isSelf ? "items-end" : "items-start"} animate-in slide-in-from-bottom-2 duration-500`}
+                      className={`group flex flex-col ${isSelf ? "items-end" : "items-start"} animate-in slide-in-from-bottom-2 duration-500`}
                     >
                       <div className="flex items-center gap-2 mb-1 px-1 text-[9px] font-black uppercase tracking-wider">
                         <span
@@ -696,6 +715,15 @@ const Nexus = () => {
                         >
                           {m.user?.first_name} {m.user?.last_name}
                         </span>
+                        {!isSelf && (
+                          <button
+                            onClick={() => startPrivateChat(m.userId)}
+                            title={`Establish Secret Handshake with ${m.user?.first_name}`}
+                            className="p-1 rounded-md opacity-0 group-hover:opacity-100 transition-all hover:bg-[#EEB38C]/20 text-[#DF8142]"
+                          >
+                            <MessageSquare className="h-3 w-3" />
+                          </button>
+                        )}
                       </div>
                       <div
                         className={`max-w-[85%] px-3.5 py-2 rounded-xl text-[11px] font-medium leading-relaxed border transition-all ${
@@ -805,6 +833,7 @@ const Nexus = () => {
                           {new Date(m.createdAt).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
+                            hour12: false,
                           })}
                         </div>
                       </div>
@@ -1061,21 +1090,25 @@ const Nexus = () => {
                           </p>
                         </div>
                       </div>
-                      <button
-                        disabled={invitingId === u.id}
-                        onClick={() => handleInviteUser(u.id)}
-                        title={`Connect to ${u.first_name}`}
-                        aria-label="Invite"
-                        className={`h-11 px-6 rounded-2xl flex items-center justify-center transition-all bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] text-white shadow-2xl hover:scale-105 active:scale-95 ${invitingId === u.id ? "opacity-30" : ""}`}
-                      >
-                        {invitingId === u.id ? (
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                        ) : (
-                          <span className="text-[10px] font-black uppercase tracking-widest">
-                            Uplink
-                          </span>
-                        )}
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => startPrivateChat(u.id)}
+                          className="px-3 py-1.5 rounded-xl bg-[#DF8142] text-white text-[9px] font-black uppercase tracking-widest hover:bg-[#6C3B1C] transition-all shadow-lg shadow-[#DF8142]/20"
+                        >
+                          Chat
+                        </button>
+                        <button
+                          onClick={() => handleInviteUser(u.id)}
+                          disabled={invitingId === u.id}
+                          className={`px-3 py-1.5 rounded-xl border text-[9px] font-black uppercase tracking-widest transition-all ${
+                            invitingId === u.id
+                              ? "bg-[#92664A]/20 text-[#92664A] border-transparent"
+                              : "border-[#DF8142]/30 text-[#DF8142] hover:bg-[#DF8142] hover:text-white"
+                          }`}
+                        >
+                          {invitingId === u.id ? <Loader2 className="h-3 w-3 animate-spin mx-auto" /> : "Invite"}
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
