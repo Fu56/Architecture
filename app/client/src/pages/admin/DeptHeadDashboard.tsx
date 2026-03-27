@@ -20,7 +20,7 @@ import {
   PanelLeftOpen,
   Archive,
 } from "lucide-react";
-import ThemeToggle from "../../components/ui/ThemeToggle";
+
 
 const DeptHeadDashboard = () => {
   const location = useLocation();
@@ -247,9 +247,7 @@ const DeptHeadDashboard = () => {
                 </p>
               </div>
             </div>
-            {!location.pathname.includes("/blog/new") && (
-              <ThemeToggle isScrolled={true} isHomePage={false} />
-            )}
+
           </header>
           <div className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
             <Outlet />

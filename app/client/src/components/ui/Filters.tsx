@@ -68,7 +68,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
   ).length;
 
   return (
-    <div className="w-full max-w-[1400px] mx-auto space-y-6">
+    <div className="w-full mx-auto space-y-2">
       <div className="flex flex-col md:flex-row items-center gap-4">
         {/* Superior Search Interface */}
         <div className="relative flex-grow group w-full">
@@ -124,7 +124,7 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
       <div
         className={`grid transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${showFilters ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0 pointer-events-none"}`}
       >
-        <div>
+        <div className="overflow-hidden">
           <div className="p-5 rounded-2xl space-y-5 transition-colors duration-500 border border-[#92664A]/15 dark:border-white/10 bg-white dark:bg-[#1A0B05] shadow-xl shadow-[#5A270F]/10 dark:shadow-none min-h-0">
             <div className="flex items-center justify-between border-b pb-3 border-[#92664A]/10 dark:border-white/5">
               <div className="space-y-1">
