@@ -156,7 +156,8 @@ export const getMessages = async (req: Request, res: Response) => {
       include: {
         user: {
           select: { id: true, first_name: true, last_name: true, role: true, image: true }
-        }
+        },
+        attachments: true
       },
       orderBy: { createdAt: "asc" },
       take: 100
@@ -174,19 +175,30 @@ export const sendMessage = async (req: Request, res: Response) => {
     const { channelId } = req.params;
     const { content } = req.body;
     const userId = (req as any).user.id;
+    const file = req.file;
 
-    if (!content) return res.status(400).json({ message: "Empty transmission blocked" });
+    if (!content && !file) return res.status(400).json({ message: "Empty transmission blocked" });
 
     const message = await prisma.chatMessage.create({
       data: {
-        content,
+        content: content || null,
         userId,
-        channelId: Number(channelId)
+        channelId: Number(channelId),
+        ...(file ? {
+          attachments: {
+            create: {
+              fileUrl: `/uploads/${file.filename}`,
+              fileType: file.mimetype,
+              fileName: file.originalname
+            }
+          }
+        } : {})
       },
       include: {
         user: {
           select: { id: true, first_name: true, last_name: true, role: true, image: true }
-        }
+        },
+        attachments: true
       }
     });
 

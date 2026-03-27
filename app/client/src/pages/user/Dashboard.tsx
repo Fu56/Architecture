@@ -276,7 +276,8 @@ const UserDashboard = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  {!location.pathname.includes("/blog/new") && (
+                  {!location.pathname.includes("/blog/new") && 
+                   !location.pathname.includes("/nexus") && (
                     <ThemeToggle isScrolled={true} isHomePage={false} />
                   )}
                 </div>

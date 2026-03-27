@@ -7,6 +7,8 @@ import {
 import { requireAuth } from "../middleware/auth";
 import { requireRole } from "../middleware/roles";
 
+import { upload } from "../utils/uploader";
+
 const router = Router();
 
 router.use(requireAuth);
@@ -17,7 +19,7 @@ router.post("/channels/:channelId/subscribe", subscribeChannel);
 router.post("/channels/:channelId/unsubscribe", unsubscribeChannel);
 router.post("/channels/:channelId/add-user", requireRole(["Admin", "DepartmentHead", "SuperAdmin"]), addUserToChannel);
 router.get("/channels/:channelId/messages", getMessages);
-router.post("/channels/:channelId/messages", sendMessage);
+router.post("/channels/:channelId/messages", upload.single("file"), sendMessage);
 
 
 // Admin / DeptHead only: Channel creation

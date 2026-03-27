@@ -293,13 +293,23 @@ model ChatChannel {
 }
 
 model ChatMessage {
+  id          Int              @id @default(autoincrement())
+  content     String?
+  createdAt   DateTime         @default(now())
+  userId      String
+  channelId   Int
+  attachments ChatAttachment[]
+  channel     ChatChannel      @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ChatAttachment {
   id        Int         @id @default(autoincrement())
-  content   String
-  createdAt DateTime    @default(now())
-  userId    String
-  channelId Int
-  channel   ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fileUrl   String
+  fileType  String
+  fileName  String
+  messageId Int
+  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
 }
 
 model SystemLog {

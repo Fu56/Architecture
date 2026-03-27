@@ -14,16 +14,18 @@ import {
   X,
   UserPlus,
   Loader2,
-  Cpu,
   Radio,
   Network,
   Trash2,
+  Paperclip,
+  FileText,
+  PlayCircle,
+  Download,
 } from "lucide-react";
 import React from "react";
 import { useSession } from "../../lib/auth-client";
 import { api } from "../../lib/api";
 import { toast } from "../../lib/toast";
-import { useTheme } from "../../context/useTheme";
 
 interface Channel {
   id: number;
@@ -48,6 +50,12 @@ interface Message {
     role: { name: string } | string;
     image?: string;
   };
+  attachments?: {
+    id: number;
+    fileUrl: string;
+    fileType: string;
+    fileName: string;
+  }[];
 }
 
 interface FoundUser {
@@ -71,8 +79,6 @@ interface UserIdentity {
 const Nexus = () => {
   const { data: session } = useSession();
   const currentUser = session?.user;
-  const { theme } = useTheme();
-  const isLight = theme === "light";
 
   const getRoleName = (u: UserIdentity | null | undefined) => {
     if (!u?.role) return "";
@@ -89,6 +95,30 @@ const Nexus = () => {
   const isDeptHead = ["departmenthead", "admin", "superadmin"].includes(
     currentRole,
   );
+
+  const getMediaUrl = (fileUrl: string) => {
+    const baseUrl = (import.meta.env.VITE_API_URL as string).replace("/api", "");
+    return `${baseUrl}${fileUrl}`;
+  };
+
+  const handleDownload = async (e: React.MouseEvent, url: string, filename: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(link.href);
+    } catch (err) {
+      console.error("Transmission Extraction Failure:", err);
+      toast.error("Failed to extract data shard.");
+    }
+  };
 
   const [channels, setChannels] = useState<Channel[]>([]);
   const [activeChannel, setActiveChannel] = useState<Channel | null>(null);
@@ -109,6 +139,9 @@ const Nexus = () => {
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [channelMembers, setChannelMembers] = useState<FoundUser[]>([]);
   const [loadingMembers, setLoadingMembers] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const messageEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -172,17 +205,46 @@ const Nexus = () => {
       });
   }, [messages]);
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 50 * 1024 * 1024) {
+        toast.error("Payload too large (Max 50MB)");
+        return;
+      }
+      setSelectedFile(file);
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onloadend = () => setFilePreview(reader.result as string);
+        reader.readAsDataURL(file);
+      } else {
+        setFilePreview(null);
+      }
+    }
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim() || !activeChannel || sending) return;
+    if ((!newMessage.trim() && !selectedFile) || !activeChannel || sending)
+      return;
     setSending(true);
     try {
+      const formData = new FormData();
+      if (newMessage.trim()) formData.append("content", newMessage.trim());
+      if (selectedFile) formData.append("file", selectedFile);
+
       const { data } = await api.post(
         `/chat/channels/${activeChannel.id}/messages`,
-        { content: newMessage },
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        },
       );
       setMessages((p) => [...p, data]);
       setNewMessage("");
+      setSelectedFile(null);
+      setFilePreview(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch {
       toast.error("Packet transmission lost.");
     } finally {
@@ -284,13 +346,7 @@ const Nexus = () => {
     );
 
   return (
-    <div
-      className={`h-[calc(100vh-120px)] rounded-3xl overflow-hidden border flex relative animate-in fade-in duration-1000 ${
-        isLight
-          ? "bg-white border-[#92664A]/30 shadow-2xl"
-          : "bg-[#5A270F] border-[#92664A]/20 shadow-2xl shadow-black/80"
-      }`}
-    >
+    <div className="h-[calc(100vh-140px)] rounded-2xl overflow-hidden border flex relative animate-in fade-in duration-700 bg-white border-[#92664A]/20 shadow-xl dark:bg-[#5A270F] dark:border-[#92664A]/20 dark:shadow-2xl dark:shadow-black/80">
       {/* Dynamic Atmospheric Backdrop */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-[#EEB38C]/10 dark:bg-[#6C3B1C]/70 -skew-x-12 translate-x-1/4" />
@@ -299,47 +355,38 @@ const Nexus = () => {
 
       {/* SIDEBAR - Spectrum Selection */}
       <div
-        className={`w-[240px] border-r shrink-0 flex flex-col relative z-20 transition-all duration-500 ${!activeChannel ? "translate-x-0" : "-translate-x-full lg:translate-x-0 lg:w-[240px] w-0 opacity-0 lg:opacity-100 hidden lg:flex"} ${isLight ? "bg-[#EEB38C]/10 border-[#92664A]/30 backdrop-blur-3xl" : "bg-[#6C3B1C]/60 border-[#92664A]/20 backdrop-blur-3xl"}`}
+        className={`w-[200px] border-r shrink-0 flex flex-col relative z-20 transition-all duration-500 bg-[#EEB38C]/5 border-[#92664A]/20 backdrop-blur-3xl dark:bg-[#6C3B1C]/40 dark:border-[#92664A]/20 ${!activeChannel ? "translate-x-0" : "-translate-x-full lg:translate-x-0 lg:w-[200px] w-0 opacity-0 lg:opacity-100 hidden lg:flex"}`}
       >
-        <div className="p-5 flex flex-col h-full shrink-0 min-w-[240px]">
-          <div className="flex items-center justify-between mb-10">
-            <div className="flex items-center gap-3.5">
-              <div
-                className={`h-8 w-8 rounded-xl flex items-center justify-center border-2 transition-all ${isLight ? "bg-white border-[#DF8142]/20 text-[#5A270F] shadow-lg shadow-[#DF8142]/5" : "bg-[#6C3B1C]/70 border-[#EEB38C]/20 text-[#DF8142] shadow-2xl shadow-black"}`}
-              >
-                <Network className="h-5 w-5" />
+        <div className="p-4 flex flex-col h-full shrink-0 min-w-[200px]">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-2.5">
+              <div className="h-7 w-7 rounded-lg flex items-center justify-center border transition-all bg-white border-[#DF8142]/20 text-[#5A270F] dark:bg-[#6C3B1C]/70 dark:border-[#EEB38C]/20 dark:text-[#DF8142]">
+                <Network className="h-4 w-4" />
               </div>
               <div>
-                <h2
-                  className={`text-xs font-black uppercase tracking-widest ${isLight ? "text-[#5A270F]" : "text-white"}`}
-                >
-                  CHANNELS
+                <h2 className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-white">
+                  NETWORK
                 </h2>
-                <div className="flex items-center gap-1.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#DF8142] animate-pulse" />
-                  <p
-                    className={`text-[9px] font-bold uppercase tracking-wider ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/50"}`}
-                  >
-                    USER_ACTIVE
+                <div className="flex items-center gap-1">
+                  <span className="h-1 w-1 rounded-full bg-[#DF8142] animate-pulse" />
+                  <p className="text-[8px] font-bold uppercase tracking-wider text-[#92664A]/60 dark:text-[#EEB38C]/30">
+                    SYNCED
                   </p>
                 </div>
               </div>
             </div>
             <button
               onClick={() => setShowCreateModal(true)}
-              title="Create Channel"
-              aria-label="Create Channel"
-              className="h-8 w-8 rounded-lg flex items-center justify-center transition-all bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] text-white hover:scale-110 active:scale-95 shadow-lg shadow-[#DF8142]/30"
+              title="Initialize New Channel"
+              className="h-7 w-7 rounded-lg flex items-center justify-center transition-all bg-[#DF8142] text-white hover:scale-105 active:scale-95"
             >
-              <Plus className="h-5 w-5" />
+              <Plus className="h-4 w-4" />
             </button>
           </div>
 
           <div className="flex-1 overflow-y-auto custom-scrollbar-thin space-y-4 pr-2">
             <div>
-              <p
-                className={`text-[10px] font-black uppercase tracking-widest px-4 mb-5 ${isLight ? "text-[#92664A]/80" : "text-[#EEB38C]/40"}`}
-              >
+              <p className="text-[10px] font-black uppercase tracking-widest px-4 mb-5 text-[#92664A]/80 dark:text-[#EEB38C]/40">
                 CHANNELS
               </p>
               <div className="space-y-2">
@@ -347,28 +394,22 @@ const Nexus = () => {
                   <div key={ch.id} className="group relative">
                     <button
                       onClick={() => setActiveChannel(ch)}
-                      title={`Uplink to ${ch.name || "Batch Node"}`}
-                      aria-label={`Join channel ${ch.name}`}
-                      className={`w-full flex items-center gap-3.5 px-4 py-2 rounded-xl transition-all duration-300 ${
+                      className={`w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg transition-all ${
                         activeChannel?.id === ch.id
-                          ? "bg-[#5A270F] dark:bg-[#DF8142] text-white shadow-xl shadow-[#5A270F]/20"
-                          : isLight
-                            ? "hover:bg-white text-[#5A270F]/60 hover:text-[#5A270F] hover:shadow-lg"
-                            : "hover:bg-[#6C3B1C]/70 text-[#EEB38C]/60 hover:text-white"
+                          ? "bg-[#5A270F] dark:bg-[#DF8142] text-white shadow-lg shadow-[#5A270F]/20"
+                          : "hover:bg-white text-[#5A270F]/50 hover:text-[#5A270F] dark:hover:bg-[#6C3B1C]/70 dark:text-[#EEB38C]/50 dark:hover:text-white"
                       }`}
                     >
                       <div
-                        className={`h-6 w-6 rounded-md flex items-center justify-center transition-all ${activeChannel?.id === ch.id ? "bg-white/20" : isLight ? "bg-white border border-[#92664A]/30 shadow-sm text-[#5A270F]" : "bg-[#6C3B1C]/70 text-[#EEB38C]/60"}`}
+                        className={`h-5 w-5 rounded flex items-center justify-center transition-all ${activeChannel?.id === ch.id ? "bg-white/20" : "bg-white/50 border border-[#92664A]/10 shadow-sm text-[#5A270F] dark:bg-[#6C3B1C]/70 dark:text-[#EEB38C]/40"}`}
                       >
                         {ch.isPublic ? (
-                          <Globe className="h-3.5 w-3.5" />
+                          <Globe className="h-3 w-3" />
                         ) : (
-                          <Lock className="h-3.5 w-3.5" />
+                          <Lock className="h-3 w-3" />
                         )}
                       </div>
-                      <span
-                        className={`text-xs font-black tracking-tight truncate uppercase ${activeChannel?.id === ch.id ? "text-white" : ""}`}
-                      >
+                      <span className="text-[10px] font-bold tracking-tight truncate uppercase">
                         {ch.name || `Batch ${ch.batch}`}
                       </span>
                     </button>
@@ -395,23 +436,15 @@ const Nexus = () => {
             </div>
           </div>
 
-          <div
-            className={`mt-auto pt-8 border-t ${isLight ? "border-[#92664A]/30" : "border-[#92664A]/20"}`}
-          >
-            <div className="flex items-center gap-4 px-3 opacity-60 hover:opacity-100 transition-opacity cursor-default">
-              <Shield
-                className={`h-5 w-5 ${isLight ? "text-[#5A270F]" : "text-[#DF8142]"}`}
-              />
+          <div className="mt-auto pt-4 border-t border-[#92664A]/15 dark:border-[#92664A]/10">
+            <div className="flex items-center gap-3 px-1 opacity-50 hover:opacity-100 transition-opacity">
+              <Shield className="h-4 w-4 text-[#5A270F] dark:text-[#DF8142]" />
               <div>
-                <p
-                  className={`text-[10px] font-black tracking-wide uppercase ${isLight ? "text-[#5A270F]" : "text-white"}`}
-                >
-                  Authority Shield
+                <p className="text-[8px] font-black tracking-wide uppercase text-[#5A270F] dark:text-white">
+                  S_Shield
                 </p>
-                <p
-                  className={`text-xs font-bold uppercase tracking-widest ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/40"}`}
-                >
-                  VERIFIED_PROTOCOL v4.1
+                <p className="text-[7px] font-bold uppercase tracking-widest text-[#92664A]/60 dark:text-[#EEB38C]/20">
+                  PROTO_V4
                 </p>
               </div>
             </div>
@@ -420,9 +453,7 @@ const Nexus = () => {
       </div>
 
       {/* MAIN CONTENT Area (Chat/Dashboard) */}
-      <div
-        className={`flex-1 flex flex-col relative z-10 transition-all duration-500 ${isLight ? "bg-white" : "bg-transparent"}`}
-      >
+      <div className="flex-1 flex flex-col relative z-10 transition-all duration-500 bg-white dark:bg-transparent">
         {!activeChannel ? (
           <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-6 animate-in zoom-in-95 duration-1000">
             <div className="h-14 w-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] shadow-2xl shadow-[#DF8142]/30 relative overflow-hidden group">
@@ -430,15 +461,11 @@ const Nexus = () => {
               <Radio className="h-11 w-11 text-white animate-pulse" />
             </div>
             <div className="space-y-3">
-              <h3
-                className={`text-2xl font-black uppercase tracking-tighter italic ${isLight ? "text-[#5A270F]" : "text-white"}`}
-              >
+              <h3 className="text-2xl font-black uppercase tracking-tighter italic text-[#5A270F] dark:text-white">
                 Channel{" "}
                 <span className="text-[#DF8142] not-italic">Nexus_</span>
               </h3>
-              <p
-                className={`text-[10px] font-black uppercase tracking-widest ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/70"}`}
-              >
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/70">
                 Select or Create Channel
               </p>
             </div>
@@ -450,11 +477,7 @@ const Nexus = () => {
                   onClick={() => setActiveChannel(c)}
                   title={`Navigate to ${c.name || "Batch Node"}`}
                   aria-label={`Enter ${c.name || "node"}`}
-                  className={`group p-4 rounded-2xl gap-3 transition-all duration-500 hover:scale-[1.03] active:scale-95 ${
-                    isLight
-                      ? "bg-white border-[#92664A]/30 shadow-sm hover:shadow-2xl hover:border-[#DF8142]/30"
-                      : "bg-[#6C3B1C]/70 border-[#92664A]/20 hover:bg-[#6C3B1C]/80 hover:border-[#DF8142]/20"
-                  }`}
+                  className="group p-4 rounded-2xl gap-3 transition-all duration-500 hover:scale-[1.03] active:scale-95 bg-white border-[#92664A]/30 shadow-sm hover:shadow-2xl hover:border-[#DF8142]/30 dark:bg-[#6C3B1C]/70 dark:border-[#92664A]/20 dark:hover:bg-[#6C3B1C]/80 dark:hover:border-[#DF8142]/20"
                 >
                   <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] text-white flex items-center justify-center shadow-lg group-hover:rotate-[15deg] transition-transform">
                     {c.isPublic ? (
@@ -463,9 +486,7 @@ const Nexus = () => {
                       <Lock className="h-5 w-5" />
                     )}
                   </div>
-                  <span
-                    className={`text-[10px] font-black uppercase truncate w-full ${isLight ? "text-[#5A270F]" : "text-white"}`}
-                  >
+                  <span className="text-[10px] font-black uppercase truncate w-full text-[#5A270F] dark:text-white">
                     {c.name || `Batch ${c.batch}`}
                   </span>
                 </button>
@@ -474,11 +495,7 @@ const Nexus = () => {
                 onClick={() => setShowCreateModal(true)}
                 title="Create Channel"
                 aria-label="Create new channel"
-                className={`group p-6 rounded-3xl border-2 border-dashed flex flex-col items-center justify-center gap-4 transition-all duration-500 hover:scale-[1.03] active:scale-95 min-h-[140px] shadow-sm hover:shadow-xl ${
-                  isLight
-                    ? "bg-[#EEB38C]/10 border-[#DF8142]/50 text-[#5A270F] hover:bg-white hover:border-[#DF8142]"
-                    : "bg-[#6C3B1C]/30 border-[#DF8142]/40 text-white hover:bg-[#6C3B1C]/70 hover:border-[#DF8142]"
-                }`}
+                className="group p-6 rounded-3xl border-2 border-dashed flex flex-col items-center justify-center gap-4 transition-all duration-500 hover:scale-[1.03] active:scale-95 min-h-[140px] shadow-sm hover:shadow-xl bg-[#EEB38C]/10 border-[#DF8142]/50 text-[#5A270F] hover:bg-white hover:border-[#DF8142] dark:bg-[#6C3B1C]/30 dark:border-[#DF8142]/40 dark:text-white dark:hover:bg-[#6C3B1C]/70 dark:hover:border-[#DF8142]"
               >
                 <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#EEB38C]/30 to-[#92664A]/30 text-[#DF8142] flex items-center justify-center group-hover:bg-[#DF8142] group-hover:text-white transition-all duration-300">
                   <Plus className="h-6 w-6" />
@@ -491,73 +508,49 @@ const Nexus = () => {
           </div>
         ) : (
           <>
-            <header
-              className={`h-14 px-5 lg:px-8 flex items-center justify-between border-b relative z-30 ${isLight ? "bg-white/80 border-[#92664A]/30 backdrop-blur-xl shadow-sm" : "bg-[#5A270F]/40 border-[#92664A]/20 backdrop-blur-xl shadow-2xl"}`}
-            >
-              <div className="flex items-center gap-6">
+            <header className="h-12 px-4 flex items-center justify-between border-b relative z-30 bg-white/80 border-[#92664A]/15 backdrop-blur-xl dark:bg-[#5A270F]/40 dark:border-[#92664A]/20">
+              <div className="flex items-center gap-4">
                 <button
                   onClick={() => setActiveChannel(null)}
-                  title="Back to Registry Spectrum"
-                  aria-label="Back to channels"
-                  className={`h-8 w-8 rounded-xl flex items-center justify-center transition-all ${
-                    isLight
-                      ? "bg-[#EEB38C]/10 text-[#5A270F] hover:bg-[#DF8142] hover:text-white shadow-sm"
-                      : "bg-[#6C3B1C]/70 text-[#EEB38C]/80 hover:bg-[#6C3B1C]/80 hover:text-white"
-                  }`}
+                  title="Return to Directory"
+                  className="h-7 w-7 rounded-lg flex items-center justify-center transition-all bg-[#EEB38C]/10 text-[#5A270F] hover:bg-[#DF8142] hover:text-white shadow-sm dark:bg-[#6C3B1C]/70 dark:text-[#EEB38C]/80 dark:hover:bg-[#6C3B1C]/80 dark:hover:text-white"
                 >
-                  <ArrowLeft className="h-5 w-5" />
+                  <ArrowLeft className="h-4 w-4" />
                 </button>
-                <div className="h-10 w-px bg-slate-100 dark:bg-[#6C3B1C]/70 hidden lg:block" />
-                <div className="flex items-center gap-4">
-                  <div
-                    className={`h-9 w-9 rounded-xl flex items-center justify-center shadow-2xl bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] text-white`}
-                  >
+                <div className="flex items-center gap-3">
+                  <div className="h-7 w-7 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] text-white">
                     {activeChannel?.isPublic ? (
-                      <Globe className="h-6 w-6" />
+                      <Globe className="h-4 w-4" />
                     ) : (
-                      <Lock className="h-6 w-6" />
+                      <Lock className="h-4 w-4" />
                     )}
                   </div>
                   <div>
-                    <h3
-                      className={`text-[13px] font-black uppercase tracking-tighter ${isLight ? "text-[#5A270F]" : "text-white"}`}
-                    >
-                      {activeChannel?.name || "Initializing..."}
+                    <h3 className="text-[11px] font-black uppercase tracking-widest text-[#5A270F] dark:text-white">
+                      {activeChannel?.name || "LOCKED"}
                     </h3>
-                    <div className="flex items-center gap-2">
-                      <Radio className="h-3 w-3 text-[#DF8142]" />
-                      <p
-                        className={`text-[9px] font-bold uppercase tracking-wider opacity-50 ${isLight ? "text-[#5A270F]" : "text-white"}`}
-                      >
-                        FREQUENCY_SYNCED
-                      </p>
-                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div
-                  className={`flex gap-2 p-1.5 rounded-2xl border ${isLight ? "bg-[#EEB38C]/10 border-[#92664A]/30 shadow-sm" : "bg-[#6C3B1C]/70 border-[#EEB38C]/20"}`}
-                >
+              <div className="flex items-center gap-2">
+                <div className="flex gap-1.5 p-1 rounded-xl border bg-[#EEB38C]/5 border-[#92664A]/10 dark:bg-[#6C3B1C]/50 dark:border-white/5">
                   <button
-                    title="Uplink Entity"
-                    aria-label="Invite to node"
                     onClick={() => setShowInviteModal(true)}
-                    className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all ${isLight ? "bg-white text-[#5A270F] shadow-sm hover:bg-[#DF8142] hover:text-white" : "bg-[#6C3B1C]/80 text-[#EEB38C]/80 hover:bg-white/20 hover:text-white"}`}
+                    title="Uplink Member"
+                    className="h-7 w-7 rounded-lg flex items-center justify-center transition-all bg-white text-[#5A270F] shadow-sm hover:bg-[#DF8142] hover:text-white dark:bg-[#6C3B1C]/80 dark:text-[#EEB38C]/80 dark:hover:bg-white/20 dark:hover:text-white"
                   >
-                    <UserPlus className="h-5 w-5" />
+                    <UserPlus className="h-4 w-4" />
                   </button>
                   <button
-                    title="Broadcasters"
-                    aria-label="View members"
                     onClick={() => {
                       fetchMembers(activeChannel.id);
                       setShowMembersModal(true);
                     }}
-                    className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all ${isLight ? "bg-white text-[#5A270F] shadow-sm hover:bg-[#DF8142] hover:text-white" : "bg-[#6C3B1C]/80 text-[#EEB38C]/80 hover:bg-white/20 hover:text-white"}`}
+                    title="Active Participants"
+                    className="h-7 w-7 rounded-lg flex items-center justify-center transition-all bg-white text-[#5A270F] shadow-sm hover:bg-[#DF8142] hover:text-white dark:bg-[#6C3B1C]/80 dark:text-[#EEB38C]/80 dark:hover:bg-white/20 dark:hover:text-white"
                   >
-                    <Users className="h-5 w-5" />
+                    <Users className="h-4 w-4" />
                   </button>
                 </div>
               </div>
@@ -569,9 +562,7 @@ const Nexus = () => {
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#DF8142]/20 to-transparent flex items-center justify-center border border-[#DF8142]/20">
                     <Radio className="h-8 w-8 text-[#DF8142] animate-pulse" />
                   </div>
-                  <p
-                    className={`text-xs font-black uppercase tracking-widest ${isLight ? "text-[#5A270F]" : "text-white"}`}
-                  >
+                  <p className="text-xs font-black uppercase tracking-widest text-[#5A270F] dark:text-white">
                     Awaiting Incoming_Signals
                   </p>
                 </div>
@@ -581,59 +572,109 @@ const Nexus = () => {
                   return (
                     <div
                       key={m.id}
-                      className={`flex gap-5 ${isSelf ? "flex-row-reverse" : "flex-row"} animate-in slide-in-from-bottom-4 duration-700`}
+                      className={`flex flex-col ${isSelf ? "items-end" : "items-start"} animate-in slide-in-from-bottom-2 duration-500`}
                     >
-                      <div
-                        className={`h-8 w-8 rounded-xl overflow-hidden shadow-2xl shrink-0 border-2 transition-all ${isSelf ? "border-[#DF8142]" : isLight ? "border-white shadow-xl" : "border-[#EEB38C]/20"}`}
-                      >
-                        {m.user?.image ? (
-                          <img
-                            src={m.user.image}
-                            className="h-full w-full object-cover"
-                            alt="Node"
-                          />
-                        ) : (
-                          <div
-                            className={`h-full w-full flex items-center justify-center text-xs font-black text-white ${isSelf ? "bg-[#DF8142]" : "bg-[#5A270F]"}`}
-                          >
-                            {m.user?.first_name?.[0]}
-                          </div>
-                        )}
+                      <div className="flex items-center gap-2 mb-1 px-1 text-[9px] font-black uppercase tracking-wider">
+                        <span
+                          className={
+                            isSelf
+                              ? "text-[#DF8142]"
+                              : "text-[#5A270F] dark:text-[#EEB38C]/80"
+                          }
+                        >
+                          {m.user?.first_name} {m.user?.last_name}
+                        </span>
                       </div>
                       <div
-                        className={`flex flex-col max-w-[80%] ${isSelf ? "items-end" : "items-start"}`}
+                        className={`max-w-[85%] px-3.5 py-2 rounded-xl text-[11px] font-medium leading-relaxed border transition-all ${
+                          isSelf
+                            ? "bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] border-[#DF8142]/40 text-white rounded-tr-none"
+                            : "bg-white border-[#92664A]/20 text-[#5A270F] rounded-tl-none dark:bg-[#6C3B1C]/60 dark:border-[#EEB38C]/10 dark:text-white dark:rounded-tl-none"
+                        }`}
                       >
-                        <div className="flex items-center gap-3 mb-2 px-1 text-[10px] font-black uppercase tracking-wide">
-                          <span
-                            className={`${isSelf ? "text-[#DF8142]" : isLight ? "text-[#5A270F]" : "text-[#EEB38C]/80"}`}
-                          >
-                            {m.user?.first_name} {m.user?.last_name}
-                          </span>
-                          {getRoleName(m.user) !== "student" && (
-                            <span className="text-xs font-black px-2 py-0.5 rounded-[4px] bg-[#DF8142] text-white shadow-lg uppercase">
-                              {getRoleName(m.user)}
-                            </span>
-                          )}
-                        </div>
+                        {m.attachments?.map((att) => {
+                          const fileUrl = getMediaUrl(att.fileUrl);
+                          return (
+                            <div key={att.id} className="mb-2 last:mb-0 group/media relative">
+                              {att.fileType.startsWith("image/") ? (
+                                <div className="relative overflow-hidden rounded-xl border border-white/20 shadow-lg bg-black/5 max-w-[280px]">
+                                  <img
+                                    src={fileUrl}
+                                    alt={att.fileName}
+                                    className="w-full h-auto max-h-[300px] object-contain cursor-zoom-in hover:scale-[1.02] transition-transform duration-500"
+                                  />
+                                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/media:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                                    <button
+                                      onClick={(e) => handleDownload(e, fileUrl, att.fileName)}
+                                      title="Extract Image Shard"
+                                      className="p-2.5 rounded-full bg-white/20 hover:bg-[#DF8142] text-white transition-all transform hover:scale-110 shadow-lg backdrop-blur-sm"
+                                    >
+                                      <Download className="h-5 w-5" />
+                                    </button>
+                                  </div>
+                                  <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/50 to-transparent">
+                                    <p className="text-[7px] text-white font-black uppercase tracking-widest truncate opacity-60 group-hover/media:opacity-100 transition-opacity">
+                                      {att.fileName}
+                                    </p>
+                                  </div>
+                                </div>
+                              ) : att.fileType.startsWith("video/") ? (
+                                <div className="relative overflow-hidden rounded-xl border border-white/20 shadow-lg bg-black/5 max-w-[280px]">
+                                  <video src={fileUrl} className="w-full h-auto max-h-[300px] object-contain" controls />
+                                  <div className="absolute top-2 right-2 opacity-0 group-hover/media:opacity-100 transition-opacity">
+                                    <button
+                                      onClick={(e) => handleDownload(e, fileUrl, att.fileName)}
+                                      title="Extract Video Shard"
+                                      className="p-2 rounded-lg bg-black/50 hover:bg-[#DF8142] text-white transition-all shadow-lg backdrop-blur-sm"
+                                    >
+                                      <Download className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="flex flex-col gap-1 max-w-[260px]">
+                                  <div
+                                    className={`flex items-center gap-3 p-2 rounded-xl border transition-all ${
+                                      isSelf
+                                        ? "bg-white/10 border-white/20"
+                                        : "bg-[#5A270F]/5 border-[#92664A]/10 dark:bg-black/20 dark:border-white/10"
+                                    }`}
+                                  >
+                                    <div className="h-8 w-8 rounded-lg bg-[#DF8142] flex items-center justify-center text-white shrink-0 shadow-md">
+                                      <FileText className="h-4 w-4" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                      <p className="text-[9px] font-black uppercase tracking-widest truncate">
+                                        {att.fileName}
+                                      </p>
+                                      <p className="text-[7px] opacity-40 uppercase tracking-tighter">
+                                        Data Shard
+                                      </p>
+                                    </div>
+                                    <button
+                                      onClick={(e) => handleDownload(e, fileUrl, att.fileName)}
+                                      title="Recover Data Shard"
+                                      className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all shadow-sm ${
+                                        isSelf ? "hover:bg-white/20 text-white" : "hover:bg-[#DF8142] hover:text-white text-[#92664A]"
+                                      }`}
+                                    >
+                                      <Download className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                        {m.content && <p className="whitespace-pre-wrap mt-1">{m.content}</p>}
                         <div
-                          className={`px-4 py-3 rounded-2xl text-[12px] font-bold leading-relaxed shadow-2xl border transition-all ${
-                            isSelf
-                              ? "bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] border-[#DF8142]/50 text-white rounded-tr-none shadow-[#DF8142]/30"
-                              : isLight
-                                ? "bg-white border-[#92664A]/30 text-[#5A270F] rounded-tl-none shadow-xl"
-                                : "bg-[#6C3B1C]/80 border-[#EEB38C]/20 text-white rounded-tl-none shadow-black/40"
-                          }`}
+                          className={`text-[8px] mt-1.5 opacity-40 font-black tracking-widest ${isSelf ? "text-white" : "text-[#5A270F] dark:text-white"} flex items-center gap-1.5`}
                         >
-                          {m.content}
-                          <p
-                            className={`text-xs mt-2 opacity-50 font-black tracking-widest ${isSelf ? "text-white" : isLight ? "text-[#5A270F]" : "text-white"}`}
-                          >
-                            {new Date(m.createdAt).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}{" "}
-                            // SIGNAL_STAMP
-                          </p>
+                          <span className="h-1 w-1 rounded-full bg-current opacity-30" />
+                          {new Date(m.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </div>
                       </div>
                     </div>
@@ -643,35 +684,86 @@ const Nexus = () => {
               <div ref={messageEndRef} />
             </div>
 
-            <footer
-              className={`p-2 lg:p-3 backdrop-blur-3xl border-t relative z-30 ${isLight ? "bg-white border-[#92664A]/30" : "bg-[#6C3B1C]/60 border-[#92664A]/20"}`}
-            >
+            <footer className="p-2 pt-1 backdrop-blur-3xl border-t relative z-30 bg-white border-[#92664A]/15 dark:bg-[#6C3B1C]/40 dark:border-[#92664A]/10">
+              {selectedFile && (
+                <div className="mx-3 mb-2 p-2 rounded-xl bg-[#EEB38C]/10 dark:bg-black/20 border border-[#DF8142]/20 flex items-center justify-between animate-in slide-in-from-bottom-2">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-lg overflow-hidden border border-[#DF8142]/20 bg-[#6C3B1C]/10 flex items-center justify-center shrink-0">
+                      {filePreview ? (
+                        <img
+                          src={filePreview}
+                          alt="Preview"
+                          className="h-full w-full object-cover"
+                        />
+                      ) : selectedFile.type.startsWith("video/") ? (
+                        <PlayCircle className="h-5 w-5 text-[#DF8142]" />
+                      ) : (
+                        <FileText className="h-5 w-5 text-[#DF8142]" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-[#5A270F] dark:text-white truncate max-w-[150px]">
+                        {selectedFile.name}
+                      </p>
+                      <p className="text-[8px] font-bold text-[#DF8142] uppercase tracking-tighter">
+                        {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
+                        Shard
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setSelectedFile(null);
+                      setFilePreview(null);
+                      if (fileInputRef.current) fileInputRef.current.value = "";
+                    }}
+                    title="Evict Packet"
+                    className="h-7 w-7 rounded-lg bg-[#5A270F]/5 hover:bg-[#5A270F]/10 text-red-500 flex items-center justify-center transition-all"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
               <form
                 onSubmit={handleSendMessage}
-                className={`flex items-center gap-2 p-1 rounded-xl px-4 border transition-all group ${
-                  isLight
-                    ? "bg-[#EEB38C]/10 border-[#92664A]/30 focus-within:border-[#DF8142] shadow-sm"
-                    : "bg-[#6C3B1C]/70 border-[#92664A]/20 focus-within:border-[#DF8142] focus-within:bg-[#6C3B1C]/80"
-                }`}
+                className="flex items-center gap-2 p-1 rounded-xl px-2.5 border transition-all duration-300 group bg-[#EEB38C]/5 border-[#92664A]/15 focus-within:border-[#DF8142] focus-within:bg-white/50 focus-within:shadow-[0_0_20px_-5px_rgba(223,129,66,0.15)] dark:bg-[#6C3B1C]/30 dark:border-[#92664A]/20 dark:focus-within:border-[#DF8142] dark:focus-within:bg-[#5A270F]/40"
               >
-                <Cpu className="h-3.5 w-3.5 text-[#DF8142] transition-transform duration-700 group-focus-within:rotate-[360deg]" />
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileSelect}
+                  className="hidden"
+                  accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+                  title="Upload Spectrum Shard"
+                  placeholder="Select File"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  title="Inject Media Shard"
+                  className="h-8.5 w-8.5 rounded-lg flex items-center justify-center text-[#92664A] hover:bg-[#EEB38C]/20 hover:text-[#5A270F] dark:text-[#EEB38C]/50 dark:hover:bg-white/10 dark:hover:text-[#DF8142] transition-all duration-200 shrink-0 group-focus-within:text-[#DF8142]/70"
+                >
+                  <Paperclip className="h-4 w-4" />
+                </button>
                 <input
                   type="text"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="INJECT COMMAND..."
-                  className={`flex-1 bg-transparent py-1.5 text-xs font-black outline-none placeholder:opacity-30 uppercase tracking-wide ${isLight ? "text-[#5A270F]" : "text-white"}`}
+                  placeholder="Type your message..."
+                  className={`flex-1 bg-transparent py-1.5 text-[11px] font-bold outline-none placeholder:text-[#5A270F]/30 dark:placeholder:text-white/20 text-[#5A270F] dark:text-white`}
                 />
                 <button
-                  title="Broadcast Signals"
-                  aria-label="Send signal"
-                  disabled={!newMessage.trim() || sending}
-                  className={`h-8 px-4 rounded-lg flex items-center gap-2 active:scale-95 transition-all shadow-md ${newMessage.trim() ? "bg-gradient-to-r from-[#DF8142] to-[#6C3B1C] text-white hover:scale-[1.03]" : isLight ? "bg-[#5A270F]/5 text-[#5A270F]/20" : "bg-[#6C3B1C]/70 text-white/10"}`}
+                  disabled={(!newMessage.trim() && !selectedFile) || sending}
+                  title="Send Broadcast"
+                  className={`h-8.5 px-3.5 rounded-lg flex items-center gap-1.5 active:scale-95 transition-all duration-300 transform-gpu ${newMessage.trim() || selectedFile ? "bg-[#DF8142] hover:bg-[#6C3B1C] text-white shadow-[0_10px_20px_-5px_rgba(223,129,66,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(108,59,28,0.5)] hover:-translate-y-0.5 hover:scale-105" : "bg-[#5A270F]/5 text-[#5A270F]/20 dark:bg-[#6C3B1C]/30 dark:text-white/5 cursor-not-allowed opacity-50"}`}
                 >
-                  <span className="text-xs font-black uppercase tracking-widest hidden sm:block">
-                    Send
-                  </span>
-                  <Send className="h-3 w-3" />
+                  {sending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send
+                      className={`h-4 w-4 transition-transform duration-300 ${newMessage.trim() || selectedFile ? "group-hover:translate-x-0.5 group-hover:-translate-y-0.5" : ""}`}
+                    />
+                  )}
                 </button>
               </form>
             </footer>
@@ -681,31 +773,25 @@ const Nexus = () => {
 
       {/* CREATE MODAL - High Fidelity Overlay */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-[500] flex items-center justify-center p-6 bg-[#5A270F]/90 backdrop-blur-2xl animate-in fade-in duration-700">
-          <div
-            className={`w-full max-w-[320px] rounded-2xl overflow-hidden shadow-[0_50px_100px_-15px_rgba(0,0,0,0.5)] border-2 transition-all duration-700 ${isLight ? "bg-white border-[#EEB38C]/30" : "bg-[#5A270F] border-[#EEB38C]/20"}`}
-          >
-            <div className="h-2 w-full bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] to-[#DF8142] animate-gradient-x" />
+        <div className="fixed inset-0 z-[500] flex items-center justify-center p-6 bg-[#2A1205]/95 backdrop-blur-xl animate-in fade-in duration-300">
+          <div className="w-full max-w-[300px] rounded-xl overflow-hidden shadow-2xl border-2 bg-white border-[#EEB38C]/30 dark:bg-[#5A270F] dark:border-[#EEB38C]/20">
+            <div className="h-1 w-full bg-[#DF8142]" />
 
-            <div className="p-5 w-full flex flex-col items-center">
-              <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] flex items-center justify-center mb-8 shadow-2xl shadow-[#DF8142]/40">
-                <Radio className="h-8 w-8 text-white animate-pulse" />
+            <div className="p-4 w-full flex flex-col items-center">
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] flex items-center justify-center mb-6">
+                <Radio className="h-6 w-6 text-white" />
               </div>
 
-              <h2
-                className={`text-2xl font-black uppercase tracking-tighter mb-1 ${isLight ? "text-[#5A270F]" : "text-white"}`}
-              >
-                Create Channel
+              <h2 className="text-xl font-black uppercase tracking-tight mb-1 text-[#5A270F] dark:text-white">
+                Create Node
               </h2>
-              <p className="text-[10px] font-black uppercase tracking-widest mb-10 text-[#DF8142]">
-                Channel_Selection
+              <p className="text-[8px] font-black uppercase tracking-widest mb-6 text-[#DF8142]">
+                Channel_Initialization
               </p>
 
               <form onSubmit={handleCreateChannel} className="w-full space-y-6">
                 <div className="space-y-2">
-                  <label
-                    className={`text-[10px] font-black uppercase tracking-wider ml-4 opacity-50 ${isLight ? "text-[#5A270F]" : "text-white"}`}
-                  >
+                  <label className="text-[10px] font-black uppercase tracking-wider ml-4 opacity-50 text-[#5A270F] dark:text-white">
                     Channel Name
                   </label>
                   <div className="relative group">
@@ -714,16 +800,14 @@ const Nexus = () => {
                       value={newChannelName}
                       onChange={(e) => setNewChannelName(e.target.value)}
                       placeholder="CHANNEL NAME..."
-                      className={`w-full pl-14 pr-6 py-3 rounded-2xl text-xs font-black outline-none border-2 transition-all uppercase tracking-widest ${isLight ? "bg-[#EEB38C]/10 border-[#EEB38C]/10 focus:border-[#DF8142] text-[#5A270F]" : "bg-[#6C3B1C]/70 border-[#92664A]/20 focus:border-[#DF8142] text-white"}`}
+                      className="w-full pl-14 pr-6 py-3 rounded-2xl text-xs font-black outline-none border-2 transition-all uppercase tracking-widest bg-[#EEB38C]/10 border-[#EEB38C]/10 focus:border-[#DF8142] text-[#5A270F] dark:bg-[#6C3B1C]/70 dark:border-[#92664A]/20 dark:focus:border-[#DF8142] dark:text-white"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <label
-                      className={`text-[10px] font-black uppercase tracking-wider ml-4 opacity-50 ${isLight ? "text-[#5A270F]" : "text-white"}`}
-                    >
+                    <label className="text-[10px] font-black uppercase tracking-wider ml-4 opacity-50 text-[#5A270F] dark:text-white">
                       Batch_Ref
                     </label>
                     <input
@@ -731,13 +815,11 @@ const Nexus = () => {
                       value={newChannelBatch}
                       onChange={(e) => setNewChannelBatch(e.target.value)}
                       placeholder="000"
-                      className={`w-full px-6 py-3 rounded-2xl text-xs font-black outline-none border-2 transition-all ${isLight ? "bg-[#EEB38C]/10 border-[#EEB38C]/10 focus:border-[#DF8142] text-[#5A270F]" : "bg-[#6C3B1C]/70 border-[#92664A]/20 focus:border-[#DF8142] text-white"}`}
+                      className="w-full px-6 py-3 rounded-2xl text-xs font-black outline-none border-2 transition-all bg-[#EEB38C]/10 border-[#EEB38C]/10 focus:border-[#DF8142] text-[#5A270F] dark:bg-[#6C3B1C]/70 dark:border-[#92664A]/20 dark:focus:border-[#DF8142] dark:text-white"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label
-                      className={`text-[10px] font-black uppercase tracking-wider ml-4 opacity-50 ${isLight ? "text-[#5A270F]" : "text-white"}`}
-                    >
+                    <label className="text-[10px] font-black uppercase tracking-wider ml-4 opacity-50 text-[#5A270F] dark:text-white">
                       Access_Lvl
                     </label>
                     <button
@@ -745,7 +827,7 @@ const Nexus = () => {
                       onClick={() => setIsPublicChannel(!isPublicChannel)}
                       title="Toggle Node Security"
                       aria-label="Toggle public access"
-                      className={`w-full h-12 rounded-2xl text-xs font-black uppercase tracking-wider border-2 transition-all ${isPublicChannel ? "bg-[#DF8142] text-white border-[#DF8142] shadow-2xl shadow-[#DF8142]/20" : isLight ? "bg-[#EEB38C]/10 border-[#EEB38C]/10 text-[#92664A]" : "bg-[#6C3B1C]/70 border-[#92664A]/20 text-[#EEB38C]/50"}`}
+                      className={`w-full h-12 rounded-2xl text-xs font-black uppercase tracking-wider border-2 transition-all ${isPublicChannel ? "bg-[#DF8142] text-white border-[#DF8142] shadow-2xl shadow-[#DF8142]/20" : "bg-[#EEB38C]/10 border-[#EEB38C]/10 text-[#92664A] dark:bg-[#6C3B1C]/70 dark:border-[#92664A]/20 dark:text-[#EEB38C]/50"}`}
                     >
                       {isPublicChannel ? "OpenLink" : "SecureNode"}
                     </button>
@@ -768,9 +850,8 @@ const Nexus = () => {
                   <button
                     type="button"
                     onClick={() => setShowCreateModal(false)}
-                    title="Dismiss Initialization"
-                    aria-label="Cancel"
-                    className={`w-full py-2 text-xs font-black uppercase tracking-widest transition-all opacity-30 hover:opacity-100 ${isLight ? "text-[#5A270F]" : "text-white"}`}
+                    title="Dismiss Node Creation"
+                    className="w-full py-2 text-xs font-black uppercase tracking-widest transition-all opacity-30 hover:opacity-100 text-[#5A270F] dark:text-white"
                   >
                     Cancel Channel Creation
                   </button>
@@ -784,15 +865,11 @@ const Nexus = () => {
       {/* INVITE MODAL - Search Spectrum */}
       {showInviteModal && (
         <div className="fixed inset-0 z-[500] flex items-center justify-center p-6 bg-[#5A270F]/90 backdrop-blur-2xl animate-in fade-in duration-300">
-          <div
-            className={`w-full max-w-[360px] rounded-2xl overflow-hidden shadow-2xl border-2 transition-all ${isLight ? "bg-white border-[#92664A]/30" : "bg-[#5A270F] border-[#EEB38C]/20"} flex flex-col h-[450px]`}
-          >
+          <div className="w-full max-w-[360px] rounded-2xl overflow-hidden shadow-2xl border-2 flex flex-col h-[450px] bg-white border-[#92664A]/30 dark:bg-[#5A270F] dark:border-[#EEB38C]/20">
             <div className="p-5 pb-3 shrink-0">
               <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h2
-                    className={`text-2xl font-black uppercase tracking-tight ${isLight ? "text-[#5A270F]" : "text-white"}`}
-                  >
+                  <h2 className="text-2xl font-black uppercase tracking-tight text-[#5A270F] dark:text-white">
                     Channel Scan
                   </h2>
                   <p className="text-[10px] font-black uppercase tracking-widest text-[#DF8142] opacity-50">
@@ -814,7 +891,7 @@ const Nexus = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="SEARCH_USER..."
-                  className={`w-full pl-14 pr-7 py-5 rounded-2xl text-xs font-black outline-none border transition-all uppercase tracking-widest ${isLight ? "bg-[#EEB38C]/10 border-[#92664A]/30 focus:border-[#DF8142] text-[#5A270F]" : "bg-[#6C3B1C]/70 border-[#92664A]/20 focus:border-[#DF8142] text-white"}`}
+                  className="w-full pl-14 pr-7 py-5 rounded-2xl text-xs font-black outline-none border transition-all uppercase tracking-widest bg-[#EEB38C]/10 border-[#92664A]/30 focus:border-[#DF8142] text-[#5A270F] dark:bg-[#6C3B1C]/70 dark:border-[#92664A]/20 dark:focus:border-[#DF8142] dark:text-white"
                 />
               </div>
             </div>
@@ -838,16 +915,14 @@ const Nexus = () => {
                   {foundUsers.map((u) => (
                     <div
                       key={u.id}
-                      className={`p-5 rounded-3xl border-2 flex items-center justify-between transition-all group ${isLight ? "bg-[#EEB38C]/10 border-[#92664A]/30 hover:border-[#DF8142]/40 shadow-sm" : "bg-[#6C3B1C]/70 border-[#92664A]/20 hover:bg-[#6C3B1C]/80"}`}
+                      className="p-5 rounded-3xl border-2 flex items-center justify-between transition-all group bg-[#EEB38C]/10 border-[#92664A]/30 hover:border-[#DF8142]/40 shadow-sm dark:bg-[#6C3B1C]/70 dark:border-[#92664A]/20 dark:hover:bg-[#6C3B1C]/80"
                     >
                       <div className="flex items-center gap-4">
                         <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] text-white flex items-center justify-center text-[13px] font-black shadow-2xl shadow-[#DF8142]/20">
                           {u.first_name?.[0]}
                         </div>
                         <div>
-                          <p
-                            className={`text-[13px] font-black ${isLight ? "text-[#5A270F]" : "text-white"}`}
-                          >
+                          <p className="text-[13px] font-black text-[#5A270F] dark:text-white">
                             {u.first_name} {u.last_name}
                           </p>
                           <p className="text-[10px] font-black text-[#DF8142] uppercase tracking-wider">
@@ -881,32 +956,25 @@ const Nexus = () => {
 
       {showMembersModal && (
         <div className="fixed inset-0 z-[500] flex items-center justify-center p-6 bg-[#5A270F]/95 backdrop-blur-2xl animate-in fade-in duration-300">
-          <div
-            className={`w-full max-w-[360px] rounded-2xl overflow-hidden shadow-2xl border-2 transition-all ${isLight ? "bg-white border-[#92664A]/30" : "bg-[#5A270F] border-[#EEB38C]/20"} flex flex-col h-[480px]`}
-          >
-            <div
-              className={`p-5 pb-3 shrink-0 flex items-center justify-between border-b ${isLight ? "border-[#92664A]/20" : "border-[#92664A]/20"}`}
-            >
+          <div className="w-full max-w-[360px] rounded-2xl overflow-hidden shadow-2xl border-2 flex flex-col h-[480px] bg-white border-[#92664A]/30 dark:bg-[#5A270F] dark:border-[#EEB38C]/20">
+            <div className="p-3 pb-2 shrink-0 flex items-center justify-between border-b border-[#92664A]/20">
               <div>
-                <h2
-                  className={`text-2xl font-black uppercase tracking-tight ${isLight ? "text-[#5A270F]" : "text-white"}`}
-                >
+                <h2 className="text-lg font-black uppercase tracking-tight text-[#5A270F] dark:text-white">
                   Active Users
                 </h2>
-                <p className="text-[10px] font-black uppercase tracking-widest text-[#DF8142] opacity-50">
+                <p className="text-[8px] font-black uppercase tracking-widest text-[#DF8142] opacity-50">
                   CHANNEL_PARTICIPANTS
                 </p>
               </div>
               <button
                 onClick={() => setShowMembersModal(false)}
                 title="Close Participants View"
-                aria-label="Close"
-                className="h-12 w-12 flex items-center justify-center rounded-2xl bg-[#5A270F]/5 dark:bg-[#6C3B1C]/70 text-[#EEB38C]/70 hover:text-red-500 transition-all"
+                className="h-10 w-10 flex items-center justify-center rounded-xl bg-[#5A270F]/5 dark:bg-[#6C3B1C]/70 text-[#EEB38C]/70 hover:text-red-500 transition-all"
               >
-                <X className="h-7 w-7" />
+                <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto px-6 pb-6 mt-8 space-y-6 custom-scrollbar-thin">
+            <div className="flex-1 overflow-y-auto px-4 pb-4 mt-4 space-y-3 custom-scrollbar-thin">
               {loadingMembers ? (
                 <div className="py-24 flex justify-center">
                   <Loader2 className="h-12 w-12 animate-spin text-[#DF8142] opacity-40" />
@@ -915,28 +983,24 @@ const Nexus = () => {
                 channelMembers.map((m) => (
                   <div
                     key={m.id}
-                    className="flex items-center justify-between group p-2 hover:bg-[#EEB38C]/10 dark:hover:bg-[#6C3B1C]/70 rounded-2xl transition-all"
+                    className="flex items-center justify-between group p-1.5 hover:bg-[#EEB38C]/10 dark:hover:bg-[#6C3B1C]/70 rounded-xl transition-all"
                   >
-                    <div className="flex items-center gap-5">
-                      <div
-                        className={`h-13 w-13 rounded-2xl flex items-center justify-center font-black text-[18px] transition-transform shadow-lg ${isLight ? "bg-white border border-[#92664A]/30 text-[#5A270F]" : "bg-[#6C3B1C]/80 border border-[#EEB38C]/20 text-white"}`}
-                      >
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-lg flex items-center justify-center font-black text-[11px] transition-transform shadow-sm bg-white border border-[#92664A]/30 text-[#5A270F] dark:bg-[#6C3B1C]/80 dark:border-[#EEB38C]/20 dark:text-white">
                         {m.first_name?.[0]}
                       </div>
                       <div className="flex flex-col">
-                        <p
-                          className={`text-[13px] font-black ${isLight ? "text-[#5A270F]" : "text-white"}`}
-                        >
+                        <p className="text-[11px] font-black text-[#5A270F] dark:text-white">
                           {m.first_name} {m.last_name}
                         </p>
-                        <div className="flex items-center gap-3 mt-1">
-                          <p className="text-xs font-black text-[#DF8142] uppercase tracking-widest">
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <p className="text-[9px] font-black text-[#DF8142] uppercase tracking-widest">
                             {getRoleName(m)}
                           </p>
                           {m.id === currentUser?.id && (
-                            <div className="px-2 py-0.5 rounded-full bg-emerald-500/10 flex items-center gap-1.5">
-                              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                              <span className="text-[10px] font-black text-emerald-500 uppercase">
+                            <div className="px-1.5 py-0.5 rounded-full bg-emerald-500/10 flex items-center gap-1">
+                              <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                              <span className="text-[8px] font-black text-emerald-500 uppercase">
                                 You
                               </span>
                             </div>
@@ -948,14 +1012,11 @@ const Nexus = () => {
                 ))
               )}
             </div>
-            <div
-              className={`p-6 border-t flex justify-center ${isLight ? "bg-[#EEB38C]/10 border-[#92664A]/20" : "bg-[#6C3B1C]/70 border-[#92664A]/20"}`}
-            >
+            <div className="p-4 border-t flex justify-center bg-[#EEB38C]/10 border-[#92664A]/20 dark:bg-[#6C3B1C]/70 dark:border-[#92664A]/20">
               <button
                 onClick={() => setShowMembersModal(false)}
-                title="Dismiss View"
-                aria-label="Close members gallery"
-                className={`w-full py-5 rounded-2xl text-xs font-black uppercase tracking-widest border-2 transition-all ${isLight ? "bg-white border-[#EEB38C]/30 text-[#5A270F] shadow-sm hover:text-[#DF8142] hover:border-[#DF8142]" : "bg-[#6C3B1C]/80 border-[#EEB38C]/20 text-[#EEB38C]/80 hover:text-white hover:border-white/20"}`}
+                title="Dismiss Gallery"
+                className="w-full py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border-2 transition-all bg-white border-[#EEB38C]/30 text-[#5A270F] shadow-sm hover:text-[#DF8142] hover:border-[#DF8142] dark:bg-[#6C3B1C]/80 dark:border-[#EEB38C]/20 dark:text-[#EEB38C]/80 dark:hover:text-white dark:hover:border-white/20"
               >
                 Close View
               </button>
