@@ -102,8 +102,8 @@ const Upload = () => {
       newErrors.customStageName = "Custom stage name is required.";
 
     const yearNum = parseInt(metadata.forYearStudents);
-    if (!metadata.forYearStudents.trim() || isNaN(yearNum) || yearNum < 1 || yearNum > 5)
-      newErrors.forYearStudents = "Year must be 1–5.";
+    if (!metadata.forYearStudents.trim() || isNaN(yearNum) || yearNum < 2 || yearNum > 5)
+      newErrors.forYearStudents = "Year must be 2–5.";
 
     if (!metadata.semester.trim()) {
       newErrors.semester = "Semester is required.";
@@ -350,7 +350,7 @@ const Upload = () => {
             {/* Year · Semester · Batch */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
               <div>
-                <label className={labelCls}>Year (1–5)</label>
+                <label className={labelCls}>Year (2–5)</label>
                 <input
                   type="number"
                   name="forYearStudents"
