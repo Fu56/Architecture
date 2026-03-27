@@ -15,7 +15,7 @@ const router = express.Router();
 router.post(
   "/",
   requireAuth,
-  requireRole(["Admin", "SuperAdmin", "Faculty"]),
+  requireRole(["Admin", "SuperAdmin", "Faculty", "DepartmentHead"]),
   upload.single("image"),
   createBlog
 );
@@ -26,14 +26,14 @@ router.get("/:id", getBlog);
 router.put(
   "/:id",
   requireAuth,
-  requireRole(["Admin", "SuperAdmin", "Faculty"]),
+  requireRole(["Admin", "SuperAdmin", "Faculty", "DepartmentHead"]),
   updateBlog
 );
 
 router.delete(
   "/:id",
   requireAuth,
-  requireRole(["Admin", "SuperAdmin", "Faculty"]),
+  requireRole(["Admin", "SuperAdmin", "Faculty", "DepartmentHead"]),
   deleteBlog
 );
 
