@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown, Check } from "lucide-react";
+import { useTheme } from "../../context/useTheme";
 
 interface Option {
   id: string | number;
@@ -27,6 +28,8 @@ const Select: React.FC<SelectProps> = ({
   icon,
   className = "",
 }) => {
+  const { theme } = useTheme();
+  const isLight = theme === "light";
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -74,16 +77,15 @@ const Select: React.FC<SelectProps> = ({
           <ChevronDown className={`h-3.5 w-3.5 text-[#92664A] transition-transform duration-500 ${isOpen ? "rotate-180 text-[#DF8142]" : ""}`} />
         </button>
 
-        {/* Dropdown Menu - Positioned ABOVE the input */}
+        {/* Dropdown Menu - Architectural Glassmorphism */}
         {isOpen && (
           <div 
-            className="absolute z-[999] min-w-full w-max max-w-[calc(100vw-2rem)] right-0 bottom-full mb-2 bg-[#1F0F08] dark:bg-[#1A0B04] border-2 border-[#DF8142]/60 rounded-xl shadow-[0_-25px_60px_-15px_rgba(0,0,0,0.7)] animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-300 backdrop-blur-3xl overflow-hidden"
+            className={`absolute z-[999] min-w-full w-max max-w-[calc(100vw-2rem)] right-0 bottom-full mb-2 border-2 border-[#DF8142]/60 rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-300 backdrop-blur-3xl overflow-hidden ${isLight ? "bg-white/95 shadow-[#5A270F]/20" : "bg-[#1A0B04]/95 shadow-black"}`}
           >
             <div className="max-h-[70vh] overflow-y-auto 
-                            scrollbar-thin scrollbar-thumb-[#DF8142] scrollbar-track-transparent
-                            [&:cc-scrollbar]:w-1 [&:cc-scrollbar-thumb]:bg-[#DF8142] [&:cc-scrollbar-track]:bg-transparent">
+                            scrollbar-thin scrollbar-thumb-[#DF8142] scrollbar-track-transparent">
               {options.length === 0 ? (
-                <div className="px-5 py-4 text-[9px] font-bold text-[#EEB38C]/40 uppercase tracking-[0.2em] text-center">
+                <div className={`px-5 py-4 text-[9px] font-bold uppercase tracking-[0.2em] text-center ${isLight ? "text-[#5A270F]/40" : "text-[#EEB38C]/40"}`}>
                   Void: No protocols found
                 </div>
               ) : (
@@ -95,16 +97,16 @@ const Select: React.FC<SelectProps> = ({
                         key={option.id}
                         type="button"
                         onClick={() => handleSelect(option.id)}
-                        className={`w-full flex items-center justify-between gap-4 px-4 py-1.5 text-left transition-all duration-200 group
-                                   ${index !== options.length - 1 ? "border-b border-white/5" : ""}
+                        className={`w-full flex items-center justify-between gap-4 px-4 py-3 text-left transition-all duration-200 group
+                                   ${index !== options.length - 1 ? (isLight ? "border-b border-[#92664A]/10" : "border-b border-white/5") : ""}
                                    ${isSelected 
                                      ? "bg-[#DF8142] text-white" 
-                                     : "text-[#EEB38C]/80 hover:bg-[#DF8142]/10"}`}
+                                     : isLight ? "text-[#5A270F] hover:bg-[#DF8142]/5" : "text-[#EEB38C]/80 hover:bg-[#DF8142]/10"}`}
                       >
-                        <span className="text-[8.5px] font-black uppercase tracking-[0.15em] leading-tight">
+                        <span className="text-[10px] font-black uppercase tracking-[0.15em] leading-tight">
                           {option.name}
                         </span>
-                        {isSelected && <Check className="h-2 w-2 text-white flex-shrink-0" />}
+                        {isSelected && <Check className="h-3 w-3 text-white flex-shrink-0" />}
                       </button>
                     );
                   })}

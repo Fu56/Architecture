@@ -7,16 +7,17 @@ import {
   ServerCrash,
   Download,
   Eye,
-  Clock,
   Star,
   ShieldAlert,
   ArrowLeft,
-  Box,
   RotateCcw,
   Trash2,
   ChevronRight,
   ShieldCheck,
-  Zap
+  Zap,
+  User,
+  FileText,
+  Share2,
 } from "lucide-react";
 import { isAuthenticated, currentRole } from "../../lib/auth";
 import { toast } from "../../lib/toast";
@@ -31,6 +32,7 @@ const ResourceDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  
   const [resource, setResource] = useState<Resource | null>(null);
   const [recentResources, setRecentResources] = useState<Resource[]>([]);
   const [comments, setComments] = useState<CommentModel[]>([]);
@@ -50,12 +52,9 @@ const ResourceDetails = () => {
   const [submittingComment, setSubmittingComment] = useState(false);
 
   const role = currentRole();
-  const isAuthorizedManager =
-    role === "DepartmentHead" || role === "SuperAdmin";
+  const isAuthorizedManager = role === "DepartmentHead" || role === "SuperAdmin";
   const isAuth = isAuthenticated();
-  const isNested =
-    location.pathname.startsWith("/dashboard") ||
-    location.pathname.startsWith("/admin");
+  const isNested = location.pathname.startsWith("/dashboard") || location.pathname.startsWith("/admin");
 
   useEffect(() => {
     if (isAuth && !isNested) {
@@ -79,33 +78,24 @@ const ResourceDetails = () => {
 
         const { data: recentData } = await api.get("/resources?limit=5");
         if (Array.isArray(recentData)) {
-          setRecentResources(
-            recentData.filter((r: Resource) => r.id !== Number(id)),
-          );
+          setRecentResources(recentData.filter((r: Resource) => r.id !== Number(id)));
         }
 
         if (data.ratings && data.ratings.length > 0) {
-          const sum = data.ratings.reduce(
-            (acc: number, r: Rating) => acc + r.rate,
-            0,
-          );
+          const sum = data.ratings.reduce((acc: number, r: Rating) => acc + r.rate, 0);
           setAverageRating(sum / data.ratings.length);
           setRatingCount(data.ratings.length);
 
           const userStr = localStorage.getItem("user");
           if (userStr) {
             const currentUser = JSON.parse(userStr);
-            const myRating = data.ratings.find(
-              (r: Rating) => r.user_id === currentUser.id,
-            );
+            const myRating = data.ratings.find((r: Rating) => r.user_id === currentUser.id);
             if (myRating) setUserRating(myRating.rate);
           }
         }
       } catch (err) {
         console.error("Failed to fetch resource details:", err);
-        setError(
-          "Access Denied: The requested asset node could not be localized or has been neutralized.",
-        );
+        setError("The requested architectural asset could not be retrieved from the nexus at this time.");
       } finally {
         setLoading(false);
       }
@@ -115,21 +105,14 @@ const ResourceDetails = () => {
 
   const handleRatingClick = (rateValue: number) => {
     if (!isAuth) {
-      toast.info("Authentication verified required for evaluation protocols");
+      toast.info("Authentication is required to participate in project evaluations");
       return;
     }
     setPendingRating(rateValue);
   };
 
   const handleSubmitEvaluation = async () => {
-    if (!isAuth) {
-      toast.info("Authentication verified required for evaluation protocols");
-      return;
-    }
-    if (pendingRating === 0) {
-      toast.error("Evaluation Error: No technical valuation selected");
-      return;
-    }
+    if (!isAuth || pendingRating === 0) return;
 
     setSubmittingEvaluation(true);
     try {
@@ -144,24 +127,19 @@ const ResourceDetails = () => {
         setComments(updatedResource.comments || []);
       }
 
-      toast.success(`Evaluation Broadcasted: Registry updated`);
-
+      toast.success(`Broadcasting evaluation complete. Thank you for your review.`);
       const { data } = await api.get(`/resources/${id}`);
       if (data.ratings && data.ratings.length > 0) {
-        const sum = data.ratings.reduce(
-          (acc: number, r: Rating) => acc + r.rate,
-          0,
-        );
+        const sum = data.ratings.reduce((acc: number, r: Rating) => acc + r.rate, 0);
         setAverageRating(sum / data.ratings.length);
         setRatingCount(data.ratings.length);
       }
 
       setEvaluationComment("");
       setPendingRating(0);
-    } catch (error) {
-      console.error("Failed to broadcast evaluation", error);
-      toast.error("Global Nexus Error: Evaluation transmission failed");
-    } finally {
+    } catch {
+        toast.error("Evaluation transmission failed. Please try again.");
+      } finally {
       setSubmittingEvaluation(false);
     }
   };
@@ -172,58 +150,53 @@ const ResourceDetails = () => {
 
     setSubmittingComment(true);
     try {
-      await api.post(`/resources/${id}/comments`, {
-        text: newComment,
-      });
-      toast.success("Intelligence logged to the community nexus");
+      await api.post(`/resources/${id}/comments`, { text: newComment });
+      toast.success("Intelligence successfully synchronized with the project nexus.");
       const { data: updatedResource } = await api.get(`/resources/${id}`);
       setComments(updatedResource.comments || []);
       setNewComment("");
-    } catch (error) {
-      console.error("Failed to submit comment:", error);
-      toast.error("Nexus Error: Communication packet rejected");
-    } finally {
+    } catch {
+        toast.error("Communication packet rejected. Check your connection.");
+      } finally {
       setSubmittingComment(false);
     }
   };
 
   const handleArchive = async () => {
-    toast(`Archive this node?`, {
-      description: "This resource will be sequestered. Student access will be terminated.",
+    toast(`Archive this asset?`, {
+      description: "Project visibility will be restricted to administrative roles only.",
       action: {
-        label: "Archive Node",
+        label: "Archive",
         onClick: async () => {
           try {
             await api.patch(`/admin/resources/${id}/archive`);
-            toast.success("Resource archived in the system matrix");
+            toast.success("Asset sequestered successfully");
             const { data } = await api.get(`/resources/${id}`);
             setResource(data);
           } catch {
-            toast.error("Protocol Error: Failed to archive node");
+            toast.error("Failed to archive asset node");
           }
         }
-      },
-      cancel: { label: "Abort", onClick: () => {} }
+      }
     });
   };
 
   const handleRestore = async () => {
-    toast(`Restore this node?`, {
-        description: "Re-activating this resource will restores student access permissions.",
+    toast(`Restore this asset?`, {
+        description: "Standard access permissions will be restored for all users.",
         action: {
-          label: "Restore Node",
+          label: "Restore",
           onClick: async () => {
             try {
               await api.patch(`/admin/resources/${id}/restore`);
-              toast.success("Resource restored to the active library");
+              toast.success("Asset restored to the active registry");
               const { data } = await api.get(`/resources/${id}`);
               setResource(data);
             } catch {
-              toast.error("Protocol Error: Failed to restore node");
+              toast.error("Failed to restore asset presence");
             }
           }
-        },
-        cancel: { label: "Abort", onClick: () => {} }
+        }
     });
   };
 
@@ -232,431 +205,283 @@ const ResourceDetails = () => {
     const newIsPublic = !resource.is_public;
     try {
       await api.patch(`/admin/resources/${id}/status`, { is_public: newIsPublic });
-      toast.success(`Visibility Protocol Updated: Resource is now ${newIsPublic ? 'Public' : 'Private'}`);
+      toast.success(`Visibility: ${newIsPublic ? 'Global Presence' : 'Internal Only'}`);
       setResource({ ...resource, is_public: newIsPublic });
     } catch {
-      toast.error("Security Breach: Failed to update visibility signature");
+      toast.error("Failed to update visibility signature");
     }
   };
 
   if (loading) {
     return (
-      <div className="flex flex-col justify-center items-center py-40">
-        <div className="relative mb-10">
-          <div className="absolute inset-0 bg-[#DF8142] blur-3xl opacity-20 animate-pulse" />
-          <Loader2 className="h-20 w-20 animate-spin text-[#DF8142] relative z-10" />
-        </div>
-        <p className="text-[10px] font-black uppercase tracking-[0.6em] text-[#5A270F]/40 dark:text-white/40 animate-pulse">
-          Synchronizing Nexus Core...
+      <div className="flex flex-col justify-center items-center py-40 bg-[#FAF8F4] dark:bg-[#0C0603] min-h-screen">
+        <Loader2 className="h-16 w-16 animate-spin text-[#DF8142] mb-6" />
+        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#5A270F]/40 dark:text-[#EEB38C]/40 animate-pulse">
+          Retrieving Architectural Core
         </p>
       </div>
     );
   }
 
-  if (error) {
+  if (error || !resource) {
     return (
-      <div className={`${isNested ? "" : "container mx-auto px-4"} py-24`}>
-        <div className="bg-[#5A270F] p-24 rounded-[4rem] text-center border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] relative overflow-hidden">
-          <div className="absolute inset-0 architectural-dot-grid opacity-10" />
-          <ServerCrash className="h-24 w-24 text-rose-500 mx-auto mb-10 animate-bounce" />
-          <h2 className="text-4xl font-black text-white mb-6 uppercase tracking-tighter italic">
-            NODE SEIZURE DETECTED
-          </h2>
-          <p className="mt-2 text-[#EEB38C]/60 font-bold uppercase tracking-widest text-xs max-w-md mx-auto leading-relaxed">
-            {error}
-          </p>
-          <button
-            onClick={() => navigate(-1)}
-            className="mt-12 px-12 py-5 bg-white text-[#5A270F] rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] hover:bg-[#EEB38C] transition-all transform active:scale-95 shadow-2xl"
-          >
-            Emergency Extraction
-          </button>
+      <div className="flex flex-col items-center justify-center py-40 px-6 text-center bg-[#FAF8F4] dark:bg-[#0C0603] min-h-screen">
+        <div className="mb-8 p-10 bg-white dark:bg-white/5 rounded-[3rem] shadow-2xl">
+          <ServerCrash className="h-20 w-20 text-red-500 mx-auto mb-6" />
+          <h2 className="text-3xl font-black text-[#5A270F] dark:text-white uppercase tracking-tighter italic mb-4">Registry Fault</h2>
+          <p className="max-w-md text-[#92664A] dark:text-[#EEB38C]/60 text-sm font-medium italic">{error || "Asset not found."}</p>
         </div>
+        <button onClick={() => navigate(-1)} className="px-10 py-4 bg-[#5A270F] text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#DF8142] transition-all">
+          Return to Library
+        </button>
       </div>
     );
   }
 
-  if (!resource) return null;
-
   return (
-    <div className={`${isNested ? "" : "max-w-5xl mx-auto px-2 py-2"} animate-in fade-in duration-700 bg-[#FAF8F4] dark:bg-[#0C0603] font-inter selection:bg-[#DF8142]/20`}>
-      {/* ── Page Header & Navigation ── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-1.5 mb-4 px-1 border-b border-[#D9D9C2]/20 pb-2">
-        <div className="space-y-0.5">
-           <button
-            onClick={() => isNested ? navigate(-1) : navigate("/browse")}
-            className="group flex items-center gap-1 text-[6.5px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-[#EEB38C]/40 hover:text-[#DF8142] transition-all"
-          >
-            <ArrowLeft className="h-2.5 w-2.5 group-hover:-translate-x-1 transition-transform" />
-            PROTOCOL_EXIT
-          </button>
-          <div className="flex items-center gap-1.5">
-            <div className="h-0.5 w-6 bg-[#DF8142] rounded-full" />
-            <h4 className="text-[7.5px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C]">SPECIFICATION_NODE//TX-{id}</h4>
-          </div>
+    <div className={`min-h-screen bg-[#FAF8F4] dark:bg-[#0C0603] selection:bg-[#DF8142]/30 transition-colors duration-700`}>
+      {/* ── Dynamic Top Navigation Bar ── */}
+      <nav className="sticky top-0 z-50 backdrop-blur-3xl border-b border-[#92664A]/10 dark:border-white/5 py-4 px-6 md:px-12 flex items-center justify-between">
+        <button 
+          onClick={() => navigate("/browse")} 
+          title="Return to Collection"
+          className="group flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] hover:text-[#DF8142] transition-all"
+        >
+          <ArrowLeft className="h-5 w-5 group-hover:-translate-x-2 transition-transform" />
+          Back to Collection
+        </button>
+        <div className="flex items-center gap-4">
+           <div className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border transition-colors ${resource.status === 'archived' ? 'bg-red-500/10 border-red-500/20 text-red-500' : 'bg-[#DF8142]/10 border-[#DF8142]/20 text-[#DF8142]'}`}>
+             {resource.status}
+           </div>
+           <button title="Share Project" className="h-10 w-10 flex items-center justify-center rounded-full border border-neutral-200 dark:border-white/10 hover:bg-white dark:hover:bg-white/5 transition-all">
+             <Share2 className="h-4 w-4 text-[#5A270F] dark:text-white" />
+           </button>
         </div>
-        
-        <div className="flex items-center gap-2">
-          <div className="px-2 py-0.5 bg-white dark:bg-[#1A0B02] border border-[#D9D9C2] dark:border-white/5 rounded-full flex items-center gap-2 shadow-sm border-dashed">
-             <div className="flex items-center gap-1">
-                <div className={`h-1 w-1 rounded-full ${resource.status === 'archived' ? 'bg-rose-500' : 'bg-[#DF8142]'} animate-pulse`} />
-                <span className="text-[6.5px] font-black uppercase tracking-widest text-[#5A270F] dark:text-white/60">STATE: {resource.status?.toUpperCase()}</span>
-             </div>
-             <div className="h-2 w-px bg-[#D9D9C2] dark:bg-white/10" />
-             <span className="text-[6.5px] font-black text-[#92664A] uppercase tracking-widest leading-none">V_1.0.4</span>
-          </div>
-        </div>
-      </div>
+      </nav>
 
-      <div className="grid lg:grid-cols-12 gap-4 items-start">
-        {/* ── Main Intel Column ── */}
-        <div className="lg:col-span-8 space-y-4">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-12">
+        <div className="grid lg:grid-cols-12 gap-16 items-start">
           
-          {/* Hyper-Compact Title Node */}
-          <section className="relative group p-4 rounded-xl bg-white dark:bg-[#1A0B02]/40 border border-[#D9D9C2] dark:border-white/5 overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 blueprint-grid opacity-5 -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 text-[40px] font-black text-[#5A270F]/5 dark:text-white/5 uppercase select-none pointer-events-none tracking-tighter translate-y-4">
-              CORE
-            </div>
+          {/* ── Primary Information Architecture (LHS) ── */}
+          <div className="lg:col-span-8 space-y-16">
             
-            <div className="relative z-10">
-              <div className="flex items-center gap-1.5 mb-2">
-                 <span className="px-1.5 py-0.5 bg-[#5A270F] text-[#EEB38C] text-[6px] font-black uppercase tracking-[0.2em] rounded">SYSTEM_PRIMARY</span>
-                 <div className="h-px flex-1 bg-gradient-to-r from-[#D9D9C2] to-transparent dark:from-white/10" />
+            {/* 1. The Hero Specification Section */}
+            <header className="relative group">
+              <div className="flex items-end gap-6 mb-8">
+                <div className="w-16 h-1 bg-[#DF8142]" />
+                <span className="text-[11px] font-black uppercase tracking-[0.4em] text-[#DF8142]/60">Project Specification</span>
               </div>
               
-              <h1 className="text-xl md:text-2xl font-black text-[#5A270F] dark:text-white tracking-tighter uppercase leading-[0.9] italic mb-4 drop-shadow-sm">
+              <h1 className="text-5xl md:text-7xl font-black text-[#5A270F] dark:text-white tracking-tighter uppercase leading-[0.85] mb-12">
                 {resource.title}
               </h1>
-              
-              <div className="flex flex-wrap gap-4">
-                <div className="space-y-0.5">
-                   <p className="text-[6px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.2em]">Authorized Principal</p>
-                   <p className="text-[10px] font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tight italic flex items-center gap-1">
-                     <span className="h-1 w-1 bg-[#DF8142] rounded-full" />
-                     {resource.author}
-                   </p>
+
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-12 border-y border-[#92664A]/10 dark:border-white/5 py-10">
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black text-[#92664A] uppercase tracking-widest opacity-40">Primary Architect</p>
+                  <p className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] uppercase flex items-center gap-3">
+                    <User className="h-5 w-5 text-[#DF8142]" />
+                    {resource.author}
+                  </p>
                 </div>
-                <div className="w-px h-6 bg-[#D9D9C2] dark:bg-white/10 hidden sm:block" />
-                <div className="space-y-0.5">
-                   <p className="text-[6px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.2em]">Temporal Stamp</p>
-                   <p className="text-[10px] font-black text-[#5A270F] dark:text-white/50 uppercase tracking-tight">
-                     {new Date(resource.uploadedAt).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' })}
-                   </p>
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black text-[#92664A] uppercase tracking-widest opacity-40">Project Stage</p>
+                  <p className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] uppercase flex items-center gap-3 italic">
+                    <Zap className="h-5 w-5 text-[#DF8142]" />
+                    {resource.designStage?.name || "Internal Study"}
+                  </p>
                 </div>
-                {resource.designStage && (
-                  <>
-                    <div className="w-px h-6 bg-[#D9D9C2] dark:bg-white/10 hidden sm:block" />
-                    <div className="space-y-0.5">
-                       <p className="text-[6px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.2em]">Phased Alignment</p>
-                       <p className="text-[10px] font-black text-[#DF8142] uppercase tracking-tight italic drop-shadow-sm">{resource.designStage.name}</p>
-                    </div>
-                  </>
-                )}
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black text-[#92664A] uppercase tracking-widest opacity-40">Classification</p>
+                  <p className="text-xl font-black text-[#5A270F] dark:text-[#EEB38C] uppercase flex items-center gap-3">
+                    <FileText className="h-5 w-5 text-[#DF8142]" />
+                    {resource.fileType?.split('/').pop()?.toUpperCase() || "ASSET"}
+                  </p>
+                </div>
               </div>
-            </div>
-          </section>
+            </header>
 
-          {/* Admin Context Directive - Shrunk */}
-          {resource.adminComment && (
-            <div className="bg-[#5A270F] dark:bg-[#1A0B02] p-3 rounded-xl shadow-lg relative overflow-hidden group border border-white/5">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/10 blur-[40px] -translate-y-1/2 translate-x-1/2" />
-               <div className="relative z-10 flex items-start gap-3">
-                  <div className="h-8 w-8 shrink-0 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-[#DF8142]">
-                    <ShieldAlert className="h-3.5 w-3.5 animate-pulse" />
+            {/* 2. Qualitative Intelligence Section (Review) */}
+            <section className="bg-white dark:bg-[#150A05] rounded-[3rem] p-12 shadow-2xl shadow-[#5A270F]/5 relative overflow-hidden group border border-[#92664A]/5">
+              <div className="absolute top-0 right-0 w-full h-full architectural-dot-grid opacity-[0.03] pointer-events-none" />
+              <div className="relative z-10">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-black text-[#5A270F] dark:text-white uppercase tracking-tighter">Peer Evaluation</h3>
+                    <p className="text-sm text-[#92664A] dark:text-[#EEB38C]/40 italic font-medium">Contribute to the collective project intelligence.</p>
                   </div>
-                  <div className="space-y-0.5">
-                    <h5 className="text-[6.5px] font-black uppercase tracking-[0.3em] text-[#EEB38C]">Operations Command Directive</h5>
-                    <p className="text-sm text-white italic font-medium leading-tight max-w-xl opacity-90 border-l border-[#DF8142]/40 pl-3">
-                      "{resource.adminComment}"
-                    </p>
+                  <div className="flex items-center gap-6 bg-[#FAF8F4] dark:bg-black/40 px-8 py-5 rounded-3xl border border-[#92664A]/10">
+                    <div className="text-center">
+                      <p className="text-4xl font-black text-[#5A270F] dark:text-[#DF8142] tracking-tighter">{averageRating.toFixed(1)}</p>
+                      <p className="text-[9px] font-black uppercase text-[#92664A]">Score</p>
+                    </div>
+                    <div className="w-px h-12 bg-[#92664A]/20" />
+                    <div className="text-center">
+                      <p className="text-4xl font-black text-[#5A270F] dark:text-[#DF8142] tracking-tighter">{ratingCount}</p>
+                      <p className="text-[9px] font-black uppercase text-[#92664A]">Reviews</p>
+                    </div>
                   </div>
-               </div>
-            </div>
-          )}
-
-          {/* Technical Core Parameters - Compact Grid */}
-          <section className="bg-white dark:bg-[#1A0100]/40 p-4 rounded-xl border border-[#D9D9C2] dark:border-white/5 shadow-md relative overflow-hidden group">
-             <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-[#DF8142] to-transparent opacity-30" />
-             <div className="relative z-10">
-                <div className="flex items-center justify-between mb-4">
-                   <div className="flex items-center gap-2">
-                      <div className="h-6 w-6 rounded-lg bg-[#5A270F] flex items-center justify-center text-[#EEB38C] shadow-md">
-                        <Box className="h-3 w-3" />
-                      </div>
-                      <h3 className="text-[8px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C]">TECHNICAL_CORE_PARAMETERS</h3>
-                   </div>
-                   <div className="flex gap-0.5">
-                      <div className="h-0.5 w-4 bg-[#DF8142] rounded-full" />
-                      <div className="h-0.5 w-1 bg-[#D9D9C2] rounded-full" />
-                   </div>
                 </div>
-                
-                <div className="grid md:grid-cols-2 gap-6">
-                   <div className="space-y-2">
-                      {[
-                        { label: 'Asset Payload', value: resource.fileSize > 1048576 ? `${(resource.fileSize/1048576).toFixed(2)}` : `${(resource.fileSize/1024).toFixed(2)}`, unit: resource.fileSize > 1048576 ? 'MB' : 'KB', color: '[#5A270F]' },
-                        { label: 'Node Extension', value: resource.fileType?.toUpperCase() || 'FMT', unit: 'FMT', color: '[#DF8142]' },
-                        { label: 'Academic Year', value: `0${resource.forYearStudents}`, unit: 'LVL', color: '[#6C3B1C]' },
-                        { label: 'Batch Registry', value: resource.batchYear || '2024', unit: 'CYC', color: '[#92664A]' }
-                      ].map((item, i) => (
-                        <div key={i} className="flex justify-between items-end pb-1 border-b border-[#D9D9C2]/20 dark:border-white/5 group/line">
-                          <span className="text-[7.5px] font-black uppercase tracking-[0.2em] text-[#92664A]/60 dark:text-white/20 group-hover/line:text-[#DF8142] transition-colors">{item.label}</span>
-                          <div className="flex items-baseline gap-1">
-                             <span className={`text-[11px] font-black text-${item.color} dark:text-white uppercase tracking-tighter italic`}>{item.value}</span>
-                             <span className="text-[6.5px] font-black text-[#92664A]/40">{item.unit}</span>
-                          </div>
-                        </div>
-                      ))}
-                   </div>
 
-                   <div className="flex flex-col justify-end gap-1.5">
-                      <a
-                        href={`${import.meta.env.VITE_API_URL}/resources/${id}/view?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
-                        target="_blank" rel="noreferrer"
-                        className="h-10 flex items-center justify-center gap-2 bg-[#5A270F] text-white rounded-lg text-[8px] font-black uppercase tracking-[0.2em] hover:bg-[#6C3B1C] transition-all group/btn shadow-md"
+                <div className="space-y-8">
+                  <div className="flex items-center gap-3">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        title={`Rate ${star} Star${star > 1 ? 's' : ''}`}
+                        onMouseEnter={() => setHoverRating(star)}
+                        onMouseLeave={() => setHoverRating(0)}
+                        onClick={() => handleRatingClick(star)}
+                        className="transition-transform duration-500 hover:scale-125 hover:rotate-6"
                       >
-                        <Eye className="h-3.5 w-3.5 text-[#EEB38C] group-hover/btn:scale-110 transition-transform" />
-                        Visual Scan
-                      </a>
-                      <a
-                        href={`${import.meta.env.VITE_API_URL}/resources/${id}/download?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
-                        className="h-10 flex items-center justify-center gap-2 bg-[#DF8142] text-white rounded-lg text-[8px] font-black uppercase tracking-[0.2em] hover:bg-[#5A270F] transition-all shadow-md"
-                      >
-                        <Download className="h-3.5 w-3.5" />
-                        Archive Uplink
-                      </a>
-                   </div>
-                </div>
-             </div>
-          </section>
+                        <Star className={`h-8 w-8 ${ (hoverRating || pendingRating || userRating || Math.round(averageRating)) >= star ? "text-[#DF8142] fill-[#DF8142]" : "text-neutral-200 dark:text-white/5" }`} />
+                      </button>
+                    ))}
+                  </div>
 
-          {/* Qualitative Evaluation Node - Compressed */}
-          {(resource.status === "approved" || resource.status === "student") && (
-            <section className="bg-white dark:bg-[#1A0B02]/30 rounded-xl border border-[#D9D9C2] dark:border-white/5 p-4 relative overflow-hidden shadow-lg">
-               <div className="relative z-10 flex flex-col xl:flex-row gap-6 items-center">
-                  <div className="flex-1 space-y-4 w-full">
-                    <div className="space-y-0.5">
-                       <h3 className="text-[8.5px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C]">QUALITATIVE_SCAN_NODE</h3>
-                       <p className="text-[7.5px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.2em]">Intelligence synchronization</p>
-                    </div>
-                    
-                    <div className="flex items-center gap-2">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          key={star}
-                          title={`Rate ${star} star${star > 1 ? 's' : ''}`}
-                          onMouseEnter={() => setHoverRating(star)}
-                          onMouseLeave={() => setHoverRating(0)}
-                          onClick={() => handleRatingClick(star)}
-                          className="focus:outline-none transition-all hover:scale-110 group/star disabled:opacity-30 relative"
-                          disabled={!isAuth || submittingEvaluation}
-                        >
-                          <Star
-                            className={`h-5 w-5 ${
-                              (hoverRating || pendingRating || userRating || Math.round(averageRating)) >= star
-                                ? "text-[#DF8142] fill-[#DF8142]"
-                                : "text-[#D9D9C2] dark:text-white/5"
-                            } transition-all duration-300`}
-                          />
-                        </button>
-                      ))}
-                    </div>
-
-                    <div className="relative group">
-                      <textarea 
-                        rows={2}
-                        value={evaluationComment}
-                        onChange={(e) => setEvaluationComment(e.target.value)}
-                        placeholder="Technical insight node..."
-                        className="w-full bg-[#FAF8F4] dark:bg-black/20 border border-[#D9D9C2] dark:border-white/5 rounded-lg p-3 text-[10px] font-bold text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all placeholder:text-[#92664A]/30"
-                      />
-                    </div>
-                    
+                  <div className="relative">
+                    <textarea 
+                      rows={3}
+                      value={evaluationComment}
+                      onChange={(e) => setEvaluationComment(e.target.value)}
+                      placeholder="Share your technical expertise or design insights..."
+                      className="w-full bg-white dark:bg-black/20 border-2 border-[#FAF8F4] dark:border-white/5 rounded-[2rem] p-6 text-base font-medium text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all shadow-inner"
+                    />
                     <button
                       onClick={handleSubmitEvaluation}
                       disabled={submittingEvaluation || !isAuth || pendingRating === 0}
-                      className="w-full xl:w-auto px-6 py-2 bg-[#5A270F] text-[#EEB38C] rounded-lg text-[8px] font-black uppercase tracking-[0.3em] hover:bg-[#DF8142] hover:text-white transition-all shadow-md active:scale-95 disabled:opacity-30"
+                      className="mt-6 px-12 py-5 bg-[#5A270F] text-[#EEB38C] rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-[#DF8142] hover:text-white shadow-xl transition-all active:scale-95 disabled:opacity-30"
                     >
-                      {submittingEvaluation ? <Loader2 className="h-3 w-3 animate-spin mx-auto" /> : "BROADCAST_EVALUATION"}
+                      Broadcast Evaluation
                     </button>
                   </div>
-
-                  <div className="w-full xl:w-48 space-y-4 bg-[#FAF8F4] dark:bg-black/40 p-4 rounded-xl border border-[#D9D9C2] dark:border-white/5 shadow-inner relative overflow-hidden group/readout">
-                     <div className="text-center relative z-10">
-                        <p className="text-[7.5px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em] mb-2">NEXUS_AGGREGATE</p>
-                        <div className="flex items-baseline justify-center gap-1">
-                           <span className="text-3xl font-black text-[#5A270F] dark:text-[#DF8142] tracking-tighter italic">{averageRating.toFixed(1)}</span>
-                           <span className="text-[10px] font-black text-[#92664A] uppercase">/ 5.0</span>
-                        </div>
-                     </div>
-                     <div className="space-y-2 pt-4 border-t border-[#D9D9C2] dark:border-white/10 relative z-10">
-                        <div className="flex justify-between items-center text-[7.5px] font-black uppercase tracking-[0.2em] text-[#5A270F]/60 dark:text-white/40">
-                           <span>LOG_COUNT</span>
-                           <span className="text-[#5A270F] dark:text-[#EEB38C] font-mono font-black">{(ratingCount || 0).toString().padStart(3, '0')}</span>
-                        </div>
-                         <div className="h-1.5 w-full bg-white dark:bg-white/5 rounded-full overflow-hidden border border-[#D9D9C2]/20 dark:border-white/5 shadow-inner">
-                            <div 
-                               className={`h-full bg-gradient-to-r from-[#5A270F] via-[#DF8142] to-[#EEB38C] rounded-full transition-all duration-1000 ease-out ${
-                                  averageRating >= 5 ? 'w-full' :
-                                  averageRating >= 4.5 ? 'w-[90%]' :
-                                  averageRating >= 4 ? 'w-[80%]' :
-                                  averageRating >= 3.5 ? 'w-[70%]' :
-                                  averageRating >= 3 ? 'w-[60%]' :
-                                  averageRating >= 2.5 ? 'w-[50%]' :
-                                  averageRating >= 2 ? 'w-[40%]' :
-                                  averageRating >= 1.5 ? 'w-[30%]' :
-                                  averageRating >= 1 ? 'w-[20%]' :
-                                  averageRating >= 0.5 ? 'w-[10%]' : 'w-0'
-                               }`}
-                            />
-                         </div>
-                     </div>
-                  </div>
-               </div>
-            </section>
-          )}
-
-          {/* Intelligence Synchronization Cluster - Tightened */}
-          <div className="space-y-4">
-            <div className="flex items-end justify-between gap-4 border-b-2 border-[#5A270F] pb-2">
-               <div className="space-y-0.5">
-                  <h2 className="text-lg font-black text-[#5A270F] dark:text-white tracking-tighter uppercase italic leading-none">
-                    CORE_<span className="text-[#DF8142]">INTELLIGENCE</span>
-                  </h2>
-                  <p className="text-[7.5px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.3em]">Peer insight cluster</p>
-               </div>
-               <div className="px-4 py-1.5 bg-[#5A270F] rounded-lg text-[8px] font-black text-[#EEB38C] uppercase tracking-[0.2em] shadow-md">
-                LOGS: {comments.length.toString().padStart(3, '0')}
+                </div>
               </div>
-            </div>
+            </section>
 
-            <form onSubmit={handleSubmitComment} className="flex gap-2">
-              <input
-                type="text"
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Technical packet..."
-                className="flex-grow bg-white dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded-lg px-4 py-2 text-[10px] font-bold text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all shadow-sm placeholder:text-[#92664A]/20"
-              />
-              <button
-                type="submit"
-                disabled={submittingComment || !newComment.trim()}
-                className="px-6 bg-[#5A270F] text-[#EEB38C] rounded-lg text-[8px] font-black uppercase tracking-[0.2em] hover:bg-[#6C3B1C] transition-all shadow-md min-w-[100px]"
-              >
-                {submittingComment ? <Loader2 className="h-3 w-3 animate-spin" /> : "TRANSMIT"}
-              </button>
-            </form>
+            {/* 3. Global Synchronized Commentary */}
+            <section className="space-y-10">
+              <div className="flex items-center justify-between border-b pb-6 border-[#92664A]/10">
+                <h3 className="text-2xl font-black text-[#5A270F] dark:text-white uppercase tracking-tighter">Project Nexus <span className="text-[#DF8142]">Feed</span></h3>
+                <span className="px-4 py-2 bg-[#5A270F] text-[#EEB38C] rounded-xl text-[10px] font-black uppercase tracking-widest">{comments.length} Log Entries</span>
+              </div>
 
-            <div className="grid gap-2">
-              {comments.map((comment) => (
-                <div key={comment.id} className="bg-white dark:bg-[#1A0100]/60 p-3 rounded-lg border border-[#D9D9C2] dark:border-white/10 shadow-sm flex gap-4 items-start group hover:bg-[#FAF8F4] transition-all">
-                  <div className="h-8 w-8 shrink-0 rounded-lg bg-[#5A270F] flex items-center justify-center text-[#EEB38C] text-sm font-black shadow-md">
-                    {(comment.user.first_name || comment.user.firstName)?.[0]}
-                  </div>
-                  <div className="space-y-1 flex-grow">
-                    <div className="flex items-center gap-3">
-                       <p className="text-[10px] font-black text-[#5A270F] dark:text-white uppercase tracking-tighter italic">
-                         {comment.user.first_name || comment.user.firstName}
-                       </p>
-                       <p className="text-[6.5px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-widest">
-                         SYNC_{new Date(comment.createdAt).toLocaleDateString()}
-                       </p>
+              <form onSubmit={handleSubmitComment} className="flex gap-4">
+                <input
+                  type="text"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Annotate technical insights..."
+                  className="flex-grow bg-white dark:bg-white/5 border border-[#92664A]/20 dark:border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-[#5A270F] dark:text-white outline-none focus:border-[#DF8142] transition-all"
+                />
+                <button type="submit" disabled={submittingComment || !newComment.trim()} className="px-10 bg-[#5A270F] text-[#EEB38C] rounded-2xl font-black uppercase tracking-[0.15em] text-[11px] hover:bg-[#6C3B1C] shadow-lg">
+                  Transmit
+                </button>
+              </form>
+
+              <div className="grid gap-6">
+                {comments.map((comment) => (
+                  <div key={comment.id} className="bg-white dark:bg-white/5 p-8 rounded-[2rem] border border-[#92664A]/5 hover:border-[#DF8142]/30 transition-all group">
+                    <div className="flex gap-6 items-start">
+                      <div className="h-14 w-14 rounded-2xl bg-[#5A270F] flex items-center justify-center text-[#EEB38C] text-xl font-black shadow-lg">
+                        {(comment.user.first_name || comment.user.firstName)?.[0]}
+                      </div>
+                      <div className="space-y-3 flex-grow">
+                        <div className="flex items-center justify-between">
+                          <p className="text-lg font-black text-[#5A270F] dark:text-white uppercase tracking-tighter italic">
+                            {comment.user.first_name || comment.user.firstName} {comment.user.last_name || comment.user.lastName}
+                          </p>
+                          <p className="text-[10px] font-black text-[#92664A] dark:text-white/20 uppercase tracking-[0.2em]">
+                            {new Date(comment.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <p className="text-base text-[#5A270F]/80 dark:text-[#EEB38C]/80 italic leading-relaxed font-medium">"{comment.text}"</p>
+                      </div>
                     </div>
-                    <p className="text-[10px] font-medium text-[#5A270F]/80 dark:text-[#EEB38C]/80 leading-tight italic border-l border-[#DF8142]/20 pl-3">"{comment.text}"</p>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </section>
           </div>
-        </div>
 
-        {/* ── Control Center Sidebar - Hyper Compact ── */}
-        <div className="lg:col-span-4 space-y-4 lg:sticky lg:top-4">
-          
-          <div className="bg-[#1A0B03] p-4 rounded-xl text-white relative overflow-hidden shadow-xl border border-white/5">
-             <div className="absolute top-0 left-0 w-full h-full architectural-dot-grid opacity-[0.03]" />
-             <div className="relative z-10 space-y-4">
-                <div className="space-y-0.5">
-                   <div className="flex items-center gap-1.5 mb-1">
-                      <div className="h-1 w-1 bg-[#DF8142] rounded-full animate-pulse" />
-                      <h4 className="text-[8px] font-black uppercase tracking-[0.3em] text-[#EEB38C]">SECURITY_LAYER</h4>
-                   </div>
-                   <p className="text-[8px] font-bold text-white/30 italic">Privileged modification restricted</p>
-                </div>
+          {/* ── Action Infrastructure Sidebar (RHS) ── */}
+          <aside className="lg:col-span-4 space-y-8 lg:sticky lg:top-24">
+            
+            {/* Action Matrix */}
+            <div className="bg-[#1A0B05] dark:bg-[#1A0B05] p-10 rounded-[3rem] text-white shadow-2xl border border-white/5 relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-full h-full architectural-dot-grid opacity-5" />
+               <div className="relative z-10 space-y-10">
+                  <div className="space-y-3">
+                     <h4 className="text-[11px] font-black uppercase tracking-[0.5em] text-[#DF8142]/60">Operational Logic</h4>
+                     <div className="h-1 w-12 bg-[#DF8142]" />
+                  </div>
 
-                <div className="space-y-3">
+                  <div className="grid gap-4">
+                    <a href={`${import.meta.env.VITE_API_URL}/resources/${id}/view?token=${encodeURIComponent(localStorage.getItem("token") || "")}`} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-4 h-16 bg-white/10 hover:bg-white hover:text-[#5A270F] text-white border border-white/10 rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.3em] transition-all group">
+                      <Eye className="h-6 w-6 group-hover:scale-110 transition-transform" /> Visual Audit
+                    </a>
+                    <a href={`${import.meta.env.VITE_API_URL}/resources/${id}/download?token=${encodeURIComponent(localStorage.getItem("token") || "")}`} className="flex items-center justify-center gap-4 h-16 bg-[#DF8142] text-white rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.3em] hover:bg-[#5A270F] transition-all shadow-xl shadow-[#DF8142]/20">
+                      <Download className="h-6 w-6" /> Archive Access
+                    </a>
+                  </div>
+
                   {isAuthorizedManager && (
-                     <div className="space-y-2">
+                     <div className="pt-6 border-t border-white/10 space-y-4">
+                        <button onClick={handleToggleVisibility} className={`w-full h-14 border rounded-2xl flex items-center justify-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] transition-all ${resource.is_public ? "bg-[#DF8142]/10 border-[#DF8142] text-[#DF8142]" : "bg-white/5 border-white/10 text-white hover:bg-white hover:text-black"}`}>
+                           <ShieldAlert className="h-5 w-5" /> Visibility: {resource.is_public ? "Public" : "Private"}
+                        </button>
                         {resource.status === 'archived' ? (
-                          <button onClick={handleRestore} className="w-full h-10 bg-emerald-500/10 border border-emerald-500/30 rounded-lg flex items-center justify-center gap-2 text-emerald-400 text-[8px] font-black uppercase tracking-[0.3em] hover:bg-emerald-500/20 transition-all active:scale-95 group">
-                            <RotateCcw className="h-4 w-4 group-hover:-rotate-180 transition-transform duration-700" /> RESTORE_LOGIC_CMD
+                          <button onClick={handleRestore} className="w-full h-14 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-center gap-4 text-emerald-400 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-emerald-500/20 transition-all">
+                            <RotateCcw className="h-5 w-5" /> Restore Matrix
                           </button>
                         ) : (
-                          <div className="flex flex-col gap-2">
-                             <button 
-                               onClick={handleToggleVisibility}
-                               className={`w-full h-10 border rounded-lg flex items-center justify-center gap-2 text-[8px] font-black uppercase tracking-[0.3em] transition-all active:scale-95 group ${resource.is_public ? "bg-[#DF8142]/10 border-[#DF8142] text-[#DF8142]" : "bg-[#FAF8F4] dark:bg-white/5 border-[#D9D9C2] dark:border-white/10 text-[#5A270F] dark:text-[#EEB38C]"}`}
-                             >
-                                <Eye className={`h-4 w-4 ${resource.is_public ? "animate-pulse" : "opacity-30"}`} /> 
-                                {resource.is_public ? "VISIBILITY: PUBLIC" : "VISIBILITY: PRIVATE"}
-                             </button>
-                             <button onClick={handleArchive} className="w-full h-10 bg-rose-500/10 border border-rose-500/30 rounded-lg flex items-center justify-center gap-2 text-rose-400 text-[8px] font-black uppercase tracking-[0.3em] hover:bg-rose-500/20 transition-all active:scale-95 group">
-                                <Trash2 className="h-4 w-4" /> SEQUESTER_NODE_CMD
-                             </button>
-                          </div>
+                          <button onClick={handleArchive} className="w-full h-14 bg-red-500/10 border border-red-500/30 rounded-2xl flex items-center justify-center gap-4 text-red-400 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-red-500/20 transition-all">
+                            <Trash2 className="h-5 w-5" /> Sequester Node
+                          </button>
                         )}
                      </div>
                   )}
 
-                  <div className="p-4 bg-white/5 rounded-xl border border-white/10 space-y-4 relative overflow-hidden group/id">
-                     <div className="space-y-1 relative z-10">
-                        <p className="text-[7.5px] font-black text-white/20 uppercase tracking-[0.3em]">REGISTRY_ID</p>
-                        <p className="text-lg font-black text-[#EEB38C] font-mono tracking-tighter italic">#{String(id).padStart(8, '0')}</p>
-                     </div>
-                     <div className="h-px bg-gradient-to-r from-white/10 to-transparent" />
-                     <div className="space-y-2.5 relative z-10">
-                        <div className="flex items-center gap-2 opacity-60">
-                           <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-                           <span className="text-[7.5px] font-black uppercase tracking-[0.2em] text-emerald-400">VERIFIED_SHA256</span>
-                        </div>
-                        <div className="flex items-center gap-2 opacity-60">
-                           <Zap className="h-3.5 w-3.5 text-[#DF8142]" />
-                           <span className="text-[7.5px] font-black uppercase tracking-[0.2em] text-[#DF8142]">NEURAL_LINK</span>
-                        </div>
-                     </div>
+                  <div className="flex items-center justify-between p-6 bg-black/40 rounded-3xl border border-white/5">
+                    <div className="space-y-1">
+                      <p className="text-[9px] font-black text-white/30 uppercase tracking-widest">Registry ID</p>
+                      <p className="text-xl font-black text-[#EEB38C] font-mono tracking-tighter">#{String(id).padStart(6, '0')}</p>
+                    </div>
+                    <div className="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center">
+                      <ShieldCheck className="h-5 w-5 text-neutral-500" />
+                    </div>
                   </div>
-                </div>
-             </div>
-          </div>
-
-          {/* Related Artifact Cluster - Shrunk */}
-          <div className="bg-white dark:bg-[#1A0B02]/20 p-4 rounded-xl border border-[#D9D9C2] dark:border-white/5 shadow-md relative overflow-hidden group/matrix">
-            <h5 className="text-[8px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] mb-4 flex items-center gap-2">
-              <Clock className="h-3.5 w-3.5 text-[#DF8142]" /> SYNAPTIC_NODES
-            </h5>
-            <div className="grid gap-3">
-              {recentResources.map((recent) => (
-                <Link 
-                  key={recent.id} 
-                  to={isNested ? (role === 'Admin' || role === 'SuperAdmin' || role === 'admin' ? `/admin/resources/${recent.id}` : `/dashboard/resources/${recent.id}`) : `/resources/${recent.id}`}
-                  className="flex items-center gap-3 group/item transition-all"
-                >
-                   <div className="h-8 w-8 shrink-0 rounded-lg bg-[#5A270F] flex items-center justify-center text-[#EEB38C] font-black text-[9px] shadow-md transform group-hover/item:scale-105 transition-all">
-                    {recent.fileType?.[0]?.toUpperCase() || 'A'}
-                   </div>
-                   <div className="overflow-hidden space-y-0.5 flex-grow">
-                      <p className="text-[9px] font-black text-[#5A270F] dark:text-white uppercase truncate group-hover/item:text-[#DF8142] transition-colors tracking-tight italic">{recent.title}</p>
-                      <p className="text-[7px] font-black text-[#92664A] dark:text-[#EEB38C]/40 uppercase tracking-[0.1em] opacity-80">ARCHITECT. {recent.author}</p>
-                   </div>
-                   <ChevronRight className="h-3 w-3 ml-auto text-[#D9D9C2] group-hover/item:translate-x-1 transition-transform" />
-                </Link>
-              ))}
+               </div>
             </div>
-            <button className="w-full mt-4 py-2 border border-dashed border-[#D9D9C2] dark:border-white/10 rounded-lg text-[8px] font-black uppercase tracking-[0.2em] text-[#92664A]/60 dark:text-white/20 hover:border-[#DF8142] hover:text-[#DF8142] transition-all bg-[#FAF8F4]/50">
-              EXPAND_CLUSTER
-            </button>
-          </div>
+
+            {/* Related Artifact Registry */}
+            <div className="bg-white dark:bg-white/5 p-10 rounded-[3.5rem] shadow-xl border border-[#92664A]/10 relative overflow-hidden group">
+               <div className="flex items-center justify-between mb-10">
+                 <h5 className="text-[11px] font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C]">Synaptic Nodes</h5>
+                 <ChevronRight className="h-5 w-5 text-[#DF8142]" />
+               </div>
+               <div className="grid gap-6">
+                 {recentResources.map((recent) => (
+                   <Link key={recent.id} to={isNested ? (role === 'Admin' || role === 'SuperAdmin' || role === 'admin' ? `/admin/resources/${recent.id}` : `/dashboard/resources/${recent.id}`) : `/resources/${recent.id}`} className="flex items-center gap-6 group/item">
+                      <div className="h-14 w-14 shrink-0 rounded-2xl bg-[#5A270F] flex items-center justify-center text-[#EEB38C] font-black text-xs shadow-lg group-hover/item:scale-110 group-hover/item:rotate-6 transition-all">
+                        {recent.fileType?.[0]?.toUpperCase() || 'A'}
+                      </div>
+                      <div className="overflow-hidden space-y-1">
+                         <p className="text-sm font-black text-[#5A270F] dark:text-white uppercase truncate group-hover/item:text-[#DF8142] transition-colors tracking-tighter italic">{recent.title}</p>
+                         <p className="text-[9px] font-black text-[#92664A]/50 uppercase tracking-widest leading-none">Arch. {recent.author}</p>
+                      </div>
+                   </Link>
+                 ))}
+               </div>
+               <button 
+                 title="Explore Related Artifacts"
+                 className="w-full mt-10 py-5 border-2 border-dashed border-[#92664A]/10 rounded-[2rem] text-[9px] font-black uppercase tracking-[0.3em] text-[#92664A] hover:border-[#DF8142] hover:text-[#DF8142] transition-all"
+               >
+                 Explore Cluster
+               </button>
+            </div>
+          </aside>
         </div>
       </div>
     </div>

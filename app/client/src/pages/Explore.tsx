@@ -84,7 +84,7 @@ const Explore = () => {
                   ARCHITECT'S MINT.
                 </span>
               </h1>
-              <p className="max-w-xl text-[#92664A] dark:text-[#EEB38C]/60 text-xl font-medium leading-relaxed mb-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500 transition-colors">
+              <p className="max-w-xl text-[#EEB38C]/80 dark:text-[#EEB38C]/60 text-xl font-medium leading-relaxed mb-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500 transition-colors">
                 A decentralized perimeter for architectural intelligence.
                 Navigate through high-fidelity BIM families, thesis protocols,
                 and technical schemas.

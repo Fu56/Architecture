@@ -221,7 +221,7 @@ const Login = () => {
   return (
     <div className={`font-inter antialiased flex items-center justify-center min-h-screen ${isDark ? "bg-[#1A0B04]" : "bg-[#FAF8F4]"} py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden transition-colors duration-500`}>
       {/* Background Decorations */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-5">
+      <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none">
         <div className="absolute top-20 left-20 w-64 h-64 bg-[#DF8142] rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-[#92664A] rounded-full blur-3xl" />
       </div>
@@ -229,8 +229,8 @@ const Login = () => {
       <div className="w-full max-w-md relative z-10">
         {!showForgotPassword ? (
           // Login Form
-          <div className={`${isDark ? "bg-card border-white/10" : "bg-white border-[#EEB38C]/30"} p-10 rounded-[3rem] shadow-2xl border relative overflow-hidden group/card transition-all duration-500`}>
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/5 blur-3xl group-hover/card:bg-[#DF8142]/10 transition-colors" />
+          <div className={`${isDark ? "bg-[#110703] border-[#EEB38C]/20" : "bg-white border-[#EEB38C]/30"} p-10 rounded-[3rem] shadow-2xl border relative overflow-hidden group/card transition-all duration-500`}>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/5 blur-3xl group-hover/card:bg-[#DF8142]/10 transition-colors pointer-events-none" />
             
             <div className="relative z-10 text-center mb-10">
               <div className="mx-auto w-20 h-20 bg-gradient-to-br from-[#DF8142] to-[#92664A] rounded-3xl flex items-center justify-center mb-6 shadow-lg shadow-[#DF8142]/20">
@@ -239,7 +239,7 @@ const Login = () => {
               <h2 className={`text-4xl font-black ${isDark ? "text-white" : "text-[#5A270F]"} tracking-tight uppercase font-space-grotesk`}>
                 Sign In
               </h2>
-              <p className={`mt-4 text-[10px] ${isDark ? "text-[#EEB38C]/70" : "text-[#92664A]"} font-black uppercase tracking-[0.3em]`}>
+              <p className={`mt-4 text-[10px] ${isDark ? "text-[#EEB38C]/90" : "text-[#92664A]"} font-black uppercase tracking-[0.3em]`}>
                 Access the Architecture Core
               </p>
             </div>
@@ -248,7 +248,7 @@ const Login = () => {
               <div className="space-y-5">
                 {/* Email Input */}
                 <div className="relative group">
-                  <div className={`absolute left-5 top-1/2 -translate-y-1/2 ${isDark ? "text-[#EEB38C]/40" : "text-[#DF8142]"} group-focus-within:text-[#DF8142] transition-colors`}>
+                  <div className={`absolute left-5 top-1/2 -translate-y-1/2 ${isDark ? "text-[#EEB38C]/80" : "text-[#DF8142]"} group-focus-within:text-[#DF8142] transition-colors`}>
                     <Mail className="h-5 w-5" />
                   </div>
                   <input
@@ -256,7 +256,7 @@ const Login = () => {
                     name="email"
                     type="email"
                     autoComplete="email"
-                    className={`w-full pl-14 pr-6 py-4 ${isDark ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-[#FDFCFB] border-[#EEB38C]/40 text-[#5A270F] placeholder-[#92664A]/60"} border-2 ${errors.email ? "border-red-500" : ""} rounded-2xl font-black focus:outline-none focus:border-[#DF8142] transition-all shadow-sm`}
+                    className={`w-full pl-14 pr-6 py-4 ${isDark ? "bg-[#211007] border-[#EEB38C]/20 text-white placeholder-[#EEB38C]/40" : "bg-[#FDFCFB] border-[#EEB38C]/40 text-[#5A270F] placeholder-[#92664A]/60"} border-2 ${errors.email ? "border-red-500" : ""} rounded-2xl font-black focus:outline-none focus:border-[#DF8142] transition-all shadow-sm`}
                     placeholder="Studio email address"
                     value={form.email}
                     onChange={handleChange}
@@ -271,7 +271,7 @@ const Login = () => {
 
                 {/* Password Input */}
                 <div className="relative group">
-                  <div className={`absolute left-5 top-1/2 -translate-y-1/2 ${isDark ? "text-[#EEB38C]/40" : "text-[#DF8142]"} group-focus-within:text-[#DF8142] transition-colors`}>
+                  <div className={`absolute left-5 top-1/2 -translate-y-1/2 ${isDark ? "text-[#EEB38C]/80" : "text-[#DF8142]"} group-focus-within:text-[#DF8142] transition-colors`}>
                     <Lock className="h-5 w-5" />
                   </div>
                   <input
@@ -279,7 +279,7 @@ const Login = () => {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
-                    className={`w-full pl-14 pr-14 py-4 ${isDark ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-[#FDFCFB] border-[#EEB38C]/40 text-[#5A270F] placeholder-[#92664A]/60"} border-2 ${errors.password ? "border-red-500" : ""} rounded-2xl font-black focus:outline-none focus:border-[#DF8142] transition-all shadow-sm`}
+                    className={`w-full pl-14 pr-14 py-4 ${isDark ? "bg-[#211007] border-[#EEB38C]/20 text-white placeholder-[#EEB38C]/40" : "bg-[#FDFCFB] border-[#EEB38C]/40 text-[#5A270F] placeholder-[#92664A]/60"} border-2 ${errors.password ? "border-red-500" : ""} rounded-2xl font-black focus:outline-none focus:border-[#DF8142] transition-all shadow-sm`}
                     placeholder="Account password"
                     value={form.password}
                     onChange={handleChange}
@@ -287,10 +287,8 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className={`absolute right-5 top-1/2 -translate-y-1/2 ${isDark ? "text-[#EEB38C]/40" : "text-[#DF8142]"} hover:text-[#5A270F] transition-colors`}
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
+                    className={`absolute right-5 top-1/2 -translate-y-1/2 ${isDark ? "text-[#EEB38C]/80 hover:text-white" : "text-[#DF8142] hover:text-[#5A270F]"} transition-colors`}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? (
                       <EyeOff className="h-5 w-5" />
@@ -326,7 +324,7 @@ const Login = () => {
                       id="agreedToTerms"
                       name="agreedToTerms"
                       type="checkbox"
-                      className="h-5 w-5 rounded-lg border-2 border-[#EEB38C]/50 dark:border-white/10 bg-transparent text-[#DF8142] focus:ring-[#DF8142]/20 cursor-pointer accent-[#DF8142] transition-all"
+                      className={`h-5 w-5 rounded-lg border-2 ${isDark ? "border-[#EEB38C]/50 bg-[#1A0B04]" : "border-[#EEB38C]/50 bg-transparent"} text-[#DF8142] focus:ring-[#DF8142]/20 cursor-pointer accent-[#DF8142] transition-all`}
                       checked={form.agreedToTerms}
                       onChange={(e) => {
                         setForm({ ...form, agreedToTerms: e.target.checked });
@@ -363,7 +361,7 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex justify-center items-center gap-3 py-5 px-4 bg-gradient-to-r from-[#5A270F] to-[#6C3B1C] text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl hover:shadow-2xl hover:shadow-[#5A270F]/40 hover:-translate-y-0.5 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className={`w-full flex justify-center items-center gap-3 py-5 px-4 ${isDark ? "bg-gradient-to-r from-[#DF8142] to-[#EEB38C] text-[#110703]" : "bg-gradient-to-r from-[#5A270F] to-[#6C3B1C] text-white"} text-xs font-black uppercase tracking-[0.2em] rounded-2xl hover:shadow-2xl ${isDark ? "hover:shadow-[#DF8142]/40" : "hover:shadow-[#5A270F]/40"} hover:-translate-y-0.5 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {loading ? (
                     "Authenticating..."
@@ -378,18 +376,18 @@ const Login = () => {
             </form>
 
             {/* Additional Info */}
-            <div className="mt-8 pt-6 border-t border-[#D9D9C2] dark:border-white/5 relative z-10">
-              <p className="text-center text-xs text-[#92664A] dark:text-[#EEB38C]/70 font-medium">
+            <div className={`mt-8 pt-6 border-t ${isDark ? "border-white/10" : "border-[#D9D9C2]"} relative z-10`}>
+              <p className={`text-center text-xs ${isDark ? "text-[#EEB38C]/90" : "text-[#92664A]"} font-medium`}>
                 Protected by{" "}
-                <span className={`font-black ${isDark ? "text-[#EEB38C]" : "text-[#DF8142]"}`}>ArchVault</span>{" "}
+                <span className={`font-black ${isDark ? "text-[#DF8142]" : "text-[#DF8142]"}`}>ArchVault</span>{" "}
                 Security Protocol
               </p>
             </div>
           </div>
         ) : (
           // Forgot Password Form
-          <div className="bg-white dark:bg-card p-10 rounded-[3rem] shadow-2xl border border-[#D9D9C2] dark:border-white/10 relative overflow-hidden group/card transition-all duration-500">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/5 blur-3xl" />
+          <div className={`${isDark ? "bg-[#110703] border-[#EEB38C]/20" : "bg-white border-[#D9D9C2]"} p-10 rounded-[3rem] shadow-2xl border relative overflow-hidden group/card transition-all duration-500`}>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#DF8142]/5 blur-3xl pointer-events-none" />
             
             <div className="relative z-10 text-center mb-10">
               <div className="mx-auto w-20 h-20 bg-gradient-to-br from-[#EEB38C] to-[#DF8142] rounded-3xl flex items-center justify-center mb-6 shadow-lg shadow-[#DF8142]/20">
@@ -398,7 +396,7 @@ const Login = () => {
               <h2 className={`text-3xl font-black ${isDark ? "text-white" : "text-[#5A270F]"} tracking-tight uppercase font-space-grotesk`}>
                 Reset Password
               </h2>
-              <p className={`mt-4 text-sm ${isDark ? "text-[#EEB38C]/40" : "text-[#92664A]"} font-medium leading-relaxed`}>
+              <p className={`mt-4 text-sm ${isDark ? "text-[#EEB38C]/80" : "text-[#92664A]"} font-medium leading-relaxed`}>
                 Enter your email address and we'll send you a link to reset your
                 password.
               </p>
@@ -407,12 +405,12 @@ const Login = () => {
             <form onSubmit={handleForgotPassword} className="space-y-6">
               {/* Email Input */}
               <div className="relative group">
-                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[#92664A] dark:text-[#EEB38C]/40 group-focus-within:text-[#DF8142] transition-colors">
+                <div className={`absolute left-5 top-1/2 -translate-y-1/2 ${isDark ? "text-[#EEB38C]/80" : "text-[#92664A]"} group-focus-within:text-[#DF8142] transition-colors`}>
                   <Mail className="h-5 w-5" />
                 </div>
                 <input
                   type="email"
-                  className={`w-full pl-14 pr-6 py-4 ${isDark ? "bg-white/5 border-white/10 text-white placeholder-white/30" : "bg-[#FDFCFB] border-[#EEB38C]/40 text-[#5A270F] placeholder-[#92664A]/60"} border-2 rounded-2xl font-black focus:outline-none focus:border-[#DF8142] transition-all shadow-sm`}
+                  className={`w-full pl-14 pr-6 py-4 ${isDark ? "bg-[#211007] border-[#EEB38C]/20 text-white placeholder-[#EEB38C]/40" : "bg-[#FDFCFB] border-[#EEB38C]/40 text-[#5A270F] placeholder-[#92664A]/60"} border-2 rounded-2xl font-black focus:outline-none focus:border-[#DF8142] transition-all shadow-sm`}
                   placeholder="Your email address"
                   value={resetEmail}
                   onChange={(e) => {
@@ -438,7 +436,7 @@ const Login = () => {
                     setShowForgotPassword(false);
                     setResetEmail("");
                   }}
-                  className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 ${isDark ? "bg-white/5 hover:bg-white/10 text-white" : "bg-[#EFEDED] hover:bg-[#D9D9C2] text-[#5A270F]"} text-xs font-black uppercase tracking-widest rounded-2xl transition-all active:scale-95`}
+                  className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 ${isDark ? "bg-[#211007] hover:bg-[#321A0C] text-white border border-[#EEB38C]/20" : "bg-[#EFEDED] hover:bg-[#D9D9C2] text-[#5A270F]"} text-xs font-black uppercase tracking-widest rounded-2xl transition-all active:scale-95`}
                 >
                   <ArrowLeft className="h-4 w-4" />
                   Back
@@ -446,7 +444,7 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={resetLoading}
-                  className="flex-1 py-4 px-4 bg-gradient-to-r from-[#DF8142] to-[#92664A] text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:shadow-2xl hover:shadow-[#DF8142]/30 transition-all active:scale-95 disabled:opacity-50"
+                  className={`flex-1 py-4 px-4 ${isDark ? "bg-gradient-to-r from-[#DF8142] to-[#EEB38C] text-[#110703]" : "bg-gradient-to-r from-[#DF8142] to-[#92664A] text-white"} text-xs font-black uppercase tracking-widest rounded-2xl hover:shadow-2xl ${isDark ? "hover:shadow-[#DF8142]/40" : "hover:shadow-[#DF8142]/30"} transition-all active:scale-95 disabled:opacity-50`}
                 >
                   {resetLoading ? "Sending..." : "Send Reset Link"}
                 </button>

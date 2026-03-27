@@ -9,7 +9,6 @@ import {
   Tag,
   Search,
   Sparkles,
-  BookOpen,
   Clock,
   Zap,
   Filter,
@@ -66,9 +65,9 @@ const Blog = () => {
         </div>
 
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10 text-center">
-          <div className="inline-flex items-center gap-3 px-4 py-2 bg-primary/90/10 border border-primary/90/20 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 mb-8 animate-in fade-in slide-in-from-top-4 duration-1000">
+          {/* <div className="inline-flex items-center gap-3 px-4 py-2 bg-primary/90/10 border border-primary/90/20 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 mb-8 animate-in fade-in slide-in-from-top-4 duration-1000">
             <BookOpen className="h-3 w-3" /> Intellectual Repository
-          </div>
+          </div> */}
           <h1 className="text-5xl sm:text-7xl font-black text-white tracking-tighter mb-8 leading-none animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
             INSIGHTS & <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#EEB38C] to-[#DF8142]">
@@ -228,7 +227,7 @@ const Blog = () => {
 
                   <div className="pt-8 border-t border-slate-50 flex items-center justify-between mt-auto">
                     <div className="flex items-center gap-4">
-                     <div className="h-12 w-12 rounded-2xl bg-[#EEB38C]/10 dark:bg-background flex items-center justify-center border border-[#92664A]/20 dark:border-white/10 text-[#5A270F]/40 dark:text-white/40 group-hover:bg-[#DF8142] group-hover:text-white transition-all duration-300 shadow-sm">
+                      <div className="h-12 w-12 rounded-2xl bg-[#EEB38C]/10 dark:bg-background flex items-center justify-center border border-[#92664A]/20 dark:border-white/10 text-[#5A270F]/40 dark:text-white/40 group-hover:bg-[#DF8142] group-hover:text-white transition-all duration-300 shadow-sm">
                         <User className="h-5 w-5" />
                       </div>
                       <div className="overflow-hidden">
@@ -257,7 +256,7 @@ const Blog = () => {
             ))}
           </div>
         ) : (
-           <div className="text-center py-32 bg-white dark:bg-card rounded-[3rem] border border-[#92664A]/20 dark:border-white/10 shadow-xl shadow-[#5A270F]/5 max-w-4xl mx-auto px-12">
+          <div className="text-center py-32 bg-white dark:bg-card rounded-[3rem] border border-[#92664A]/20 dark:border-white/10 shadow-xl shadow-[#5A270F]/5 max-w-4xl mx-auto px-12">
             <div className="h-24 w-24 bg-[#EEB38C]/10 dark:bg-background text-[#EEB38C] rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-sm border border-[#92664A]/20 dark:border-white/10">
               <Search className="h-12 w-12" />
             </div>

@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import "./News.css";
 import { Link } from "react-router-dom";
 import {
-  Megaphone,
   Calendar,
   Clock,
   ArrowRight,
@@ -269,10 +268,6 @@ const News = () => {
 
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10 text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-[#EEB38C]/10 border border-[#EEB38C]/25 rounded-full text-[10px] font-extrabold uppercase tracking-[0.35em] text-[#EEB38C] mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
-            <Megaphone className="h-3 w-3 text-[#DF8142] shrink-0" />
-            Information Broadcast
-          </div>
 
           {/* Headline */}
           <h1 className="font-space-grotesk text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter mb-5 leading-[0.9] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 uppercase italic">

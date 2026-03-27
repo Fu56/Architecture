@@ -10,6 +10,7 @@ import {
   SearchX,
   Sparkles,
   ArrowLeft,
+  Database,
 } from "lucide-react";
 
 const Browse = () => {
@@ -125,58 +126,59 @@ const Browse = () => {
           />
         </div>
 
-        {/* Status Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 px-2">
-          <div className="flex items-center gap-2.5">
-            <div className="h-1.5 w-1.5 rounded-full bg-[#DF8142] animate-pulse" />
-            <p className="text-[8.5px] font-black uppercase tracking-[0.2em] text-[#92664A] dark:text-[#EEB38C]/40">
+        {/* Dynamic Registry Status Matrix */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-12 px-6 py-4 border-l-4 border-[#DF8142] bg-white dark:bg-white/5 shadow-sm rounded-r-2xl">
+          <div className="flex items-center gap-4">
+            <div className="h-2 w-2 rounded-full bg-[#DF8142] animate-ping" />
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C]/40 flex items-center gap-4">
+              <Database className="h-4 w-4 opacity-30" />
               {loading
-                ? "Locating Cluster Elements..."
-                : `${totalCount} Nodes Isolated`}
+                ? "Calibrating Archive..."
+                : `Registry Assets: ${totalCount} Elements`}
             </p>
           </div>
 
           {!loading && resources.length > 0 && (
-            <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-[#92664A] dark:text-[#EEB38C]/40">
-              <Sparkles className="h-3 w-3 text-[#DF8142]" />
-              Sync complete
+            <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-[#DF8142] italic">
+              <Sparkles className="h-4 w-4" />
+              Repository Optimized
             </div>
           )}
         </div>
 
-        {/* Results Cluster */}
-        <div className="min-h-[400px]">
+        {/* Results Cluster: Architectural Matrix */}
+        <div className="min-h-[600px]">
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12">
               {[...Array(8)].map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white dark:bg-card h-[400px] rounded-3xl animate-pulse border border-[#D9D9C2] dark:border-white/10 shadow-sm transition-colors duration-500"
+                  className="bg-white dark:bg-card h-[480px] rounded-[3rem] animate-pulse border border-[#92664A]/10"
                 />
               ))}
             </div>
           ) : error ? (
-            <div className="flex flex-col items-center justify-center text-center py-24 bg-red-50/50 rounded-3xl border border-red-100 border-dashed">
-              <ServerCrash className="h-12 w-12 text-red-500 mb-4" />
-              <h3 className="text-xl font-bold text-red-900 mb-2 tracking-tight">
-                System Disruption
+            <div className="flex flex-col items-center justify-center text-center py-40 bg-red-500/5 rounded-[4rem] border border-red-500/10">
+              <ServerCrash className="h-16 w-16 text-red-500 mb-8 animate-bounce" />
+              <h3 className="text-3xl font-black text-red-900 mb-4 tracking-tighter uppercase italic">
+                Registry Unreachable
               </h3>
-              <p className="text-sm text-red-700 font-medium max-w-sm mx-auto">
+              <p className="text-sm text-red-700 font-medium max-w-sm mx-auto mb-10 leading-relaxed">
                 {error}
               </p>
               <button
                 onClick={() => fetchResources({})}
-                className="mt-6 px-6 py-2.5 bg-red-600 text-white rounded-lg font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-red-600/10 hover:bg-red-700 transition-all"
+                className="px-12 py-5 bg-red-600 text-white rounded-2xl font-black uppercase tracking-[0.4em] text-[10px] shadow-2xl hover:bg-red-700 transition-all active:scale-95"
               >
-                Attempt Restoration
+                Attempt Secure Re-Uplink
               </button>
             </div>
           ) : resources.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12">
               {resources.map((resource) => (
                 <div
                   key={resource.id}
-                  className="animate-in fade-in slide-in-from-bottom-6 duration-500"
+                  className="animate-in fade-in slide-in-from-bottom-10 duration-[1000ms] transition-all"
                 >
                   <ResourceCard resource={resource} />
                 </div>

@@ -270,7 +270,7 @@ const AssignmentDetails = () => {
   const isPastDeadline = assignment.isPastDeadline;
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-5xl">
+    <div className={`container mx-auto px-4 py-12 max-w-5xl transition-colors duration-500 ${isLight ? "text-[#5A270F]" : "text-[#EEB38C]"}`}>
       <Link
         to={`${basePath}/assignments`}
         className={`flex items-center gap-2 font-bold text-sm uppercase tracking-widest mb-10 transition-colors ${isLight ? "text-[#92664A] hover:text-[#5A270F]" : "text-[#EEB38C]/60 hover:text-[#EEB38C]"}`}
@@ -279,7 +279,7 @@ const AssignmentDetails = () => {
         Back to Assignments
       </Link>
 
-      <div className={`rounded-[3rem] p-10 shadow-xl border mb-10 relative overflow-hidden transition-all duration-500 ${isLight ? "bg-white border-[#92664A]/20" : "bg-[#6C3B1C] border-[#EEB38C]/20"}`}>
+      <div className={`rounded-[3rem] p-10 shadow-xl border mb-10 relative overflow-hidden transition-all duration-500 ${isLight ? "bg-white border-[#BCAF9C]/30 shadow-[#5A270F]/5" : "bg-[#6C3B1C] border-[#EEB38C]/20"}`}>
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#DF8142]/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
         
         <div className="flex flex-col md:flex-row justify-between items-start gap-8 relative z-10">

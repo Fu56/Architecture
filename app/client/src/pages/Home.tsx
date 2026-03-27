@@ -143,7 +143,9 @@ const Home = () => {
   };
 
   return (
-    <div className={`flex flex-col min-h-screen selection:bg-[#DF8142]/20 transition-colors duration-700 ${isLight ? "bg-[#FCFBF8]" : "bg-[#0C0603]"}`}>
+    <div
+      className={`flex flex-col min-h-screen selection:bg-[#DF8142]/20 transition-colors duration-700 ${isLight ? "bg-[#FCFBF8]" : "bg-[#0C0603]"}`}
+    >
       {/* Hero Section */}
       <section className="relative min-h-[95vh] flex items-center overflow-hidden">
         {/* Cinematic Background Layer */}
@@ -499,7 +501,7 @@ const Home = () => {
                     to="/browse?sort=top"
                     className="inline-flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.4em] text-[#DF8142] hover:text-[#5A270F] dark:hover:text-white transition-colors"
                   >
-                    ACCESS_ARCHIVE <ArrowRight className="h-3 w-3" />
+                    ACCESS_RESOURCES <ArrowRight className="h-3 w-3" />
                   </Link>
                 </div>
               </div>
@@ -572,11 +574,6 @@ const Home = () => {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8">
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2.5 px-3 py-1 bg-white dark:bg-white/5 border border-[#D9D9C2] dark:border-white/10 rounded mb-6">
-                <span className="text-[7px] font-black uppercase tracking-[0.5em] text-[#DF8142]">
-                  CURATION_INDEX_v2
-                </span>
-              </div>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-[#5A270F] dark:text-white leading-[0.85] uppercase font-space-grotesk">
                 SPOTLIGHT <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] to-[#DF8142] italic">
@@ -590,7 +587,7 @@ const Home = () => {
               className="group px-6 py-3 bg-[#5A270F] hover:bg-[#DF8142] text-white rounded-md transition-all duration-500 shadow-lg flex items-center gap-3 active:scale-95"
             >
               <span className="text-[9px] font-black uppercase tracking-[0.3em]">
-                BROWSE_GALLERY
+                BROWSE_RESOURCES
               </span>
               <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -616,12 +613,12 @@ const Home = () => {
             {/* Blogs - Research Wing */}
             <div className="lg:w-2/3">
               <div className="mb-12">
-                <div className="flex items-center gap-3 mb-3">
+                {/* <div className="flex items-center gap-3 mb-3">
                   <div className="w-8 h-[1px] bg-[#DF8142]" />
                   <span className="text-[8px] font-black uppercase tracking-[0.5em] text-[#92664A]">
                     INTEL_LOG // RESEARCH
                   </span>
-                </div>
+                </div> */}
                 <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-[#5A270F] dark:text-white leading-[0.85] uppercase italic font-space-grotesk">
                   FACULTY <br />
                   <span className="text-[#DF8142] not-italic">INSIGHTS_</span>
@@ -667,7 +664,7 @@ const Home = () => {
                 <div className="flex items-center justify-between pb-8 border-b border-[#D9D9C2] dark:border-white/5 mb-8">
                   <div>
                     <h3 className="text-lg font-black uppercase tracking-[-0.05em] text-[#5A270F] dark:text-white italic">
-                      REGISTRY_FEED.
+                      REPOSITORY_NEWS & EVENTS.
                     </h3>
                   </div>
                   <div className="h-10 w-10 bg-[#5A270F] text-[#EEB38C] rounded-lg flex items-center justify-center">
@@ -701,7 +698,7 @@ const Home = () => {
                         <Cpu className="h-6 w-6 text-[#5A270F]/20 dark:text-[#EEB38C]/20" />
                       </div>
                       <p className="text-[#5A270F]/40 dark:text-white/20 font-black uppercase tracking-[0.4em] text-[10px]">
-                        Awaiting Sync
+                        Awaiting News or Events
                       </p>
                     </div>
                   )}
@@ -714,7 +711,7 @@ const Home = () => {
       {/* Main Content Area - Overhauled Background */}
       <div className="relative overflow-hidden bg-gradient-to-b from-transparent via-[#FAF8F4]/50 dark:via-[#1A0B04]/30 to-transparent">
         <div className="absolute inset-0 opacity-[0.03] blueprint-grid-dark pointer-events-none" />
-        
+
         {/* Dynamic Nodes Background */}
         <div className="absolute top-[20%] left-[-10%] w-[40%] h-[40%] bg-[#EEB38C]/10 blur-[120px] rounded-full pointer-events-none animate-pulse" />
         <div className="absolute top-[60%] right-[-10%] w-[40%] h-[40%] bg-[#DF8142]/5 blur-[120px] rounded-full pointer-events-none" />
@@ -722,112 +719,112 @@ const Home = () => {
         {/* Top Intelligence Nexus Section */}
         {/* Top Intelligence Nexus Section */}
         <section className="py-24 sm:py-32 relative z-10 transition-colors duration-500 overflow-hidden">
-        {/* Soft Atmosphere Glows */}
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-[#FAF8F4] dark:bg-white/5 -skew-x-12 translate-x-1/4 z-0 transition-colors duration-500" />
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#DF8142]/5 blur-[120px] rounded-full pointer-events-none" />
+          {/* Soft Atmosphere Glows */}
+          <div className="absolute top-0 right-0 w-1/2 h-full bg-[#FAF8F4] dark:bg-white/5 -skew-x-12 translate-x-1/4 z-0 transition-colors duration-500" />
+          <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#DF8142]/5 blur-[120px] rounded-full pointer-events-none" />
 
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
-          <div className="flex flex-col lg:flex-row gap-20 items-center">
-            {/* Visual Narrative */}
-            <div className="lg:w-1/2 relative group">
-              <div className="relative rounded-[2.5rem] overflow-hidden border border-[#D9D9C2] dark:border-white/5 shadow-2xl transition-all duration-700">
-                <img
-                  src="/assets/collaborators.png"
-                  className="w-full aspect-[4/5] object-cover grayscale group-hover:grayscale-0 transition-all duration-[2.5s]"
-                  alt="Architecture and Software Engineering Collaboration"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src =
-                      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop";
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#5A270F] via-transparent to-transparent opacity-70" />
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
+            <div className="flex flex-col lg:flex-row gap-20 items-center">
+              {/* Visual Narrative */}
+              <div className="lg:w-1/2 relative group">
+                <div className="relative rounded-[2.5rem] overflow-hidden border border-[#D9D9C2] dark:border-white/5 shadow-2xl transition-all duration-700">
+                  <img
+                    src="/assets/collaborators.png"
+                    className="w-full aspect-[4/5] object-cover grayscale group-hover:grayscale-0 transition-all duration-[2.5s]"
+                    alt="Architecture and Software Engineering Collaboration"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src =
+                        "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop";
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#5A270F] via-transparent to-transparent opacity-70" />
 
-                {/* Glassmorphism Floating Badge */}
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="bg-[#0C0603]/80 backdrop-blur-xl p-5 rounded-[1.2rem] border border-white/10 shadow-2xl">
-                    <div className="flex items-center gap-4 mb-3">
-                      <div className="flex -space-x-2">
-                        <div className="h-8 w-8 rounded-full bg-[#DF8142] flex items-center justify-center text-[7px] font-black text-white shadow-lg">
-                          ARCH
+                  {/* Glassmorphism Floating Badge */}
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <div className="bg-[#0C0603]/80 backdrop-blur-xl p-5 rounded-[1.2rem] border border-white/10 shadow-2xl">
+                      <div className="flex items-center gap-4 mb-3">
+                        <div className="flex -space-x-2">
+                          <div className="h-8 w-8 rounded-full bg-[#DF8142] flex items-center justify-center text-[7px] font-black text-white shadow-lg">
+                            ARCH
+                          </div>
+                          <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center text-[7px] font-black text-[#5A270F] shadow-lg">
+                            SOFT
+                          </div>
                         </div>
-                        <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center text-[7px] font-black text-[#5A270F] shadow-lg">
-                          SOFT
-                        </div>
+                        <span className="text-[8px] font-black uppercase tracking-[0.4em] text-[#EEB38C]">
+                          NETWORK_SYNC_v1
+                        </span>
                       </div>
-                      <span className="text-[8px] font-black uppercase tracking-[0.4em] text-[#EEB38C]">
-                        NETWORK_SYNC_v1
-                      </span>
+                      <p className="text-white/80 text-[11px] font-bold leading-relaxed">
+                        "Bridging physical and digital domains through
+                        interdisciplinary engineering."
+                      </p>
                     </div>
-                    <p className="text-white/80 text-[11px] font-bold leading-relaxed">
-                      "Bridging physical and digital domains through
-                      interdisciplinary engineering."
+                  </div>
+                </div>
+              </div>
+
+              {/* Strategic Information */}
+              <div className="lg:w-1/2 flex flex-col items-start">
+                <div className="mb-12">
+                  <div className="inline-flex items-center gap-3 px-3 py-1 bg-[#5A270F] rounded-md text-[8px] font-black uppercase tracking-[0.5em] text-[#EEB38C] mb-8 shadow-xl">
+                    <Sparkles className="h-3 w-3 text-[#DF8142]" />{" "}
+                    THE_COLLABORATION
+                  </div>
+                  <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-[#5A270F] dark:text-white uppercase leading-[0.85] mb-8 font-space-grotesk">
+                    FUSION OF <br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] to-[#DF8142] italic">
+                      DISCIPLINES.
+                    </span>
+                  </h2>
+                  <div className="pl-6 border-l-2 border-[#DF8142]">
+                    <p className="text-lg text-[#5A270F] dark:text-white font-bold leading-relaxed max-w-xl">
+                      ARCHVAULT is the product of high-performance synergy
+                      between the
+                      <span className="text-[#DF8142]"> Architecture</span> and
+                      <span className="text-[#DF8142]">
+                        {" "}
+                        Software Engineering
+                      </span>{" "}
+                      departments.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-6 w-full">
+                  <div className="group relative p-8 bg-[#FAF8F4] dark:bg-[#1A0B04] rounded-[2rem] border border-[#D9D9C2] dark:border-white/5 transition-all duration-500 flex flex-col">
+                    <div className="h-10 w-10 bg-[#5A270F] text-white rounded-lg flex items-center justify-center mb-6 shadow-xl">
+                      <Users className="h-5 w-5" />
+                    </div>
+                    <h4 className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tight mb-2">
+                      ARCH_CORE
+                    </h4>
+                    <p className="text-[#92664A] dark:text-white/40 text-[11px] font-bold leading-tight">
+                      Defining taxonomy, BIM standards, and creative vision for
+                      our global index.
+                    </p>
+                  </div>
+
+                  <div className="group relative p-8 bg-[#FAF8F4] dark:bg-[#1A0B04] rounded-[2rem] border border-[#D9D9C2] dark:border-white/5 transition-all duration-500 flex flex-col">
+                    <div className="h-10 w-10 bg-[#1A0B04] text-[#EEB38C] rounded-lg flex items-center justify-center mb-6 shadow-xl">
+                      <Cpu className="h-5 w-5" />
+                    </div>
+                    <h4 className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tight mb-2">
+                      SOFT_ENGINE
+                    </h4>
+                    <p className="text-[#92664A] dark:text-white/40 text-[11px] font-bold leading-tight">
+                      Engineering CDN clusters, zero-trust layers, and the fluid
+                      UX matrix.
                     </p>
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* Strategic Information */}
-            <div className="lg:w-1/2 flex flex-col items-start">
-              <div className="mb-12">
-                <div className="inline-flex items-center gap-3 px-3 py-1 bg-[#5A270F] rounded-md text-[8px] font-black uppercase tracking-[0.5em] text-[#EEB38C] mb-8 shadow-xl">
-                  <Sparkles className="h-3 w-3 text-[#DF8142]" />{" "}
-                  THE_COLLABORATION
-                </div>
-                <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-[#5A270F] dark:text-white uppercase leading-[0.85] mb-8 font-space-grotesk">
-                  FUSION OF <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#DF8142] via-[#6C3B1C] to-[#DF8142] italic">
-                    DISCIPLINES.
-                  </span>
-                </h2>
-                <div className="pl-6 border-l-2 border-[#DF8142]">
-                  <p className="text-lg text-[#5A270F] dark:text-white font-bold leading-relaxed max-w-xl">
-                    ARCHVAULT is the product of high-performance synergy between
-                    the
-                    <span className="text-[#DF8142]"> Architecture</span> and
-                    <span className="text-[#DF8142]">
-                      {" "}
-                      Software Engineering
-                    </span>{" "}
-                    departments.
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid sm:grid-cols-2 gap-6 w-full">
-                <div className="group relative p-8 bg-[#FAF8F4] dark:bg-[#1A0B04] rounded-[2rem] border border-[#D9D9C2] dark:border-white/5 transition-all duration-500 flex flex-col">
-                  <div className="h-10 w-10 bg-[#5A270F] text-white rounded-lg flex items-center justify-center mb-6 shadow-xl">
-                    <Users className="h-5 w-5" />
-                  </div>
-                  <h4 className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tight mb-2">
-                    ARCH_CORE
-                  </h4>
-                  <p className="text-[#92664A] dark:text-white/40 text-[11px] font-bold leading-tight">
-                    Defining taxonomy, BIM standards, and creative vision for
-                    our global index.
-                  </p>
-                </div>
-
-                <div className="group relative p-8 bg-[#FAF8F4] dark:bg-[#1A0B04] rounded-[2rem] border border-[#D9D9C2] dark:border-white/5 transition-all duration-500 flex flex-col">
-                  <div className="h-10 w-10 bg-[#1A0B04] text-[#EEB38C] rounded-lg flex items-center justify-center mb-6 shadow-xl">
-                    <Cpu className="h-5 w-5" />
-                  </div>
-                  <h4 className="text-sm font-black text-[#5A270F] dark:text-[#EEB38C] uppercase tracking-tight mb-2">
-                    SOFT_ENGINE
-                  </h4>
-                  <p className="text-[#92664A] dark:text-white/40 text-[11px] font-bold leading-tight">
-                    Engineering CDN clusters, zero-trust layers, and the fluid
-                    UX matrix.
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
-  </div>
   );
 };
 

@@ -20,7 +20,7 @@ const Footer = () => {
     totalUsers: 0,
     newsletterCount: 0,
   });
-  
+
   const { theme } = useTheme();
   const isLight = theme === "light";
 
@@ -76,14 +76,15 @@ const Footer = () => {
   };
 
   return (
-    <footer className={`relative py-20 transition-colors duration-500 overflow-hidden ${isLight ? "bg-[#FAF8F4] border-t border-[#EEB38C]/30" : "bg-[#080402] border-t border-white/5"}`}>
+    <footer
+      className={`relative py-20 transition-colors duration-500 overflow-hidden ${isLight ? "bg-[#FAF8F4] border-t border-[#EEB38C]/30" : "bg-[#080402] border-t border-white/5"}`}
+    >
       {/* Decorative Background Elements */}
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,rgba(223,129,66,0.03),transparent_70%)] rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(146,102,74,0.05),transparent_70%)] rounded-full translate-y-1/3 -translate-x-1/4 pointer-events-none" />
-      
+
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-          
           {/* Brand & Introduction */}
           <div className="lg:col-span-4 space-y-8">
             <Link to="/" className="inline-flex items-center gap-4 group">
@@ -91,23 +92,34 @@ const Footer = () => {
                 <BookOpen className="w-6 h-6 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className={`text-3xl font-black tracking-tight uppercase leading-none font-space-grotesk ${isLight ? "text-[#5A270F]" : "text-white"}`}>
+                <span
+                  className={`text-3xl font-black tracking-tight uppercase leading-none font-space-grotesk ${isLight ? "text-[#5A270F]" : "text-white"}`}
+                >
                   ARCH<span className="text-[#DF8142]">VAULT.</span>
                 </span>
-                <span className={`text-[10px] font-bold tracking-widest uppercase mt-1 ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/60"}`}>
-                  Wollo University Faculty
+                <span
+                  className={`text-[10px] font-bold tracking-widest uppercase mt-1 ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/60"}`}
+                >
+                  Wollo University KIOT CAMPUS <br></br>
+                  Faculty Of Architecture
                 </span>
               </div>
             </Link>
-            
-            <p className={`text-base font-medium leading-relaxed max-w-sm pt-2 ${isLight ? "text-[#5A270F] text-opacity-80" : "text-[#EEB38C] text-opacity-70"}`}>
-              The authenticated architectural archive for professional thesis standards and engineering blueprints. Navigating the future of spatial intelligence.
+
+            <p
+              className={`text-base font-medium leading-relaxed max-w-sm pt-2 ${isLight ? "text-[#5A270F] text-opacity-80" : "text-[#EEB38C] text-opacity-70"}`}
+            >
+              The authenticated architectural archive for professional thesis
+              standards and engineering blueprints. Navigating the future of
+              spatial intelligence.
             </p>
           </div>
 
           {/* Quick Links */}
           <div className="lg:col-span-3 lg:col-start-6 space-y-8">
-            <h3 className={`text-sm font-black uppercase tracking-widest ${isLight ? "text-[#5A270F]" : "text-white"}`}>
+            <h3
+              className={`text-sm font-black uppercase tracking-widest ${isLight ? "text-[#5A270F]" : "text-white"}`}
+            >
               Navigation
             </h3>
             <ul className="space-y-4">
@@ -131,15 +143,22 @@ const Footer = () => {
 
           {/* Newsletter & Community */}
           <div className="lg:col-span-4 space-y-8">
-            <h3 className={`text-sm font-black uppercase tracking-widest ${isLight ? "text-[#5A270F]" : "text-white"}`}>
+            <h3
+              className={`text-sm font-black uppercase tracking-widest ${isLight ? "text-[#5A270F]" : "text-white"}`}
+            >
               Join The Studio
             </h3>
-            <p className={`text-sm font-medium ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/60"}`}>
-              Subscribe to receive weekly curated assets, thesis briefs, and premium design patterns directly.
+            <p
+              className={`text-sm font-medium ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/60"}`}
+            >
+              Subscribe to receive weekly curated assets, thesis briefs, and
+              premium design patterns directly.
             </p>
-            
+
             <form onSubmit={handleFooterSubscribe} className="relative mt-2">
-              <div className={`flex items-center p-1.5 rounded-full border transition-all duration-300 focus-within:ring-4 focus-within:ring-[#DF8142]/20 focus-within:border-[#DF8142] ${isLight ? "bg-white border-[#EEB38C]/50 shadow-sm" : "bg-white/5 border-white/10"}`}>
+              <div
+                className={`flex items-center p-1.5 rounded-full border transition-all duration-300 focus-within:ring-4 focus-within:ring-[#DF8142]/20 focus-within:border-[#DF8142] ${isLight ? "bg-white border-[#EEB38C]/50 shadow-sm" : "bg-white/5 border-white/10"}`}
+              >
                 <input
                   type="email"
                   value={footerEmail}
@@ -156,7 +175,9 @@ const Footer = () => {
                   className="px-6 py-3 bg-[#DF8142] hover:bg-[#5A270F] text-white rounded-full font-bold text-sm transition-all duration-300 disabled:opacity-50 flex items-center gap-2 group whitespace-nowrap"
                 >
                   {footerSubscribing ? "Joining..." : "Subscribe"}
-                  {!footerSubscribing && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
+                  {!footerSubscribing && (
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  )}
                 </button>
               </div>
               {footerError && (
@@ -166,19 +187,31 @@ const Footer = () => {
               )}
             </form>
 
-            <div className={`flex items-center gap-4 pt-6 mt-4 border-t ${isLight ? "border-[#EEB38C]/20" : "border-white/5"}`}>
+            <div
+              className={`flex items-center gap-4 pt-6 mt-4 border-t ${isLight ? "border-[#EEB38C]/20" : "border-white/5"}`}
+            >
               <div className="flex -space-x-2">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${isLight ? "bg-[#FAF8F4] border-white" : "bg-[#1A0B02] border-[#080402]"}`}>
-                    <Users className={`w-3.5 h-3.5 ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/60"}`} />
+                  <div
+                    key={i}
+                    className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${isLight ? "bg-[#FAF8F4] border-white" : "bg-[#1A0B02] border-[#080402]"}`}
+                  >
+                    <Users
+                      className={`w-3.5 h-3.5 ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/60"}`}
+                    />
                   </div>
                 ))}
               </div>
               <div className="flex flex-col">
-                <span className={`text-xs font-black ${isLight ? "text-[#5A270F]" : "text-white"}`}>
-                  {(stats.totalUsers + stats.newsletterCount).toLocaleString()}+ Architects
+                <span
+                  className={`text-xs font-black ${isLight ? "text-[#5A270F]" : "text-white"}`}
+                >
+                  {(stats.totalUsers + stats.newsletterCount).toLocaleString()}+
+                  Architects
                 </span>
-                <span className={`text-[10px] font-bold uppercase tracking-widest ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/40"}`}>
+                <span
+                  className={`text-[10px] font-bold uppercase tracking-widest ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/40"}`}
+                >
                   Global Community
                 </span>
               </div>
@@ -187,15 +220,25 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className={`mt-20 pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-6 ${isLight ? "border-[#EEB38C]/30" : "border-white/5"}`}>
-          <p className={`text-xs font-bold uppercase tracking-widest ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/40"}`}>
+        <div
+          className={`mt-20 pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-6 ${isLight ? "border-[#EEB38C]/30" : "border-white/5"}`}
+        >
+          <p
+            className={`text-xs font-bold uppercase tracking-widest ${isLight ? "text-[#92664A]" : "text-[#EEB38C]/40"}`}
+          >
             &copy; {currentYear} ARCHVAULT. All Rights Reserved.
           </p>
           <div className="flex items-center gap-8">
-            <Link to="/privacy" className={`text-xs font-bold uppercase tracking-widest transition-colors ${isLight ? "text-[#92664A] hover:text-[#DF8142]" : "text-[#EEB38C]/40 hover:text-white"}`}>
+            <Link
+              to="/privacy"
+              className={`text-xs font-bold uppercase tracking-widest transition-colors ${isLight ? "text-[#92664A] hover:text-[#DF8142]" : "text-[#EEB38C]/40 hover:text-white"}`}
+            >
               Privacy Policy
             </Link>
-            <Link to="/terms" className={`text-xs font-bold uppercase tracking-widest transition-colors ${isLight ? "text-[#92664A] hover:text-[#DF8142]" : "text-[#EEB38C]/40 hover:text-white"}`}>
+            <Link
+              to="/terms"
+              className={`text-xs font-bold uppercase tracking-widest transition-colors ${isLight ? "text-[#92664A] hover:text-[#DF8142]" : "text-[#EEB38C]/40 hover:text-white"}`}
+            >
               Terms of Service
             </Link>
           </div>
