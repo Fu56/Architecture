@@ -185,14 +185,16 @@ const News = () => {
 
     setSubscribing(true);
     try {
-      const { data } = await api.post("/common/subscribe", {
+      await api.post("/common/subscribe", {
         email: newsletterEmail.trim(),
       });
-      toast.success(data.message || "Transmission initialized successfully!");
+      toast.success(
+        "Transmission initialized: You will now receive repository updates."
+      );
       setSubscribed(true);
       setNewsletterEmail("");
       setEmailTouched(false);
-      setTimeout(() => setSubscribed(false), 3000);
+      setTimeout(() => setSubscribed(false), 8000);
     } catch (error: unknown) {
       let message = "Failed to initialize transmission. Please try again.";
       if (error && typeof error === "object" && "response" in error) {
@@ -531,39 +533,63 @@ const News = () => {
                 Get notified for new assignments and updates.
               </p>
 
-              <form
-                onSubmit={handleNewsletterSubscribe}
-                className="relative z-10"
-                noValidate
-              >
-                {/* Email input — white bg for clear readability on the orange card */}
-                <div className="relative mb-1">
-                  <input
-                    id="repository-subscription-email"
-                    type="email"
-                    value={newsletterEmail}
-                    onChange={(e) => {
-                      setNewsletterEmail(e.target.value);
-                      if (newsletterError) setNewsletterError("");
-                    }}
-                    onBlur={() => setEmailTouched(true)}
-                    placeholder="your@email.com"
-                    disabled={subscribing || subscribed}
-                    maxLength={MAX_EMAIL_LENGTH + 1}
-                    autoComplete="email"
-                    className={`w-full rounded-xl pl-4 pr-11 text-sm font-semibold outline-none transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed border-2 ${
-                      newsletterError || emailValidation === "error"
-                        ? "bg-white border-red-400 text-[#3D1A06] placeholder:text-[#B8967A] focus:ring-4 focus:ring-red-400/20"
-                        : emailValidation === "valid"
-                          ? "bg-white border-emerald-400 text-[#3D1A06] placeholder:text-[#B8967A] focus:ring-4 focus:ring-emerald-400/20"
-                          : "bg-white border-white/30 text-[#3D1A06] placeholder:text-[#B8967A] focus:border-white focus:ring-4 focus:ring-white/20"
-                    } input-height font-inter`}
-                  />
-                  {/* Inline validation icon */}
-                  {emailTouched &&
-                    newsletterEmail &&
-                    !subscribing &&
-                    !subscribed && (
+              {subscribed ? (
+                <div className="relative z-10 animate-in fade-in zoom-in duration-500 bg-white/10 dark:bg-black/20 p-5 rounded-2xl border border-white/20">
+                  <div className="flex items-center gap-3 mb-3 text-emerald-400">
+                    <CheckCircle className="h-6 w-6" />
+                    <h4 className="font-black text-sm uppercase tracking-widest text-white">
+                      Subscription Confirmed
+                    </h4>
+                  </div>
+                  <p className="text-[10px] font-bold text-white/80 leading-relaxed mb-4">
+                    Your terminal is now configured to receive exclusive priority access to:
+                  </p>
+                  <ul className="space-y-2 text-[9px] font-medium text-[#EEB38C] uppercase tracking-wider mb-2">
+                    <li className="flex items-center gap-2">
+                      <span className="h-1 w-1 bg-[#DF8142] rounded-full" />
+                      Newly uploaded Repository Blueprints & Documents
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="h-1 w-1 bg-[#DF8142] rounded-full" />
+                      Platform-wide System and Maintenance Briefs
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="h-1 w-1 bg-[#DF8142] rounded-full" />
+                      Upcoming Architectural Events & Signal Logs
+                    </li>
+                  </ul>
+                </div>
+              ) : (
+                <form
+                  onSubmit={handleNewsletterSubscribe}
+                  className="relative z-10"
+                  noValidate
+                >
+                  {/* Email input — white bg for clear readability on the orange card */}
+                  <div className="relative mb-1">
+                    <input
+                      id="repository-subscription-email"
+                      type="email"
+                      value={newsletterEmail}
+                      onChange={(e) => {
+                        setNewsletterEmail(e.target.value);
+                        if (newsletterError) setNewsletterError("");
+                      }}
+                      onBlur={() => setEmailTouched(true)}
+                      placeholder="your@email.com"
+                      disabled={subscribing}
+                      maxLength={MAX_EMAIL_LENGTH + 1}
+                      autoComplete="email"
+                      className={`w-full rounded-xl pl-4 pr-11 text-sm font-semibold outline-none transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed border-2 ${
+                        newsletterError || emailValidation === "error"
+                          ? "bg-white border-red-400 text-[#3D1A06] placeholder:text-[#B8967A] focus:ring-4 focus:ring-red-400/20"
+                          : emailValidation === "valid"
+                            ? "bg-white border-emerald-400 text-[#3D1A06] placeholder:text-[#B8967A] focus:ring-4 focus:ring-emerald-400/20"
+                            : "bg-white border-white/30 text-[#3D1A06] placeholder:text-[#B8967A] focus:border-white focus:ring-4 focus:ring-white/20"
+                      } input-height`}
+                    />
+                    {/* Inline validation icon */}
+                    {emailTouched && newsletterEmail && !subscribing && (
                       <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                         {emailValidation === "valid" ? (
                           <CheckCircle className="h-4 w-4 text-emerald-500 animate-in zoom-in duration-200" />
@@ -572,62 +598,54 @@ const News = () => {
                         )}
                       </span>
                     )}
-                </div>
+                  </div>
 
-                {/* Error + counter row */}
-                <div className="flex items-start justify-between gap-2 mb-4 min-h-[20px]">
-                  {newsletterError ||
-                  (emailTouched && emailValidation === "error") ? (
-                    <p className="text-[11px] font-bold text-white flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1 duration-300 drop-shadow-sm">
-                      <AlertCircle className="h-3.5 w-3.5 shrink-0 text-white" />
-                      {newsletterError ||
-                        (!newsletterEmail.trim()
-                          ? "Email address is required."
-                          : newsletterEmail.length > MAX_EMAIL_LENGTH
-                            ? `Max ${MAX_EMAIL_LENGTH} characters allowed.`
-                            : "Enter a valid email (e.g. user@domain.com).")}
-                    </p>
-                  ) : (
-                    <span />
-                  )}
-                  <span
-                    className={`text-[9px] font-bold font-mono ml-auto shrink-0 ${
-                      newsletterEmail.length > MAX_EMAIL_LENGTH
-                        ? "text-white font-black"
-                        : "text-white/50"
+                  {/* Error + counter row */}
+                  <div className="flex items-start justify-between gap-2 mb-4 min-h-[20px]">
+                    {newsletterError ||
+                    (emailTouched && emailValidation === "error") ? (
+                      <p className="text-[11px] font-bold text-white flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1 duration-300 drop-shadow-sm">
+                        <AlertCircle className="h-3.5 w-3.5 shrink-0 text-white" />
+                        {newsletterError ||
+                          (!newsletterEmail.trim()
+                            ? "Email address is required."
+                            : newsletterEmail.length > MAX_EMAIL_LENGTH
+                              ? `Max ${MAX_EMAIL_LENGTH} characters allowed.`
+                              : "Enter a valid email (e.g. user@domain.com).")}
+                      </p>
+                    ) : (
+                      <span />
+                    )}
+                    <span
+                      className={`text-[9px] font-bold font-mono ml-auto shrink-0 ${
+                        newsletterEmail.length > MAX_EMAIL_LENGTH
+                          ? "text-white font-black"
+                          : "text-white/50"
+                      }`}
+                    >
+                      {newsletterEmail.length}/{MAX_EMAIL_LENGTH}
+                    </span>
+                  </div>
+
+                  {/* Submit button — always high-contrast white bg on orange card */}
+                  <button
+                    type="submit"
+                    disabled={subscribing}
+                    className={`w-full rounded-xl font-extrabold uppercase tracking-widest text-[10px] transition-all duration-300 active:scale-95 shadow-xl flex items-center justify-center gap-2 bg-white text-[#C56A2A] hover:bg-[#3D1A06] hover:text-white shadow-white/30 input-height ${
+                      subscribing ? "opacity-70 cursor-wait" : ""
                     }`}
                   >
-                    {newsletterEmail.length}/{MAX_EMAIL_LENGTH}
-                  </span>
-                </div>
-
-                {/* Submit button — always high-contrast white bg on orange card */}
-                <button
-                  type="submit"
-                  disabled={
-                    subscribing || subscribed || !newsletterEmail.trim()
-                  }
-                  className={`w-full rounded-xl font-extrabold uppercase tracking-widest text-[10px] transition-all duration-300 active:scale-95 shadow-xl disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
-                    subscribed
-                      ? "bg-emerald-600 text-white shadow-emerald-600/30"
-                      : "bg-white text-[#C56A2A] hover:bg-[#3D1A06] hover:text-white disabled:opacity-50 shadow-white/30"
-                  } input-height`}
-                >
-                  {subscribing ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Transmitting…
-                    </>
-                  ) : subscribed ? (
-                    <>
-                      <CheckCircle className="h-4 w-4" />
-                      Subscription Complete
-                    </>
-                  ) : (
-                    " Subscribe"
-                  )}
-                </button>
-              </form>
+                    {subscribing ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Transmitting…
+                      </>
+                    ) : (
+                      " Subscribe"
+                    )}
+                  </button>
+                </form>
+              )}
             </div>
 
             {/* Support Link */}
