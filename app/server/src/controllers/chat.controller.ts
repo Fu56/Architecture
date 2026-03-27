@@ -405,3 +405,71 @@ export const createChannel = async (req: Request, res: Response) => {
     }
 };
 
+export const searchPublicChannels = async (req: Request, res: Response) => {
+    try {
+        const { q } = req.query;
+        const userId = (req as any).user.id;
+
+        if (!q || typeof q !== "string") {
+            return res.json([]);
+        }
+
+        const channels = await prisma.chatChannel.findMany({
+            where: {
+                isPublic: true,
+                isPrivate: false,
+                name: {
+                    contains: q,
+                    mode: 'insensitive'
+                }
+            },
+            include: {
+                subscribers: {
+                    where: { id: userId },
+                    select: { id: true }
+                },
+                _count: {
+                    select: { subscribers: true }
+                }
+            }
+        });
+
+        const formatted = channels.map(c => ({
+            ...c,
+            isSubscribed: c.subscribers.length > 0
+        }));
+
+        res.json(formatted);
+    } catch (error) {
+        console.error("Public Spectrum Search Error:", error);
+        res.status(500).json({ message: "Satellite scan failure." });
+    }
+};
+
+export const joinPublicChannel = async (req: Request, res: Response) => {
+    try {
+        const { channelId } = req.params;
+        const userId = (req as any).user.id;
+
+        const channel = await prisma.chatChannel.findUnique({
+            where: { id: Number(channelId) }
+        });
+
+        if (!channel || !channel.isPublic) {
+            return res.status(404).json({ message: "Target terminal not found or access restricted." });
+        }
+
+        await prisma.chatChannel.update({
+            where: { id: Number(channelId) },
+            data: {
+                subscribers: { connect: { id: userId } }
+            }
+        });
+
+        res.json({ message: "Successfully synchronized to public frequency." });
+    } catch (error) {
+        console.error("Join Protocol Error:", error);
+        res.status(500).json({ message: "Failed to establish satellite link." });
+    }
+};
+

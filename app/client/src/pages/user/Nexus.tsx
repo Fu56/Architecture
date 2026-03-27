@@ -23,6 +23,11 @@ import {
   Download,
   CheckCheck,
   MessageSquare,
+  LogOut,
+  AlertTriangle,
+  Copy,
+  Forward,
+  Share2,
 } from "lucide-react";
 import React from "react";
 import { useSession } from "../../lib/auth-client";
@@ -157,6 +162,12 @@ const Nexus = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messageEndRef = useRef<HTMLDivElement>(null);
 
+  const [discoverySearchQuery, setDiscoverySearchQuery] = useState("");
+  const [discoveredChannels, setDiscoveredChannels] = useState<Channel[]>([]);
+  const [isSearchingChannels, setIsSearchingChannels] = useState(false);
+  const [joiningId, setJoiningId] = useState<number | null>(null);
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
+
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, []);
@@ -213,7 +224,10 @@ const Nexus = () => {
   const fetchMessages = useCallback(async (channelId: number) => {
     try {
       const { data } = await api.get(`/chat/channels/${channelId}/messages`);
-      setMessages(data);
+      setMessages((prev) => {
+        if (data.length > prev.length) setShouldScrollToBottom(true);
+        return data;
+      });
     } catch {
       console.error("Signal Retrieval Error");
     }
@@ -251,6 +265,45 @@ const Nexus = () => {
     }
   }, []);
 
+  const handleSearchPublicChannels = useCallback(async () => {
+    if (discoverySearchQuery.trim().length < 2) {
+      setDiscoveredChannels([]);
+      return;
+    }
+    setIsSearchingChannels(true);
+    try {
+      const { data } = await api.get(`/chat/channels/search?q=${discoverySearchQuery}`);
+      setDiscoveredChannels(data);
+    } catch {
+      console.error("Discovery Scan Error");
+    } finally {
+      setIsSearchingChannels(false);
+    }
+  }, [discoverySearchQuery]);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (discoverySearchQuery) handleSearchPublicChannels();
+      else setDiscoveredChannels([]);
+    }, 500);
+    return () => clearTimeout(t);
+  }, [discoverySearchQuery, handleSearchPublicChannels]);
+
+  const handleJoinChannel = async (channelId: number) => {
+    setJoiningId(channelId);
+    try {
+      await api.post(`/chat/channels/${channelId}/join`);
+      toast.success("Synchronized to public spectrum.");
+      setDiscoverySearchQuery("");
+      setDiscoveredChannels([]);
+      fetchChannels();
+    } catch {
+      toast.error("Join protocol failed.");
+    } finally {
+      setJoiningId(null);
+    }
+  };
+
   useEffect(() => {
     fetchChannels();
   }, [fetchChannels]);
@@ -275,12 +328,14 @@ const Nexus = () => {
   }, [activeChannel, markAsRead]);
 
   useEffect(() => {
-    if (messages.length > 0)
+    if (messages.length > 0 && shouldScrollToBottom) {
       messageEndRef.current?.scrollIntoView({
         behavior: "smooth",
         block: "nearest",
       });
-  }, [messages]);
+      setShouldScrollToBottom(false);
+    }
+  }, [messages, shouldScrollToBottom]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -318,6 +373,7 @@ const Nexus = () => {
         },
       );
       setMessages((p) => [...p, data]);
+      setShouldScrollToBottom(true);
       setNewMessage("");
       setSelectedFile(null);
       setFilePreview(null);
@@ -386,6 +442,102 @@ const Nexus = () => {
     } finally {
       setInvitingId(null);
     }
+  };
+
+  const handleLeaveChannel = async (channelId: number) => {
+    toast.warning("Sever satellite link?", {
+      description: "You will no longer receive transmissions from this node.",
+      action: {
+        label: "Confirm Exit",
+        onClick: async () => {
+          try {
+            await api.post(`/chat/channels/${channelId}/unsubscribe`);
+            toast.success("Frequency de-synchronized.");
+            fetchChannels();
+            setActiveChannel(null);
+          } catch {
+            toast.error("De-link protocol failure.");
+          }
+        },
+      },
+      cancel: { label: "Abort", onClick: () => {} },
+    });
+  };
+
+  const handleReportChannel = async (channel: Channel) => {
+    toast.info("Initialize Signal Report", {
+      description: `Report unauthorized activity in ${channel.name} to higher command?`,
+      action: {
+        label: "Submit Report",
+        onClick: () => {
+          toast.success("Intelligence report transmitted to Department Head.");
+        },
+      },
+      cancel: { label: "Dismiss", onClick: () => {} },
+    });
+  };
+
+  const handleCopyMessage = async (content?: string, fileUrl?: string) => {
+    try {
+      if (fileUrl) {
+        try {
+          const response = await fetch(fileUrl);
+          const blob = await response.blob();
+          if (
+            blob.type.startsWith("image/") &&
+            typeof ClipboardItem !== "undefined"
+          ) {
+            await navigator.clipboard.write([
+              new ClipboardItem({ [blob.type]: blob }),
+            ]);
+            toast.success("Media shard duplicated to clipboard.");
+          } else {
+            throw new Error("Generic Binary Shard");
+          }
+        } catch {
+          // Fallback to text link if binary copy fails or is not an image
+          await navigator.clipboard.writeText(fileUrl);
+          toast.success("Access link mirrored to clipboard.");
+        }
+      } else if (content) {
+        await navigator.clipboard.writeText(content);
+        toast.success("Signal content mirrored to clipboard.");
+      }
+    } catch (err) {
+      console.error("Critical Mirroring Failure:", err);
+      toast.error("Shield breach: Unable to mirror signal.");
+    }
+  };
+
+  const handleForwardMessage = (message: Message /* eslint-disable-line */) => {
+    toast.info("Forwarding Protocol Initialized", {
+      description: "Select target spectrum for data relay.",
+    });
+  };
+
+  const handleShareMessage = (message: Message /* eslint-disable-line */) => {
+    toast.info("Broadcast sequence pending", {
+      description: "External sharing channels under synchronization.",
+    });
+  };
+
+  const handleDeleteMessage = async (messageId: number) => {
+    toast.warning("Dismantle message shard?", {
+      description: "This data segment will be purged from the Nexus.",
+      action: {
+        label: "Purge",
+        onClick: async () => {
+          try {
+            await api.delete(`/chat/messages/${messageId}`);
+            setMessages((prev) => prev.filter((m) => m.id !== messageId));
+            toast.success("Signal shard purged.");
+          } catch {
+            toast.error("Purge protocol failed.");
+          }
+        },
+      },
+      cancel: { label: "Abort", onClick: () => {} },
+    });
   };
 
   const handleDeleteChannel = async (channelId: number) => {
@@ -487,8 +639,12 @@ const Nexus = () => {
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Filter channels..."
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSearchQuery(val);
+                    setDiscoverySearchQuery(val);
+                  }}
+                  placeholder="Scan frequencies..."
                   autoFocus
                   className="w-full bg-white dark:bg-[#5A270F]/30 border border-[#92664A]/15 rounded-lg py-1.5 pl-8 pr-3 text-[10px] font-bold outline-none focus:border-[#DF8142] placeholder:text-[#92664A]/30 transition-all dark:text-white"
                 />
@@ -557,6 +713,56 @@ const Nexus = () => {
                   ))}
               </div>
             </div>
+
+            {(discoverySearchQuery || discoveredChannels.length > 0) && (
+              <div className="pt-6 animate-in fade-in duration-500">
+                <p className="text-[10px] font-black uppercase tracking-widest px-4 mb-4 text-[#DF8142]">
+                  DISCOVERY
+                </p>
+                <div className="space-y-2 px-1">
+                  {isSearchingChannels ? (
+                    <div className="py-4 flex justify-center">
+                      <Loader2 className="h-4 w-4 animate-spin text-[#DF8142] opacity-40" />
+                    </div>
+                  ) : discoveredChannels.length > 0 ? (
+                    discoveredChannels.map((ch) => (
+                      <div
+                        key={ch.id}
+                        className="flex items-center justify-between p-2 rounded-xl bg-[#EEB38C]/10 border border-transparent hover:border-[#DF8142]/30 transition-all"
+                      >
+                        <div className="flex items-center gap-2 overflow-hidden">
+                          <Globe className="h-3 w-3 text-[#DF8142] shrink-0" />
+                          <span className="text-[9px] font-black uppercase truncate text-[#5A270F] dark:text-white">
+                            {ch.name}
+                          </span>
+                        </div>
+                        {ch.isSubscribed ? (
+                          <span className="text-[7px] font-black uppercase tracking-tighter text-[#92664A]/60 p-1">
+                            Joined
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => handleJoinChannel(ch.id)}
+                            disabled={joiningId === ch.id}
+                            className="px-2 py-1 rounded-lg bg-[#DF8142] text-white text-[8px] font-black uppercase hover:bg-[#6C3B1C] transition-all shadow-sm"
+                          >
+                            {joiningId === ch.id ? (
+                              <Loader2 className="h-2 w-2 animate-spin" />
+                            ) : (
+                              "Join"
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <p className="px-4 text-[8px] font-black uppercase tracking-widest text-[#92664A]/40 text-center py-2">
+                      No matching spectrums
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="mt-auto pt-4 border-t border-[#92664A]/15 dark:border-[#92664A]/10">
@@ -665,23 +871,47 @@ const Nexus = () => {
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="flex gap-1.5 p-1 rounded-xl border bg-[#EEB38C]/5 border-[#92664A]/10 dark:bg-[#6C3B1C]/50 dark:border-white/5">
+                <div className="flex items-center gap-1 lg:gap-1.5 p-1 rounded-xl border bg-[#EEB38C]/5 border-[#92664A]/10 dark:bg-[#6C3B1C]/50 dark:border-white/5 shadow-sm">
+                  {/* Participant Lifecycle Actions */}
+                  {!activeChannel.isPrivate && (
+                    <>
+                      <button
+                        onClick={() => setShowInviteModal(true)}
+                        title="Uplink Member"
+                        className="h-8 w-8 lg:h-9 lg:w-9 rounded-xl flex items-center justify-center transition-all bg-white text-[#5A270F] shadow-sm hover:bg-[#DF8142] hover:text-white dark:bg-[#6C3B1C]/80 dark:text-[#EEB38C]/80 dark:hover:bg-white/20 dark:hover:text-white"
+                      >
+                        <UserPlus className="h-4 w-4 lg:h-5 lg:w-5" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          fetchMembers(activeChannel.id);
+                          setShowMembersModal(true);
+                        }}
+                        title="Active Participants"
+                        className="h-8 w-8 lg:h-9 lg:w-9 rounded-xl flex items-center justify-center transition-all bg-white text-[#5A270F] shadow-sm hover:bg-[#DF8142] hover:text-white dark:bg-[#6C3B1C]/80 dark:text-[#EEB38C]/80 dark:hover:bg-white/20 dark:hover:text-white"
+                      >
+                        <Users className="h-4 w-4 lg:h-5 lg:w-5" />
+                      </button>
+                    </>
+                  )}
+
+                  {/* Lifecycle & Security Controls */}
+                  <div className="w-[1px] h-6 bg-[#92664A]/20 mx-1 hidden lg:block" />
+
                   <button
-                    onClick={() => setShowInviteModal(true)}
-                    title="Uplink Member"
-                    className="h-7 w-7 rounded-lg flex items-center justify-center transition-all bg-white text-[#5A270F] shadow-sm hover:bg-[#DF8142] hover:text-white dark:bg-[#6C3B1C]/80 dark:text-[#EEB38C]/80 dark:hover:bg-white/20 dark:hover:text-white"
+                    onClick={() => handleLeaveChannel(activeChannel.id)}
+                    title="Terminate Local Frequency (Leave)"
+                    className="h-8 w-8 lg:h-9 lg:w-9 rounded-xl flex items-center justify-center transition-all bg-white text-[#92664A] shadow-sm hover:bg-red-500 hover:text-white dark:bg-[#6C3B1C]/80 dark:text-[#EEB38C]/60 dark:hover:bg-red-500/20 dark:hover:text-red-500"
                   >
-                    <UserPlus className="h-4 w-4" />
+                    <LogOut className="h-4 w-4 lg:h-5 lg:w-5" />
                   </button>
+
                   <button
-                    onClick={() => {
-                      fetchMembers(activeChannel.id);
-                      setShowMembersModal(true);
-                    }}
-                    title="Active Participants"
-                    className="h-7 w-7 rounded-lg flex items-center justify-center transition-all bg-white text-[#5A270F] shadow-sm hover:bg-[#DF8142] hover:text-white dark:bg-[#6C3B1C]/80 dark:text-[#EEB38C]/80 dark:hover:bg-white/20 dark:hover:text-white"
+                    onClick={() => handleReportChannel(activeChannel)}
+                    title="Signal unauthorized activity"
+                    className="h-8 w-8 lg:h-9 lg:w-9 rounded-xl flex items-center justify-center transition-all bg-white text-[#92664A] shadow-sm hover:bg-amber-500 hover:text-white dark:bg-[#6C3B1C]/80 dark:text-[#EEB38C]/60 dark:hover:bg-amber-500/20 dark:hover:text-amber-500"
                   >
-                    <Users className="h-4 w-4" />
+                    <AlertTriangle className="h-4 w-4 lg:h-5 lg:w-5" />
                   </button>
                 </div>
               </div>
@@ -725,116 +955,182 @@ const Nexus = () => {
                           </button>
                         )}
                       </div>
-                      <div
-                        className={`max-w-[85%] px-3.5 py-2 rounded-xl text-[11px] font-medium leading-relaxed border transition-all ${
-                          isSelf
-                            ? "bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] border-[#DF8142]/40 text-white rounded-tr-none"
-                            : "bg-white border-[#92664A]/20 text-[#5A270F] rounded-tl-none dark:bg-[#6C3B1C]/60 dark:border-[#EEB38C]/10 dark:text-white dark:rounded-tl-none"
-                        }`}
-                      >
-                        {m.attachments?.map((att) => {
-                          const fileUrl = getMediaUrl(att.fileUrl);
-                          return (
-                            <div
-                              key={att.id}
-                              className="mb-2 last:mb-0 group/media relative"
+                      <div className="relative group/msg max-w-[85%]">
+                        {/* Interactive Command Menu (Telegram Style) */}
+                        <div
+                          className={`absolute -top-7 ${isSelf ? "right-0" : "left-0"} opacity-0 group-hover/msg:opacity-100 transition-all duration-300 flex items-center gap-1 bg-white/90 dark:bg-[#6C3B1C]/90 backdrop-blur-md p-1 rounded-xl border border-[#92664A]/20 shadow-xl z-50`}
+                        >
+                          <button
+                            onClick={() =>
+                              handleCopyMessage(
+                                m.content,
+                                m.attachments?.[0]?.fileUrl
+                                  ? getMediaUrl(m.attachments[0].fileUrl)
+                                  : undefined
+                              )
+                            }
+                            className="p-1.5 rounded-lg hover:bg-[#DF8142] hover:text-white transition-all text-[#92664A] dark:text-[#EEB38C]/60"
+                            title="Mirror Signal (Copy)"
+                          >
+                            <Copy className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleForwardMessage(m)}
+                            className="p-1.5 rounded-lg hover:bg-[#DF8142] hover:text-white transition-all text-[#92664A] dark:text-[#EEB38C]/60"
+                            title="Relay Signal (Forward)"
+                          >
+                            <Forward className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleShareMessage(m)}
+                            className="p-1.5 rounded-lg hover:bg-[#DF8142] hover:text-white transition-all text-[#92664A] dark:text-[#EEB38C]/60"
+                            title="Broadcast Signal (Share)"
+                          >
+                            <Share2 className="h-3.5 w-3.5" />
+                          </button>
+                          {isSelf && (
+                            <button
+                              onClick={() => handleDeleteMessage(m.id)}
+                              className="p-1.5 rounded-lg hover:bg-red-500 hover:text-white transition-all text-[#92664A] dark:text-[#EEB38C]/60"
+                              title="Purge Signal (Delete)"
                             >
-                              {att.fileType.startsWith("image/") ? (
-                                <div className="relative overflow-hidden rounded-xl border border-white/20 shadow-lg bg-black/5 max-w-[280px]">
-                                  <img
-                                    src={fileUrl}
-                                    alt={att.fileName}
-                                    className="w-full h-auto max-h-[300px] object-contain cursor-zoom-in hover:scale-[1.02] transition-transform duration-500"
-                                  />
-                                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/media:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                                    <button
-                                      onClick={(e) =>
-                                        handleDownload(e, fileUrl, att.fileName)
-                                      }
-                                      title="Extract Image Shard"
-                                      className="p-2.5 rounded-full bg-white/20 hover:bg-[#DF8142] text-white transition-all transform hover:scale-110 shadow-lg backdrop-blur-sm"
-                                    >
-                                      <Download className="h-5 w-5" />
-                                    </button>
-                                  </div>
-                                  <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/50 to-transparent">
-                                    <p className="text-[7px] text-white font-black uppercase tracking-widest truncate opacity-60 group-hover/media:opacity-100 transition-opacity">
-                                      {att.fileName}
-                                    </p>
-                                  </div>
-                                </div>
-                              ) : att.fileType.startsWith("video/") ? (
-                                <div className="relative overflow-hidden rounded-xl border border-white/20 shadow-lg bg-black/5 max-w-[280px]">
-                                  <video
-                                    src={fileUrl}
-                                    className="w-full h-auto max-h-[300px] object-contain"
-                                    controls
-                                  />
-                                  <div className="absolute top-2 right-2 opacity-0 group-hover/media:opacity-100 transition-opacity">
-                                    <button
-                                      onClick={(e) =>
-                                        handleDownload(e, fileUrl, att.fileName)
-                                      }
-                                      title="Extract Video Shard"
-                                      className="p-2 rounded-lg bg-black/50 hover:bg-[#DF8142] text-white transition-all shadow-lg backdrop-blur-sm"
-                                    >
-                                      <Download className="h-4 w-4" />
-                                    </button>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="flex flex-col gap-1 max-w-[260px]">
-                                  <div
-                                    className={`flex items-center gap-3 p-2 rounded-xl border transition-all ${
-                                      isSelf
-                                        ? "bg-white/10 border-white/20"
-                                        : "bg-[#5A270F]/5 border-[#92664A]/10 dark:bg-black/20 dark:border-white/10"
-                                    }`}
-                                  >
-                                    <div className="h-8 w-8 rounded-lg bg-[#DF8142] flex items-center justify-center text-white shrink-0 shadow-md">
-                                      <FileText className="h-4 w-4" />
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                      <p className="text-[9px] font-black uppercase tracking-widest truncate">
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          )}
+                        </div>
+
+                        <div
+                          className={`px-3.5 py-2 rounded-xl text-[11px] font-medium leading-relaxed border transition-all ${
+                            isSelf
+                              ? "bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] border-[#DF8142]/40 text-white rounded-tr-none shadow-md shadow-[#DF8142]/10"
+                              : "bg-white border-[#92664A]/20 text-[#5A270F] rounded-tl-none dark:bg-[#6C3B1C]/60 dark:border-[#EEB38C]/10 dark:text-white dark:rounded-tl-none shadow-sm"
+                          }`}
+                        >
+                          {m.attachments?.map((att) => {
+                            const fileUrl = getMediaUrl(att.fileUrl);
+                            return (
+                              <div
+                                key={att.id}
+                                className="mb-2 last:mb-0 group/media relative"
+                              >
+                                {att.fileType.startsWith("image/") ? (
+                                  <div className="relative overflow-hidden rounded-xl border border-white/20 shadow-lg bg-black/5 max-w-[280px]">
+                                    <img
+                                      src={fileUrl}
+                                      alt={att.fileName}
+                                      className="w-full h-auto max-h-[300px] object-contain cursor-zoom-in hover:scale-[1.02] transition-transform duration-500"
+                                    />
+                                    <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/50 to-transparent flex items-center justify-between">
+                                      <p className="text-[7px] text-white font-black uppercase tracking-widest truncate opacity-60 group-hover/media:opacity-100 transition-opacity">
                                         {att.fileName}
                                       </p>
-                                      <p className="text-[7px] opacity-40 uppercase tracking-tighter">
-                                        Data Shard
-                                      </p>
+                                      <div className="flex gap-1.5 opacity-0 group-hover/media:opacity-100 transition-opacity">
+                                        <button
+                                          onClick={() => handleCopyMessage(undefined, fileUrl)}
+                                          title="Mirror Image Shard"
+                                          className="p-1.5 rounded-md bg-white/20 hover:bg-[#DF8142] text-white transition-all shadow-sm backdrop-blur-md"
+                                        >
+                                          <Copy className="h-3 w-3" />
+                                        </button>
+                                        <button
+                                          onClick={(e) => handleDownload(e, fileUrl, att.fileName)}
+                                          title="Extract Image Shard"
+                                          className="p-1.5 rounded-md bg-white/20 hover:bg-[#DF8142] text-white transition-all shadow-sm backdrop-blur-md"
+                                        >
+                                          <Download className="h-3 w-3" />
+                                        </button>
+                                      </div>
                                     </div>
-                                    <button
-                                      onClick={(e) =>
-                                        handleDownload(e, fileUrl, att.fileName)
-                                      }
-                                      title="Recover Data Shard"
-                                      className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all shadow-sm ${
+                                  </div>
+                                ) : att.fileType.startsWith("video/") ? (
+                                  <div className="relative overflow-hidden rounded-xl border border-white/20 shadow-lg bg-black/5 max-w-[280px]">
+                                    <video
+                                      src={fileUrl}
+                                      className="w-full h-auto max-h-[300px] object-contain"
+                                      controls
+                                    />
+                                    <div className="absolute top-2 right-2 opacity-0 group-hover/media:opacity-100 transition-opacity flex flex-col gap-2">
+                                      <button
+                                        onClick={() => handleCopyMessage(undefined, fileUrl)}
+                                        title="Mirror Video Shard"
+                                        className="p-1.5 rounded-md bg-black/50 hover:bg-[#DF8142] text-white transition-all shadow-lg backdrop-blur-md"
+                                      >
+                                        <Copy className="h-3 w-3" />
+                                      </button>
+                                      <button
+                                        onClick={(e) => handleDownload(e, fileUrl, att.fileName)}
+                                        title="Extract Video Shard"
+                                        className="p-1.5 rounded-md bg-black/50 hover:bg-[#DF8142] text-white transition-all shadow-lg backdrop-blur-md"
+                                      >
+                                        <Download className="h-3 w-3" />
+                                      </button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="flex flex-col gap-1 max-w-[260px]">
+                                    <div
+                                      className={`flex items-center gap-3 p-2 rounded-xl border transition-all ${
                                         isSelf
-                                          ? "hover:bg-white/20 text-white"
-                                          : "hover:bg-[#DF8142] hover:text-white text-[#92664A]"
+                                          ? "bg-white/10 border-white/20"
+                                          : "bg-[#5A270F]/5 border-[#92664A]/10 dark:bg-black/20 dark:border-white/10"
                                       }`}
                                     >
-                                      <Download className="h-4 w-4" />
-                                    </button>
+                                      <div className="h-8 w-8 rounded-lg bg-[#DF8142] flex items-center justify-center text-white shrink-0 shadow-md">
+                                        <FileText className="h-4 w-4" />
+                                      </div>
+                                      <div className="min-w-0 flex-1">
+                                        <p className="text-[9px] font-black uppercase tracking-widest truncate">
+                                          {att.fileName}
+                                        </p>
+                                        <p className="text-[7px] opacity-40 uppercase tracking-tighter">
+                                          Data Shard
+                                        </p>
+                                      </div>
+                                      <div className="flex gap-1.5 shrink-0">
+                                        <button
+                                          onClick={() => handleCopyMessage(undefined, fileUrl)}
+                                          title="Mirror Data Link"
+                                          className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all shadow-sm ${
+                                            isSelf
+                                              ? "hover:bg-white/20 text-white"
+                                              : "hover:bg-[#DF8142] hover:text-white text-[#92664A]"
+                                          }`}
+                                        >
+                                          <Copy className="h-4 w-4" />
+                                        </button>
+                                        <button
+                                          onClick={(e) => handleDownload(e, fileUrl, att.fileName)}
+                                          title="Recover Data Shard"
+                                          className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all shadow-sm ${
+                                            isSelf
+                                              ? "hover:bg-white/20 text-white"
+                                              : "hover:bg-[#DF8142] hover:text-white text-[#92664A]"
+                                          }`}
+                                        >
+                                          <Download className="h-4 w-4" />
+                                        </button>
+                                      </div>
+                                    </div>
                                   </div>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                        {m.content && (
-                          <p className="whitespace-pre-wrap mt-1">
-                            {m.content}
-                          </p>
-                        )}
-                        <div
-                          className={`text-[8px] mt-1.5 opacity-40 font-black tracking-widest ${isSelf ? "text-white" : "text-[#5A270F] dark:text-white"} flex items-center gap-1.5`}
-                        >
-                          <span className="h-1 w-1 rounded-full bg-current opacity-30" />
-                          {new Date(m.createdAt).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: false,
+                                )}
+                              </div>
+                            );
                           })}
+                          {m.content && (
+                            <p className="whitespace-pre-wrap mt-1">
+                              {m.content}
+                            </p>
+                          )}
+                          <div
+                            className={`text-[8px] mt-1.5 opacity-40 font-black tracking-widest ${isSelf ? "text-white" : "text-[#5A270F] dark:text-white"} flex items-center gap-1.5`}
+                          >
+                            <span className="h-1 w-1 rounded-full bg-current opacity-30" />
+                            {new Date(m.createdAt).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: false,
+                            })}
+                          </div>
                         </div>
                       </div>
                     </div>
