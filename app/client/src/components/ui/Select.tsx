@@ -76,7 +76,7 @@ const Select: React.FC<SelectProps> = ({
         {/* Dropdown Menu - Architectural Glassmorphism */}
         {isOpen && (
           <div 
-            className="absolute z-[999] min-w-full w-max max-w-[calc(100vw-2rem)] right-0 bottom-full mb-2 border-2 border-[#DF8142]/60 rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-300 bg-white/95 dark:bg-[#1A0B04]/95 backdrop-blur-3xl overflow-hidden shadow-[#5A270F]/20 dark:shadow-black"
+            className="absolute z-[999] min-w-full w-max max-w-[calc(100vw-2rem)] left-0 top-full mt-2 border-2 border-[#DF8142]/60 rounded-2xl shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300 bg-white/95 dark:bg-[#1A0B04]/95 backdrop-blur-3xl overflow-hidden shadow-[#5A270F]/20 dark:shadow-black"
           >
             <div className="max-h-[70vh] overflow-y-auto 
                             scrollbar-thin scrollbar-thumb-[#DF8142] scrollbar-track-transparent">

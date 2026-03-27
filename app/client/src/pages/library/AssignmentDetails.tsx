@@ -205,68 +205,68 @@ const AssignmentDetails = () => {
         <Link
           to={`${basePath}/assignments`}
           title="Return to Assignments Gallery"
-          className="inline-flex items-center gap-4 bg-white dark:bg-[#1A0B04] px-6 py-3 rounded-2xl border-2 border-[#92664A]/10 shadow-sm text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C]/60 hover:border-[#DF8142] hover:text-[#DF8142] transition-all group"
+          className="inline-flex items-center gap-3 bg-white dark:bg-[#1A0B04] px-5 py-2.5 rounded-xl border-2 border-[#92664A]/10 shadow-sm text-[9px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C]/60 hover:border-[#DF8142] hover:text-[#DF8142] transition-all group"
         >
-          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-          Back to Portfolio Matrix
+          <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-1 transition-transform" />
+          Back to Portal
         </Link>
 
         {/* ── CORE BRIEF CARD ───────────────────────────── */}
         <div className="relative group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-[#DF8142] to-[#5A270F] rounded-[3.5rem] blur opacity-10 group-hover:opacity-20 transition duration-1000" />
-          <div className="relative bg-white dark:bg-[#1A0B04] rounded-[3rem] border-2 border-[#92664A]/10 dark:border-white/5 overflow-hidden shadow-2xl">
+          <div className="absolute -inset-1 bg-gradient-to-r from-[#DF8142] to-[#5A270F] rounded-[3rem] blur opacity-10 group-hover:opacity-20 transition duration-1000" />
+          <div className="relative bg-white dark:bg-[#1A0B04] rounded-[2.5rem] border-2 border-[#92664A]/10 dark:border-white/5 overflow-hidden shadow-2xl">
             <div className="absolute inset-0 architectural-dot-grid dark:architectural-dot-grid-dark opacity-5" />
 
             <div className="flex flex-col lg:grid lg:grid-cols-12 relative z-10">
               {/* Left Content Column */}
-              <div className="lg:col-span-8 p-10 lg:p-14 space-y-10">
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="px-4 py-1.5 bg-[#DF8142] text-white rounded-xl text-[9px] font-black uppercase tracking-[0.3em] shadow-lg shadow-[#DF8142]/20 italic">
+              <div className="lg:col-span-8 p-8 lg:p-10 space-y-8">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="px-3 py-1 bg-[#DF8142] text-white rounded-lg text-[8px] font-black uppercase tracking-[0.3em] shadow-lg shadow-[#DF8142]/20 italic">
                     Critical_Brief
                   </span>
                   {(assignment.design_stage ||
                     assignment.custom_design_stage) && (
-                    <span className="px-4 py-1.5 bg-[#EEB38C]/10 dark:bg-white/5 text-[#92664A] dark:text-[#EEB38C]/60 rounded-xl text-[9px] font-black uppercase tracking-[0.3em] border border-[#92664A]/20">
+                    <span className="px-3 py-1 bg-[#EEB38C]/10 dark:bg-white/5 text-[#92664A] dark:text-[#EEB38C]/60 rounded-lg text-[8px] font-black uppercase tracking-[0.3em] border border-[#92664A]/20">
                       {assignment.design_stage
                         ? assignment.design_stage.name
                         : assignment.custom_design_stage}
                     </span>
                   )}
                   {isPastDeadline && (
-                    <span className="px-4 py-1.5 bg-rose-500 text-white rounded-xl text-[9px] font-black uppercase tracking-[0.3em] shadow-lg shadow-rose-500/20">
-                      Deadline_Breached
+                    <span className="px-3 py-1 bg-rose-500 text-white rounded-lg text-[8px] font-black uppercase tracking-[0.3em] shadow-lg shadow-rose-500/20">
+                      Breached
                     </span>
                   )}
                 </div>
 
-                <div className="space-y-4">
-                  <h1 className="text-4xl sm:text-6xl font-black text-[#5A270F] dark:text-white tracking-tighter uppercase italic leading-[0.9] font-space-grotesk">
+                <div className="space-y-3">
+                  <h1 className="text-3xl sm:text-5xl font-black text-[#5A270F] dark:text-white tracking-tighter uppercase italic leading-[0.9] font-space-grotesk">
                     {assignment.title}
                   </h1>
-                  <div className="h-1.5 w-24 bg-[#DF8142] rounded-full" />
+                  <div className="h-1 w-16 bg-[#DF8142] rounded-full" />
                 </div>
 
                 <div className="prose dark:prose-invert max-w-none">
-                  <p className="text-base font-medium leading-[1.8] text-[#5A270F]/80 dark:text-[#EEB38C]/70 whitespace-pre-wrap italic">
+                  <p className="text-sm font-medium leading-[1.6] text-[#5A270F]/80 dark:text-[#EEB38C]/70 whitespace-pre-wrap italic">
                     {assignment.description ||
-                      "No project documentation provided."}
+                      "No documentation."}
                   </p>
                 </div>
               </div>
 
               {/* Right Sidebar Column */}
-              <div className="lg:col-span-4 bg-[#EEB38C]/5 dark:bg-black/40 border-l border-[#92664A]/10 p-10 lg:p-14 space-y-8">
+              <div className="lg:col-span-4 bg-[#EEB38C]/5 dark:bg-black/40 border-l border-[#92664A]/10 p-8 lg:p-10 space-y-6">
                 <div className="space-y-6">
                   {/* Instructor Token */}
-                  <div className="flex items-center gap-5">
-                    <div className="h-14 w-14 rounded-2xl bg-[#5A270F] flex items-center justify-center text-[#EEB38C] shadow-xl border border-[#EEB38C]/20">
-                      <User className="h-6 w-6" />
+                   <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 shrink-0 rounded-xl bg-[#5A270F] flex items-center justify-center text-[#EEB38C] shadow-lg border border-[#EEB38C]/20">
+                      <User className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[#92664A] dark:text-[#EEB38C]/40 mb-1">
+                      <p className="text-[8px] font-black uppercase tracking-[0.4em] text-[#92664A] dark:text-[#EEB38C]/40 mb-0.5">
                         Lead Architect
                       </p>
-                      <p className="text-sm font-black text-[#5A270F] dark:text-white uppercase tracking-widest italic">
+                      <p className="text-[11px] font-black text-[#5A270F] dark:text-white uppercase tracking-widest italic truncate">
                         {assignment.creator.first_name}{" "}
                         {assignment.creator.last_name}
                       </p>
@@ -336,24 +336,23 @@ const AssignmentDetails = () => {
                 </div>
 
                 {/* Actions */}
-                <div className="space-y-4 pt-8 border-t border-[#92664A]/10">
+                <div className="space-y-3 pt-6 border-t border-[#92664A]/10">
                   {assignment.file_path && (
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-2.5">
                       <a
                         target="_blank"
                         rel="noopener noreferrer"
-                        title="View Full Brief Protocol"
+                        title="View Protocol"
                         href={`${import.meta.env.VITE_API_URL}/assignments/${id}/view?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
-                        className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-white dark:bg-white/5 border border-[#92664A]/30 text-[10px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] hover:border-[#DF8142] transition-all"
+                        className="w-full flex items-center justify-center gap-2.5 py-3 rounded-xl bg-white dark:bg-white/5 border border-[#92664A]/30 text-[9px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] hover:border-[#DF8142] transition-all"
                       >
                         <Eye className="h-4 w-4" /> View Protocol
                       </a>
                       <a
                         href={`${import.meta.env.VITE_API_URL}/assignments/${id}/download?token=${encodeURIComponent(localStorage.getItem("token") || "")}`}
-                        title="Download Data Shard"
-                        className="w-full flex items-center justify-center gap-3 py-5 rounded-2xl bg-[#5A270F] text-white text-[11px] font-black uppercase tracking-[0.4em] shadow-xl shadow-[#5A270F]/30 hover:scale-[1.03] active:scale-95 transition-all"
+                        className="w-full flex items-center justify-center gap-3 py-4 rounded-xl bg-[#5A270F] text-white text-[10px] font-black uppercase tracking-[0.4em] shadow-xl shadow-[#5A270F]/30 hover:scale-[1.03] active:scale-95 transition-all"
                       >
-                        <Download className="h-5 w-5" /> Download Shard
+                        <Download className="h-4 w-4" /> Download Shard
                       </a>
                     </div>
                   )}
@@ -361,8 +360,7 @@ const AssignmentDetails = () => {
                   {isCreatorOrAdmin && (
                     <button
                       onClick={handleDelete}
-                      title="Permanent Purge"
-                      className="w-full py-4 rounded-xl border border-rose-500/20 text-rose-500 text-[9px] font-black uppercase tracking-[0.4em] hover:bg-rose-500 hover:text-white transition-all"
+                      className="w-full py-3 rounded-lg border border-rose-500/20 text-rose-500 text-[8px] font-black uppercase tracking-[0.4em] hover:bg-rose-500 hover:text-white transition-all"
                     >
                       Delete Brief
                     </button>

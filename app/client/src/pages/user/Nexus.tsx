@@ -215,9 +215,11 @@ const Nexus = () => {
 
   const startPrivateChat = async (targetUserId: string) => {
     try {
-      const { data } = await api.post("/chat/channels/private", { targetUserId });
-      setChannels(prev => {
-        if (prev.find(c => c.id === data.id)) return prev;
+      const { data } = await api.post("/chat/channels/private", {
+        targetUserId,
+      });
+      setChannels((prev) => {
+        if (prev.find((c) => c.id === data.id)) return prev;
         return [data, ...prev];
       });
       setActiveChannel(data);
@@ -279,7 +281,9 @@ const Nexus = () => {
     }
     setIsSearchingChannels(true);
     try {
-      const { data } = await api.get(`/chat/channels/search?q=${discoverySearchQuery}`);
+      const { data } = await api.get(
+        `/chat/channels/search?q=${discoverySearchQuery}`,
+      );
       setDiscoveredChannels(data);
     } catch {
       console.error("Discovery Scan Error");
@@ -443,7 +447,7 @@ const Nexus = () => {
       await api.post(`/chat/channels/${activeChannel.id}/add-user`, {
         targetUserId,
       });
-      toast.success("Uplink successful.");
+      toast.success("Adding User successful.");
     } catch {
       toast.error("Identity lock failure.");
     } finally {
@@ -453,7 +457,8 @@ const Nexus = () => {
 
   const handleLeaveChannel = async (channelId: number) => {
     toast.warning("Sever satellite link?", {
-      description: "You will no longer receive transmissions from this node.",
+      description:
+        "You will no longer receive transmissions from this Channel.",
       action: {
         label: "Confirm Exit",
         onClick: async () => {
@@ -516,7 +521,9 @@ const Nexus = () => {
     }
   };
 
-  const handleForwardMessage = (_message: Message /* eslint-disable-line */) => {
+  const handleForwardMessage = (
+    _message: Message /* eslint-disable-line */,
+  ) => {
     toast.info("Forwarding Protocol Initialized", {
       description: "Select target spectrum for data relay.",
     });
@@ -817,7 +824,7 @@ const Nexus = () => {
                 >
                   <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#DF8142] to-[#6C3B1C] text-white flex items-center justify-center shadow-lg group-hover:rotate-[15deg] transition-transform">
                     {c.isPrivate ? (
-                        <Users className="h-5 w-5" />
+                      <Users className="h-5 w-5" />
                     ) : c.isPublic ? (
                       <Globe className="h-5 w-5" />
                     ) : (
@@ -923,7 +930,9 @@ const Nexus = () => {
 
                   <button
                     onClick={() => {
-                      setChannelAlias(activeChannel.name.toLowerCase().replace(/\s+/g, "_"));
+                      setChannelAlias(
+                        activeChannel.name.toLowerCase().replace(/\s+/g, "_"),
+                      );
                       setShowSettingsModal(true);
                     }}
                     title="Frequency Configuration"
@@ -984,7 +993,7 @@ const Nexus = () => {
                                 m.content,
                                 m.attachments?.[0]?.fileUrl
                                   ? getMediaUrl(m.attachments[0].fileUrl)
-                                  : undefined
+                                  : undefined,
                               )
                             }
                             className="p-1.5 rounded-lg hover:bg-[#DF8142] hover:text-white transition-all text-[#92664A] dark:text-[#EEB38C]/60"
@@ -1044,14 +1053,25 @@ const Nexus = () => {
                                       </p>
                                       <div className="flex gap-1.5 opacity-0 group-hover/media:opacity-100 transition-opacity">
                                         <button
-                                          onClick={() => handleCopyMessage(undefined, fileUrl)}
+                                          onClick={() =>
+                                            handleCopyMessage(
+                                              undefined,
+                                              fileUrl,
+                                            )
+                                          }
                                           title="Mirror Image Shard"
                                           className="p-1.5 rounded-md bg-white/20 hover:bg-[#DF8142] text-white transition-all shadow-sm backdrop-blur-md"
                                         >
                                           <Copy className="h-3 w-3" />
                                         </button>
                                         <button
-                                          onClick={(e) => handleDownload(e, fileUrl, att.fileName)}
+                                          onClick={(e) =>
+                                            handleDownload(
+                                              e,
+                                              fileUrl,
+                                              att.fileName,
+                                            )
+                                          }
                                           title="Extract Image Shard"
                                           className="p-1.5 rounded-md bg-white/20 hover:bg-[#DF8142] text-white transition-all shadow-sm backdrop-blur-md"
                                         >
@@ -1069,14 +1089,22 @@ const Nexus = () => {
                                     />
                                     <div className="absolute top-2 right-2 opacity-0 group-hover/media:opacity-100 transition-opacity flex flex-col gap-2">
                                       <button
-                                        onClick={() => handleCopyMessage(undefined, fileUrl)}
+                                        onClick={() =>
+                                          handleCopyMessage(undefined, fileUrl)
+                                        }
                                         title="Mirror Video Shard"
                                         className="p-1.5 rounded-md bg-black/50 hover:bg-[#DF8142] text-white transition-all shadow-lg backdrop-blur-md"
                                       >
                                         <Copy className="h-3 w-3" />
                                       </button>
                                       <button
-                                        onClick={(e) => handleDownload(e, fileUrl, att.fileName)}
+                                        onClick={(e) =>
+                                          handleDownload(
+                                            e,
+                                            fileUrl,
+                                            att.fileName,
+                                          )
+                                        }
                                         title="Extract Video Shard"
                                         className="p-1.5 rounded-md bg-black/50 hover:bg-[#DF8142] text-white transition-all shadow-lg backdrop-blur-md"
                                       >
@@ -1106,7 +1134,12 @@ const Nexus = () => {
                                       </div>
                                       <div className="flex gap-1.5 shrink-0">
                                         <button
-                                          onClick={() => handleCopyMessage(undefined, fileUrl)}
+                                          onClick={() =>
+                                            handleCopyMessage(
+                                              undefined,
+                                              fileUrl,
+                                            )
+                                          }
                                           title="Mirror Data Link"
                                           className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all shadow-sm ${
                                             isSelf
@@ -1117,7 +1150,13 @@ const Nexus = () => {
                                           <Copy className="h-4 w-4" />
                                         </button>
                                         <button
-                                          onClick={(e) => handleDownload(e, fileUrl, att.fileName)}
+                                          onClick={(e) =>
+                                            handleDownload(
+                                              e,
+                                              fileUrl,
+                                              att.fileName,
+                                            )
+                                          }
                                           title="Recover Data Shard"
                                           className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all shadow-sm ${
                                             isSelf
@@ -1420,7 +1459,11 @@ const Nexus = () => {
                               : "border-[#DF8142]/30 text-[#DF8142] hover:bg-[#DF8142] hover:text-white"
                           }`}
                         >
-                          {invitingId === u.id ? <Loader2 className="h-3 w-3 animate-spin mx-auto" /> : "Invite"}
+                          {invitingId === u.id ? (
+                            <Loader2 className="h-3 w-3 animate-spin mx-auto" />
+                          ) : (
+                            "Invite"
+                          )}
                         </button>
                       </div>
                     </div>
@@ -1502,120 +1545,138 @@ const Nexus = () => {
           </div>
         </div>
       )}
-    {showSettingsModal && activeChannel && (
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-        <div 
-          className="absolute inset-0 bg-[#5A270F]/40 backdrop-blur-sm animate-in fade-in duration-300"
-          onClick={() => setShowSettingsModal(false)}
-        />
-        <div className="relative w-full max-w-sm bg-white dark:bg-[#5A270F] rounded-[2.5rem] shadow-2xl border border-[#92664A]/20 overflow-hidden animate-in zoom-in-95 duration-300">
-          <div className="p-6 lg:p-8 space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-2xl bg-[#EEB38C]/10 dark:bg-black/20 flex items-center justify-center border border-[#DF8142]/20">
-                  <Settings className="h-5 w-5 text-[#DF8142]" />
+      {showSettingsModal && activeChannel && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-[#5A270F]/40 backdrop-blur-sm animate-in fade-in duration-300"
+            onClick={() => setShowSettingsModal(false)}
+          />
+          <div className="relative w-full max-w-sm bg-white dark:bg-[#5A270F] rounded-[2.5rem] shadow-2xl border border-[#92664A]/20 overflow-hidden animate-in zoom-in-95 duration-300">
+            <div className="p-6 lg:p-8 space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-2xl bg-[#EEB38C]/10 dark:bg-black/20 flex items-center justify-center border border-[#DF8142]/20">
+                    <Settings className="h-5 w-5 text-[#DF8142]" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-black uppercase tracking-widest text-[#5A270F] dark:text-white">
+                      Frequency Settings
+                    </h2>
+                    <p className="text-[9px] font-bold text-[#DF8142] uppercase tracking-[0.2em]">
+                      Segment Configuration
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-sm font-black uppercase tracking-widest text-[#5A270F] dark:text-white">
-                    Frequency Settings
-                  </h2>
-                  <p className="text-[9px] font-bold text-[#DF8142] uppercase tracking-[0.2em]">
-                    Segment Configuration
+                <button
+                  onClick={() => setShowSettingsModal(false)}
+                  title="Dismiss Settings"
+                  className="h-8 w-8 rounded-full flex items-center justify-center hover:bg-[#EEB38C]/10 dark:hover:bg-black/20 text-[#92664A] transition-all"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="space-y-5">
+                {/* Permanent Link Node */}
+                <div className="space-y-2">
+                  <label className="text-[9px] font-black uppercase tracking-widest text-[#92664A]/60 flex items-center gap-2">
+                    <Link className="h-3 w-3" /> Permanent Spectrum Link
+                  </label>
+                  <div className="relative group">
+                    <div className="w-full bg-[#EEB38C]/5 dark:bg-black/20 border border-[#92664A]/15 rounded-xl px-4 py-3 text-[11px] font-black text-[#5A270F]/40 dark:text-white/40 truncate pr-12">
+                      {window.location.origin}/nexus/join/{activeChannel.id}
+                    </div>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          `${window.location.origin}/nexus/join/${activeChannel.id}`,
+                        );
+                        setIsCopied(true);
+                        setTimeout(() => setIsCopied(false), 2000);
+                        toast.success("Frequency link mirrored.");
+                      }}
+                      className="absolute right-2 top-1.5 h-8 w-8 rounded-lg bg-white dark:bg-[#6C3B1C] shadow-sm border border-[#92664A]/20 flex items-center justify-center text-[#DF8142] hover:scale-105 transition-all"
+                    >
+                      {isCopied ? (
+                        <Check className="h-3.5 w-3.5" />
+                      ) : (
+                        <Copy className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                  </div>
+                  <p className="text-[8px] font-medium text-[#92664A]/40 leading-relaxed">
+                    Share this link with authorized personnel to grant direct
+                    spectrum access.
                   </p>
                 </div>
+
+                {/* Channel Alias (@handle) */}
+                <div className="space-y-2">
+                  <label className="text-[9px] font-black uppercase tracking-widest text-[#92664A]/60 flex items-center gap-2">
+                    <AtSign className="h-3 w-3" /> Spectrum Handle
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#DF8142] font-black text-[12px]">
+                      @
+                    </span>
+                    <input
+                      type="text"
+                      value={channelAlias}
+                      onChange={(e) => setChannelAlias(e.target.value)}
+                      placeholder="nexus_frequency"
+                      className="w-full bg-white dark:bg-[#6C3B1C]/50 border-2 border-[#EEB38C]/20 focus:border-[#DF8142] rounded-xl pl-8 pr-4 py-3 text-[12px] font-black text-[#5A270F] dark:text-white outline-none transition-all placeholder:opacity-30"
+                    />
+                  </div>
+                  <p className="text-[8px] font-medium text-[#92664A]/40 leading-relaxed">
+                    Authorized users can locate this channel using this unique
+                    frequency handle.
+                  </p>
+                </div>
+
+                {/* Administrative Permissions Overlay */}
+                <div className="p-4 rounded-2xl bg-[#EEB38C]/5 dark:bg-black/10 border border-[#92664A]/10 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <p className="text-[10px] font-black text-[#5A270F] dark:text-white uppercase tracking-wider">
+                        Broadcast Shards
+                      </p>
+                      <p className="text-[8px] text-[#92664A]/60">
+                        Allow members to send messages
+                      </p>
+                    </div>
+                    <div className="h-5 w-9 rounded-full bg-emerald-500 p-1 flex justify-end transition-all">
+                      <div className="h-3 w-3 rounded-full bg-white shadow-sm" />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between opacity-40 grayscale">
+                    <div className="space-y-0.5">
+                      <p className="text-[10px] font-black text-[#5A270F] dark:text-white uppercase tracking-wider">
+                        Media Transmission
+                      </p>
+                      <p className="text-[8px] text-[#92664A]/60">
+                        Sharing images and data files
+                      </p>
+                    </div>
+                    <div className="h-5 w-9 rounded-full bg-emerald-500 p-1 flex justify-end">
+                      <div className="h-3 w-3 rounded-full bg-white shadow-sm" />
+                    </div>
+                  </div>
+                </div>
               </div>
+
               <button
-                onClick={() => setShowSettingsModal(false)}
-                title="Dismiss Settings"
-                className="h-8 w-8 rounded-full flex items-center justify-center hover:bg-[#EEB38C]/10 dark:hover:bg-black/20 text-[#92664A] transition-all"
+                onClick={() => {
+                  setShowSettingsModal(false);
+                  toast.success("Protocol configuration saved.");
+                }}
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#DF8142] to-[#6C3B1C] text-white text-[11px] font-black uppercase tracking-[0.2em] shadow-lg shadow-[#DF8142]/20 hover:scale-[1.02] active:scale-95 transition-all"
               >
-                <X className="h-4 w-4" />
+                Update Synchronization
               </button>
             </div>
-
-            <div className="space-y-5">
-              {/* Permanent Link Node */}
-              <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-[#92664A]/60 flex items-center gap-2">
-                  <Link className="h-3 w-3" /> Permanent Spectrum Link
-                </label>
-                <div className="relative group">
-                  <div className="w-full bg-[#EEB38C]/5 dark:bg-black/20 border border-[#92664A]/15 rounded-xl px-4 py-3 text-[11px] font-black text-[#5A270F]/40 dark:text-white/40 truncate pr-12">
-                    {window.location.origin}/nexus/join/{activeChannel.id}
-                  </div>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(`${window.location.origin}/nexus/join/${activeChannel.id}`);
-                      setIsCopied(true);
-                      setTimeout(() => setIsCopied(false), 2000);
-                      toast.success("Frequency link mirrored.");
-                    }}
-                    className="absolute right-2 top-1.5 h-8 w-8 rounded-lg bg-white dark:bg-[#6C3B1C] shadow-sm border border-[#92664A]/20 flex items-center justify-center text-[#DF8142] hover:scale-105 transition-all"
-                  >
-                    {isCopied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-                  </button>
-                </div>
-                <p className="text-[8px] font-medium text-[#92664A]/40 leading-relaxed">
-                  Share this link with authorized personnel to grant direct spectrum access.
-                </p>
-              </div>
-
-              {/* Channel Alias (@handle) */}
-              <div className="space-y-2">
-                <label className="text-[9px] font-black uppercase tracking-widest text-[#92664A]/60 flex items-center gap-2">
-                  <AtSign className="h-3 w-3" /> Spectrum Handle
-                </label>
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#DF8142] font-black text-[12px]">@</span>
-                  <input
-                    type="text"
-                    value={channelAlias}
-                    onChange={(e) => setChannelAlias(e.target.value)}
-                    placeholder="nexus_frequency"
-                    className="w-full bg-white dark:bg-[#6C3B1C]/50 border-2 border-[#EEB38C]/20 focus:border-[#DF8142] rounded-xl pl-8 pr-4 py-3 text-[12px] font-black text-[#5A270F] dark:text-white outline-none transition-all placeholder:opacity-30"
-                  />
-                </div>
-                <p className="text-[8px] font-medium text-[#92664A]/40 leading-relaxed">
-                  Authorized users can locate this channel using this unique frequency handle.
-                </p>
-              </div>
-
-              {/* Administrative Permissions Overlay */}
-              <div className="p-4 rounded-2xl bg-[#EEB38C]/5 dark:bg-black/10 border border-[#92664A]/10 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <p className="text-[10px] font-black text-[#5A270F] dark:text-white uppercase tracking-wider">Broadcast Shards</p>
-                    <p className="text-[8px] text-[#92664A]/60">Allow members to send messages</p>
-                  </div>
-                  <div className="h-5 w-9 rounded-full bg-emerald-500 p-1 flex justify-end transition-all">
-                    <div className="h-3 w-3 rounded-full bg-white shadow-sm" />
-                  </div>
-                </div>
-                <div className="flex items-center justify-between opacity-40 grayscale">
-                  <div className="space-y-0.5">
-                    <p className="text-[10px] font-black text-[#5A270F] dark:text-white uppercase tracking-wider">Media Transmission</p>
-                    <p className="text-[8px] text-[#92664A]/60">Sharing images and data files</p>
-                  </div>
-                  <div className="h-5 w-9 rounded-full bg-emerald-500 p-1 flex justify-end">
-                    <div className="h-3 w-3 rounded-full bg-white shadow-sm" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                setShowSettingsModal(false);
-                toast.success("Protocol configuration saved.");
-              }}
-              className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#DF8142] to-[#6C3B1C] text-white text-[11px] font-black uppercase tracking-[0.2em] shadow-lg shadow-[#DF8142]/20 hover:scale-[1.02] active:scale-95 transition-all"
-            >
-              Update Synchronization
-            </button>
           </div>
         </div>
-      </div>
-    )}
+      )}
     </div>
   );
 };

@@ -127,7 +127,7 @@ const Browse = () => {
       {/* Main Grid Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20 pb-16">
         {/* Filter Unit */}
-        <div className="mb-6">
+        <div className="mb-8 relative z-30">
           <Filters
             key={initialFilters ? JSON.stringify(initialFilters) : "default"}
             onFilterChange={fetchResources}

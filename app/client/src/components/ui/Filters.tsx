@@ -128,9 +128,9 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
       <div
         className={`grid transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${showFilters ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0 pointer-events-none"}`}
       >
-        <div className="overflow-hidden">
+        <div>
           <div
-            className="p-10 rounded-[2.5rem] space-y-10 transition-colors duration-500 border border-[#92664A]/15 dark:border-white/10 bg-white dark:bg-[#1A0B05] shadow-2xl shadow-[#5A270F]/10 dark:shadow-none"
+            className="p-10 rounded-[2.5rem] space-y-10 transition-colors duration-500 border border-[#92664A]/15 dark:border-white/10 bg-white dark:bg-[#1A0B05] shadow-2xl shadow-[#5A270F]/10 dark:shadow-none min-h-0"
           >
             <div className="flex items-center justify-between border-b pb-6 border-[#92664A]/10 dark:border-white/5">
               <div className="space-y-1">
@@ -150,50 +150,56 @@ const Filters = ({ onFilterChange, initialFilters }: FiltersProps) => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-10">
-              <Select
-                label="File Format"
-                options={[
-                  { id: "", name: "All Extensions" },
-                  ...fileTypes.map((type) => ({
-                    id: type,
-                    name: type.toUpperCase(),
-                  })),
-                ]}
-                value={filters.fileType || ""}
-                onChange={(val) =>
-                  setFilters((prev) => ({ ...prev, fileType: val }))
-                }
-                placeholder="Choose Format"
-                icon={<Layers className="h-5 w-5 text-[#DF8142]" />}
-              />
+              <div className="relative z-[100]">
+                <Select
+                  label="File Format"
+                  options={[
+                    { id: "", name: "All Extensions" },
+                    ...fileTypes.map((type) => ({
+                      id: type,
+                      name: type.toUpperCase(),
+                    })),
+                  ]}
+                  value={filters.fileType || ""}
+                  onChange={(val) =>
+                    setFilters((prev) => ({ ...prev, fileType: val }))
+                  }
+                  placeholder="Choose Format"
+                  icon={<Layers className="h-5 w-5 text-[#DF8142]" />}
+                />
+              </div>
 
-              <Select
-                label="Design Phase"
-                options={[{ id: "", name: "All Phases" }, ...designStages]}
-                value={filters.stage || ""}
-                onChange={(val) =>
-                  setFilters((prev) => ({ ...prev, stage: val }))
-                }
-                placeholder="Select Stage"
-                icon={<Database className="h-5 w-5 text-[#DF8142]" />}
-              />
+              <div className="relative z-[90]">
+                <Select
+                  label="Design Phase"
+                  options={[{ id: "", name: "All Phases" }, ...designStages]}
+                  value={filters.stage || ""}
+                  onChange={(val) =>
+                    setFilters((prev) => ({ ...prev, stage: val }))
+                  }
+                  placeholder="Select Stage"
+                  icon={<Database className="h-5 w-5 text-[#DF8142]" />}
+                />
+              </div>
 
-              <Select
-                label="Sort Order"
-                options={[
-                  { id: "", name: "Newest Arrivals" },
-                  { id: "oldest", name: "Archival Order" },
-                  { id: "top-rated", name: "Peer Favorites" },
-                ]}
-                value={filters.sort || ""}
-                onChange={(val) =>
-                  setFilters((prev) => ({ ...prev, sort: val }))
-                }
-                placeholder="Arrange By"
-                icon={<SortAsc className="h-5 w-5 text-[#DF8142]" />}
-              />
+              <div className="relative z-[80]">
+                <Select
+                  label="Sort Order"
+                  options={[
+                    { id: "", name: "Newest Arrivals" },
+                    { id: "oldest", name: "Archival Order" },
+                    { id: "top-rated", name: "Peer Favorites" },
+                  ]}
+                  value={filters.sort || ""}
+                  onChange={(val) =>
+                    setFilters((prev) => ({ ...prev, sort: val }))
+                  }
+                  placeholder="Arrange By"
+                  icon={<SortAsc className="h-5 w-5 text-[#DF8142]" />}
+                />
+              </div>
 
-              <div className="space-y-3">
+              <div className="space-y-3 relative z-[10]">
                 <label className="text-[9px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C] flex items-center gap-2 opacity-70 dark:opacity-50">
                   <Calendar className="h-3.5 w-3.5" /> Academic Period
                 </label>
