@@ -83,35 +83,44 @@ const Browse = () => {
   }, [initialFilters, fetchResources]);
 
   return (
-    <div className="min-h-screen bg-[#FAF8F4] dark:bg-[#0C0603] font-inter selection:bg-[#DF8142]/20 selection:text-white transition-colors duration-500 overflow-x-hidden">
-      {/* ── Repository Registry Header ── */}
-      <div className="relative pt-12 pb-10 overflow-hidden bg-[#5A270F] border-b-2 border-[#DF8142]">
-        <div className="absolute inset-0 blueprint-grid opacity-10 pointer-events-none" />
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5 pointer-events-none" />
+    <div className="min-h-screen bg-[#FAF8F4] dark:bg-[#0C0603] font-inter selection:bg-[#DF8142]/20 selection:text-white transition-colors duration-700 overflow-x-hidden">
+      {/* ── Immersive Architectural Header ── */}
+      <div className="relative pt-16 pb-20 overflow-hidden bg-gradient-to-b from-[#5A270F] via-[#3D1A0A] to-[#2A1205] border-b-[3px] border-[#DF8142] shadow-2xl">
+        <div className="absolute inset-0 blueprint-grid opacity-15 pointer-events-none mix-blend-overlay" />
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tr from-[#DF8142]/5 to-transparent pointer-events-none" />
+        
+        {/* Animated Architectural Orbs */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#DF8142]/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute top-1/2 -right-24 w-64 h-64 bg-[#EEB38C]/5 rounded-full blur-[100px]" />
 
-        <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-          <div className="flex justify-between items-center mb-8">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="flex justify-between items-center mb-12">
             <button
               onClick={() => window.history.back()}
-              className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-md text-[7px] font-black uppercase tracking-[0.4em] text-[#EEB38C] hover:bg-white/10 transition-all group"
+              className="flex items-center gap-2.5 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[8px] font-black uppercase tracking-[0.4em] text-[#EEB38C] hover:bg-white/10 hover:border-[#DF8142]/40 transition-all group backdrop-blur-md"
             >
-              <ArrowLeft className="h-2.5 w-2.5 group-hover:-translate-x-1 transition-transform" />
-              BACK_TO_ORIGIN
+              <ArrowLeft className="h-3 w-3 group-hover:-translate-x-1.5 transition-transform" />
+              BACK_TO_SOURCE
             </button>
+            <div className="hidden sm:flex items-center gap-4">
+              <div className="h-px w-24 bg-gradient-to-l from-[#DF8142]/60 to-transparent" />
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#EEB38C]/40">System_01</span>
+            </div>
           </div>
 
-          <div className="inline-flex items-center gap-2 px-2 py-0.5 bg-white/5 border border-white/10 rounded-md text-[7px] font-black uppercase tracking-[0.4em] text-[#EEB38C] mb-4 backdrop-blur-md">
-            <Library className="h-3 w-3 text-[#DF8142]" />{" "}
-            MASTER_REPOSITORY_REGISTRY
+          <div className="flex flex-col items-center text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/15 rounded-lg text-[8px] font-black uppercase tracking-[0.5em] text-[#EEB38C] mb-8 backdrop-blur-xl shadow-2xl">
+              <Library className="h-3.5 w-3.5 text-[#DF8142]" />{" "}
+              Universal_Repository_Interface
+            </div>
+            <h1 className="text-5xl sm:text-7xl font-black text-white tracking-tighter mb-6 uppercase italic leading-none font-space-grotesk drop-shadow-2xl">
+              ARCHIVE{" "}
+              <span className="text-[#DF8142] not-italic uppercase underline decoration-[#DF8142]/30 decoration-[8px] underline-offset-[12px]">INDEX.</span>
+            </h1>
+            <p className="max-w-xl mx-auto text-[#EEB38C]/50 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.6em] leading-relaxed transition-colors duration-500">
+              Validated Protocols for the Professional Network
+            </p>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tighter mb-4 uppercase italic leading-none font-space-grotesk">
-            REPOSITORY{" "}
-            <span className="text-[#DF8142] not-italic uppercase">INDEX.</span>
-          </h1>
-          <div className="max-w-md mx-auto h-px bg-gradient-to-r from-transparent via-[#DF8142]/40 to-transparent mb-4" />
-          <p className="max-w-md mx-auto text-[#EEB38C]/40 text-[7px] font-black uppercase tracking-[0.6em] leading-relaxed">
-            Verified resources for students and professionals
-          </p>
         </div>
       </div>
 
@@ -126,22 +135,32 @@ const Browse = () => {
           />
         </div>
 
-        {/* Dynamic Registry Status Matrix */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-12 px-6 py-4 border-l-4 border-[#DF8142] bg-white dark:bg-white/5 shadow-sm rounded-r-2xl">
-          <div className="flex items-center gap-4">
-            <div className="h-2 w-2 rounded-full bg-[#DF8142] animate-ping" />
-            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A270F] dark:text-[#EEB38C]/40 flex items-center gap-4">
-              <Database className="h-4 w-4 opacity-30" />
-              {loading
-                ? "Calibrating Archive..."
-                : `Registry Assets: ${totalCount} Elements`}
-            </p>
+        {/* Status Dashboard Cluster */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-16 px-8 py-6 border-l-[6px] border-[#DF8142] bg-white dark:bg-[#1A0B02] shadow-2xl shadow-[#5A270F]/5 dark:shadow-none rounded-r-3xl border border-y-[#92664A]/10 border-r-[#92664A]/10 transition-colors duration-700">
+          <div className="flex items-center gap-5">
+            <div className="relative h-4 w-4">
+              <div className="absolute inset-0 rounded-full bg-[#DF8142] animate-ping opacity-20" />
+              <div className="absolute inset-1 rounded-full bg-[#DF8142] shadow-[0_0_10px_#DF8142]" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#5A270F] dark:text-[#EEB38C]/80 flex items-center gap-3">
+                <Database className="h-4 w-4 opacity-40" />
+                {loading
+                  ? "Re-aligning Neural Archive..."
+                  : `Active Registry: ${totalCount} Transmission Nodes`}
+              </p>
+              {!loading && (
+                <span className="text-[8px] font-black text-[#92664A] dark:text-[#EEB38C]/30 uppercase tracking-[0.2em] ml-7">
+                  Connectivity: Stable_Optimal
+                </span>
+              )}
+            </div>
           </div>
 
           {!loading && resources.length > 0 && (
-            <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-[#DF8142] italic">
-              <Sparkles className="h-4 w-4" />
-              Repository Optimized
+            <div className="flex items-center gap-3 px-5 py-2.5 bg-[#EEB38C]/10 dark:bg-[#5A270F]/20 rounded-xl border border-[#DF8142]/20 text-[10px] font-black uppercase tracking-[0.3em] text-[#DF8142] cursor-default group transition-all">
+              <Sparkles className="h-4 w-4 group-hover:rotate-12 transition-transform" />
+              Archive Optimized
             </div>
           )}
         </div>
