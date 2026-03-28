@@ -13,6 +13,7 @@ import {
   Clock,
   X,
   Radio,
+  Users
 } from "lucide-react";
 import { api } from "../../lib/api";
 import { toast } from "../../lib/toast";
@@ -25,6 +26,7 @@ interface NewsItem {
   isEvent: boolean;
   eventDate: string | null;
   createdAt: string;
+  participants?: string[];
 }
 
 const NewsManager = () => {
@@ -38,6 +40,29 @@ const NewsManager = () => {
   const [eventDate, setEventDate] = useState("");
   const [processing, setProcessing] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const [viewingEventId, setViewingEventId] = useState<number | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [participantsData, setParticipantsData] = useState<any[]>([]);
+  const [loadingParticipants, setLoadingParticipants] = useState(false);
+
+  const fetchParticipants = async (eventId: number) => {
+    if (viewingEventId === eventId) {
+      setViewingEventId(null);
+      return;
+    }
+    setViewingEventId(eventId);
+    setLoadingParticipants(true);
+    try {
+      const { data } = await api.get(`/user/events/${eventId}/participants`);
+      setParticipantsData(data.participants || []);
+    } catch {
+      toast.error("Roster Sync Error: Protocol failed.");
+      setViewingEventId(null);
+    } finally {
+      setLoadingParticipants(false);
+    }
+  };
 
   const FieldError = ({ message }: { message?: string }) => {
     if (!message) return null;
@@ -377,6 +402,56 @@ const NewsManager = () => {
                             timeStyle: "short",
                           })}
                         </span>
+                      </div>
+                    )}
+
+                    {/* Event Controls */}
+                    {item.isEvent && (
+                      <div className="mt-4 pt-4 border-t border-[#BCAF9C]/20 dark:border-[#5A270F]/30">
+                        <button
+                          onClick={() => fetchParticipants(item.id)}
+                          className={`flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
+                            viewingEventId === item.id 
+                            ? "bg-[#DF8142] text-white" 
+                            : "bg-[#FAF8F4] dark:bg-[#1A0B02] text-[#92664A] hover:text-[#DF8142] border border-[#BCAF9C]/30"
+                          }`}
+                        >
+                          <Users className="h-3 w-3" />
+                          <span>Registry</span>
+                          <span className={`px-1 rounded-md text-[8px] ${viewingEventId === item.id ? "bg-white text-[#DF8142]" : "bg-[#DF8142] text-white"}`}>
+                            {item.participants?.length || 0}
+                          </span>
+                        </button>
+
+                        {viewingEventId === item.id && (
+                          <div className="mt-4 p-4 rounded-xl bg-white dark:bg-[#0F0602] border border-[#BCAF9C]/30 dark:border-[#5A270F]/50 animate-in slide-in-from-top-2 duration-200">
+                             <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#BCAF9C]/10">
+                               <h4 className="text-[9px] font-black uppercase tracking-widest text-[#5A270F] dark:text-[#EEB38C]/50">Active Roster</h4>
+                               {loadingParticipants && <Loader2 className="h-3 w-3 animate-spin text-[#DF8142]" />}
+                             </div>
+                             
+                             {loadingParticipants && participantsData.length === 0 ? (
+                               <div className="py-4 text-center text-[9px] font-bold text-[#DF8142] uppercase italic">Synchronizing...</div>
+                             ) : participantsData.length === 0 ? (
+                               <div className="py-4 text-center text-[9px] font-bold text-[#92664A] uppercase opacity-50 italic">Registry Empty</div>
+                             ) : (
+                               <div className="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                                 {participantsData.map((p) => (
+                                   <div key={p.user.id} className="flex items-center justify-between p-2 rounded-lg bg-[#FAF8F4] dark:bg-[#1A0B02] border border-[#BCAF9C]/20">
+                                      <div className="flex flex-col">
+                                        <span className="text-[10px] font-black text-[#5A270F] dark:text-white uppercase tracking-tight">{p.user.first_name} {p.user.last_name}</span>
+                                        <span className="text-[8px] font-bold text-[#92664A] dark:text-[#EEB38C]/40">{p.user.email}</span>
+                                      </div>
+                                      <div className="flex items-center gap-1.5">
+                                        <span className="text-[7px] font-black uppercase px-1.5 py-0.5 rounded bg-[#DF8142] text-white">{p.user.role?.name || "Student"}</span>
+                                        {p.user.batch && <span className="text-[7px] font-black uppercase px-1.5 py-0.5 rounded border border-[#BCAF9C]/40 text-[#5A270F] dark:text-[#EEB38C]">B-{p.user.batch}</span>}
+                                      </div>
+                                   </div>
+                                 ))}
+                               </div>
+                             )}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

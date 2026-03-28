@@ -1,3 +1,4 @@
+// cSpell:ignore Segoe Tahoma Verdana
 import nodemailer from "nodemailer";
 import { env } from "../config/env";
 
@@ -158,7 +159,7 @@ export const getRegistrationHtml = (
     <div ${emailStyle} style="border: 2px solid #EEB38C; max-width: 600px; margin: 0 auto; background: #white; border-radius: 12px; overflow: hidden;">
         <div ${headerStyle} style="background: #5A270F; color: white; padding: 40px 30px; text-align: center; border-bottom: 4px solid #DF8142;">
             <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #EEB38C; text-transform: uppercase;">
-                ${isPending ? "NODE PROVISIONED" : "NODE INTEGRATION COMPLETE"}
+                ${isPending ? "USER PROVISIONED" : "USER INTEGRATION COMPLETE"}
             </p>
             <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px; color: white;">
                 ${isPending ? "APPROVAL PENDING" : "REGISTRATION FINISHED"}
@@ -249,7 +250,7 @@ export const getAuthorityGrantHtml = (
   return `
     <div ${emailStyle} style="border: 2px solid #6366f1;">
         <div ${headerStyle} style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);">
-            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #a5b4fc; text-transform: uppercase;">Elevated Matrix Access</p>
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #a5b4fc; text-transform: uppercase;">Elevated Repository Access</p>
             <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px;">AUTHORITY GRANTED</h1>
             <p style="margin-top: 5px; opacity: 0.8; font-size: 11px; font-weight: bold; letter-spacing: 2px;">LEVEL: ${role?.toUpperCase() || "ELEVATED"}</p>
         </div>
@@ -286,7 +287,7 @@ export const getAuthorityGrantHtml = (
             </div>
 
             <p style="margin-top: 40px; font-size: 12px; color: #64748b; text-align: center;">This is a system-generated alert from the System Architect Level 0.</p>
-            <div ${footerStyle}>Authority Matrix Protocol | Root Authorization</div>
+            <div ${footerStyle}>Authority Repository Protocol | Root Authorization</div>
         </div>
     </div>
     `;
@@ -296,18 +297,18 @@ export const getAccountAuthorizationHtml = (userName: string) => {
   return `
     <div ${emailStyle} style="border: 2px solid #5A270F; max-width: 600px; margin: 0 auto; background: #white; border-radius: 12px; overflow: hidden;">
         <div ${headerStyle} style="background: #2A1205; color: white; padding: 40px 30px; text-align: center; border-bottom: 4px solid #DF8142;">
-            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #DF8142; text-transform: uppercase;">Node Logic Verified</p>
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #DF8142; text-transform: uppercase;">User Logic Verified</p>
             <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px; color: white;">ACCOUNT AUTHORIZED</h1>
         </div>
         <div style="padding: 30px 40px; background: white;">
             <p style="font-size: 16px; color: #5A270F; font-weight: bold;">Greetings, ${userName},</p>
             <p style="font-size: 14px; color: #6C3B1C; line-height: 1.6;">
-                The Department Head has successfully verified your credentials and authorized your node for full system integration. Your access to the Nexus is now active.
+                The Department Head has successfully verified your credentials and authorized your User Account for full system integration. Your access to the Nexus is now active.
             </p>
             
             <div style="padding: 20px; background: #EFEDED; border-radius: 12px; border: 1px solid #D9D9C2; margin: 30px 0; text-align: center;">
                 <p style="margin: 0; font-size: 13px; color: #5A270F; font-weight: 600;">
-                    You can now log in using the credentials previously transmitted to your node address.
+                    You can now log in using the credentials previously transmitted to your User address.
                 </p>
             </div>
 
@@ -330,7 +331,7 @@ export const getPasswordResetHtml = (resetUrl: string) => {
         </div>
         <div style="padding: 0 20px;">
             <p><strong>Identity Verification Required.</strong></p>
-            <p>A request has been logged to reset the access key (password) for your node account. If this request was not initiated by you, ignore this transmission.</p>
+            <p>A request has been logged to reset the access key (password) for your User account. If this request was not initiated by you, ignore this transmission.</p>
             
             <div style="padding: 20px; background: #fefce8; border-radius: 12px; border: 1px solid #fef9c3; margin: 30px 0;">
                 <p style="margin: 0; font-size: 13px; color: #854d0e; font-weight: 500;">
@@ -343,7 +344,7 @@ export const getPasswordResetHtml = (resetUrl: string) => {
             </div>
 
             <p style="margin-top: 40px; font-size: 12px; color: #64748b; text-align: center;">Link expires in 1 hour for security purposes.</p>
-            <div ${footerStyle}>Security Matrix Protocol | Level 1 Alert</div>
+            <div ${footerStyle}>Security Repository Protocol | Level 1 Alert</div>
         </div>
     </div>
     `;
@@ -358,7 +359,7 @@ export const getNewsletterSubscriptionHtml = (email: string) => {
         </div>
         <div style="padding: 0 20px;">
             <p><strong>Intelligence Feed Initialized.</strong></p>
-            <p>Your node address <strong>${email}</strong> has been successfully integrated into our architectural matrix. You will now receive high-fidelity updates on project milestones, resource drops, and technical briefings.</p>
+            <p>Your User address <strong>${email}</strong> has been successfully integrated into our architectural Repository. You will now receive high-fidelity updates on project milestones, resource drops, and technical briefings.</p>
             
             <div style="padding: 20px; background: #EFEDED; border-radius: 12px; border: 1px solid #D9D9C2; margin: 30px 0;">
                 <p style="margin: 0; font-size: 13px; color: #5A270F; font-weight: 500;">
@@ -366,7 +367,7 @@ export const getNewsletterSubscriptionHtml = (email: string) => {
                 </p>
             </div>
 
-            <p style="margin-top: 40px; font-size: 12px; color: #64748b; text-align: center;">You can unsubscribe from the matrix at any time through your terminal settings.</p>
+            <p style="margin-top: 40px; font-size: 12px; color: #64748b; text-align: center;">You can unsubscribe from the Repository at any time through your terminal settings.</p>
             <div ${footerStyle}>Studio Digest Protocol | Level 1 Intelligence</div>
         </div>
     </div>
@@ -384,7 +385,7 @@ export const getNewsletterAdminAlertHtml = (subscriberEmail: string) => {
             <p>An external entity has joined the architectural network.</p>
             
             <div style="background: #f8fafc; padding: 25px; border-radius: 12px; margin: 30px 0; border: 1px solid #e2e8f0; text-align: center;">
-                <p style="margin: 0; font-size: 10px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Node Identifier</p>
+                <p style="margin: 0; font-size: 10px; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">User Identifier</p>
                 <p style="margin: 10px 0 0 0; font-size: 20px; font-weight: 900; color: #5A270F;">${subscriberEmail}</p>
             </div>
 
@@ -406,7 +407,7 @@ export const getRatingNotificationHtml = (
   return `
     <div ${emailStyle} style="border: 2px solid #DF8142;">
         <div ${headerStyle} style="background: #5A270F; border-bottom: 4px solid #DF8142;">
-            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #EEB38C; text-transform: uppercase;">Valuation Matrix Update</p>
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #EEB38C; text-transform: uppercase;">Valuation Repository Update</p>
             <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px;">NEW RATING</h1>
         </div>
         <div style="padding: 0 20px;">
@@ -638,7 +639,7 @@ export const getSuspendedHtml = (
   return `
     <div ${emailStyle} style="border: 2px solid #be123c;">
         <div ${headerStyle} style="background: #450a0a; border-bottom-color: #be123c;">
-            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #fb7185; text-transform: uppercase;">Node Terminated</p>
+            <p style="margin: 0 0 10px 0; font-size: 10px; font-weight: 900; letter-spacing: 3px; color: #fb7185; text-transform: uppercase;">User Terminated</p>
             <h1 style="margin:0; font-size: 28px; font-weight: 900; letter-spacing: 2px;">ACCOUNT SUSPENDED</h1>
         </div>
         <div style="padding: 0 20px;">
