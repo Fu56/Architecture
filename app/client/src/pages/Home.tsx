@@ -631,7 +631,7 @@ const Home = () => {
                       <img
                         src={
                           blog.image_path
-                            ? `${import.meta.env.VITE_API_URL.replace("/api", "")}/${blog.image_path.replace(/\\/g, "/")}`
+                            ? `${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${blog.image_path.replace(/\\/g, "/").split("/").pop()}`
                             : "/assets/blog-placeholder.png"
                         }
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s] grayscale group-hover:grayscale-0"

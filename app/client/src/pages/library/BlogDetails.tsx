@@ -12,6 +12,12 @@ import {
   Zap,
   BookMarked,
   Loader2,
+  Copy,
+  Check,
+  Twitter,
+  Linkedin,
+  MessageCircle,
+  X,
 } from "lucide-react";
 
 const BlogDetails = () => {
@@ -19,6 +25,8 @@ const BlogDetails = () => {
   const [blog, setBlog] = useState<Blog | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -34,6 +42,53 @@ const BlogDetails = () => {
     };
     fetchBlog();
   }, [id]);
+
+  const shareUrl = window.location.href;
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      // fallback
+    }
+  };
+
+  const handleNativeShare = async () => {
+    if (navigator.share && blog) {
+      try {
+        await navigator.share({
+          title: blog.title,
+          text: `Check out this architectural insight: ${blog.title}`,
+          url: shareUrl,
+        });
+      } catch { /* user cancelled */ }
+    } else {
+      setShareOpen(true);
+    }
+  };
+
+  const socials = [
+    {
+      label: "WhatsApp",
+      icon: MessageCircle,
+      color: "bg-green-500 hover:bg-green-600",
+      href: `https://wa.me/?text=${encodeURIComponent(blog?.title + " " + shareUrl)}`,
+    },
+    {
+      label: "X / Twitter",
+      icon: Twitter,
+      color: "bg-black hover:bg-neutral-800",
+      href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(blog?.title ?? "")}&url=${encodeURIComponent(shareUrl)}`,
+    },
+    {
+      label: "LinkedIn",
+      icon: Linkedin,
+      color: "bg-blue-600 hover:bg-blue-700",
+      href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
+    },
+  ];
 
   if (loading) {
     return (
@@ -143,9 +198,93 @@ const BlogDetails = () => {
           <div className="hidden sm:block h-6 w-px bg-[#EEB38C]/50 dark:bg-[#5A270F]/50" />
 
           {/* Share Control */}
-          <button type="button" onClick={() => navigator.clipboard.writeText(window.location.href)} title="Copy Signal Link" className="h-10 w-10 sm:ml-auto rounded-xl bg-white dark:bg-[#1A0B02] border border-[#EEB38C]/50 dark:border-[#DF8142]/20 flex items-center justify-center text-[#DF8142] hover:bg-[#DF8142] hover:text-white transition-colors shadow-sm active:scale-95 group">
-            <Share2 className="h-4 w-4 group-active:scale-90 transition-transform" />
-          </button>
+          <div className="relative sm:ml-auto">
+            <button
+              type="button"
+              onClick={handleNativeShare}
+              title="Share this article"
+              className="h-10 w-10 rounded-xl bg-white dark:bg-[#1A0B02] border border-[#EEB38C]/50 dark:border-[#DF8142]/20 flex items-center justify-center text-[#DF8142] hover:bg-[#DF8142] hover:text-white transition-colors shadow-sm active:scale-95 group"
+            >
+              <Share2 className="h-4 w-4 group-active:scale-90 transition-transform" />
+            </button>
+
+            {/* Share Panel */}
+            {shareOpen && (
+              <>
+                {/* Backdrop */}
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setShareOpen(false)}
+                />
+                <div className="absolute right-0 top-full mt-3 z-50 w-72 bg-white dark:bg-[#1A0B02] rounded-2xl shadow-2xl border border-[#EEB38C]/30 dark:border-[#DF8142]/20 overflow-hidden animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-200">
+                  {/* Panel Header */}
+                  <div className="flex items-center justify-between px-4 py-3 bg-[#5A270F] dark:bg-[#1A0B04]">
+                    <div className="flex items-center gap-2">
+                      <Share2 className="h-3.5 w-3.5 text-[#EEB38C]" />
+                      <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[#EEB38C]">Share Narrative</p>
+                    </div>
+                    <button
+                      title="Close share panel"
+                      onClick={() => setShareOpen(false)}
+                      className="h-6 w-6 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/60 hover:text-white transition-colors"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+
+                  <div className="p-4 space-y-3">
+                    {/* Copy Link */}
+                    <button
+                      onClick={handleCopyLink}
+                      className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-all duration-300 group ${
+                        copied
+                          ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
+                          : "bg-[#FAF8F4] dark:bg-white/5 border-[#EEB38C]/30 dark:border-white/10 text-[#5A270F] dark:text-[#EEB38C] hover:border-[#DF8142] hover:bg-[#EEB38C]/10 dark:hover:bg-white/10"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        {copied ? (
+                          <Check className="h-4 w-4 text-emerald-500" />
+                        ) : (
+                          <Copy className="h-4 w-4 text-[#DF8142]" />
+                        )}
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+                          {copied ? "Link Copied!" : "Copy Link"}
+                        </span>
+                      </div>
+                      <div className="text-[8px] font-mono text-[#92664A] dark:text-white/30 truncate max-w-[80px]">
+                        {window.location.hostname}
+                      </div>
+                    </button>
+
+                    {/* Divider */}
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 h-px bg-[#EEB38C]/20 dark:bg-white/5" />
+                      <span className="text-[8px] font-black text-[#92664A] dark:text-white/30 uppercase tracking-widest">Or share on</span>
+                      <div className="flex-1 h-px bg-[#EEB38C]/20 dark:bg-white/5" />
+                    </div>
+
+                    {/* Social Buttons */}
+                    <div className="grid grid-cols-3 gap-2">
+                      {socials.map((s) => (
+                        <a
+                          key={s.label}
+                          href={s.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setShareOpen(false)}
+                          className={`flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl text-white transition-all active:scale-95 ${s.color}`}
+                        >
+                          <s.icon className="h-4 w-4" />
+                          <span className="text-[7px] font-black uppercase tracking-widest">{s.label}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </header>
 
@@ -154,10 +293,7 @@ const BlogDetails = () => {
         <div className="max-w-4xl mx-auto px-6 mb-12 animate-in fade-in zoom-in-95 duration-700">
           <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-[#1A0B02] ring-1 ring-[#EEB38C]/20 dark:ring-[#5A270F]/50 bg-[#0F0602]">
             <img
-              src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/${blog.image_path.replace(
-                /\\/g,
-                "/"
-              )}`}
+              src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${blog.image_path.replace(/\\/g, "/").split("/").pop()}`}
               alt={blog.title}
               className="w-full h-full object-cover"
             />

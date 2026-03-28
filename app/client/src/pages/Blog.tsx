@@ -182,9 +182,7 @@ const Blog = () => {
                 <div className="relative aspect-video overflow-hidden bg-[#FAF8F4] dark:bg-[#0F0602] shrink-0">
                   {blog.image_path ? (
                     <img
-                      src={`${
-                        import.meta.env.VITE_API_URL.replace("/api", "")
-                      }/${blog.image_path.replace(/\\/g, "/")}`}
+                      src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${blog.image_path.replace(/\\/g, "/").split("/").pop()}`}
                       alt={blog.title}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
