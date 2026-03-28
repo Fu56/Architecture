@@ -77,11 +77,15 @@ export const getApprovalHtml = (
         <div style="padding: 0 20px;">
             <p>Dear ${userName},</p>
             <p>Your contribution "<strong>${resourceTitle}</strong>" has passed technical validation and is now live in the global repository.</p>
-            ${reviewerName ? `
+            ${
+              reviewerName
+                ? `
             <div style="background: #f0fdf4; padding: 16px 20px; border-left: 4px solid #22c55e; margin: 20px 0; border-radius: 0 8px 8px 0; display: flex; align-items: center; gap: 10px;">
               <p style="margin: 0; font-size: 11px; font-weight: 900; color: #166534; text-transform: uppercase; letter-spacing: 1px;">Reviewed & Approved by</p>
               <p style="margin: 6px 0 0 0; font-size: 15px; font-weight: 800; color: #15803d;">${reviewerName}</p>
-            </div>` : ''}
+            </div>`
+                : ""
+            }
             ${
               comment
                 ? `<div style="background: #f8fafc; padding: 20px; border-left: 4px solid #4f46e5; margin: 25px 0; border-radius: 0 8px 8px 0;">
@@ -115,11 +119,15 @@ export const getRejectionHtml = (
         <div style="padding: 0 20px;">
             <p>Dear ${userName},</p>
             <p>Unfortunately, your submission "<strong>${resourceTitle}</strong>" was reviewed and requires revisions before it can be approved for repository integration.</p>
-            ${reviewerName ? `
+            ${
+              reviewerName
+                ? `
             <div style="background: #fef2f2; padding: 16px 20px; border-left: 4px solid #dc2626; margin: 20px 0; border-radius: 0 8px 8px 0;">
               <p style="margin: 0; font-size: 11px; font-weight: 900; color: #991b1b; text-transform: uppercase; letter-spacing: 1px;">Reviewed by</p>
               <p style="margin: 6px 0 0 0; font-size: 15px; font-weight: 800; color: #b91c1c;">${reviewerName}</p>
-            </div>` : ''}
+            </div>`
+                : ""
+            }
             ${
               reason
                 ? `<div style="background: #fff1f2; padding: 20px; border-left: 4px solid #be123c; margin: 25px 0; border-radius: 0 8px 8px 0;">
@@ -206,7 +214,11 @@ export const getRegistrationHtml = (
     `;
 };
 
-export const getGenericHtml = (userName: string, title: string, message: string) => {
+export const getGenericHtml = (
+  userName: string,
+  title: string,
+  message: string,
+) => {
   return `
     <div ${emailStyle}>
         <div ${headerStyle}>
@@ -376,7 +388,7 @@ export const getNewsletterAdminAlertHtml = (subscriberEmail: string) => {
                 <p style="margin: 10px 0 0 0; font-size: 20px; font-weight: 900; color: #5A270F;">${subscriberEmail}</p>
             </div>
 
-            <p>Authorization is not required for this node level, but the registry has been updated to include this communication frequency.</p>
+            <p>Authorization is not required for this Resource level, but the registry has been updated to include this communication frequency.</p>
             
             <div ${footerStyle}>Registry Protocol | Admin Intelligence Layer</div>
         </div>
@@ -449,16 +461,24 @@ export const getArchiveNotificationHtml = (
         <div style="padding: 0 20px;">
             <p>Dear ${userName},</p>
             <p>Your resource "<strong>${resourceTitle}</strong>" has been moved to the system archive and is no longer publicly visible in the repository.</p>
-            ${reviewerName ? `
+            ${
+              reviewerName
+                ? `
             <div style="background: #fffbeb; padding: 16px 20px; border-left: 4px solid #d97706; margin: 20px 0; border-radius: 0 8px 8px 0;">
               <p style="margin: 0; font-size: 11px; font-weight: 900; color: #92400e; text-transform: uppercase; letter-spacing: 1px;">Action taken by</p>
               <p style="margin: 6px 0 0 0; font-size: 15px; font-weight: 800; color: #b45309;">${reviewerName}</p>
-            </div>` : ''}
-            ${reason ? `
+            </div>`
+                : ""
+            }
+            ${
+              reason
+                ? `
             <div style="background: #fffbeb; padding: 20px; border-left: 4px solid #d97706; margin: 25px 0; border-radius: 0 8px 8px 0;">
                 <p style="margin: 0 0 5px 0; font-size: 10px; font-weight: 900; color: #b45309; text-transform: uppercase; letter-spacing: 1px;">Archive Reason</p>
                 <p style="margin: 0; font-weight: 500;">${reason}</p>
-            </div>` : ''}
+            </div>`
+                : ""
+            }
             <p style="margin-top: 30px;">If you believe this was done in error, please contact the Department Head directly.</p>
             <div style="text-align: center; margin-top: 40px;">
                 <a href="${env.baseUrl}/dashboard" ${buttonStyle} style="background-color: #d97706;">View Your Dashboard</a>
@@ -485,11 +505,15 @@ export const getRestoreNotificationHtml = (
         <div style="padding: 0 20px;">
             <p>Dear ${userName},</p>
             <p>Great news — your resource "<strong>${resourceTitle}</strong>" has been successfully restored from the archive and is now live again in the repository.</p>
-            ${reviewerName ? `
+            ${
+              reviewerName
+                ? `
             <div style="background: #f0f9ff; padding: 16px 20px; border-left: 4px solid #0ea5e9; margin: 20px 0; border-radius: 0 8px 8px 0;">
               <p style="margin: 0; font-size: 11px; font-weight: 900; color: #075985; text-transform: uppercase; letter-spacing: 1px;">Restored by</p>
               <p style="margin: 6px 0 0 0; font-size: 15px; font-weight: 800; color: #0369a1;">${reviewerName}</p>
-            </div>` : ''}
+            </div>`
+                : ""
+            }
             <div style="text-align: center; margin-top: 40px;">
                 <a href="${env.baseUrl}/resources/${resourceId}" ${buttonStyle} style="background-color: #0ea5e9;">View Your Resource</a>
             </div>
@@ -583,10 +607,7 @@ export const getRepresentationRemovedHtml = (
 };
 
 // ─── Announcement / Broadcast Notification ─────────────────────────────────
-export const getAnnouncementHtml = (
-  title: string,
-  body: string,
-) => {
+export const getAnnouncementHtml = (title: string, body: string) => {
   return `
     <div ${emailStyle} style="border: 2px solid #d97706;">
         <div ${headerStyle} style="background: #451a03; border-bottom: 4px solid #d97706;">
@@ -602,7 +623,7 @@ export const getAnnouncementHtml = (
             <div style="text-align: center; margin-top: 40px;">
                 <a href="${env.baseUrl}/dashboard" style="display: inline-block; padding: 14px 28px; background-color: #d97706; color: white; text-decoration: none; border-radius: 10px; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3);">Access Portal</a>
             </div>
-            <div ${footerStyle}>Nexus Broadcast Protocol | System Intelligence Layer</div>
+            <div ${footerStyle}>Architectural Vault Broadcast Protocol | System Intelligence Layer</div>
         </div>
     </div>
     `;
@@ -622,7 +643,7 @@ export const getSuspendedHtml = (
         </div>
         <div style="padding: 0 20px;">
             <p>Dear ${userName},</p>
-            <p>We are writing to inform you that your system connectivity to the Nexus has been suspended by the administration.</p>
+            <p>We are writing to inform you that your system connectivity to the Architectural Vault has been suspended by the administration.</p>
             
             <div style="background: #fef2f2; padding: 16px 20px; border-left: 4px solid #dc2626; margin: 20px 0; border-radius: 0 8px 8px 0;">
               <p style="margin: 0; font-size: 11px; font-weight: 900; color: #991b1b; text-transform: uppercase; letter-spacing: 1px;">Action Authorized by</p>

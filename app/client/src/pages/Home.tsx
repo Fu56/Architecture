@@ -659,9 +659,15 @@ const Home = () => {
 
                 <div className="flex items-center justify-between pb-8 border-b border-[#EEB38C]/40 dark:border-[#DF8142]/20 mb-8">
                   <div>
-                    <h3 className="text-lg font-black uppercase tracking-[-0.05em] text-[#5A270F] dark:text-white italic">
-                      REPOSITORY_NEWS & EVENTS.
-                    </h3>
+                    <Link
+                      to="/news"
+                      className="group inline-flex items-center gap-2 hover:gap-3 transition-all duration-300"
+                    >
+                      <h3 className="text-lg font-black uppercase tracking-[-0.05em] text-[#5A270F] dark:text-white italic group-hover:text-[#DF8142] dark:group-hover:text-[#DF8142] transition-colors duration-300">
+                        REPOSITORY_NEWS &amp; EVENTS.
+                      </h3>
+                      <ArrowRight className="h-4 w-4 text-[#DF8142] opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
+                    </Link>
                   </div>
                   <div className="h-10 w-10 bg-white/50 dark:bg-[#6C3B1C] border border-[#EEB38C]/40 dark:border-[#DF8142]/20 text-[#DF8142] dark:text-[#EEB38C] rounded-lg flex items-center justify-center shadow-sm dark:shadow-none">
                     <Calendar className="h-5 w-5" />
